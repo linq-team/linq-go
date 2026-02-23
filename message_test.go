@@ -14,7 +14,6 @@ import (
 )
 
 func TestMessageGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -37,7 +36,6 @@ func TestMessageGet(t *testing.T) {
 }
 
 func TestMessageDelete(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -66,7 +64,6 @@ func TestMessageDelete(t *testing.T) {
 }
 
 func TestMessageAddReactionWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -83,7 +80,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
 		linqapiv3.MessageAddReactionParams{
 			Operation:   linqapiv3.MessageAddReactionParamsOperationAdd,
-			Type:        linqapiv3.ReactionTypeLove,
+			Type:        linqapiv3.MessageAddReactionParamsTypeLove,
 			CustomEmoji: linqapiv3.String("😍"),
 			PartIndex:   linqapiv3.Int(1),
 		},
@@ -98,7 +95,6 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 }
 
 func TestMessageGetThreadWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

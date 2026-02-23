@@ -14,7 +14,6 @@ import (
 )
 
 func TestChatMessageListWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -44,7 +43,6 @@ func TestChatMessageListWithOptionalParams(t *testing.T) {
 }
 
 func TestChatMessageSendWithOptionalParams(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -60,20 +58,20 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
 		linqapiv3.ChatMessageSendParams{
-			Message: linqapiv3.MessageContentParam{
-				Parts: []linqapiv3.MessageContentPartUnionParam{{
-					OfText: &linqapiv3.MessageContentPartTextParam{
+			Message: linqapiv3.ChatMessageSendParamsMessage{
+				Parts: []linqapiv3.ChatMessageSendParamsMessagePartUnion{{
+					OfText: &linqapiv3.ChatMessageSendParamsMessagePartText{
 						Value:          "Hello, world!",
 						IdempotencyKey: linqapiv3.String("text-part-abc123"),
 					},
 				}},
-				Effect: linqapiv3.MessageEffectParam{
+				Effect: linqapiv3.ChatMessageSendParamsMessageEffect{
 					Name: linqapiv3.String("confetti"),
-					Type: linqapiv3.MessageEffectTypeScreen,
+					Type: "screen",
 				},
 				IdempotencyKey:   linqapiv3.String("msg-abc123xyz"),
-				PreferredService: linqapiv3.MessageContentPreferredServiceIMessage,
-				ReplyTo: linqapiv3.ReplyToParam{
+				PreferredService: "iMessage",
+				ReplyTo: linqapiv3.ChatMessageSendParamsMessageReplyTo{
 					MessageID: "550e8400-e29b-41d4-a716-446655440000",
 					PartIndex: linqapiv3.Int(0),
 				},

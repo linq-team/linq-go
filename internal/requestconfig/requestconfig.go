@@ -26,7 +26,7 @@ import (
 
 func getDefaultHeaders() map[string]string {
 	return map[string]string{
-		"User-Agent": fmt.Sprintf("LinqAPIV3/Go %s", internal.PackageVersion),
+		"User-Agent": fmt.Sprintf("Linq/Go %s", internal.PackageVersion),
 	}
 }
 
