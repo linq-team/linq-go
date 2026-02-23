@@ -116,7 +116,7 @@ type ChatHandle struct {
 	Handle string `json:"handle,required"`
 	// When this participant joined the chat
 	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Service type (iMessage, SMS, RCS, etc.)
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service ChatHandleService `json:"service,required"`
@@ -148,7 +148,7 @@ func (r *ChatHandle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Service type (iMessage, SMS, RCS, etc.)
+// Messaging service type
 type ChatHandleService string
 
 const (
@@ -238,7 +238,7 @@ type Message struct {
 	FromHandle ChatHandle `json:"from_handle,nullable"`
 	// Message parts in order (text and media)
 	Parts []MessagePartUnion `json:"parts,nullable"`
-	// Preferred service for sending this message
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	PreferredService MessagePreferredService `json:"preferred_service,nullable"`
@@ -248,7 +248,7 @@ type Message struct {
 	ReplyTo ReplyTo `json:"reply_to,nullable"`
 	// When the message was sent
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
-	// Service used to send/receive this message
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service MessageService `json:"service,nullable"`
@@ -331,7 +331,7 @@ func (r *MessagePartUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Preferred service for sending this message
+// Messaging service type
 type MessagePreferredService string
 
 const (
@@ -340,7 +340,7 @@ const (
 	MessagePreferredServiceRcs      MessagePreferredService = "RCS"
 )
 
-// Service used to send/receive this message
+// Messaging service type
 type MessageService string
 
 const (

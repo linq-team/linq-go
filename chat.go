@@ -184,7 +184,7 @@ type Chat struct {
 	IsGroup bool `json:"is_group,required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// Service type for the chat
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service ChatService `json:"service,nullable"`
@@ -209,7 +209,7 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Service type for the chat
+// Messaging service type
 type ChatService string
 
 const (
@@ -252,17 +252,9 @@ type MessageContentParam struct {
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	// iMessage effect to apply to this message (screen or bubble effect)
 	Effect MessageEffectParam `json:"effect,omitzero"`
-	// Preferred messaging service to use for this message. If not specified, uses
-	// default fallback chain: iMessage → RCS → SMS.
+	// Messaging service type
 	//
-	//   - iMessage: Enforces iMessage without fallback to RCS or SMS. Message fails if
-	//     recipient doesn't support iMessage.
-	//   - RCS: Enforces RCS or SMS (no iMessage). Uses RCS if recipient supports it,
-	//     otherwise falls back to SMS.
-	//   - SMS: Enforces SMS (no iMessage). Uses RCS if recipient supports it, otherwise
-	//     falls back to SMS.
-	//
-	// Any of "iMessage", "RCS", "SMS".
+	// Any of "iMessage", "SMS", "RCS".
 	PreferredService MessageContentPreferredService `json:"preferred_service,omitzero"`
 	// Reply to another message to create a threaded conversation
 	ReplyTo ReplyToParam `json:"reply_to,omitzero"`
@@ -378,21 +370,13 @@ func (r *MessageContentPartMediaParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Preferred messaging service to use for this message. If not specified, uses
-// default fallback chain: iMessage → RCS → SMS.
-//
-//   - iMessage: Enforces iMessage without fallback to RCS or SMS. Message fails if
-//     recipient doesn't support iMessage.
-//   - RCS: Enforces RCS or SMS (no iMessage). Uses RCS if recipient supports it,
-//     otherwise falls back to SMS.
-//   - SMS: Enforces SMS (no iMessage). Uses RCS if recipient supports it, otherwise
-//     falls back to SMS.
+// Messaging service type
 type MessageContentPreferredService string
 
 const (
 	MessageContentPreferredServiceIMessage MessageContentPreferredService = "iMessage"
-	MessageContentPreferredServiceRcs      MessageContentPreferredService = "RCS"
 	MessageContentPreferredServiceSMS      MessageContentPreferredService = "SMS"
+	MessageContentPreferredServiceRcs      MessageContentPreferredService = "RCS"
 )
 
 // Response for creating a new chat with an initial message
@@ -425,7 +409,9 @@ type ChatNewResponseChat struct {
 	IsGroup bool `json:"is_group,required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
 	Message SentMessage `json:"message,required"`
-	// Messaging service used
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
 	Service string `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -497,7 +483,7 @@ type ChatSendVoicememoResponseVoiceMemo struct {
 	// Recipient handles (phone numbers or email addresses)
 	To        []string                                    `json:"to,required"`
 	VoiceMemo ChatSendVoicememoResponseVoiceMemoVoiceMemo `json:"voice_memo,required"`
-	// Service used to send this voice memo
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service string `json:"service,nullable"`
@@ -531,7 +517,9 @@ type ChatSendVoicememoResponseVoiceMemoChat struct {
 	IsActive bool `json:"is_active,required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group,required"`
-	// Messaging service
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
 	Service string `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

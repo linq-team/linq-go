@@ -98,13 +98,13 @@ type SentMessage struct {
 	Effect MessageEffect `json:"effect,nullable"`
 	// The sender of this message as a full handle object
 	FromHandle ChatHandle `json:"from_handle,nullable"`
-	// Preferred service for sending this message
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	PreferredService SentMessagePreferredService `json:"preferred_service,nullable"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to,nullable"`
-	// Service used to send this message
+	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service SentMessageService `json:"service,nullable"`
@@ -192,7 +192,7 @@ func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Preferred service for sending this message
+// Messaging service type
 type SentMessagePreferredService string
 
 const (
@@ -201,7 +201,7 @@ const (
 	SentMessagePreferredServiceRcs      SentMessagePreferredService = "RCS"
 )
 
-// Service used to send this message
+// Messaging service type
 type SentMessageService string
 
 const (
