@@ -14,7 +14,6 @@ import (
 )
 
 func TestWebhookEventList(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -26,7 +25,7 @@ func TestWebhookEventList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebhookEvents.List(context.TODO())
+	_, err := client.Webhooks.Events.List(context.TODO())
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {

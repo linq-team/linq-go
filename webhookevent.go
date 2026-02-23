@@ -15,7 +15,7 @@ import (
 )
 
 // WebhookEventService contains methods and other services that help with
-// interacting with the linq-api-v3 API.
+// interacting with the linq API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -43,34 +43,18 @@ func (r *WebhookEventService) List(ctx context.Context, opts ...option.RequestOp
 	return
 }
 
-// Valid webhook event types that can be subscribed to
-type WebhookEventType string
-
-const (
-	WebhookEventTypeMessageSent                WebhookEventType = "message.sent"
-	WebhookEventTypeMessageReceived            WebhookEventType = "message.received"
-	WebhookEventTypeMessageRead                WebhookEventType = "message.read"
-	WebhookEventTypeMessageDelivered           WebhookEventType = "message.delivered"
-	WebhookEventTypeMessageFailed              WebhookEventType = "message.failed"
-	WebhookEventTypeReactionAdded              WebhookEventType = "reaction.added"
-	WebhookEventTypeReactionRemoved            WebhookEventType = "reaction.removed"
-	WebhookEventTypeParticipantAdded           WebhookEventType = "participant.added"
-	WebhookEventTypeParticipantRemoved         WebhookEventType = "participant.removed"
-	WebhookEventTypeChatCreated                WebhookEventType = "chat.created"
-	WebhookEventTypeChatGroupNameUpdated       WebhookEventType = "chat.group_name_updated"
-	WebhookEventTypeChatGroupIconUpdated       WebhookEventType = "chat.group_icon_updated"
-	WebhookEventTypeChatGroupNameUpdateFailed  WebhookEventType = "chat.group_name_update_failed"
-	WebhookEventTypeChatGroupIconUpdateFailed  WebhookEventType = "chat.group_icon_update_failed"
-	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
-	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
-	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
-)
-
 type WebhookEventListResponse struct {
 	// URL to the webhook events documentation
 	DocURL constant.HTTPSApidocsLinqappComDocumentationWebhookEvents `json:"doc_url,required"`
 	// List of all available webhook event types
-	Events []WebhookEventType `json:"events,required"`
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	Events []string `json:"events,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DocURL      respjson.Field

@@ -19,7 +19,7 @@ import (
 )
 
 // WebhookSubscriptionService contains methods and other services that help with
-// interacting with the linq-api-v3 API.
+// interacting with the linq API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -59,7 +59,7 @@ func (r *WebhookSubscriptionService) New(ctx context.Context, body WebhookSubscr
 
 // Retrieve details for a specific webhook subscription including its target URL,
 // subscribed events, and current status.
-func (r *WebhookSubscriptionService) Get(ctx context.Context, subscriptionID string, opts ...option.RequestOption) (res *WebhookSubscription, err error) {
+func (r *WebhookSubscriptionService) Get(ctx context.Context, subscriptionID string, opts ...option.RequestOption) (res *WebhookSubscriptionGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if subscriptionID == "" {
 		err = errors.New("missing required subscriptionId parameter")
@@ -74,7 +74,7 @@ func (r *WebhookSubscriptionService) Get(ctx context.Context, subscriptionID str
 // subscribed events, or activate/deactivate the subscription.
 //
 // **Note:** The signing secret cannot be changed via this endpoint.
-func (r *WebhookSubscriptionService) Update(ctx context.Context, subscriptionID string, body WebhookSubscriptionUpdateParams, opts ...option.RequestOption) (res *WebhookSubscription, err error) {
+func (r *WebhookSubscriptionService) Update(ctx context.Context, subscriptionID string, body WebhookSubscriptionUpdateParams, opts ...option.RequestOption) (res *WebhookSubscriptionUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if subscriptionID == "" {
 		err = errors.New("missing required subscriptionId parameter")
@@ -107,38 +107,6 @@ func (r *WebhookSubscriptionService) Delete(ctx context.Context, subscriptionID 
 	return
 }
 
-type WebhookSubscription struct {
-	// Unique identifier for the webhook subscription
-	ID string `json:"id,required"`
-	// When the subscription was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Whether this subscription is currently active
-	IsActive bool `json:"is_active,required"`
-	// List of event types this subscription receives
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,required"`
-	// URL where webhook events will be sent
-	TargetURL string `json:"target_url,required" format:"uri"`
-	// When the subscription was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		CreatedAt        respjson.Field
-		IsActive         respjson.Field
-		SubscribedEvents respjson.Field
-		TargetURL        respjson.Field
-		UpdatedAt        respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookSubscription) RawJSON() string { return r.JSON.raw }
-func (r *WebhookSubscription) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Response returned when creating a webhook subscription. Includes the signing
 // secret which is only shown once.
 type WebhookSubscriptionNewResponse struct {
@@ -152,7 +120,14 @@ type WebhookSubscriptionNewResponse struct {
 	// retrieved again.
 	SigningSecret string `json:"signing_secret,required"`
 	// List of event types this subscription receives
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,required"`
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,required"`
 	// URL where webhook events will be sent
 	TargetURL string `json:"target_url,required" format:"uri"`
 	// When the subscription was last updated
@@ -177,9 +152,87 @@ func (r *WebhookSubscriptionNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebhookSubscriptionGetResponse struct {
+	// Unique identifier for the webhook subscription
+	ID string `json:"id,required"`
+	// When the subscription was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether this subscription is currently active
+	IsActive bool `json:"is_active,required"`
+	// List of event types this subscription receives
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,required"`
+	// URL where webhook events will be sent
+	TargetURL string `json:"target_url,required" format:"uri"`
+	// When the subscription was last updated
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		IsActive         respjson.Field
+		SubscribedEvents respjson.Field
+		TargetURL        respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionGetResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionGetResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookSubscriptionUpdateResponse struct {
+	// Unique identifier for the webhook subscription
+	ID string `json:"id,required"`
+	// When the subscription was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether this subscription is currently active
+	IsActive bool `json:"is_active,required"`
+	// List of event types this subscription receives
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,required"`
+	// URL where webhook events will be sent
+	TargetURL string `json:"target_url,required" format:"uri"`
+	// When the subscription was last updated
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		IsActive         respjson.Field
+		SubscribedEvents respjson.Field
+		TargetURL        respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebhookSubscriptionListResponse struct {
 	// List of webhook subscriptions
-	Subscriptions []WebhookSubscription `json:"subscriptions,required"`
+	Subscriptions []WebhookSubscriptionListResponseSubscription `json:"subscriptions,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Subscriptions respjson.Field
@@ -194,9 +247,55 @@ func (r *WebhookSubscriptionListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type WebhookSubscriptionListResponseSubscription struct {
+	// Unique identifier for the webhook subscription
+	ID string `json:"id,required"`
+	// When the subscription was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Whether this subscription is currently active
+	IsActive bool `json:"is_active,required"`
+	// List of event types this subscription receives
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,required"`
+	// URL where webhook events will be sent
+	TargetURL string `json:"target_url,required" format:"uri"`
+	// When the subscription was last updated
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		CreatedAt        respjson.Field
+		IsActive         respjson.Field
+		SubscribedEvents respjson.Field
+		TargetURL        respjson.Field
+		UpdatedAt        respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionListResponseSubscription) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionListResponseSubscription) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type WebhookSubscriptionNewParams struct {
 	// List of event types to subscribe to
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero,required"`
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,omitzero,required"`
 	// URL where webhook events will be sent. Must be HTTPS.
 	TargetURL string `json:"target_url,required" format:"uri"`
 	paramObj
@@ -216,7 +315,14 @@ type WebhookSubscriptionUpdateParams struct {
 	// New target URL for webhook events
 	TargetURL param.Opt[string] `json:"target_url,omitzero" format:"uri"`
 	// Updated list of event types to subscribe to
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero"`
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "reaction.added", "reaction.removed", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated".
+	SubscribedEvents []string `json:"subscribed_events,omitzero"`
 	paramObj
 }
 

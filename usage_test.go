@@ -24,17 +24,16 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	t.Skip("Mock server tests are disabled")
 	chat, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
-		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
-					Value: "Hello! How can I help you today?",
+		From: "+12025551234",
+		Message: linqapiv3.ChatNewParamsMessage{
+			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+					Value: "Hello from Linq SDK!",
 				},
 			}},
 		},
-		To: []string{"+12052532136"},
+		To: []string{"+19876543210"},
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

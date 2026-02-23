@@ -14,7 +14,6 @@ import (
 )
 
 func TestAttachmentNew(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,7 +26,7 @@ func TestAttachmentNew(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Attachments.New(context.TODO(), linqapiv3.AttachmentNewParams{
-		ContentType: linqapiv3.SupportedContentTypeImageJpeg,
+		ContentType: linqapiv3.AttachmentNewParamsContentTypeImageJpeg,
 		Filename:    "photo.jpg",
 		SizeBytes:   1024000,
 	})
@@ -41,7 +40,6 @@ func TestAttachmentNew(t *testing.T) {
 }
 
 func TestAttachmentGet(t *testing.T) {
-	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL

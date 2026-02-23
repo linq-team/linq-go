@@ -1,4 +1,4 @@
-# Linq API V3 Go API Library
+# Linq Go API Library
 
 <!-- x-release-please-start-version -->
 
@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The Linq API V3 Go library provides convenient access to the Linq API V3 REST API
+The Linq Go library provides convenient access to the [Linq REST API](https://apidocs.linqapp.com)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
@@ -46,18 +46,18 @@ import (
 
 func main() {
 	client := linqapiv3.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LINQ_API_V3_API_KEY")
+		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LINQ_API_KEY")
 	)
 	chat, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
-		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
-					Value: "Hello! How can I help you today?",
+		From: "+12025551234",
+		Message: linqapiv3.ChatNewParamsMessage{
+			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+					Value: "Hello from Linq SDK!",
 				},
 			}},
 		},
-		To: []string{"+12052532136"},
+		To: []string{"+19876543210"},
 	})
 	if err != nil {
 		panic(err.Error())
@@ -300,15 +300,15 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
-	From: "+12052535597",
-	Message: linqapiv3.MessageContentParam{
-		Parts: []linqapiv3.MessageContentPartUnionParam{{
-			OfText: &linqapiv3.MessageContentPartTextParam{
-				Value: "Hello! How can I help you today?",
+	From: "+12025551234",
+	Message: linqapiv3.ChatNewParamsMessage{
+		Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+			OfText: &linqapiv3.ChatNewParamsMessagePartText{
+				Value: "Hello from Linq SDK!",
 			},
 		}},
 	},
-	To: []string{"+12052532136"},
+	To: []string{"+19876543210"},
 })
 if err != nil {
 	var apierr *linqapiv3.Error
@@ -337,15 +337,15 @@ defer cancel()
 client.Chats.New(
 	ctx,
 	linqapiv3.ChatNewParams{
-		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
-					Value: "Hello! How can I help you today?",
+		From: "+12025551234",
+		Message: linqapiv3.ChatNewParamsMessage{
+			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+					Value: "Hello from Linq SDK!",
 				},
 			}},
 		},
-		To: []string{"+12052532136"},
+		To: []string{"+19876543210"},
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -383,15 +383,15 @@ client := linqapiv3.NewClient(
 client.Chats.New(
 	context.TODO(),
 	linqapiv3.ChatNewParams{
-		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
-					Value: "Hello! How can I help you today?",
+		From: "+12025551234",
+		Message: linqapiv3.ChatNewParamsMessage{
+			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+					Value: "Hello from Linq SDK!",
 				},
 			}},
 		},
-		To: []string{"+12052532136"},
+		To: []string{"+19876543210"},
 	},
 	option.WithMaxRetries(5),
 )
@@ -408,15 +408,15 @@ var response *http.Response
 chat, err := client.Chats.New(
 	context.TODO(),
 	linqapiv3.ChatNewParams{
-		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
-					Value: "Hello! How can I help you today?",
+		From: "+12025551234",
+		Message: linqapiv3.ChatNewParamsMessage{
+			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
+				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+					Value: "Hello from Linq SDK!",
 				},
 			}},
 		},
-		To: []string{"+12052532136"},
+		To: []string{"+19876543210"},
 	},
 	option.WithResponseInto(&response),
 )
