@@ -13,34 +13,37 @@ import (
 )
 
 // Client creates a struct with services and top level methods that help with
-// interacting with the linq API. You should not instantiate this client directly,
-// and instead use the [NewClient] method instead.
+// interacting with the linq-api-v3 API. You should not instantiate this client
+// directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options      []option.RequestOption
-	Chats        ChatService
-	Messages     MessageService
-	Attachments  AttachmentService
-	PhoneNumbers PhoneNumberService
-	Webhooks     WebhookService
+	Options              []option.RequestOption
+	Chats                ChatService
+	Messages             MessageService
+	Attachments          AttachmentService
+	Phonenumbers         PhonenumberService
+	PhoneNumbers         PhoneNumberService
+	WebhookEvents        WebhookEventService
+	WebhookSubscriptions WebhookSubscriptionService
+	Capability           CapabilityService
 }
 
-// DefaultClientOptions read from the environment (LINQ_API_KEY, LINQ_BASE_URL).
-// This should be used to initialize new clients.
+// DefaultClientOptions read from the environment (LINQ_API_V3_API_KEY,
+// LINQ_API_V3_BASE_URL). This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
-	if o, ok := os.LookupEnv("LINQ_BASE_URL"); ok {
+	if o, ok := os.LookupEnv("LINQ_API_V3_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("LINQ_API_KEY"); ok {
+	if o, ok := os.LookupEnv("LINQ_API_V3_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (LINQ_API_KEY, LINQ_BASE_URL). The option passed in as arguments are
-// applied after these default arguments, and all option will be passed down to the
-// services and requests that this client makes.
+// environment (LINQ_API_V3_API_KEY, LINQ_API_V3_BASE_URL). The option passed in as
+// arguments are applied after these default arguments, and all option will be
+// passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
@@ -49,8 +52,11 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Chats = NewChatService(opts...)
 	r.Messages = NewMessageService(opts...)
 	r.Attachments = NewAttachmentService(opts...)
+	r.Phonenumbers = NewPhonenumberService(opts...)
 	r.PhoneNumbers = NewPhoneNumberService(opts...)
-	r.Webhooks = NewWebhookService(opts...)
+	r.WebhookEvents = NewWebhookEventService(opts...)
+	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
+	r.Capability = NewCapabilityService(opts...)
 
 	return
 }

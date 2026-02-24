@@ -14,6 +14,7 @@ import (
 )
 
 func TestChatNewWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -27,20 +28,20 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
 					Value:          "Hello! How can I help you today?",
 					IdempotencyKey: linqapiv3.String("text-part-abc123"),
 				},
 			}},
-			Effect: linqapiv3.ChatNewParamsMessageEffect{
+			Effect: linqapiv3.MessageEffectParam{
 				Name: linqapiv3.String("confetti"),
-				Type: "screen",
+				Type: linqapiv3.MessageEffectTypeScreen,
 			},
 			IdempotencyKey:   linqapiv3.String("msg-abc123xyz"),
-			PreferredService: "iMessage",
-			ReplyTo: linqapiv3.ChatNewParamsMessageReplyTo{
+			PreferredService: linqapiv3.MessageContentPreferredServiceIMessage,
+			ReplyTo: linqapiv3.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
 				PartIndex: linqapiv3.Int(0),
 			},
@@ -57,6 +58,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 }
 
 func TestChatGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -79,6 +81,7 @@ func TestChatGet(t *testing.T) {
 }
 
 func TestChatUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -108,6 +111,7 @@ func TestChatUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestChatListWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -134,6 +138,7 @@ func TestChatListWithOptionalParams(t *testing.T) {
 }
 
 func TestChatMarkAsRead(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -156,6 +161,7 @@ func TestChatMarkAsRead(t *testing.T) {
 }
 
 func TestChatSendVoicememo(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -185,6 +191,7 @@ func TestChatSendVoicememo(t *testing.T) {
 }
 
 func TestChatShareContactCard(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
