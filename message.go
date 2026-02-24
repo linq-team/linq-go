@@ -119,7 +119,7 @@ type ChatHandle struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ChatHandleService `json:"service,required"`
+	Service ServiceType `json:"service,required"`
 	// Whether this handle belongs to the sender (your phone number)
 	IsMe bool `json:"is_me,nullable"`
 	// When they left (if applicable)
@@ -147,15 +147,6 @@ func (r ChatHandle) RawJSON() string { return r.JSON.raw }
 func (r *ChatHandle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Messaging service type
-type ChatHandleService string
-
-const (
-	ChatHandleServiceIMessage ChatHandleService = "iMessage"
-	ChatHandleServiceSMS      ChatHandleService = "SMS"
-	ChatHandleServiceRcs      ChatHandleService = "RCS"
-)
 
 // Participant status
 type ChatHandleStatus string
@@ -241,7 +232,7 @@ type Message struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService MessagePreferredService `json:"preferred_service,nullable"`
+	PreferredService ServiceType `json:"preferred_service,nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at,nullable" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
@@ -251,7 +242,7 @@ type Message struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service MessageService `json:"service,nullable"`
+	Service ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -330,24 +321,6 @@ func (u MessagePartUnion) RawJSON() string { return u.JSON.raw }
 func (r *MessagePartUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Messaging service type
-type MessagePreferredService string
-
-const (
-	MessagePreferredServiceIMessage MessagePreferredService = "iMessage"
-	MessagePreferredServiceSMS      MessagePreferredService = "SMS"
-	MessagePreferredServiceRcs      MessagePreferredService = "RCS"
-)
-
-// Messaging service type
-type MessageService string
-
-const (
-	MessageServiceIMessage MessageService = "iMessage"
-	MessageServiceSMS      MessageService = "SMS"
-	MessageServiceRcs      MessageService = "RCS"
-)
 
 // iMessage effect applied to a message (screen or bubble effect)
 type MessageEffect struct {
