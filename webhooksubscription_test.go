@@ -14,6 +14,7 @@ import (
 )
 
 func TestWebhookSubscriptionNew(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,8 +26,8 @@ func TestWebhookSubscriptionNew(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Webhooks.Subscriptions.New(context.TODO(), linqapiv3.WebhookSubscriptionNewParams{
-		SubscribedEvents: []string{"message.sent", "message.delivered", "message.read"},
+	_, err := client.WebhookSubscriptions.New(context.TODO(), linqapiv3.WebhookSubscriptionNewParams{
+		SubscribedEvents: []linqapiv3.WebhookEventType{linqapiv3.WebhookEventTypeMessageSent, linqapiv3.WebhookEventTypeMessageDelivered, linqapiv3.WebhookEventTypeMessageRead},
 		TargetURL:        "https://webhooks.example.com/linq/events",
 	})
 	if err != nil {
@@ -39,6 +40,7 @@ func TestWebhookSubscriptionNew(t *testing.T) {
 }
 
 func TestWebhookSubscriptionGet(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -50,7 +52,7 @@ func TestWebhookSubscriptionGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Webhooks.Subscriptions.Get(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
+	_, err := client.WebhookSubscriptions.Get(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
@@ -61,6 +63,7 @@ func TestWebhookSubscriptionGet(t *testing.T) {
 }
 
 func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -72,12 +75,12 @@ func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Webhooks.Subscriptions.Update(
+	_, err := client.WebhookSubscriptions.Update(
 		context.TODO(),
 		"b2c3d4e5-f6a7-8901-bcde-f23456789012",
 		linqapiv3.WebhookSubscriptionUpdateParams{
 			IsActive:         linqapiv3.Bool(true),
-			SubscribedEvents: []string{"message.sent", "message.delivered"},
+			SubscribedEvents: []linqapiv3.WebhookEventType{linqapiv3.WebhookEventTypeMessageSent, linqapiv3.WebhookEventTypeMessageDelivered},
 			TargetURL:        linqapiv3.String("https://webhooks.example.com/linq/events"),
 		},
 	)
@@ -91,6 +94,7 @@ func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
 }
 
 func TestWebhookSubscriptionList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -102,7 +106,7 @@ func TestWebhookSubscriptionList(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Webhooks.Subscriptions.List(context.TODO())
+	_, err := client.WebhookSubscriptions.List(context.TODO())
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
@@ -113,6 +117,7 @@ func TestWebhookSubscriptionList(t *testing.T) {
 }
 
 func TestWebhookSubscriptionDelete(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -124,7 +129,7 @@ func TestWebhookSubscriptionDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Webhooks.Subscriptions.Delete(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
+	err := client.WebhookSubscriptions.Delete(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {

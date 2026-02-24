@@ -39,17 +39,17 @@ func TestUserAgentHeader(t *testing.T) {
 		}),
 	)
 	client.Chats.New(context.Background(), linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
-	if userAgent != fmt.Sprintf("Linq/Go %s", internal.PackageVersion) {
+	if userAgent != fmt.Sprintf("LinqAPIV3/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
 }
@@ -73,15 +73,15 @@ func TestRetryAfter(t *testing.T) {
 		}),
 	)
 	_, err := client.Chats.New(context.Background(), linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -118,15 +118,15 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
 	_, err := client.Chats.New(context.Background(), linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -158,15 +158,15 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
 	_, err := client.Chats.New(context.Background(), linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -197,15 +197,15 @@ func TestRetryAfterMs(t *testing.T) {
 		}),
 	)
 	_, err := client.Chats.New(context.Background(), linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -230,15 +230,15 @@ func TestContextCancel(t *testing.T) {
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	_, err := client.Chats.New(cancelCtx, linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -260,15 +260,15 @@ func TestContextCancelDelay(t *testing.T) {
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
 	_, err := client.Chats.New(cancelCtx, linqapiv3.ChatNewParams{
-		From: "+12025551234",
-		Message: linqapiv3.ChatNewParamsMessage{
-			Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-				OfText: &linqapiv3.ChatNewParamsMessagePartText{
-					Value: "Hello from Linq SDK!",
+		From: "+12052535597",
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 		},
-		To: []string{"+19876543210"},
+		To: []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
@@ -296,15 +296,15 @@ func TestContextDeadline(t *testing.T) {
 			}),
 		)
 		_, err := client.Chats.New(deadlineCtx, linqapiv3.ChatNewParams{
-			From: "+12025551234",
-			Message: linqapiv3.ChatNewParamsMessage{
-				Parts: []linqapiv3.ChatNewParamsMessagePartUnion{{
-					OfText: &linqapiv3.ChatNewParamsMessagePartText{
-						Value: "Hello from Linq SDK!",
+			From: "+12052535597",
+			Message: linqapiv3.MessageContentParam{
+				Parts: []linqapiv3.MessageContentPartUnionParam{{
+					OfText: &linqapiv3.MessageContentPartTextParam{
+						Value: "Hello! How can I help you today?",
 					},
 				}},
 			},
-			To: []string{"+19876543210"},
+			To: []string{"+12052532136"},
 		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")

@@ -18,7 +18,7 @@ import (
 )
 
 // AttachmentService contains methods and other services that help with interacting
-// with the linq API.
+// with the linq-api-v3 API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -126,6 +126,85 @@ func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts .
 	return
 }
 
+// Supported MIME types for file attachments and media URLs.
+//
+// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
+// image/tiff, image/bmp
+//
+// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
+//
+// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
+// audio/aiff, audio/aac, audio/amr
+//
+// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
+// text/csv, text/html, text/calendar, application/msword,
+// application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+// application/vnd.ms-excel,
+// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+// application/vnd.ms-powerpoint,
+// application/vnd.openxmlformats-officedocument.presentationml.presentation,
+// application/vnd.apple.pages, application/vnd.apple.numbers,
+// application/vnd.apple.keynote, application/epub+zip, application/zip
+//
+// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
+// rejected.
+type SupportedContentType string
+
+const (
+	SupportedContentTypeImageJpeg                                                            SupportedContentType = "image/jpeg"
+	SupportedContentTypeImageJpg                                                             SupportedContentType = "image/jpg"
+	SupportedContentTypeImagePng                                                             SupportedContentType = "image/png"
+	SupportedContentTypeImageGif                                                             SupportedContentType = "image/gif"
+	SupportedContentTypeImageHeic                                                            SupportedContentType = "image/heic"
+	SupportedContentTypeImageHeif                                                            SupportedContentType = "image/heif"
+	SupportedContentTypeImageTiff                                                            SupportedContentType = "image/tiff"
+	SupportedContentTypeImageBmp                                                             SupportedContentType = "image/bmp"
+	SupportedContentTypeImageXMsBmp                                                          SupportedContentType = "image/x-ms-bmp"
+	SupportedContentTypeVideoMP4                                                             SupportedContentType = "video/mp4"
+	SupportedContentTypeVideoQuicktime                                                       SupportedContentType = "video/quicktime"
+	SupportedContentTypeVideoMpeg                                                            SupportedContentType = "video/mpeg"
+	SupportedContentTypeVideoXM4v                                                            SupportedContentType = "video/x-m4v"
+	SupportedContentTypeVideo3gpp                                                            SupportedContentType = "video/3gpp"
+	SupportedContentTypeAudioMpeg                                                            SupportedContentType = "audio/mpeg"
+	SupportedContentTypeAudioMP3                                                             SupportedContentType = "audio/mp3"
+	SupportedContentTypeAudioMP4                                                             SupportedContentType = "audio/mp4"
+	SupportedContentTypeAudioXM4a                                                            SupportedContentType = "audio/x-m4a"
+	SupportedContentTypeAudioM4a                                                             SupportedContentType = "audio/m4a"
+	SupportedContentTypeAudioXCaf                                                            SupportedContentType = "audio/x-caf"
+	SupportedContentTypeAudioWav                                                             SupportedContentType = "audio/wav"
+	SupportedContentTypeAudioXWav                                                            SupportedContentType = "audio/x-wav"
+	SupportedContentTypeAudioAiff                                                            SupportedContentType = "audio/aiff"
+	SupportedContentTypeAudioXAiff                                                           SupportedContentType = "audio/x-aiff"
+	SupportedContentTypeAudioAac                                                             SupportedContentType = "audio/aac"
+	SupportedContentTypeAudioXAac                                                            SupportedContentType = "audio/x-aac"
+	SupportedContentTypeAudioAmr                                                             SupportedContentType = "audio/amr"
+	SupportedContentTypeApplicationPdf                                                       SupportedContentType = "application/pdf"
+	SupportedContentTypeTextPlain                                                            SupportedContentType = "text/plain"
+	SupportedContentTypeTextMarkdown                                                         SupportedContentType = "text/markdown"
+	SupportedContentTypeTextVcard                                                            SupportedContentType = "text/vcard"
+	SupportedContentTypeTextXVcard                                                           SupportedContentType = "text/x-vcard"
+	SupportedContentTypeTextRtf                                                              SupportedContentType = "text/rtf"
+	SupportedContentTypeApplicationRtf                                                       SupportedContentType = "application/rtf"
+	SupportedContentTypeTextCsv                                                              SupportedContentType = "text/csv"
+	SupportedContentTypeTextHTML                                                             SupportedContentType = "text/html"
+	SupportedContentTypeTextCalendar                                                         SupportedContentType = "text/calendar"
+	SupportedContentTypeApplicationMsword                                                    SupportedContentType = "application/msword"
+	SupportedContentTypeApplicationVndOpenxmlformatsOfficedocumentWordprocessingmlDocument   SupportedContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+	SupportedContentTypeApplicationVndMsExcel                                                SupportedContentType = "application/vnd.ms-excel"
+	SupportedContentTypeApplicationVndOpenxmlformatsOfficedocumentSpreadsheetmlSheet         SupportedContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+	SupportedContentTypeApplicationVndMsPowerpoint                                           SupportedContentType = "application/vnd.ms-powerpoint"
+	SupportedContentTypeApplicationVndOpenxmlformatsOfficedocumentPresentationmlPresentation SupportedContentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+	SupportedContentTypeApplicationVndApplePages                                             SupportedContentType = "application/vnd.apple.pages"
+	SupportedContentTypeApplicationXIworkPagesSffpages                                       SupportedContentType = "application/x-iwork-pages-sffpages"
+	SupportedContentTypeApplicationVndAppleNumbers                                           SupportedContentType = "application/vnd.apple.numbers"
+	SupportedContentTypeApplicationXIworkNumbersSffnumbers                                   SupportedContentType = "application/x-iwork-numbers-sffnumbers"
+	SupportedContentTypeApplicationVndAppleKeynote                                           SupportedContentType = "application/vnd.apple.keynote"
+	SupportedContentTypeApplicationXIworkKeynoteSffkey                                       SupportedContentType = "application/x-iwork-keynote-sffkey"
+	SupportedContentTypeApplicationEpubZip                                                   SupportedContentType = "application/epub+zip"
+	SupportedContentTypeApplicationZip                                                       SupportedContentType = "application/zip"
+	SupportedContentTypeApplicationXZipCompressed                                            SupportedContentType = "application/x-zip-compressed"
+)
+
 type AttachmentNewResponse struct {
 	// Unique identifier for the attachment (for status checks via GET
 	// /v3/attachments/{id})
@@ -214,7 +293,7 @@ type AttachmentGetResponse struct {
 	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
 	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
 	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
-	ContentType AttachmentGetResponseContentType `json:"content_type,required"`
+	ContentType SupportedContentType `json:"content_type,required"`
 	// When the attachment was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Original filename of the attachment
@@ -246,85 +325,6 @@ func (r AttachmentGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *AttachmentGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Supported MIME types for file attachments and media URLs.
-//
-// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
-// image/tiff, image/bmp
-//
-// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
-//
-// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
-// audio/aiff, audio/aac, audio/amr
-//
-// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
-// text/csv, text/html, text/calendar, application/msword,
-// application/vnd.openxmlformats-officedocument.wordprocessingml.document,
-// application/vnd.ms-excel,
-// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-// application/vnd.ms-powerpoint,
-// application/vnd.openxmlformats-officedocument.presentationml.presentation,
-// application/vnd.apple.pages, application/vnd.apple.numbers,
-// application/vnd.apple.keynote, application/epub+zip, application/zip
-//
-// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
-// rejected.
-type AttachmentGetResponseContentType string
-
-const (
-	AttachmentGetResponseContentTypeImageJpeg                                                            AttachmentGetResponseContentType = "image/jpeg"
-	AttachmentGetResponseContentTypeImageJpg                                                             AttachmentGetResponseContentType = "image/jpg"
-	AttachmentGetResponseContentTypeImagePng                                                             AttachmentGetResponseContentType = "image/png"
-	AttachmentGetResponseContentTypeImageGif                                                             AttachmentGetResponseContentType = "image/gif"
-	AttachmentGetResponseContentTypeImageHeic                                                            AttachmentGetResponseContentType = "image/heic"
-	AttachmentGetResponseContentTypeImageHeif                                                            AttachmentGetResponseContentType = "image/heif"
-	AttachmentGetResponseContentTypeImageTiff                                                            AttachmentGetResponseContentType = "image/tiff"
-	AttachmentGetResponseContentTypeImageBmp                                                             AttachmentGetResponseContentType = "image/bmp"
-	AttachmentGetResponseContentTypeImageXMsBmp                                                          AttachmentGetResponseContentType = "image/x-ms-bmp"
-	AttachmentGetResponseContentTypeVideoMP4                                                             AttachmentGetResponseContentType = "video/mp4"
-	AttachmentGetResponseContentTypeVideoQuicktime                                                       AttachmentGetResponseContentType = "video/quicktime"
-	AttachmentGetResponseContentTypeVideoMpeg                                                            AttachmentGetResponseContentType = "video/mpeg"
-	AttachmentGetResponseContentTypeVideoXM4v                                                            AttachmentGetResponseContentType = "video/x-m4v"
-	AttachmentGetResponseContentTypeVideo3gpp                                                            AttachmentGetResponseContentType = "video/3gpp"
-	AttachmentGetResponseContentTypeAudioMpeg                                                            AttachmentGetResponseContentType = "audio/mpeg"
-	AttachmentGetResponseContentTypeAudioMP3                                                             AttachmentGetResponseContentType = "audio/mp3"
-	AttachmentGetResponseContentTypeAudioMP4                                                             AttachmentGetResponseContentType = "audio/mp4"
-	AttachmentGetResponseContentTypeAudioXM4a                                                            AttachmentGetResponseContentType = "audio/x-m4a"
-	AttachmentGetResponseContentTypeAudioM4a                                                             AttachmentGetResponseContentType = "audio/m4a"
-	AttachmentGetResponseContentTypeAudioXCaf                                                            AttachmentGetResponseContentType = "audio/x-caf"
-	AttachmentGetResponseContentTypeAudioWav                                                             AttachmentGetResponseContentType = "audio/wav"
-	AttachmentGetResponseContentTypeAudioXWav                                                            AttachmentGetResponseContentType = "audio/x-wav"
-	AttachmentGetResponseContentTypeAudioAiff                                                            AttachmentGetResponseContentType = "audio/aiff"
-	AttachmentGetResponseContentTypeAudioXAiff                                                           AttachmentGetResponseContentType = "audio/x-aiff"
-	AttachmentGetResponseContentTypeAudioAac                                                             AttachmentGetResponseContentType = "audio/aac"
-	AttachmentGetResponseContentTypeAudioXAac                                                            AttachmentGetResponseContentType = "audio/x-aac"
-	AttachmentGetResponseContentTypeAudioAmr                                                             AttachmentGetResponseContentType = "audio/amr"
-	AttachmentGetResponseContentTypeApplicationPdf                                                       AttachmentGetResponseContentType = "application/pdf"
-	AttachmentGetResponseContentTypeTextPlain                                                            AttachmentGetResponseContentType = "text/plain"
-	AttachmentGetResponseContentTypeTextMarkdown                                                         AttachmentGetResponseContentType = "text/markdown"
-	AttachmentGetResponseContentTypeTextVcard                                                            AttachmentGetResponseContentType = "text/vcard"
-	AttachmentGetResponseContentTypeTextXVcard                                                           AttachmentGetResponseContentType = "text/x-vcard"
-	AttachmentGetResponseContentTypeTextRtf                                                              AttachmentGetResponseContentType = "text/rtf"
-	AttachmentGetResponseContentTypeApplicationRtf                                                       AttachmentGetResponseContentType = "application/rtf"
-	AttachmentGetResponseContentTypeTextCsv                                                              AttachmentGetResponseContentType = "text/csv"
-	AttachmentGetResponseContentTypeTextHTML                                                             AttachmentGetResponseContentType = "text/html"
-	AttachmentGetResponseContentTypeTextCalendar                                                         AttachmentGetResponseContentType = "text/calendar"
-	AttachmentGetResponseContentTypeApplicationMsword                                                    AttachmentGetResponseContentType = "application/msword"
-	AttachmentGetResponseContentTypeApplicationVndOpenxmlformatsOfficedocumentWordprocessingmlDocument   AttachmentGetResponseContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	AttachmentGetResponseContentTypeApplicationVndMsExcel                                                AttachmentGetResponseContentType = "application/vnd.ms-excel"
-	AttachmentGetResponseContentTypeApplicationVndOpenxmlformatsOfficedocumentSpreadsheetmlSheet         AttachmentGetResponseContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-	AttachmentGetResponseContentTypeApplicationVndMsPowerpoint                                           AttachmentGetResponseContentType = "application/vnd.ms-powerpoint"
-	AttachmentGetResponseContentTypeApplicationVndOpenxmlformatsOfficedocumentPresentationmlPresentation AttachmentGetResponseContentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-	AttachmentGetResponseContentTypeApplicationVndApplePages                                             AttachmentGetResponseContentType = "application/vnd.apple.pages"
-	AttachmentGetResponseContentTypeApplicationXIworkPagesSffpages                                       AttachmentGetResponseContentType = "application/x-iwork-pages-sffpages"
-	AttachmentGetResponseContentTypeApplicationVndAppleNumbers                                           AttachmentGetResponseContentType = "application/vnd.apple.numbers"
-	AttachmentGetResponseContentTypeApplicationXIworkNumbersSffnumbers                                   AttachmentGetResponseContentType = "application/x-iwork-numbers-sffnumbers"
-	AttachmentGetResponseContentTypeApplicationVndAppleKeynote                                           AttachmentGetResponseContentType = "application/vnd.apple.keynote"
-	AttachmentGetResponseContentTypeApplicationXIworkKeynoteSffkey                                       AttachmentGetResponseContentType = "application/x-iwork-keynote-sffkey"
-	AttachmentGetResponseContentTypeApplicationEpubZip                                                   AttachmentGetResponseContentType = "application/epub+zip"
-	AttachmentGetResponseContentTypeApplicationZip                                                       AttachmentGetResponseContentType = "application/zip"
-	AttachmentGetResponseContentTypeApplicationXZipCompressed                                            AttachmentGetResponseContentType = "application/x-zip-compressed"
-)
 
 // Current upload/processing status
 type AttachmentGetResponseStatus string
@@ -376,7 +376,7 @@ type AttachmentNewParams struct {
 	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
 	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
 	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
-	ContentType AttachmentNewParamsContentType `json:"content_type,omitzero,required"`
+	ContentType SupportedContentType `json:"content_type,omitzero,required"`
 	// Name of the file to upload
 	Filename string `json:"filename,required"`
 	// Size of the file in bytes (max 100MB)
@@ -391,82 +391,3 @@ func (r AttachmentNewParams) MarshalJSON() (data []byte, err error) {
 func (r *AttachmentNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Supported MIME types for file attachments and media URLs.
-//
-// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
-// image/tiff, image/bmp
-//
-// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
-//
-// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
-// audio/aiff, audio/aac, audio/amr
-//
-// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
-// text/csv, text/html, text/calendar, application/msword,
-// application/vnd.openxmlformats-officedocument.wordprocessingml.document,
-// application/vnd.ms-excel,
-// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-// application/vnd.ms-powerpoint,
-// application/vnd.openxmlformats-officedocument.presentationml.presentation,
-// application/vnd.apple.pages, application/vnd.apple.numbers,
-// application/vnd.apple.keynote, application/epub+zip, application/zip
-//
-// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
-// rejected.
-type AttachmentNewParamsContentType string
-
-const (
-	AttachmentNewParamsContentTypeImageJpeg                                                            AttachmentNewParamsContentType = "image/jpeg"
-	AttachmentNewParamsContentTypeImageJpg                                                             AttachmentNewParamsContentType = "image/jpg"
-	AttachmentNewParamsContentTypeImagePng                                                             AttachmentNewParamsContentType = "image/png"
-	AttachmentNewParamsContentTypeImageGif                                                             AttachmentNewParamsContentType = "image/gif"
-	AttachmentNewParamsContentTypeImageHeic                                                            AttachmentNewParamsContentType = "image/heic"
-	AttachmentNewParamsContentTypeImageHeif                                                            AttachmentNewParamsContentType = "image/heif"
-	AttachmentNewParamsContentTypeImageTiff                                                            AttachmentNewParamsContentType = "image/tiff"
-	AttachmentNewParamsContentTypeImageBmp                                                             AttachmentNewParamsContentType = "image/bmp"
-	AttachmentNewParamsContentTypeImageXMsBmp                                                          AttachmentNewParamsContentType = "image/x-ms-bmp"
-	AttachmentNewParamsContentTypeVideoMP4                                                             AttachmentNewParamsContentType = "video/mp4"
-	AttachmentNewParamsContentTypeVideoQuicktime                                                       AttachmentNewParamsContentType = "video/quicktime"
-	AttachmentNewParamsContentTypeVideoMpeg                                                            AttachmentNewParamsContentType = "video/mpeg"
-	AttachmentNewParamsContentTypeVideoXM4v                                                            AttachmentNewParamsContentType = "video/x-m4v"
-	AttachmentNewParamsContentTypeVideo3gpp                                                            AttachmentNewParamsContentType = "video/3gpp"
-	AttachmentNewParamsContentTypeAudioMpeg                                                            AttachmentNewParamsContentType = "audio/mpeg"
-	AttachmentNewParamsContentTypeAudioMP3                                                             AttachmentNewParamsContentType = "audio/mp3"
-	AttachmentNewParamsContentTypeAudioMP4                                                             AttachmentNewParamsContentType = "audio/mp4"
-	AttachmentNewParamsContentTypeAudioXM4a                                                            AttachmentNewParamsContentType = "audio/x-m4a"
-	AttachmentNewParamsContentTypeAudioM4a                                                             AttachmentNewParamsContentType = "audio/m4a"
-	AttachmentNewParamsContentTypeAudioXCaf                                                            AttachmentNewParamsContentType = "audio/x-caf"
-	AttachmentNewParamsContentTypeAudioWav                                                             AttachmentNewParamsContentType = "audio/wav"
-	AttachmentNewParamsContentTypeAudioXWav                                                            AttachmentNewParamsContentType = "audio/x-wav"
-	AttachmentNewParamsContentTypeAudioAiff                                                            AttachmentNewParamsContentType = "audio/aiff"
-	AttachmentNewParamsContentTypeAudioXAiff                                                           AttachmentNewParamsContentType = "audio/x-aiff"
-	AttachmentNewParamsContentTypeAudioAac                                                             AttachmentNewParamsContentType = "audio/aac"
-	AttachmentNewParamsContentTypeAudioXAac                                                            AttachmentNewParamsContentType = "audio/x-aac"
-	AttachmentNewParamsContentTypeAudioAmr                                                             AttachmentNewParamsContentType = "audio/amr"
-	AttachmentNewParamsContentTypeApplicationPdf                                                       AttachmentNewParamsContentType = "application/pdf"
-	AttachmentNewParamsContentTypeTextPlain                                                            AttachmentNewParamsContentType = "text/plain"
-	AttachmentNewParamsContentTypeTextMarkdown                                                         AttachmentNewParamsContentType = "text/markdown"
-	AttachmentNewParamsContentTypeTextVcard                                                            AttachmentNewParamsContentType = "text/vcard"
-	AttachmentNewParamsContentTypeTextXVcard                                                           AttachmentNewParamsContentType = "text/x-vcard"
-	AttachmentNewParamsContentTypeTextRtf                                                              AttachmentNewParamsContentType = "text/rtf"
-	AttachmentNewParamsContentTypeApplicationRtf                                                       AttachmentNewParamsContentType = "application/rtf"
-	AttachmentNewParamsContentTypeTextCsv                                                              AttachmentNewParamsContentType = "text/csv"
-	AttachmentNewParamsContentTypeTextHTML                                                             AttachmentNewParamsContentType = "text/html"
-	AttachmentNewParamsContentTypeTextCalendar                                                         AttachmentNewParamsContentType = "text/calendar"
-	AttachmentNewParamsContentTypeApplicationMsword                                                    AttachmentNewParamsContentType = "application/msword"
-	AttachmentNewParamsContentTypeApplicationVndOpenxmlformatsOfficedocumentWordprocessingmlDocument   AttachmentNewParamsContentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-	AttachmentNewParamsContentTypeApplicationVndMsExcel                                                AttachmentNewParamsContentType = "application/vnd.ms-excel"
-	AttachmentNewParamsContentTypeApplicationVndOpenxmlformatsOfficedocumentSpreadsheetmlSheet         AttachmentNewParamsContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-	AttachmentNewParamsContentTypeApplicationVndMsPowerpoint                                           AttachmentNewParamsContentType = "application/vnd.ms-powerpoint"
-	AttachmentNewParamsContentTypeApplicationVndOpenxmlformatsOfficedocumentPresentationmlPresentation AttachmentNewParamsContentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-	AttachmentNewParamsContentTypeApplicationVndApplePages                                             AttachmentNewParamsContentType = "application/vnd.apple.pages"
-	AttachmentNewParamsContentTypeApplicationXIworkPagesSffpages                                       AttachmentNewParamsContentType = "application/x-iwork-pages-sffpages"
-	AttachmentNewParamsContentTypeApplicationVndAppleNumbers                                           AttachmentNewParamsContentType = "application/vnd.apple.numbers"
-	AttachmentNewParamsContentTypeApplicationXIworkNumbersSffnumbers                                   AttachmentNewParamsContentType = "application/x-iwork-numbers-sffnumbers"
-	AttachmentNewParamsContentTypeApplicationVndAppleKeynote                                           AttachmentNewParamsContentType = "application/vnd.apple.keynote"
-	AttachmentNewParamsContentTypeApplicationXIworkKeynoteSffkey                                       AttachmentNewParamsContentType = "application/x-iwork-keynote-sffkey"
-	AttachmentNewParamsContentTypeApplicationEpubZip                                                   AttachmentNewParamsContentType = "application/epub+zip"
-	AttachmentNewParamsContentTypeApplicationZip                                                       AttachmentNewParamsContentType = "application/zip"
-	AttachmentNewParamsContentTypeApplicationXZipCompressed                                            AttachmentNewParamsContentType = "application/x-zip-compressed"
-)

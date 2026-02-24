@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
-func TestChatParticipantAdd(t *testing.T) {
+func TestCapabilityCheckImessageWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,13 +26,10 @@ func TestChatParticipantAdd(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Chats.Participants.Add(
-		context.TODO(),
-		"550e8400-e29b-41d4-a716-446655440000",
-		linqapiv3.ChatParticipantAddParams{
-			Handle: "+12052499136",
-		},
-	)
+	_, err := client.Capability.CheckImessage(context.TODO(), linqapiv3.CapabilityCheckImessageParams{
+		Address: "+15551234567",
+		From:    linqapiv3.String("+15559876543"),
+	})
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
@@ -42,7 +39,7 @@ func TestChatParticipantAdd(t *testing.T) {
 	}
 }
 
-func TestChatParticipantRemove(t *testing.T) {
+func TestCapabilityCheckRcsWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -55,13 +52,10 @@ func TestChatParticipantRemove(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Chats.Participants.Remove(
-		context.TODO(),
-		"550e8400-e29b-41d4-a716-446655440000",
-		linqapiv3.ChatParticipantRemoveParams{
-			Handle: "+12052499136",
-		},
-	)
+	_, err := client.Capability.CheckRcs(context.TODO(), linqapiv3.CapabilityCheckRcsParams{
+		Address: "+15551234567",
+		From:    linqapiv3.String("+15559876543"),
+	})
 	if err != nil {
 		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {

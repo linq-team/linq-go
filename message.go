@@ -21,7 +21,7 @@ import (
 )
 
 // MessageService contains methods and other services that help with interacting
-// with the linq API.
+// with the linq-api-v3 API.
 //
 // Note, unlike clients, this service does not read variables from the environment
 // automatically. You should not instantiate this service directly, and instead use
@@ -41,7 +41,7 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 
 // Retrieve a specific message by its ID. This endpoint returns the full message
 // details including text, attachments, reactions, and metadata.
-func (r *MessageService) Get(ctx context.Context, messageID string, opts ...option.RequestOption) (res *MessageGetResponse, err error) {
+func (r *MessageService) Get(ctx context.Context, messageID string, opts ...option.RequestOption) (res *Message, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
@@ -81,7 +81,7 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, body Mess
 // - emphasize ‼️
 // - question ❓
 // - custom - any emoji (use `custom_emoji` field to specify)
-func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
+func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *Reaction, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
@@ -109,7 +109,109 @@ func (r *MessageService) GetThread(ctx context.Context, messageID string, query 
 	return
 }
 
-type MessageGetResponse struct {
+type ChatHandle struct {
+	// Unique identifier for this handle
+	ID string `json:"id,required" format:"uuid"`
+	// Phone number (E.164) or email address of the participant
+	Handle string `json:"handle,required"`
+	// When this participant joined the chat
+	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
+	Service ChatHandleService `json:"service,required"`
+	// Whether this handle belongs to the sender (your phone number)
+	IsMe bool `json:"is_me,nullable"`
+	// When they left (if applicable)
+	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
+	// Participant status
+	//
+	// Any of "active", "left", "removed".
+	Status ChatHandleStatus `json:"status,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Handle      respjson.Field
+		JoinedAt    respjson.Field
+		Service     respjson.Field
+		IsMe        respjson.Field
+		LeftAt      respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatHandle) RawJSON() string { return r.JSON.raw }
+func (r *ChatHandle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Messaging service type
+type ChatHandleService string
+
+const (
+	ChatHandleServiceIMessage ChatHandleService = "iMessage"
+	ChatHandleServiceSMS      ChatHandleService = "SMS"
+	ChatHandleServiceRcs      ChatHandleService = "RCS"
+)
+
+// Participant status
+type ChatHandleStatus string
+
+const (
+	ChatHandleStatusActive  ChatHandleStatus = "active"
+	ChatHandleStatusLeft    ChatHandleStatus = "left"
+	ChatHandleStatusRemoved ChatHandleStatus = "removed"
+)
+
+// A media attachment part
+type MediaPart struct {
+	// Unique attachment identifier
+	ID string `json:"id,required" format:"uuid"`
+	// Original filename
+	Filename string `json:"filename,required"`
+	// MIME type of the file
+	MimeType string `json:"mime_type,required"`
+	// Reactions on this message part
+	Reactions []Reaction `json:"reactions,required"`
+	// File size in bytes
+	SizeBytes int64 `json:"size_bytes,required"`
+	// Indicates this is a media attachment part
+	//
+	// Any of "media".
+	Type MediaPartType `json:"type,required"`
+	// Presigned URL for downloading the attachment (expires in 1 hour).
+	URL string `json:"url,required" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Filename    respjson.Field
+		MimeType    respjson.Field
+		Reactions   respjson.Field
+		SizeBytes   respjson.Field
+		Type        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MediaPart) RawJSON() string { return r.JSON.raw }
+func (r *MediaPart) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates this is a media attachment part
+type MediaPartType string
+
+const (
+	MediaPartTypeMedia MediaPartType = "media"
+)
+
+type Message struct {
 	// Unique identifier for the message
 	ID string `json:"id,required" format:"uuid"`
 	// ID of the chat this message belongs to
@@ -127,29 +229,29 @@ type MessageGetResponse struct {
 	// When the message was delivered
 	DeliveredAt time.Time `json:"delivered_at,nullable" format:"date-time"`
 	// iMessage effect applied to a message (screen or bubble effect)
-	Effect MessageGetResponseEffect `json:"effect,nullable"`
+	Effect MessageEffect `json:"effect,nullable"`
 	// DEPRECATED: Use from_handle instead. Phone number of the message sender.
 	//
 	// Deprecated: deprecated
 	From string `json:"from,nullable"`
 	// The sender of this message as a full handle object
-	FromHandle MessageGetResponseFromHandle `json:"from_handle,nullable"`
+	FromHandle ChatHandle `json:"from_handle,nullable"`
 	// Message parts in order (text and media)
-	Parts []MessageGetResponsePartUnion `json:"parts,nullable"`
+	Parts []MessagePartUnion `json:"parts,nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService MessageGetResponsePreferredService `json:"preferred_service,nullable"`
+	PreferredService MessagePreferredService `json:"preferred_service,nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at,nullable" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
-	ReplyTo MessageGetResponseReplyTo `json:"reply_to,nullable"`
+	ReplyTo ReplyTo `json:"reply_to,nullable"`
 	// When the message was sent
 	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service MessageGetResponseService `json:"service,nullable"`
+	Service MessageService `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -175,99 +277,29 @@ type MessageGetResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponse) UnmarshalJSON(data []byte) error {
+func (r Message) RawJSON() string { return r.JSON.raw }
+func (r *Message) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// iMessage effect applied to a message (screen or bubble effect)
-type MessageGetResponseEffect struct {
-	// Name of the effect. Common values:
-	//
-	//   - Screen effects: confetti, fireworks, lasers, sparkles, celebration, hearts,
-	//     love, balloons, happy_birthday, echo, spotlight
-	//   - Bubble effects: slam, loud, gentle, invisible
-	Name string `json:"name"`
-	// Type of effect
-	//
-	// Any of "screen", "bubble".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponseEffect) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponseEffect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The sender of this message as a full handle object
-type MessageGetResponseFromHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponseFromHandle) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponseFromHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// MessageGetResponsePartUnion contains all possible properties and values from
-// [MessageGetResponsePartTextPartResponse],
-// [MessageGetResponsePartMediaPartResponse].
+// MessagePartUnion contains all possible properties and values from [TextPart],
+// [MediaPart].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type MessageGetResponsePartUnion struct {
-	// This field is a union of [[]MessageGetResponsePartTextPartResponseReaction],
-	// [[]MessageGetResponsePartMediaPartResponseReaction]
-	Reactions MessageGetResponsePartUnionReactions `json:"reactions"`
-	Type      string                               `json:"type"`
-	// This field is from variant [MessageGetResponsePartTextPartResponse].
+type MessagePartUnion struct {
+	Reactions []Reaction `json:"reactions"`
+	Type      string     `json:"type"`
+	// This field is from variant [TextPart].
 	Value string `json:"value"`
-	// This field is from variant [MessageGetResponsePartMediaPartResponse].
+	// This field is from variant [MediaPart].
 	ID string `json:"id"`
-	// This field is from variant [MessageGetResponsePartMediaPartResponse].
+	// This field is from variant [MediaPart].
 	Filename string `json:"filename"`
-	// This field is from variant [MessageGetResponsePartMediaPartResponse].
+	// This field is from variant [MediaPart].
 	MimeType string `json:"mime_type"`
-	// This field is from variant [MessageGetResponsePartMediaPartResponse].
+	// This field is from variant [MediaPart].
 	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant [MessageGetResponsePartMediaPartResponse].
+	// This field is from variant [MediaPart].
 	URL  string `json:"url"`
 	JSON struct {
 		Reactions respjson.Field
@@ -282,262 +314,154 @@ type MessageGetResponsePartUnion struct {
 	} `json:"-"`
 }
 
-func (u MessageGetResponsePartUnion) AsMessageGetResponsePartTextPartResponse() (v MessageGetResponsePartTextPartResponse) {
+func (u MessagePartUnion) AsTextPart() (v TextPart) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u MessageGetResponsePartUnion) AsMessageGetResponsePartMediaPartResponse() (v MessageGetResponsePartMediaPartResponse) {
+func (u MessagePartUnion) AsMediaPart() (v MediaPart) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u MessageGetResponsePartUnion) RawJSON() string { return u.JSON.raw }
+func (u MessagePartUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *MessageGetResponsePartUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// MessageGetResponsePartUnionReactions is an implicit subunion of
-// [MessageGetResponsePartUnion]. MessageGetResponsePartUnionReactions provides
-// convenient access to the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [MessageGetResponsePartUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessageGetResponsePartTextPartResponseReactions
-// OfMessageGetResponsePartMediaPartResponseReactions]
-type MessageGetResponsePartUnionReactions struct {
-	// This field will be present if the value is a
-	// [[]MessageGetResponsePartTextPartResponseReaction] instead of an object.
-	OfMessageGetResponsePartTextPartResponseReactions []MessageGetResponsePartTextPartResponseReaction `json:",inline"`
-	// This field will be present if the value is a
-	// [[]MessageGetResponsePartMediaPartResponseReaction] instead of an object.
-	OfMessageGetResponsePartMediaPartResponseReactions []MessageGetResponsePartMediaPartResponseReaction `json:",inline"`
-	JSON                                               struct {
-		OfMessageGetResponsePartTextPartResponseReactions  respjson.Field
-		OfMessageGetResponsePartMediaPartResponseReactions respjson.Field
-		raw                                                string
-	} `json:"-"`
-}
-
-func (r *MessageGetResponsePartUnionReactions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text message part
-type MessageGetResponsePartTextPartResponse struct {
-	// Reactions on this message part
-	Reactions []MessageGetResponsePartTextPartResponseReaction `json:"reactions,required"`
-	// Indicates this is a text message part
-	//
-	// Any of "text".
-	Type string `json:"type,required"`
-	// The text content
-	Value string `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reactions   respjson.Field
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartTextPartResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartTextPartResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetResponsePartTextPartResponseReaction struct {
-	Handle MessageGetResponsePartTextPartResponseReactionHandle `json:"handle,required"`
-	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
-	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
-	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type string `json:"type,required"`
-	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Handle      respjson.Field
-		IsMe        respjson.Field
-		Type        respjson.Field
-		CustomEmoji respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartTextPartResponseReaction) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartTextPartResponseReaction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetResponsePartTextPartResponseReactionHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartTextPartResponseReactionHandle) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartTextPartResponseReactionHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A media attachment part
-type MessageGetResponsePartMediaPartResponse struct {
-	// Unique attachment identifier
-	ID string `json:"id,required" format:"uuid"`
-	// Original filename
-	Filename string `json:"filename,required"`
-	// MIME type of the file
-	MimeType string `json:"mime_type,required"`
-	// Reactions on this message part
-	Reactions []MessageGetResponsePartMediaPartResponseReaction `json:"reactions,required"`
-	// File size in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
-	// Indicates this is a media attachment part
-	//
-	// Any of "media".
-	Type string `json:"type,required"`
-	// Presigned URL for downloading the attachment (expires in 1 hour).
-	URL string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Filename    respjson.Field
-		MimeType    respjson.Field
-		Reactions   respjson.Field
-		SizeBytes   respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartMediaPartResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartMediaPartResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetResponsePartMediaPartResponseReaction struct {
-	Handle MessageGetResponsePartMediaPartResponseReactionHandle `json:"handle,required"`
-	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
-	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
-	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type string `json:"type,required"`
-	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Handle      respjson.Field
-		IsMe        respjson.Field
-		Type        respjson.Field
-		CustomEmoji respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartMediaPartResponseReaction) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartMediaPartResponseReaction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetResponsePartMediaPartResponseReactionHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetResponsePartMediaPartResponseReactionHandle) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponsePartMediaPartResponseReactionHandle) UnmarshalJSON(data []byte) error {
+func (r *MessagePartUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Messaging service type
-type MessageGetResponsePreferredService string
+type MessagePreferredService string
 
 const (
-	MessageGetResponsePreferredServiceIMessage MessageGetResponsePreferredService = "iMessage"
-	MessageGetResponsePreferredServiceSMS      MessageGetResponsePreferredService = "SMS"
-	MessageGetResponsePreferredServiceRcs      MessageGetResponsePreferredService = "RCS"
+	MessagePreferredServiceIMessage MessagePreferredService = "iMessage"
+	MessagePreferredServiceSMS      MessagePreferredService = "SMS"
+	MessagePreferredServiceRcs      MessagePreferredService = "RCS"
+)
+
+// Messaging service type
+type MessageService string
+
+const (
+	MessageServiceIMessage MessageService = "iMessage"
+	MessageServiceSMS      MessageService = "SMS"
+	MessageServiceRcs      MessageService = "RCS"
+)
+
+// iMessage effect applied to a message (screen or bubble effect)
+type MessageEffect struct {
+	// Name of the effect. Common values:
+	//
+	//   - Screen effects: confetti, fireworks, lasers, sparkles, celebration, hearts,
+	//     love, balloons, happy_birthday, echo, spotlight
+	//   - Bubble effects: slam, loud, gentle, invisible
+	Name string `json:"name"`
+	// Type of effect
+	//
+	// Any of "screen", "bubble".
+	Type MessageEffectType `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEffect) RawJSON() string { return r.JSON.raw }
+func (r *MessageEffect) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this MessageEffect to a MessageEffectParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// MessageEffectParam.Overrides()
+func (r MessageEffect) ToParam() MessageEffectParam {
+	return param.Override[MessageEffectParam](json.RawMessage(r.RawJSON()))
+}
+
+// Type of effect
+type MessageEffectType string
+
+const (
+	MessageEffectTypeScreen MessageEffectType = "screen"
+	MessageEffectTypeBubble MessageEffectType = "bubble"
+)
+
+// iMessage effect applied to a message (screen or bubble effect)
+type MessageEffectParam struct {
+	// Name of the effect. Common values:
+	//
+	//   - Screen effects: confetti, fireworks, lasers, sparkles, celebration, hearts,
+	//     love, balloons, happy_birthday, echo, spotlight
+	//   - Bubble effects: slam, loud, gentle, invisible
+	Name param.Opt[string] `json:"name,omitzero"`
+	// Type of effect
+	//
+	// Any of "screen", "bubble".
+	Type MessageEffectType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r MessageEffectParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageEffectParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageEffectParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type Reaction struct {
+	Handle ChatHandle `json:"handle,required"`
+	// Whether this reaction is from the current user
+	IsMe bool `json:"is_me,required"`
+	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
+	// emphasize, question. Custom emoji reactions have type "custom" with the actual
+	// emoji in the custom_emoji field.
+	//
+	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
+	Type ReactionType `json:"type,required"`
+	// Custom emoji if type is "custom", null otherwise
+	CustomEmoji string `json:"custom_emoji,nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		IsMe        respjson.Field
+		Type        respjson.Field
+		CustomEmoji respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Reaction) RawJSON() string { return r.JSON.raw }
+func (r *Reaction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
+// emphasize, question. Custom emoji reactions have type "custom" with the actual
+// emoji in the custom_emoji field.
+type ReactionType string
+
+const (
+	ReactionTypeLove      ReactionType = "love"
+	ReactionTypeLike      ReactionType = "like"
+	ReactionTypeDislike   ReactionType = "dislike"
+	ReactionTypeLaugh     ReactionType = "laugh"
+	ReactionTypeEmphasize ReactionType = "emphasize"
+	ReactionTypeQuestion  ReactionType = "question"
+	ReactionTypeCustom    ReactionType = "custom"
 )
 
 // Indicates this message is a threaded reply to another message
-type MessageGetResponseReplyTo struct {
+type ReplyTo struct {
 	// The ID of the message to reply to
 	MessageID string `json:"message_id,required" format:"uuid"`
 	// The specific message part to reply to (0-based index). Defaults to 0 (first
@@ -554,107 +478,78 @@ type MessageGetResponseReplyTo struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageGetResponseReplyTo) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetResponseReplyTo) UnmarshalJSON(data []byte) error {
+func (r ReplyTo) RawJSON() string { return r.JSON.raw }
+func (r *ReplyTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Messaging service type
-type MessageGetResponseService string
+// ToParam converts this ReplyTo to a ReplyToParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// ReplyToParam.Overrides()
+func (r ReplyTo) ToParam() ReplyToParam {
+	return param.Override[ReplyToParam](json.RawMessage(r.RawJSON()))
+}
 
-const (
-	MessageGetResponseServiceIMessage MessageGetResponseService = "iMessage"
-	MessageGetResponseServiceSMS      MessageGetResponseService = "SMS"
-	MessageGetResponseServiceRcs      MessageGetResponseService = "RCS"
-)
+// Indicates this message is a threaded reply to another message
+//
+// The property MessageID is required.
+type ReplyToParam struct {
+	// The ID of the message to reply to
+	MessageID string `json:"message_id,required" format:"uuid"`
+	// The specific message part to reply to (0-based index). Defaults to 0 (first
+	// part) if not provided. Use this when replying to a specific part of a multipart
+	// message.
+	PartIndex param.Opt[int64] `json:"part_index,omitzero"`
+	paramObj
+}
 
-type MessageAddReactionResponse struct {
-	Handle MessageAddReactionResponseHandle `json:"handle,required"`
-	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
-	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
+func (r ReplyToParam) MarshalJSON() (data []byte, err error) {
+	type shadow ReplyToParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ReplyToParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A text message part
+type TextPart struct {
+	// Reactions on this message part
+	Reactions []Reaction `json:"reactions,required"`
+	// Indicates this is a text message part
 	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type MessageAddReactionResponseType `json:"type,required"`
-	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
+	// Any of "text".
+	Type TextPartType `json:"type,required"`
+	// The text content
+	Value string `json:"value,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Handle      respjson.Field
-		IsMe        respjson.Field
+		Reactions   respjson.Field
 		Type        respjson.Field
-		CustomEmoji respjson.Field
+		Value       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
+func (r TextPart) RawJSON() string { return r.JSON.raw }
+func (r *TextPart) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type MessageAddReactionResponseHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageAddReactionResponseHandle) RawJSON() string { return r.JSON.raw }
-func (r *MessageAddReactionResponseHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-// emphasize, question. Custom emoji reactions have type "custom" with the actual
-// emoji in the custom_emoji field.
-type MessageAddReactionResponseType string
+// Indicates this is a text message part
+type TextPartType string
 
 const (
-	MessageAddReactionResponseTypeLove      MessageAddReactionResponseType = "love"
-	MessageAddReactionResponseTypeLike      MessageAddReactionResponseType = "like"
-	MessageAddReactionResponseTypeDislike   MessageAddReactionResponseType = "dislike"
-	MessageAddReactionResponseTypeLaugh     MessageAddReactionResponseType = "laugh"
-	MessageAddReactionResponseTypeEmphasize MessageAddReactionResponseType = "emphasize"
-	MessageAddReactionResponseTypeQuestion  MessageAddReactionResponseType = "question"
-	MessageAddReactionResponseTypeCustom    MessageAddReactionResponseType = "custom"
+	TextPartTypeText TextPartType = "text"
 )
 
 // Response containing messages in a thread with pagination
 type MessageGetThreadResponse struct {
 	// Messages in the thread, ordered by the specified order parameter
-	Messages []MessageGetThreadResponseMessage `json:"messages,required"`
+	Messages []Message `json:"messages,required"`
 	// Cursor for fetching the next page of results (null if no more results)
 	NextCursor string `json:"next_cursor,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -669,465 +564,6 @@ type MessageGetThreadResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageGetThreadResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageGetThreadResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetThreadResponseMessage struct {
-	// Unique identifier for the message
-	ID string `json:"id,required" format:"uuid"`
-	// ID of the chat this message belongs to
-	ChatID string `json:"chat_id,required" format:"uuid"`
-	// When the message was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Whether the message has been delivered
-	IsDelivered bool `json:"is_delivered,required"`
-	// Whether this message was sent by the authenticated user
-	IsFromMe bool `json:"is_from_me,required"`
-	// Whether the message has been read
-	IsRead bool `json:"is_read,required"`
-	// When the message was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
-	// When the message was delivered
-	DeliveredAt time.Time `json:"delivered_at,nullable" format:"date-time"`
-	// iMessage effect applied to a message (screen or bubble effect)
-	Effect MessageGetThreadResponseMessageEffect `json:"effect,nullable"`
-	// DEPRECATED: Use from_handle instead. Phone number of the message sender.
-	//
-	// Deprecated: deprecated
-	From string `json:"from,nullable"`
-	// The sender of this message as a full handle object
-	FromHandle MessageGetThreadResponseMessageFromHandle `json:"from_handle,nullable"`
-	// Message parts in order (text and media)
-	Parts []MessageGetThreadResponseMessagePartUnion `json:"parts,nullable"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	PreferredService string `json:"preferred_service,nullable"`
-	// When the message was read
-	ReadAt time.Time `json:"read_at,nullable" format:"date-time"`
-	// Indicates this message is a threaded reply to another message
-	ReplyTo MessageGetThreadResponseMessageReplyTo `json:"reply_to,nullable"`
-	// When the message was sent
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID               respjson.Field
-		ChatID           respjson.Field
-		CreatedAt        respjson.Field
-		IsDelivered      respjson.Field
-		IsFromMe         respjson.Field
-		IsRead           respjson.Field
-		UpdatedAt        respjson.Field
-		DeliveredAt      respjson.Field
-		Effect           respjson.Field
-		From             respjson.Field
-		FromHandle       respjson.Field
-		Parts            respjson.Field
-		PreferredService respjson.Field
-		ReadAt           respjson.Field
-		ReplyTo          respjson.Field
-		SentAt           respjson.Field
-		Service          respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessage) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// iMessage effect applied to a message (screen or bubble effect)
-type MessageGetThreadResponseMessageEffect struct {
-	// Name of the effect. Common values:
-	//
-	//   - Screen effects: confetti, fireworks, lasers, sparkles, celebration, hearts,
-	//     love, balloons, happy_birthday, echo, spotlight
-	//   - Bubble effects: slam, loud, gentle, invisible
-	Name string `json:"name"`
-	// Type of effect
-	//
-	// Any of "screen", "bubble".
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Name        respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessageEffect) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessageEffect) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The sender of this message as a full handle object
-type MessageGetThreadResponseMessageFromHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessageFromHandle) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessageFromHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// MessageGetThreadResponseMessagePartUnion contains all possible properties and
-// values from [MessageGetThreadResponseMessagePartTextPartResponse],
-// [MessageGetThreadResponseMessagePartMediaPartResponse].
-//
-// Use the methods beginning with 'As' to cast the union to one of its variants.
-type MessageGetThreadResponseMessagePartUnion struct {
-	// This field is a union of
-	// [[]MessageGetThreadResponseMessagePartTextPartResponseReaction],
-	// [[]MessageGetThreadResponseMessagePartMediaPartResponseReaction]
-	Reactions MessageGetThreadResponseMessagePartUnionReactions `json:"reactions"`
-	Type      string                                            `json:"type"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartTextPartResponse].
-	Value string `json:"value"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartMediaPartResponse].
-	ID string `json:"id"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartMediaPartResponse].
-	Filename string `json:"filename"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartMediaPartResponse].
-	MimeType string `json:"mime_type"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartMediaPartResponse].
-	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant
-	// [MessageGetThreadResponseMessagePartMediaPartResponse].
-	URL  string `json:"url"`
-	JSON struct {
-		Reactions respjson.Field
-		Type      respjson.Field
-		Value     respjson.Field
-		ID        respjson.Field
-		Filename  respjson.Field
-		MimeType  respjson.Field
-		SizeBytes respjson.Field
-		URL       respjson.Field
-		raw       string
-	} `json:"-"`
-}
-
-func (u MessageGetThreadResponseMessagePartUnion) AsMessageGetThreadResponseMessagePartTextPartResponse() (v MessageGetThreadResponseMessagePartTextPartResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-func (u MessageGetThreadResponseMessagePartUnion) AsMessageGetThreadResponseMessagePartMediaPartResponse() (v MessageGetThreadResponseMessagePartMediaPartResponse) {
-	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
-	return
-}
-
-// Returns the unmodified JSON received from the API
-func (u MessageGetThreadResponseMessagePartUnion) RawJSON() string { return u.JSON.raw }
-
-func (r *MessageGetThreadResponseMessagePartUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// MessageGetThreadResponseMessagePartUnionReactions is an implicit subunion of
-// [MessageGetThreadResponseMessagePartUnion].
-// MessageGetThreadResponseMessagePartUnionReactions provides convenient access to
-// the sub-properties of the union.
-//
-// For type safety it is recommended to directly use a variant of the
-// [MessageGetThreadResponseMessagePartUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfMessageGetThreadResponseMessagePartTextPartResponseReactions
-// OfMessageGetThreadResponseMessagePartMediaPartResponseReactions]
-type MessageGetThreadResponseMessagePartUnionReactions struct {
-	// This field will be present if the value is a
-	// [[]MessageGetThreadResponseMessagePartTextPartResponseReaction] instead of an
-	// object.
-	OfMessageGetThreadResponseMessagePartTextPartResponseReactions []MessageGetThreadResponseMessagePartTextPartResponseReaction `json:",inline"`
-	// This field will be present if the value is a
-	// [[]MessageGetThreadResponseMessagePartMediaPartResponseReaction] instead of an
-	// object.
-	OfMessageGetThreadResponseMessagePartMediaPartResponseReactions []MessageGetThreadResponseMessagePartMediaPartResponseReaction `json:",inline"`
-	JSON                                                            struct {
-		OfMessageGetThreadResponseMessagePartTextPartResponseReactions  respjson.Field
-		OfMessageGetThreadResponseMessagePartMediaPartResponseReactions respjson.Field
-		raw                                                             string
-	} `json:"-"`
-}
-
-func (r *MessageGetThreadResponseMessagePartUnionReactions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A text message part
-type MessageGetThreadResponseMessagePartTextPartResponse struct {
-	// Reactions on this message part
-	Reactions []MessageGetThreadResponseMessagePartTextPartResponseReaction `json:"reactions,required"`
-	// Indicates this is a text message part
-	//
-	// Any of "text".
-	Type string `json:"type,required"`
-	// The text content
-	Value string `json:"value,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reactions   respjson.Field
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartTextPartResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessagePartTextPartResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetThreadResponseMessagePartTextPartResponseReaction struct {
-	Handle MessageGetThreadResponseMessagePartTextPartResponseReactionHandle `json:"handle,required"`
-	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
-	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
-	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type string `json:"type,required"`
-	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Handle      respjson.Field
-		IsMe        respjson.Field
-		Type        respjson.Field
-		CustomEmoji respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartTextPartResponseReaction) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *MessageGetThreadResponseMessagePartTextPartResponseReaction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetThreadResponseMessagePartTextPartResponseReactionHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartTextPartResponseReactionHandle) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *MessageGetThreadResponseMessagePartTextPartResponseReactionHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A media attachment part
-type MessageGetThreadResponseMessagePartMediaPartResponse struct {
-	// Unique attachment identifier
-	ID string `json:"id,required" format:"uuid"`
-	// Original filename
-	Filename string `json:"filename,required"`
-	// MIME type of the file
-	MimeType string `json:"mime_type,required"`
-	// Reactions on this message part
-	Reactions []MessageGetThreadResponseMessagePartMediaPartResponseReaction `json:"reactions,required"`
-	// File size in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
-	// Indicates this is a media attachment part
-	//
-	// Any of "media".
-	Type string `json:"type,required"`
-	// Presigned URL for downloading the attachment (expires in 1 hour).
-	URL string `json:"url,required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Filename    respjson.Field
-		MimeType    respjson.Field
-		Reactions   respjson.Field
-		SizeBytes   respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartMediaPartResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessagePartMediaPartResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetThreadResponseMessagePartMediaPartResponseReaction struct {
-	Handle MessageGetThreadResponseMessagePartMediaPartResponseReactionHandle `json:"handle,required"`
-	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
-	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
-	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type string `json:"type,required"`
-	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Handle      respjson.Field
-		IsMe        respjson.Field
-		Type        respjson.Field
-		CustomEmoji respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartMediaPartResponseReaction) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *MessageGetThreadResponseMessagePartMediaPartResponseReaction) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageGetThreadResponseMessagePartMediaPartResponseReactionHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status string `json:"status,nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessagePartMediaPartResponseReactionHandle) RawJSON() string {
-	return r.JSON.raw
-}
-func (r *MessageGetThreadResponseMessagePartMediaPartResponseReactionHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Indicates this message is a threaded reply to another message
-type MessageGetThreadResponseMessageReplyTo struct {
-	// The ID of the message to reply to
-	MessageID string `json:"message_id,required" format:"uuid"`
-	// The specific message part to reply to (0-based index). Defaults to 0 (first
-	// part) if not provided. Use this when replying to a specific part of a multipart
-	// message.
-	PartIndex int64 `json:"part_index"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		MessageID   respjson.Field
-		PartIndex   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponseMessageReplyTo) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponseMessageReplyTo) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1155,7 +591,7 @@ type MessageAddReactionParams struct {
 	// emoji in the custom_emoji field.
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
-	Type MessageAddReactionParamsType `json:"type,omitzero,required"`
+	Type ReactionType `json:"type,omitzero,required"`
 	// Custom emoji string. Required when type is "custom".
 	CustomEmoji param.Opt[string] `json:"custom_emoji,omitzero"`
 	// Optional index of the message part to react to. If not provided, reacts to the
@@ -1178,21 +614,6 @@ type MessageAddReactionParamsOperation string
 const (
 	MessageAddReactionParamsOperationAdd    MessageAddReactionParamsOperation = "add"
 	MessageAddReactionParamsOperationRemove MessageAddReactionParamsOperation = "remove"
-)
-
-// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-// emphasize, question. Custom emoji reactions have type "custom" with the actual
-// emoji in the custom_emoji field.
-type MessageAddReactionParamsType string
-
-const (
-	MessageAddReactionParamsTypeLove      MessageAddReactionParamsType = "love"
-	MessageAddReactionParamsTypeLike      MessageAddReactionParamsType = "like"
-	MessageAddReactionParamsTypeDislike   MessageAddReactionParamsType = "dislike"
-	MessageAddReactionParamsTypeLaugh     MessageAddReactionParamsType = "laugh"
-	MessageAddReactionParamsTypeEmphasize MessageAddReactionParamsType = "emphasize"
-	MessageAddReactionParamsTypeQuestion  MessageAddReactionParamsType = "question"
-	MessageAddReactionParamsTypeCustom    MessageAddReactionParamsType = "custom"
 )
 
 type MessageGetThreadParams struct {
