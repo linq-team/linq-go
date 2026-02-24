@@ -82,7 +82,7 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, body Mess
 // - emphasize ‼️
 // - question ❓
 // - custom - any emoji (use `custom_emoji` field to specify)
-func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *Reaction, err error) {
+func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
@@ -558,6 +558,26 @@ type TextPartType string
 const (
 	TextPartTypeText TextPartType = "text"
 )
+
+type MessageAddReactionResponse struct {
+	Message string `json:"message"`
+	Status  string `json:"status"`
+	TraceID string `json:"trace_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Status      respjson.Field
+		TraceID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Response containing messages in a thread with pagination
 type MessageGetThreadResponse struct {
