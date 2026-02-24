@@ -17,7 +17,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ```go
 import (
-	"github.com/linq-team/linq-go" // imported as linqapiv3
+	"github.com/linq-team/linq-go" // imported as linqgo
 )
 ```
 
@@ -53,14 +53,14 @@ import (
 )
 
 func main() {
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LINQ_API_V3_API_KEY")
 	)
-	chat, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
+	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -77,13 +77,13 @@ func main() {
 
 ### Request fields
 
-The linqapiv3 library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+The linqgo library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
 semantics from the Go 1.24+ `encoding/json` release for request fields.
 
 Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
 fields are always serialized, even their zero values.
 
-Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `linqapiv3.String(string)`, `linqapiv3.Int(int64)`, etc.
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `linqgo.String(string)`, `linqgo.Int(int64)`, etc.
 
 Any `param.Opt[T]`, map, slice, struct or string enum uses the
 tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
@@ -91,17 +91,17 @@ tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
 The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
 
 ```go
-p := linqapiv3.ExampleParams{
-	ID:   "id_xxx",                // required property
-	Name: linqapiv3.String("..."), // optional property
+p := linqgo.ExampleParams{
+	ID:   "id_xxx",             // required property
+	Name: linqgo.String("..."), // optional property
 
-	Point: linqapiv3.Point{
-		X: 0,                // required field will serialize as 0
-		Y: linqapiv3.Int(1), // optional field will serialize as 1
+	Point: linqgo.Point{
+		X: 0,             // required field will serialize as 0
+		Y: linqgo.Int(1), // optional field will serialize as 1
 		// ... omitted non-required fields will not be serialized
 	},
 
-	Origin: linqapiv3.Origin{}, // the zero value of [Origin] is considered omitted
+	Origin: linqgo.Origin{}, // the zero value of [Origin] is considered omitted
 }
 ```
 
@@ -130,7 +130,7 @@ p.SetExtraFields(map[string]any{
 })
 
 // Send a number instead of an object
-custom := param.Override[linqapiv3.FooParams](12)
+custom := param.Override[linqgo.FooParams](12)
 ```
 
 ### Request unions
@@ -271,7 +271,7 @@ This library uses the functional options pattern. Functions defined in the
 requests. For example:
 
 ```go
-client := linqapiv3.NewClient(
+client := linqgo.NewClient(
 	// Adds a header to every request made by the client
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
@@ -300,18 +300,18 @@ with additional helper methods like `.GetNextPage()`, e.g.:
 ### Errors
 
 When the API returns a non-success status code, we return an error with type
-`*linqapiv3.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*linqgo.Error`. This contains the `StatusCode`, `*http.Request`, and
 `*http.Response` values of the request, as well as the JSON of the error body
 (much like other response objects in the SDK).
 
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
+_, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 	From: "+12052535597",
-	Message: linqapiv3.MessageContentParam{
-		Parts: []linqapiv3.MessageContentPartUnionParam{{
-			OfText: &linqapiv3.MessageContentPartTextParam{
+	Message: linqgo.MessageContentParam{
+		Parts: []linqgo.MessageContentPartUnionParam{{
+			OfText: &linqgo.MessageContentPartTextParam{
 				Value: "Hello! How can I help you today?",
 			},
 		}},
@@ -319,7 +319,7 @@ _, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
 	To: []string{"+12052532136"},
 })
 if err != nil {
-	var apierr *linqapiv3.Error
+	var apierr *linqgo.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
@@ -344,11 +344,11 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Chats.New(
 	ctx,
-	linqapiv3.ChatNewParams{
+	linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -370,7 +370,7 @@ The file name and content-type can be customized by implementing `Name() string`
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `linqapiv3.File(reader io.Reader, filename string, contentType string)`
+We also provide a helper `linqgo.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ### Retries
@@ -383,18 +383,18 @@ You can use the `WithMaxRetries` option to configure or disable this:
 
 ```go
 // Configure the default for all requests:
-client := linqapiv3.NewClient(
+client := linqgo.NewClient(
 	option.WithMaxRetries(0), // default is 2
 )
 
 // Override per-request:
 client.Chats.New(
 	context.TODO(),
-	linqapiv3.ChatNewParams{
+	linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -415,11 +415,11 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 chat, err := client.Chats.New(
 	context.TODO(),
-	linqapiv3.ChatNewParams{
+	linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -472,7 +472,7 @@ or the `option.WithJSONSet()` methods.
 params := FooNewParams{
     ID:   "id_xxxx",
     Data: FooNewParamsData{
-        FirstName: linqapiv3.String("John"),
+        FirstName: linqgo.String("John"),
     },
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
@@ -507,7 +507,7 @@ func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, 
     return res, err
 }
 
-client := linqapiv3.NewClient(
+client := linqgo.NewClient(
 	option.WithMiddleware(Logger),
 )
 ```

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3_test
+package linqgo_test
 
 import (
 	"context"
@@ -20,16 +20,16 @@ func TestUsage(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	t.Skip("Mock server tests are disabled")
-	chat, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
+	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},
