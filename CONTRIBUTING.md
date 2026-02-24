@@ -41,7 +41,7 @@ To use a local version of this library from source in another project, edit the 
 directive. This can be done through the CLI with the following:
 
 ```sh
-$ go mod edit -replace github.com/linq-team/linq-go=/path/to/linq-go
+$ go mod edit -replace github.com/stainless-sdks/linq-api-v3-go=/path/to/linq-api-v3-go
 ```
 
 ## Running tests

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo
+package linqapiv3
 
 import (
 	"context"
@@ -12,12 +12,12 @@ import (
 	"slices"
 	"time"
 
-	"github.com/linq-team/linq-go/internal/apijson"
-	"github.com/linq-team/linq-go/internal/apiquery"
-	"github.com/linq-team/linq-go/internal/requestconfig"
-	"github.com/linq-team/linq-go/option"
-	"github.com/linq-team/linq-go/packages/param"
-	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apiquery"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
 )
 
 // ChatMessageService contains methods and other services that help with
@@ -101,13 +101,13 @@ type SentMessage struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService ServiceType `json:"preferred_service,nullable"`
+	PreferredService SentMessagePreferredService `json:"preferred_service,nullable"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to,nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,nullable"`
+	Service SentMessageService `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -191,6 +191,24 @@ func (u SentMessagePartUnion) RawJSON() string { return u.JSON.raw }
 func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Messaging service type
+type SentMessagePreferredService string
+
+const (
+	SentMessagePreferredServiceIMessage SentMessagePreferredService = "iMessage"
+	SentMessagePreferredServiceSMS      SentMessagePreferredService = "SMS"
+	SentMessagePreferredServiceRcs      SentMessagePreferredService = "RCS"
+)
+
+// Messaging service type
+type SentMessageService string
+
+const (
+	SentMessageServiceIMessage SentMessageService = "iMessage"
+	SentMessageServiceSMS      SentMessageService = "SMS"
+	SentMessageServiceRcs      SentMessageService = "RCS"
+)
 
 type ChatMessageListResponse struct {
 	// List of messages

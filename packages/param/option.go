@@ -3,7 +3,7 @@ package param
 import (
 	"encoding/json"
 	"fmt"
-	shimjson "github.com/linq-team/linq-go/internal/encoding/json"
+	shimjson "github.com/stainless-sdks/linq-api-v3-go/internal/encoding/json"
 	"time"
 )
 

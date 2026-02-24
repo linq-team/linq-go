@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo_test
+package linqapiv3_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/linq-team/linq-go"
-	"github.com/linq-team/linq-go/internal/testutil"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 func TestPhonenumberList(t *testing.T) {
@@ -22,13 +22,13 @@ func TestPhonenumberList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Phonenumbers.List(context.TODO())
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

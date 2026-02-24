@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo
+package linqapiv3
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/linq-team/linq-go/internal/requestconfig"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with

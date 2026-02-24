@@ -1,15 +1,15 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo_test
+package linqapiv3_test
 
 import (
 	"context"
 	"os"
 	"testing"
 
-	"github.com/linq-team/linq-go"
-	"github.com/linq-team/linq-go/internal/testutil"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -20,16 +20,16 @@ func TestUsage(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	t.Skip("Mock server tests are disabled")
-	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
+	chat, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
 		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+		Message: linqapiv3.MessageContentParam{
+			Parts: []linqapiv3.MessageContentPartUnionParam{{
+				OfText: &linqapiv3.MessageContentPartTextParam{
 					Value: "Hello! How can I help you today?",
 				},
 			}},

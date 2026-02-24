@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo
+package linqapiv3
 
 import (
 	"context"
@@ -11,11 +11,11 @@ import (
 	"slices"
 	"time"
 
-	"github.com/linq-team/linq-go/internal/apijson"
-	"github.com/linq-team/linq-go/internal/requestconfig"
-	"github.com/linq-team/linq-go/option"
-	"github.com/linq-team/linq-go/packages/param"
-	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
 )
 
 // WebhookSubscriptionService contains methods and other services that help with

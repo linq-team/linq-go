@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo_test
+package linqapiv3_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/linq-team/linq-go"
-	"github.com/linq-team/linq-go/internal/testutil"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 func TestChatParticipantAdd(t *testing.T) {
@@ -22,19 +22,19 @@ func TestChatParticipantAdd(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Participants.Add(
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
-		linqgo.ChatParticipantAddParams{
+		linqapiv3.ChatParticipantAddParams{
 			Handle: "+12052499136",
 		},
 	)
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -51,19 +51,19 @@ func TestChatParticipantRemove(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Participants.Remove(
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
-		linqgo.ChatParticipantRemoveParams{
+		linqapiv3.ChatParticipantRemoveParams{
 			Handle: "+12052499136",
 		},
 	)
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
