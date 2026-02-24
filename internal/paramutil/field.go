@@ -1,8 +1,8 @@
 package paramutil
 
 import (
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
+	"github.com/linq-team/linq-go/packages/param"
+	"github.com/linq-team/linq-go/packages/respjson"
 )
 
 func AddrIfPresent[T comparable](v param.Opt[T]) *T {
