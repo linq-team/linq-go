@@ -11,6 +11,7 @@ import (
 	"github.com/linq-team/linq-go"
 	"github.com/linq-team/linq-go/internal/testutil"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/shared"
 )
 
 func TestChatNewWithOptionalParams(t *testing.T) {
@@ -40,7 +41,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				Type: linqgo.MessageEffectTypeScreen,
 			},
 			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
-			PreferredService: linqgo.MessageContentPreferredServiceIMessage,
+			PreferredService: shared.ServiceTypeIMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
 				PartIndex: linqgo.Int(0),
