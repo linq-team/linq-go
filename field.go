@@ -1,4 +1,4 @@
-package linqapiv3
+package linqgo
 
 import (
 	"github.com/linq-team/linq-go/packages/param"

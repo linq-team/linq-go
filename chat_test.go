@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3_test
+package linqgo_test
 
 import (
 	"context"
@@ -22,34 +22,34 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Chats.New(context.TODO(), linqapiv3.ChatNewParams{
+	_, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
-		Message: linqapiv3.MessageContentParam{
-			Parts: []linqapiv3.MessageContentPartUnionParam{{
-				OfText: &linqapiv3.MessageContentPartTextParam{
+		Message: linqgo.MessageContentParam{
+			Parts: []linqgo.MessageContentPartUnionParam{{
+				OfText: &linqgo.MessageContentPartTextParam{
 					Value:          "Hello! How can I help you today?",
-					IdempotencyKey: linqapiv3.String("text-part-abc123"),
+					IdempotencyKey: linqgo.String("text-part-abc123"),
 				},
 			}},
-			Effect: linqapiv3.MessageEffectParam{
-				Name: linqapiv3.String("confetti"),
-				Type: linqapiv3.MessageEffectTypeScreen,
+			Effect: linqgo.MessageEffectParam{
+				Name: linqgo.String("confetti"),
+				Type: linqgo.MessageEffectTypeScreen,
 			},
-			IdempotencyKey:   linqapiv3.String("msg-abc123xyz"),
-			PreferredService: linqapiv3.MessageContentPreferredServiceIMessage,
-			ReplyTo: linqapiv3.ReplyToParam{
+			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
+			PreferredService: linqgo.MessageContentPreferredServiceIMessage,
+			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
-				PartIndex: linqapiv3.Int(0),
+				PartIndex: linqgo.Int(0),
 			},
 		},
 		To: []string{"+12052532136"},
 	})
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -66,13 +66,13 @@ func TestChatGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Get(context.TODO(), "550e8400-e29b-41d4-a716-446655440000")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -89,20 +89,20 @@ func TestChatUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Update(
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
-		linqapiv3.ChatUpdateParams{
-			DisplayName:   linqapiv3.String("Team Discussion"),
-			GroupChatIcon: linqapiv3.String("https://example.com/icon.png"),
+		linqgo.ChatUpdateParams{
+			DisplayName:   linqgo.String("Team Discussion"),
+			GroupChatIcon: linqgo.String("https://example.com/icon.png"),
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -119,17 +119,17 @@ func TestChatListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Chats.List(context.TODO(), linqapiv3.ChatListParams{
+	_, err := client.Chats.List(context.TODO(), linqgo.ChatListParams{
 		From:   "+13343284472",
-		Cursor: linqapiv3.String("20"),
-		Limit:  linqapiv3.Int(20),
+		Cursor: linqgo.String("20"),
+		Limit:  linqgo.Int(20),
 	})
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -146,13 +146,13 @@ func TestChatMarkAsRead(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Chats.MarkAsRead(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -169,20 +169,20 @@ func TestChatSendVoicememo(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.SendVoicememo(
 		context.TODO(),
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
-		linqapiv3.ChatSendVoicememoParams{
+		linqgo.ChatSendVoicememoParams{
 			From:         "+12052535597",
 			VoiceMemoURL: "https://example.com/voice-memo.m4a",
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -199,13 +199,13 @@ func TestChatShareContactCard(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Chats.ShareContactCard(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

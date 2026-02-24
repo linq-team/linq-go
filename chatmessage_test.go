@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3_test
+package linqgo_test
 
 import (
 	"context"
@@ -22,20 +22,20 @@ func TestChatMessageListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Messages.List(
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
-		linqapiv3.ChatMessageListParams{
-			Cursor: linqapiv3.String("cursor"),
-			Limit:  linqapiv3.Int(1),
+		linqgo.ChatMessageListParams{
+			Cursor: linqgo.String("cursor"),
+			Limit:  linqgo.Int(1),
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -52,36 +52,36 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.Messages.Send(
 		context.TODO(),
 		"550e8400-e29b-41d4-a716-446655440000",
-		linqapiv3.ChatMessageSendParams{
-			Message: linqapiv3.MessageContentParam{
-				Parts: []linqapiv3.MessageContentPartUnionParam{{
-					OfText: &linqapiv3.MessageContentPartTextParam{
+		linqgo.ChatMessageSendParams{
+			Message: linqgo.MessageContentParam{
+				Parts: []linqgo.MessageContentPartUnionParam{{
+					OfText: &linqgo.MessageContentPartTextParam{
 						Value:          "Hello, world!",
-						IdempotencyKey: linqapiv3.String("text-part-abc123"),
+						IdempotencyKey: linqgo.String("text-part-abc123"),
 					},
 				}},
-				Effect: linqapiv3.MessageEffectParam{
-					Name: linqapiv3.String("confetti"),
-					Type: linqapiv3.MessageEffectTypeScreen,
+				Effect: linqgo.MessageEffectParam{
+					Name: linqgo.String("confetti"),
+					Type: linqgo.MessageEffectTypeScreen,
 				},
-				IdempotencyKey:   linqapiv3.String("msg-abc123xyz"),
-				PreferredService: linqapiv3.MessageContentPreferredServiceIMessage,
-				ReplyTo: linqapiv3.ReplyToParam{
+				IdempotencyKey:   linqgo.String("msg-abc123xyz"),
+				PreferredService: linqgo.MessageContentPreferredServiceIMessage,
+				ReplyTo: linqgo.ReplyToParam{
 					MessageID: "550e8400-e29b-41d4-a716-446655440000",
-					PartIndex: linqapiv3.Int(0),
+					PartIndex: linqgo.Int(0),
 				},
 			},
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

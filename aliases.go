@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3
+package linqgo
 
 import (
 	"github.com/linq-team/linq-go/internal/apierror"

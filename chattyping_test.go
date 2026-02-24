@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3_test
+package linqgo_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestChatTypingStart(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Chats.Typing.Start(context.TODO(), "550e8400-e29b-41d4-a716-446655440000")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,13 +45,13 @@ func TestChatTypingStop(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Chats.Typing.Stop(context.TODO(), "550e8400-e29b-41d4-a716-446655440000")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
