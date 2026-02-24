@@ -2,7 +2,7 @@
 package json
 
 import (
-	"github.com/stainless-sdks/linq-api-v3-go/internal/encoding/json/shims"
+	"github.com/linq-team/linq-go/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )

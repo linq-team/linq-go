@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/linq-api-v3-go"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/linq-team/linq-go"
+	"github.com/linq-team/linq-go/internal/testutil"
+	"github.com/linq-team/linq-go/option"
 )
 
 func TestPhonenumberList(t *testing.T) {

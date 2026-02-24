@@ -8,8 +8,8 @@ import (
 	"os"
 	"slices"
 
-	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/linq-team/linq-go/internal/requestconfig"
+	"github.com/linq-team/linq-go/option"
 )
 
 // Client creates a struct with services and top level methods that help with

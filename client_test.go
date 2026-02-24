@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/linq-api-v3-go"
-	"github.com/stainless-sdks/linq-api-v3-go/internal"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/linq-team/linq-go"
+	"github.com/linq-team/linq-go/internal"
+	"github.com/linq-team/linq-go/option"
 )
 
 type closureTransport struct {

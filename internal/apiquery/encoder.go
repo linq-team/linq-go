@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/linq-team/linq-go/packages/param"
 )
 
 var encoders sync.Map // map[reflect.Type]encoderFunc

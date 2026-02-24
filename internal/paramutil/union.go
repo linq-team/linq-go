@@ -2,7 +2,7 @@ package paramutil
 
 import (
 	"fmt"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/linq-team/linq-go/packages/param"
 	"reflect"
 )
 
