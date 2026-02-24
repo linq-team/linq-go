@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apiquery"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
-	"github.com/stainless-sdks/linq-api-v3-go/shared/constant"
+	"github.com/linq-team/linq-go/internal/apijson"
+	"github.com/linq-team/linq-go/internal/apiquery"
+	"github.com/linq-team/linq-go/internal/requestconfig"
+	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/param"
+	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with

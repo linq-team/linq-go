@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
+	"github.com/linq-team/linq-go/internal/apijson"
+	"github.com/linq-team/linq-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is

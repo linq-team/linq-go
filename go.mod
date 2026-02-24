@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/linq-api-v3-go
+module github.com/linq-team/linq-go
 
 go 1.22
 

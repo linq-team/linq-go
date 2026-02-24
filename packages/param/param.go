@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/encoding/json/sentinel"
+	"github.com/linq-team/linq-go/internal/encoding/json/sentinel"
 	"reflect"
 )
 

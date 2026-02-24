@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
+	"github.com/linq-team/linq-go/internal/apijson"
+	"github.com/linq-team/linq-go/internal/requestconfig"
+	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/respjson"
 )
 
 // PhonenumberService contains methods and other services that help with
