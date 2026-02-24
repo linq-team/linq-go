@@ -1,7 +1,7 @@
 package apiform
 
 import (
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/linq-team/linq-go/packages/param"
 	"mime/multipart"
 	"reflect"
 )

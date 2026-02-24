@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
+	"github.com/linq-team/linq-go/packages/respjson"
 	"reflect"
 )
 

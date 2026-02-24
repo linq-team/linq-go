@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
-	rj "github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
+	"github.com/linq-team/linq-go/internal/apijson"
+	rj "github.com/linq-team/linq-go/packages/respjson"
 	"reflect"
 	"testing"
 )
