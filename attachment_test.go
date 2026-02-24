@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo_test
+package linqapiv3_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/linq-team/linq-go"
-	"github.com/linq-team/linq-go/internal/testutil"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 func TestAttachmentNew(t *testing.T) {
@@ -22,17 +22,17 @@ func TestAttachmentNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Attachments.New(context.TODO(), linqgo.AttachmentNewParams{
-		ContentType: linqgo.SupportedContentTypeImageJpeg,
+	_, err := client.Attachments.New(context.TODO(), linqapiv3.AttachmentNewParams{
+		ContentType: linqapiv3.SupportedContentTypeImageJpeg,
 		Filename:    "photo.jpg",
 		SizeBytes:   1024000,
 	})
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -49,13 +49,13 @@ func TestAttachmentGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Attachments.Get(context.TODO(), "abc12345-1234-5678-9abc-def012345678")
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

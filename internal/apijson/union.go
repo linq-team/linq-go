@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/linq-team/linq-go/packages/param"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"

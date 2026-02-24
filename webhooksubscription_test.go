@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo_test
+package linqapiv3_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/linq-team/linq-go"
-	"github.com/linq-team/linq-go/internal/testutil"
-	"github.com/linq-team/linq-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
 )
 
 func TestWebhookSubscriptionNew(t *testing.T) {
@@ -22,16 +22,16 @@ func TestWebhookSubscriptionNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.WebhookSubscriptions.New(context.TODO(), linqgo.WebhookSubscriptionNewParams{
-		SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered, linqgo.WebhookEventTypeMessageRead},
+	_, err := client.WebhookSubscriptions.New(context.TODO(), linqapiv3.WebhookSubscriptionNewParams{
+		SubscribedEvents: []linqapiv3.WebhookEventType{linqapiv3.WebhookEventTypeMessageSent, linqapiv3.WebhookEventTypeMessageDelivered, linqapiv3.WebhookEventTypeMessageRead},
 		TargetURL:        "https://webhooks.example.com/linq/events",
 	})
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -48,13 +48,13 @@ func TestWebhookSubscriptionGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WebhookSubscriptions.Get(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -71,21 +71,21 @@ func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WebhookSubscriptions.Update(
 		context.TODO(),
 		"b2c3d4e5-f6a7-8901-bcde-f23456789012",
-		linqgo.WebhookSubscriptionUpdateParams{
-			IsActive:         linqgo.Bool(true),
-			SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered},
-			TargetURL:        linqgo.String("https://webhooks.example.com/linq/events"),
+		linqapiv3.WebhookSubscriptionUpdateParams{
+			IsActive:         linqapiv3.Bool(true),
+			SubscribedEvents: []linqapiv3.WebhookEventType{linqapiv3.WebhookEventTypeMessageSent, linqapiv3.WebhookEventTypeMessageDelivered},
+			TargetURL:        linqapiv3.String("https://webhooks.example.com/linq/events"),
 		},
 	)
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -102,13 +102,13 @@ func TestWebhookSubscriptionList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.WebhookSubscriptions.List(context.TODO())
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -125,13 +125,13 @@ func TestWebhookSubscriptionDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqgo.NewClient(
+	client := linqapiv3.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.WebhookSubscriptions.Delete(context.TODO(), "b2c3d4e5-f6a7-8901-bcde-f23456789012")
 	if err != nil {
-		var apierr *linqgo.Error
+		var apierr *linqapiv3.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

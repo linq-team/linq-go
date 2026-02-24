@@ -3,8 +3,8 @@ package apijson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/linq-team/linq-go/internal/apijson"
-	"github.com/linq-team/linq-go/packages/param"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
 	"reflect"
 	"testing"
 )

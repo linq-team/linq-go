@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/linq-team/linq-go/internal"
-	"github.com/linq-team/linq-go/internal/apierror"
-	"github.com/linq-team/linq-go/internal/apiform"
-	"github.com/linq-team/linq-go/internal/apiquery"
+	"github.com/stainless-sdks/linq-api-v3-go/internal"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apierror"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apiform"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

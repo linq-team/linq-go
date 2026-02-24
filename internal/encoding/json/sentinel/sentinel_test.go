@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/linq-team/linq-go/internal/encoding/json/sentinel"
-	"github.com/linq-team/linq-go/packages/param"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/encoding/json/sentinel"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
 	"reflect"
 	"slices"
 	"testing"

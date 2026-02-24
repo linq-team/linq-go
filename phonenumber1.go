@@ -1,16 +1,16 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqgo
+package linqapiv3
 
 import (
 	"context"
 	"net/http"
 	"slices"
 
-	"github.com/linq-team/linq-go/internal/apijson"
-	"github.com/linq-team/linq-go/internal/requestconfig"
-	"github.com/linq-team/linq-go/option"
-	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
+	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
+	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
 )
 
 // PhoneNumberService contains methods and other services that help with
