@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1 (2026-02-24)
+
+Full Changelog: [v0.1.0...v0.1.1](https://github.com/linq-team/linq-go/compare/v0.1.0...v0.1.1)
+
+### Features
+
+* **api:** add shared resource ([54b07b5](https://github.com/linq-team/linq-go/commit/54b07b55f1b51ba33bf77dc903bc6c3f5acf4b34))
+* **api:** wtf ([321a98e](https://github.com/linq-team/linq-go/commit/321a98e90e8ab8e1c978868afcb5c9181a44171b))
+* PLT: Include sticker details for iMessage tapback webhooks ([204ec0b](https://github.com/linq-team/linq-go/commit/204ec0b243870bf968065a2d9912a2fa8879331c))
+
 ## 0.1.0 (2026-02-24)
 
 Full Changelog: [v0.0.1...v0.1.0](https://github.com/linq-team/linq-go/compare/v0.0.1...v0.1.0)

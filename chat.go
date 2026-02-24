@@ -17,6 +17,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/linq-team/linq-go/shared"
 	"github.com/linq-team/linq-go/shared/constant"
 )
 
@@ -191,7 +192,7 @@ type Chat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -250,7 +251,7 @@ type MessageContentParam struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService ServiceType `json:"preferred_service,omitzero"`
+	PreferredService shared.ServiceType `json:"preferred_service,omitzero"`
 	// Reply to another message to create a threaded conversation
 	ReplyTo ReplyToParam `json:"reply_to,omitzero"`
 	paramObj
@@ -365,15 +366,6 @@ func (r *MessageContentPartMediaParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Messaging service type
-type ServiceType string
-
-const (
-	ServiceTypeIMessage ServiceType = "iMessage"
-	ServiceTypeSMS      ServiceType = "SMS"
-	ServiceTypeRcs      ServiceType = "RCS"
-)
-
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
 	Chat ChatNewResponseChat `json:"chat,required"`
@@ -407,7 +399,7 @@ type ChatNewResponseChat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -481,7 +473,7 @@ type ChatSendVoicememoResponseVoiceMemo struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -515,7 +507,7 @@ type ChatSendVoicememoResponseVoiceMemoChat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

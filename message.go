@@ -18,6 +18,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/linq-team/linq-go/shared"
 )
 
 // MessageService contains methods and other services that help with interacting
@@ -119,7 +120,7 @@ type ChatHandle struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service,required"`
 	// Whether this handle belongs to the sender (your phone number)
 	IsMe bool `json:"is_me,nullable"`
 	// When they left (if applicable)
@@ -232,7 +233,7 @@ type Message struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService ServiceType `json:"preferred_service,nullable"`
+	PreferredService shared.ServiceType `json:"preferred_service,nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at,nullable" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
@@ -242,7 +243,7 @@ type Message struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -395,18 +396,24 @@ type Reaction struct {
 	IsMe bool `json:"is_me,required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
 	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
+	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
+	// sticker attachment details in the sticker field.
 	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
+	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
+	// "sticker".
 	Type ReactionType `json:"type,required"`
 	// Custom emoji if type is "custom", null otherwise
 	CustomEmoji string `json:"custom_emoji,nullable"`
+	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
+	// reactions.
+	Sticker ReactionSticker `json:"sticker,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handle      respjson.Field
 		IsMe        respjson.Field
 		Type        respjson.Field
 		CustomEmoji respjson.Field
+		Sticker     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -418,9 +425,41 @@ func (r *Reaction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
+// reactions.
+type ReactionSticker struct {
+	// Filename of the sticker
+	FileName string `json:"file_name"`
+	// Sticker image height in pixels
+	Height int64 `json:"height"`
+	// MIME type of the sticker image
+	MimeType string `json:"mime_type"`
+	// Presigned URL for downloading the sticker image (expires in 1 hour).
+	URL string `json:"url" format:"uri"`
+	// Sticker image width in pixels
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileName    respjson.Field
+		Height      respjson.Field
+		MimeType    respjson.Field
+		URL         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReactionSticker) RawJSON() string { return r.JSON.raw }
+func (r *ReactionSticker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
 // emphasize, question. Custom emoji reactions have type "custom" with the actual
-// emoji in the custom_emoji field.
+// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
+// sticker attachment details in the sticker field.
 type ReactionType string
 
 const (
@@ -431,6 +470,7 @@ const (
 	ReactionTypeEmphasize ReactionType = "emphasize"
 	ReactionTypeQuestion  ReactionType = "question"
 	ReactionTypeCustom    ReactionType = "custom"
+	ReactionTypeSticker   ReactionType = "sticker"
 )
 
 // Indicates this message is a threaded reply to another message
@@ -561,9 +601,11 @@ type MessageAddReactionParams struct {
 	Operation MessageAddReactionParamsOperation `json:"operation,omitzero,required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
 	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field.
+	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
+	// sticker attachment details in the sticker field.
 	//
-	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom".
+	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
+	// "sticker".
 	Type ReactionType `json:"type,omitzero,required"`
 	// Custom emoji string. Required when type is "custom".
 	CustomEmoji param.Opt[string] `json:"custom_emoji,omitzero"`

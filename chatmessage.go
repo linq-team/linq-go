@@ -18,6 +18,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/linq-team/linq-go/shared"
 )
 
 // ChatMessageService contains methods and other services that help with
@@ -101,13 +102,13 @@ type SentMessage struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService ServiceType `json:"preferred_service,nullable"`
+	PreferredService shared.ServiceType `json:"preferred_service,nullable"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to,nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
