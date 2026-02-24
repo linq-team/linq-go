@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3
+package linqgo
 
 import (
 	"context"
@@ -11,13 +11,13 @@ import (
 	"slices"
 	"time"
 
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apijson"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apiquery"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/requestconfig"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/respjson"
-	"github.com/stainless-sdks/linq-api-v3-go/shared/constant"
+	"github.com/linq-team/linq-go/internal/apijson"
+	"github.com/linq-team/linq-go/internal/apiquery"
+	"github.com/linq-team/linq-go/internal/requestconfig"
+	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/param"
+	"github.com/linq-team/linq-go/packages/respjson"
+	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with
@@ -191,7 +191,7 @@ type Chat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service ChatService `json:"service,nullable"`
+	Service ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -212,15 +212,6 @@ func (r Chat) RawJSON() string { return r.JSON.raw }
 func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Messaging service type
-type ChatService string
-
-const (
-	ChatServiceIMessage ChatService = "iMessage"
-	ChatServiceSMS      ChatService = "SMS"
-	ChatServiceRcs      ChatService = "RCS"
-)
 
 // Message content container. Groups all message-related fields together,
 // separating the "what" (message content) from the "where" (routing fields like
@@ -259,7 +250,7 @@ type MessageContentParam struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService MessageContentPreferredService `json:"preferred_service,omitzero"`
+	PreferredService ServiceType `json:"preferred_service,omitzero"`
 	// Reply to another message to create a threaded conversation
 	ReplyTo ReplyToParam `json:"reply_to,omitzero"`
 	paramObj
@@ -375,12 +366,12 @@ func (r *MessageContentPartMediaParam) UnmarshalJSON(data []byte) error {
 }
 
 // Messaging service type
-type MessageContentPreferredService string
+type ServiceType string
 
 const (
-	MessageContentPreferredServiceIMessage MessageContentPreferredService = "iMessage"
-	MessageContentPreferredServiceSMS      MessageContentPreferredService = "SMS"
-	MessageContentPreferredServiceRcs      MessageContentPreferredService = "RCS"
+	ServiceTypeIMessage ServiceType = "iMessage"
+	ServiceTypeSMS      ServiceType = "SMS"
+	ServiceTypeRcs      ServiceType = "RCS"
 )
 
 // Response for creating a new chat with an initial message
@@ -416,7 +407,7 @@ type ChatNewResponseChat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
+	Service ServiceType `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -490,7 +481,7 @@ type ChatSendVoicememoResponseVoiceMemo struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,nullable"`
+	Service ServiceType `json:"service,nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -524,7 +515,7 @@ type ChatSendVoicememoResponseVoiceMemoChat struct {
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service string `json:"service,required"`
+	Service ServiceType `json:"service,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field

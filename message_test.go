@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3_test
+package linqgo_test
 
 import (
 	"context"
@@ -8,9 +8,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/linq-api-v3-go"
-	"github.com/stainless-sdks/linq-api-v3-go/internal/testutil"
-	"github.com/stainless-sdks/linq-api-v3-go/option"
+	"github.com/linq-team/linq-go"
+	"github.com/linq-team/linq-go/internal/testutil"
+	"github.com/linq-team/linq-go/option"
 )
 
 func TestMessageGet(t *testing.T) {
@@ -22,13 +22,13 @@ func TestMessageGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Messages.Get(context.TODO(), "69a37c7d-af4f-4b5e-af42-e28e98ce873a")
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,19 +45,19 @@ func TestMessageDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	err := client.Messages.Delete(
 		context.TODO(),
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
-		linqapiv3.MessageDeleteParams{
+		linqgo.MessageDeleteParams{
 			ChatID: "94c6bf33-31d9-40e3-a0e9-f94250ecedb9",
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -74,22 +74,22 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Messages.AddReaction(
 		context.TODO(),
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
-		linqapiv3.MessageAddReactionParams{
-			Operation:   linqapiv3.MessageAddReactionParamsOperationAdd,
-			Type:        linqapiv3.ReactionTypeLove,
-			CustomEmoji: linqapiv3.String("😍"),
-			PartIndex:   linqapiv3.Int(1),
+		linqgo.MessageAddReactionParams{
+			Operation:   linqgo.MessageAddReactionParamsOperationAdd,
+			Type:        linqgo.ReactionTypeLove,
+			CustomEmoji: linqgo.String("😍"),
+			PartIndex:   linqgo.Int(1),
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -106,21 +106,21 @@ func TestMessageGetThreadWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := linqapiv3.NewClient(
+	client := linqgo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Messages.GetThread(
 		context.TODO(),
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
-		linqapiv3.MessageGetThreadParams{
-			Cursor: linqapiv3.String("cursor"),
-			Limit:  linqapiv3.Int(1),
-			Order:  linqapiv3.MessageGetThreadParamsOrderAsc,
+		linqgo.MessageGetThreadParams{
+			Cursor: linqgo.String("cursor"),
+			Limit:  linqgo.Int(1),
+			Order:  linqgo.MessageGetThreadParamsOrderAsc,
 		},
 	)
 	if err != nil {
-		var apierr *linqapiv3.Error
+		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

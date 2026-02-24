@@ -1,10 +1,10 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package linqapiv3
+package linqgo
 
 import (
-	"github.com/stainless-sdks/linq-api-v3-go/internal/apierror"
-	"github.com/stainless-sdks/linq-api-v3-go/packages/param"
+	"github.com/linq-team/linq-go/internal/apierror"
+	"github.com/linq-team/linq-go/packages/param"
 )
 
 // aliased to make [param.APIUnion] private when embedding
