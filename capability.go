@@ -52,9 +52,9 @@ func (r *CapabilityService) CheckRcs(ctx context.Context, body CapabilityCheckRc
 
 type CapabilityCheckImessageResponse struct {
 	// The recipient address that was checked
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Whether the recipient supports the checked messaging service
-	Available bool `json:"available,required"`
+	Available bool `json:"available" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address     respjson.Field
@@ -72,9 +72,9 @@ func (r *CapabilityCheckImessageResponse) UnmarshalJSON(data []byte) error {
 
 type CapabilityCheckRcsResponse struct {
 	// The recipient address that was checked
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Whether the recipient supports the checked messaging service
-	Available bool `json:"available,required"`
+	Available bool `json:"available" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Address     respjson.Field
@@ -92,7 +92,7 @@ func (r *CapabilityCheckRcsResponse) UnmarshalJSON(data []byte) error {
 
 type CapabilityCheckImessageParams struct {
 	// The recipient phone number or email address to check
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Optional sender phone number. If omitted, an available phone from your pool is
 	// used automatically.
 	From param.Opt[string] `json:"from,omitzero"`
@@ -109,7 +109,7 @@ func (r *CapabilityCheckImessageParams) UnmarshalJSON(data []byte) error {
 
 type CapabilityCheckRcsParams struct {
 	// The recipient phone number or email address to check
-	Address string `json:"address,required"`
+	Address string `json:"address" api:"required"`
 	// Optional sender phone number. If omitted, an available phone from your pool is
 	// used automatically.
 	From param.Opt[string] `json:"from,omitzero"`

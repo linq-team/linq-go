@@ -174,25 +174,25 @@ func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts 
 
 type Chat struct {
 	// Unique identifier for the chat
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// When the chat was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Display name for the chat. Defaults to a comma-separated list of recipient
 	// handles. Can be updated for group chats.
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
-	Handles []ChatHandle `json:"handles,required"`
+	Handles []ChatHandle `json:"handles" api:"required"`
 	// Whether the chat is archived
-	IsArchived bool `json:"is_archived,required"`
+	IsArchived bool `json:"is_archived" api:"required"`
 	// Whether this is a group chat
-	IsGroup bool `json:"is_group,required"`
+	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -242,7 +242,7 @@ type MessageContentParam struct {
 	// **Validation Rule:** Consecutive text parts are not allowed. Text parts must be
 	// separated by media parts. For example, [text, text] is invalid, but [text,
 	// media, text] is valid.
-	Parts []MessageContentPartUnionParam `json:"parts,omitzero,required"`
+	Parts []MessageContentPartUnionParam `json:"parts,omitzero" api:"required"`
 	// Optional idempotency key for this message. Use this to prevent duplicate sends
 	// of the same message.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
@@ -292,14 +292,14 @@ func init() {
 // The properties Type, Value are required.
 type MessageContentPartTextParam struct {
 	// The text content
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// Optional idempotency key for this specific message part. Use this to prevent
 	// duplicate sends of the same part.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	// Indicates this is a text message part
 	//
 	// This field can be elided, and will marshal its zero value as "text".
-	Type constant.Text `json:"type,required"`
+	Type constant.Text `json:"type" api:"required"`
 	paramObj
 }
 
@@ -354,7 +354,7 @@ type MessageContentPartMediaParam struct {
 	// Indicates this is a media attachment part
 	//
 	// This field can be elided, and will marshal its zero value as "media".
-	Type constant.Media `json:"type,required"`
+	Type constant.Media `json:"type" api:"required"`
 	paramObj
 }
 
@@ -368,7 +368,7 @@ func (r *MessageContentPartMediaParam) UnmarshalJSON(data []byte) error {
 
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
-	Chat ChatNewResponseChat `json:"chat,required"`
+	Chat ChatNewResponseChat `json:"chat" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Chat        respjson.Field
@@ -385,21 +385,21 @@ func (r *ChatNewResponse) UnmarshalJSON(data []byte) error {
 
 type ChatNewResponseChat struct {
 	// Unique identifier for the created chat (UUID)
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Display name for the chat. Defaults to a comma-separated list of recipient
 	// handles. Can be updated for group chats.
-	DisplayName string `json:"display_name,required"`
+	DisplayName string `json:"display_name" api:"required"`
 	// List of participants in the chat. Always contains at least two handles (your
 	// phone number and the other participant).
-	Handles []ChatHandle `json:"handles,required"`
+	Handles []ChatHandle `json:"handles" api:"required"`
 	// Whether this is a group chat
-	IsGroup bool `json:"is_group,required"`
+	IsGroup bool `json:"is_group" api:"required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
-	Message SentMessage `json:"message,required"`
+	Message SentMessage `json:"message" api:"required"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -421,10 +421,10 @@ func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
 
 type ChatListResponse struct {
 	// List of chats
-	Chats []Chat `json:"chats,required"`
+	Chats []Chat `json:"chats" api:"required"`
 	// Cursor for fetching the next page of results. Null if there are no more results
 	// to fetch. Pass this value as the `cursor` parameter in the next request.
-	NextCursor string `json:"next_cursor,nullable"`
+	NextCursor string `json:"next_cursor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Chats       respjson.Field
@@ -442,7 +442,7 @@ func (r *ChatListResponse) UnmarshalJSON(data []byte) error {
 
 // Response for sending a voice memo to a chat
 type ChatSendVoicememoResponse struct {
-	VoiceMemo ChatSendVoicememoResponseVoiceMemo `json:"voice_memo,required"`
+	VoiceMemo ChatSendVoicememoResponseVoiceMemo `json:"voice_memo" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		VoiceMemo   respjson.Field
@@ -459,21 +459,21 @@ func (r *ChatSendVoicememoResponse) UnmarshalJSON(data []byte) error {
 
 type ChatSendVoicememoResponseVoiceMemo struct {
 	// Message identifier
-	ID   string                                 `json:"id,required" format:"uuid"`
-	Chat ChatSendVoicememoResponseVoiceMemoChat `json:"chat,required"`
+	ID   string                                 `json:"id" api:"required" format:"uuid"`
+	Chat ChatSendVoicememoResponseVoiceMemoChat `json:"chat" api:"required"`
 	// When the voice memo was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Sender phone number
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Current delivery status
-	Status string `json:"status,required"`
+	Status string `json:"status" api:"required"`
 	// Recipient handles (phone numbers or email addresses)
-	To        []string                                    `json:"to,required"`
-	VoiceMemo ChatSendVoicememoResponseVoiceMemoVoiceMemo `json:"voice_memo,required"`
+	To        []string                                    `json:"to" api:"required"`
+	VoiceMemo ChatSendVoicememoResponseVoiceMemoVoiceMemo `json:"voice_memo" api:"required"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -497,17 +497,17 @@ func (r *ChatSendVoicememoResponseVoiceMemo) UnmarshalJSON(data []byte) error {
 
 type ChatSendVoicememoResponseVoiceMemoChat struct {
 	// Chat identifier
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Chat participants
-	Handles []ChatHandle `json:"handles,required"`
+	Handles []ChatHandle `json:"handles" api:"required"`
 	// Whether the chat is active
-	IsActive bool `json:"is_active,required"`
+	IsActive bool `json:"is_active" api:"required"`
 	// Whether this is a group chat
-	IsGroup bool `json:"is_group,required"`
+	IsGroup bool `json:"is_group" api:"required"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -528,17 +528,17 @@ func (r *ChatSendVoicememoResponseVoiceMemoChat) UnmarshalJSON(data []byte) erro
 
 type ChatSendVoicememoResponseVoiceMemoVoiceMemo struct {
 	// Attachment identifier
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Original filename
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// Audio MIME type
-	MimeType string `json:"mime_type,required"`
+	MimeType string `json:"mime_type" api:"required"`
 	// File size in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
+	SizeBytes int64 `json:"size_bytes" api:"required"`
 	// CDN URL for downloading the voice memo
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// Duration in milliseconds
-	DurationMs int64 `json:"duration_ms,nullable"`
+	DurationMs int64 `json:"duration_ms" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -561,14 +561,14 @@ func (r *ChatSendVoicememoResponseVoiceMemoVoiceMemo) UnmarshalJSON(data []byte)
 type ChatNewParams struct {
 	// Sender phone number in E.164 format. Must be a phone number that the
 	// authenticated partner has permission to send from.
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
 	// from/to).
-	Message MessageContentParam `json:"message,omitzero,required"`
+	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	// Array of recipient handles (phone numbers in E.164 format or email addresses).
 	// For individual chats, provide one recipient. For group chats, provide multiple.
-	To []string `json:"to,omitzero,required"`
+	To []string `json:"to,omitzero" api:"required"`
 	paramObj
 }
 
@@ -600,7 +600,7 @@ type ChatListParams struct {
 	// Phone number to filter chats by. Returns all chats made from this phone number.
 	// Must be in E.164 format (e.g., `+13343284472`). The `+` is automatically
 	// URL-encoded by HTTP clients.
-	From string `query:"from,required" json:"-"`
+	From string `query:"from" api:"required" json:"-"`
 	// Pagination cursor from the previous response's `next_cursor` field. Omit this
 	// parameter for the first page of results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
@@ -619,9 +619,9 @@ func (r ChatListParams) URLQuery() (v url.Values, err error) {
 
 type ChatSendVoicememoParams struct {
 	// Sender phone number in E.164 format
-	From string `json:"from,required"`
+	From string `json:"from" api:"required"`
 	// URL of the voice memo audio file. Must be a publicly accessible HTTPS URL.
-	VoiceMemoURL string `json:"voice_memo_url,required" format:"uri"`
+	VoiceMemoURL string `json:"voice_memo_url" api:"required" format:"uri"`
 	paramObj
 }
 
