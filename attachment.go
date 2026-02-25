@@ -208,22 +208,22 @@ const (
 type AttachmentNewResponse struct {
 	// Unique identifier for the attachment (for status checks via GET
 	// /v3/attachments/{id})
-	AttachmentID string `json:"attachment_id,required" format:"uuid"`
+	AttachmentID string `json:"attachment_id" api:"required" format:"uuid"`
 	// Permanent CDN URL for the file. Does not expire. Use the `attachment_id` to
 	// reference this file in media parts when sending messages.
-	DownloadURL string `json:"download_url,required" format:"uri"`
+	DownloadURL string `json:"download_url" api:"required" format:"uri"`
 	// When the upload URL expires (15 minutes from now)
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// HTTP method to use for upload (always PUT)
 	//
 	// Any of "PUT".
-	HTTPMethod AttachmentNewResponseHTTPMethod `json:"http_method,required"`
+	HTTPMethod AttachmentNewResponseHTTPMethod `json:"http_method" api:"required"`
 	// HTTP headers required for the upload request
-	RequiredHeaders map[string]string `json:"required_headers,required"`
+	RequiredHeaders map[string]string `json:"required_headers" api:"required"`
 	// Presigned URL for uploading the file. PUT the raw binary file content to this
 	// URL with the `required_headers`. Do not JSON-encode or multipart-wrap the body.
 	// Expires after 15 minutes.
-	UploadURL string `json:"upload_url,required" format:"uri"`
+	UploadURL string `json:"upload_url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		AttachmentID    respjson.Field
@@ -252,7 +252,7 @@ const (
 
 type AttachmentGetResponse struct {
 	// Unique identifier for the attachment (UUID)
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Supported MIME types for file attachments and media URLs.
 	//
 	// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
@@ -293,17 +293,17 @@ type AttachmentGetResponse struct {
 	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
 	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
 	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
-	ContentType SupportedContentType `json:"content_type,required"`
+	ContentType SupportedContentType `json:"content_type" api:"required"`
 	// When the attachment was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Original filename of the attachment
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// Size of the attachment in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
+	SizeBytes int64 `json:"size_bytes" api:"required"`
 	// Current upload/processing status
 	//
 	// Any of "pending", "complete", "failed".
-	Status AttachmentGetResponseStatus `json:"status,required"`
+	Status AttachmentGetResponseStatus `json:"status" api:"required"`
 	// URL to download the attachment
 	DownloadURL string `json:"download_url" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -376,11 +376,11 @@ type AttachmentNewParams struct {
 	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
 	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
 	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
-	ContentType SupportedContentType `json:"content_type,omitzero,required"`
+	ContentType SupportedContentType `json:"content_type,omitzero" api:"required"`
 	// Name of the file to upload
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// Size of the file in bytes (max 100MB)
-	SizeBytes int64 `json:"size_bytes,required"`
+	SizeBytes int64 `json:"size_bytes" api:"required"`
 	paramObj
 }
 

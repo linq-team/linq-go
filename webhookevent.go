@@ -68,9 +68,9 @@ const (
 
 type WebhookEventListResponse struct {
 	// URL to the webhook events documentation
-	DocURL constant.HTTPSApidocsLinqappComDocumentationWebhookEvents `json:"doc_url,required"`
+	DocURL constant.HTTPSApidocsLinqappComDocumentationWebhookEvents `json:"doc_url" api:"required"`
 	// List of all available webhook event types
-	Events []WebhookEventType `json:"events,required"`
+	Events []WebhookEventType `json:"events" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DocURL      respjson.Field

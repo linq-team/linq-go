@@ -109,17 +109,17 @@ func (r *WebhookSubscriptionService) Delete(ctx context.Context, subscriptionID 
 
 type WebhookSubscription struct {
 	// Unique identifier for the webhook subscription
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the subscription was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Whether this subscription is currently active
-	IsActive bool `json:"is_active,required"`
+	IsActive bool `json:"is_active" api:"required"`
 	// List of event types this subscription receives
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,required"`
+	SubscribedEvents []WebhookEventType `json:"subscribed_events" api:"required"`
 	// URL where webhook events will be sent
-	TargetURL string `json:"target_url,required" format:"uri"`
+	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -143,20 +143,20 @@ func (r *WebhookSubscription) UnmarshalJSON(data []byte) error {
 // secret which is only shown once.
 type WebhookSubscriptionNewResponse struct {
 	// Unique identifier for the webhook subscription
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// When the subscription was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Whether this subscription is currently active
-	IsActive bool `json:"is_active,required"`
+	IsActive bool `json:"is_active" api:"required"`
 	// Secret for verifying webhook signatures. Store this securely - it cannot be
 	// retrieved again.
-	SigningSecret string `json:"signing_secret,required"`
+	SigningSecret string `json:"signing_secret" api:"required"`
 	// List of event types this subscription receives
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,required"`
+	SubscribedEvents []WebhookEventType `json:"subscribed_events" api:"required"`
 	// URL where webhook events will be sent
-	TargetURL string `json:"target_url,required" format:"uri"`
+	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -179,7 +179,7 @@ func (r *WebhookSubscriptionNewResponse) UnmarshalJSON(data []byte) error {
 
 type WebhookSubscriptionListResponse struct {
 	// List of webhook subscriptions
-	Subscriptions []WebhookSubscription `json:"subscriptions,required"`
+	Subscriptions []WebhookSubscription `json:"subscriptions" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Subscriptions respjson.Field
@@ -196,9 +196,9 @@ func (r *WebhookSubscriptionListResponse) UnmarshalJSON(data []byte) error {
 
 type WebhookSubscriptionNewParams struct {
 	// List of event types to subscribe to
-	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero,required"`
+	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero" api:"required"`
 	// URL where webhook events will be sent. Must be HTTPS.
-	TargetURL string `json:"target_url,required" format:"uri"`
+	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	paramObj
 }
 

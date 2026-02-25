@@ -114,7 +114,7 @@ func (r *ChatParticipantRemoveResponse) UnmarshalJSON(data []byte) error {
 
 type ChatParticipantAddParams struct {
 	// Phone number (E.164 format) or email address of the participant to add
-	Handle string `json:"handle,required"`
+	Handle string `json:"handle" api:"required"`
 	paramObj
 }
 
@@ -128,7 +128,7 @@ func (r *ChatParticipantAddParams) UnmarshalJSON(data []byte) error {
 
 type ChatParticipantRemoveParams struct {
 	// Phone number (E.164 format) or email address of the participant to remove
-	Handle string `json:"handle,required"`
+	Handle string `json:"handle" api:"required"`
 	paramObj
 }
 
