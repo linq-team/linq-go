@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.1.2 (2026-02-25)
+
+Full Changelog: [v0.1.1...v0.1.2](https://github.com/linq-team/linq-go/compare/v0.1.1...v0.1.2)
+
+### Bug Fixes
+
+* sendReaction OpenAPI spec returns 202 not 200 ([4cde326](https://github.com/linq-team/linq-go/commit/4cde326c08dcb72282819888d5a2cecf0c5b8f20))
+
+
+### Chores
+
+* **internal:** move custom custom `json` tags to `api` ([a55460c](https://github.com/linq-team/linq-go/commit/a55460c1548a84dad5dc977cb5ef5b50437f1aeb))
+
 ## 0.1.1 (2026-02-24)
 
 Full Changelog: [v0.1.0...v0.1.1](https://github.com/linq-team/linq-go/compare/v0.1.0...v0.1.1)
