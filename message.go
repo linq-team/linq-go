@@ -82,7 +82,7 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, body Mess
 // - emphasize ‼️
 // - question ❓
 // - custom - any emoji (use `custom_emoji` field to specify)
-func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *Reaction, err error) {
+func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
@@ -112,23 +112,23 @@ func (r *MessageService) GetThread(ctx context.Context, messageID string, query 
 
 type ChatHandle struct {
 	// Unique identifier for this handle
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle,required"`
+	Handle string `json:"handle" api:"required"`
 	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at,required" format:"date-time"`
+	JoinedAt time.Time `json:"joined_at" api:"required" format:"date-time"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,required"`
+	Service shared.ServiceType `json:"service" api:"required"`
 	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me,nullable"`
+	IsMe bool `json:"is_me" api:"nullable"`
 	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at,nullable" format:"date-time"`
+	LeftAt time.Time `json:"left_at" api:"nullable" format:"date-time"`
 	// Participant status
 	//
 	// Any of "active", "left", "removed".
-	Status ChatHandleStatus `json:"status,nullable"`
+	Status ChatHandleStatus `json:"status" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -161,21 +161,21 @@ const (
 // A media attachment part
 type MediaPart struct {
 	// Unique attachment identifier
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Original filename
-	Filename string `json:"filename,required"`
+	Filename string `json:"filename" api:"required"`
 	// MIME type of the file
-	MimeType string `json:"mime_type,required"`
+	MimeType string `json:"mime_type" api:"required"`
 	// Reactions on this message part
-	Reactions []Reaction `json:"reactions,required"`
+	Reactions []Reaction `json:"reactions" api:"required"`
 	// File size in bytes
-	SizeBytes int64 `json:"size_bytes,required"`
+	SizeBytes int64 `json:"size_bytes" api:"required"`
 	// Indicates this is a media attachment part
 	//
 	// Any of "media".
-	Type MediaPartType `json:"type,required"`
+	Type MediaPartType `json:"type" api:"required"`
 	// Presigned URL for downloading the attachment (expires in 1 hour).
-	URL string `json:"url,required" format:"uri"`
+	URL string `json:"url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -205,45 +205,45 @@ const (
 
 type Message struct {
 	// Unique identifier for the message
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// ID of the chat this message belongs to
-	ChatID string `json:"chat_id,required" format:"uuid"`
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// When the message was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Whether the message has been delivered
-	IsDelivered bool `json:"is_delivered,required"`
+	IsDelivered bool `json:"is_delivered" api:"required"`
 	// Whether this message was sent by the authenticated user
-	IsFromMe bool `json:"is_from_me,required"`
+	IsFromMe bool `json:"is_from_me" api:"required"`
 	// Whether the message has been read
-	IsRead bool `json:"is_read,required"`
+	IsRead bool `json:"is_read" api:"required"`
 	// When the message was last updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// When the message was delivered
-	DeliveredAt time.Time `json:"delivered_at,nullable" format:"date-time"`
+	DeliveredAt time.Time `json:"delivered_at" api:"nullable" format:"date-time"`
 	// iMessage effect applied to a message (screen or bubble effect)
-	Effect MessageEffect `json:"effect,nullable"`
+	Effect MessageEffect `json:"effect" api:"nullable"`
 	// DEPRECATED: Use from_handle instead. Phone number of the message sender.
 	//
 	// Deprecated: deprecated
-	From string `json:"from,nullable"`
+	From string `json:"from" api:"nullable"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle,nullable"`
+	FromHandle ChatHandle `json:"from_handle" api:"nullable"`
 	// Message parts in order (text and media)
-	Parts []MessagePartUnion `json:"parts,nullable"`
+	Parts []MessagePartUnion `json:"parts" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService shared.ServiceType `json:"preferred_service,nullable"`
+	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// When the message was read
-	ReadAt time.Time `json:"read_at,nullable" format:"date-time"`
+	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
-	ReplyTo ReplyTo `json:"reply_to,nullable"`
+	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent
-	SentAt time.Time `json:"sent_at,nullable" format:"date-time"`
+	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -391,9 +391,9 @@ func (r *MessageEffectParam) UnmarshalJSON(data []byte) error {
 }
 
 type Reaction struct {
-	Handle ChatHandle `json:"handle,required"`
+	Handle ChatHandle `json:"handle" api:"required"`
 	// Whether this reaction is from the current user
-	IsMe bool `json:"is_me,required"`
+	IsMe bool `json:"is_me" api:"required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
 	// emphasize, question. Custom emoji reactions have type "custom" with the actual
 	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
@@ -401,12 +401,12 @@ type Reaction struct {
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
-	Type ReactionType `json:"type,required"`
+	Type ReactionType `json:"type" api:"required"`
 	// Custom emoji if type is "custom", null otherwise
-	CustomEmoji string `json:"custom_emoji,nullable"`
+	CustomEmoji string `json:"custom_emoji" api:"nullable"`
 	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
 	// reactions.
-	Sticker ReactionSticker `json:"sticker,nullable"`
+	Sticker ReactionSticker `json:"sticker" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handle      respjson.Field
@@ -476,7 +476,7 @@ const (
 // Indicates this message is a threaded reply to another message
 type ReplyTo struct {
 	// The ID of the message to reply to
-	MessageID string `json:"message_id,required" format:"uuid"`
+	MessageID string `json:"message_id" api:"required" format:"uuid"`
 	// The specific message part to reply to (0-based index). Defaults to 0 (first
 	// part) if not provided. Use this when replying to a specific part of a multipart
 	// message.
@@ -510,7 +510,7 @@ func (r ReplyTo) ToParam() ReplyToParam {
 // The property MessageID is required.
 type ReplyToParam struct {
 	// The ID of the message to reply to
-	MessageID string `json:"message_id,required" format:"uuid"`
+	MessageID string `json:"message_id" api:"required" format:"uuid"`
 	// The specific message part to reply to (0-based index). Defaults to 0 (first
 	// part) if not provided. Use this when replying to a specific part of a multipart
 	// message.
@@ -529,13 +529,13 @@ func (r *ReplyToParam) UnmarshalJSON(data []byte) error {
 // A text message part
 type TextPart struct {
 	// Reactions on this message part
-	Reactions []Reaction `json:"reactions,required"`
+	Reactions []Reaction `json:"reactions" api:"required"`
 	// Indicates this is a text message part
 	//
 	// Any of "text".
-	Type TextPartType `json:"type,required"`
+	Type TextPartType `json:"type" api:"required"`
 	// The text content
-	Value string `json:"value,required"`
+	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reactions   respjson.Field
@@ -559,12 +559,32 @@ const (
 	TextPartTypeText TextPartType = "text"
 )
 
+type MessageAddReactionResponse struct {
+	Message string `json:"message"`
+	Status  string `json:"status"`
+	TraceID string `json:"trace_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Status      respjson.Field
+		TraceID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response containing messages in a thread with pagination
 type MessageGetThreadResponse struct {
 	// Messages in the thread, ordered by the specified order parameter
-	Messages []Message `json:"messages,required"`
+	Messages []Message `json:"messages" api:"required"`
 	// Cursor for fetching the next page of results (null if no more results)
-	NextCursor string `json:"next_cursor,nullable"`
+	NextCursor string `json:"next_cursor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Messages    respjson.Field
@@ -582,7 +602,7 @@ func (r *MessageGetThreadResponse) UnmarshalJSON(data []byte) error {
 
 type MessageDeleteParams struct {
 	// ID of the chat containing the message to delete
-	ChatID string `json:"chat_id,required" format:"uuid"`
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	paramObj
 }
 
@@ -598,7 +618,7 @@ type MessageAddReactionParams struct {
 	// Whether to add or remove the reaction
 	//
 	// Any of "add", "remove".
-	Operation MessageAddReactionParamsOperation `json:"operation,omitzero,required"`
+	Operation MessageAddReactionParamsOperation `json:"operation,omitzero" api:"required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
 	// emphasize, question. Custom emoji reactions have type "custom" with the actual
 	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
@@ -606,7 +626,7 @@ type MessageAddReactionParams struct {
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
-	Type ReactionType `json:"type,omitzero,required"`
+	Type ReactionType `json:"type,omitzero" api:"required"`
 	// Custom emoji string. Required when type is "custom".
 	CustomEmoji param.Opt[string] `json:"custom_emoji,omitzero"`
 	// Optional index of the message part to react to. If not provided, reacts to the

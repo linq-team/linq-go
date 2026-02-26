@@ -44,7 +44,7 @@ func (r *PhonenumberService) List(ctx context.Context, opts ...option.RequestOpt
 
 type PhonenumberListResponse struct {
 	// List of phone numbers assigned to the partner
-	PhoneNumbers []PhonenumberListResponsePhoneNumber `json:"phone_numbers,required"`
+	PhoneNumbers []PhonenumberListResponsePhoneNumber `json:"phone_numbers" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumbers respjson.Field
@@ -61,9 +61,9 @@ func (r *PhonenumberListResponse) UnmarshalJSON(data []byte) error {
 
 type PhonenumberListResponsePhoneNumber struct {
 	// Unique identifier for the phone number
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Phone number in E.164 format
-	PhoneNumber  string                                         `json:"phone_number,required"`
+	PhoneNumber  string                                         `json:"phone_number" api:"required"`
 	Capabilities PhonenumberListResponsePhoneNumberCapabilities `json:"capabilities"`
 	// Deprecated. Always null.
 	CountryCode string `json:"country_code"`
@@ -91,11 +91,11 @@ func (r *PhonenumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 
 type PhonenumberListResponsePhoneNumberCapabilities struct {
 	// Whether MMS messaging is supported
-	Mms bool `json:"mms,required"`
+	Mms bool `json:"mms" api:"required"`
 	// Whether SMS messaging is supported
-	SMS bool `json:"sms,required"`
+	SMS bool `json:"sms" api:"required"`
 	// Whether voice calls are supported
-	Voice bool `json:"voice,required"`
+	Voice bool `json:"voice" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Mms         respjson.Field

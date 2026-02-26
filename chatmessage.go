@@ -82,33 +82,33 @@ func (r *ChatMessageService) Send(ctx context.Context, chatID string, body ChatM
 // A message that was sent (used in CreateChat and SendMessage responses)
 type SentMessage struct {
 	// Message identifier (UUID)
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Current delivery status of a message
 	//
 	// Any of "pending", "queued", "sent", "delivered", "failed".
-	DeliveryStatus SentMessageDeliveryStatus `json:"delivery_status,required"`
+	DeliveryStatus SentMessageDeliveryStatus `json:"delivery_status" api:"required"`
 	// Whether the message has been read
-	IsRead bool `json:"is_read,required"`
+	IsRead bool `json:"is_read" api:"required"`
 	// Message parts in order (text and media)
-	Parts []SentMessagePartUnion `json:"parts,required"`
+	Parts []SentMessagePartUnion `json:"parts" api:"required"`
 	// When the message was sent
-	SentAt time.Time `json:"sent_at,required" format:"date-time"`
+	SentAt time.Time `json:"sent_at" api:"required" format:"date-time"`
 	// When the message was delivered
-	DeliveredAt time.Time `json:"delivered_at,nullable" format:"date-time"`
+	DeliveredAt time.Time `json:"delivered_at" api:"nullable" format:"date-time"`
 	// iMessage effect applied to a message (screen or bubble effect)
-	Effect MessageEffect `json:"effect,nullable"`
+	Effect MessageEffect `json:"effect" api:"nullable"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle,nullable"`
+	FromHandle ChatHandle `json:"from_handle" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	PreferredService shared.ServiceType `json:"preferred_service,nullable"`
+	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// Indicates this message is a threaded reply to another message
-	ReplyTo ReplyTo `json:"reply_to,nullable"`
+	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service,nullable"`
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -195,10 +195,10 @@ func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
 
 type ChatMessageListResponse struct {
 	// List of messages
-	Messages []Message `json:"messages,required"`
+	Messages []Message `json:"messages" api:"required"`
 	// Cursor for fetching the next page of results. Null if there are no more results
 	// to fetch. Pass this value as the `cursor` parameter in the next request.
-	NextCursor string `json:"next_cursor,nullable"`
+	NextCursor string `json:"next_cursor" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Messages    respjson.Field
@@ -217,9 +217,9 @@ func (r *ChatMessageListResponse) UnmarshalJSON(data []byte) error {
 // Response for sending a message to a chat
 type ChatMessageSendResponse struct {
 	// Unique identifier of the chat this message was sent to
-	ChatID string `json:"chat_id,required" format:"uuid"`
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
-	Message SentMessage `json:"message,required"`
+	Message SentMessage `json:"message" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChatID      respjson.Field
@@ -255,7 +255,7 @@ type ChatMessageSendParams struct {
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
 	// from/to).
-	Message MessageContentParam `json:"message,omitzero,required"`
+	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	paramObj
 }
 

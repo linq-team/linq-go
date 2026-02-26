@@ -44,7 +44,7 @@ func (r *PhoneNumberService) List(ctx context.Context, opts ...option.RequestOpt
 
 type PhoneNumberListResponse struct {
 	// List of phone numbers assigned to the partner
-	PhoneNumbers []PhoneNumberListResponsePhoneNumber `json:"phone_numbers,required"`
+	PhoneNumbers []PhoneNumberListResponsePhoneNumber `json:"phone_numbers" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		PhoneNumbers respjson.Field
@@ -61,9 +61,9 @@ func (r *PhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 
 type PhoneNumberListResponsePhoneNumber struct {
 	// Unique identifier for the phone number
-	ID string `json:"id,required" format:"uuid"`
+	ID string `json:"id" api:"required" format:"uuid"`
 	// Phone number in E.164 format
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
