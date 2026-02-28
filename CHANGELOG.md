@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.3 (2026-02-28)
+
+Full Changelog: [v0.1.2...v0.1.3](https://github.com/linq-team/linq-go/compare/v0.1.2...v0.1.3)
+
+### Bug Fixes
+
+* remove unused part-level idempotency_key from OpenAPI spec ([19d060d](https://github.com/linq-team/linq-go/commit/19d060d98438be63c51097dbd9041fd7433f6b81))
+
 ## 0.1.2 (2026-02-25)
 
 Full Changelog: [v0.1.1...v0.1.2](https://github.com/linq-team/linq-go/compare/v0.1.1...v0.1.2)
