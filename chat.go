@@ -293,9 +293,6 @@ func init() {
 type MessageContentPartTextParam struct {
 	// The text content
 	Value string `json:"value" api:"required"`
-	// Optional idempotency key for this specific message part. Use this to prevent
-	// duplicate sends of the same part.
-	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	// Indicates this is a text message part
 	//
 	// This field can be elided, and will marshal its zero value as "text".
@@ -319,9 +316,6 @@ type MessageContentPartMediaParam struct {
 	//
 	// Either `url` or `attachment_id` must be provided, but not both.
 	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
-	// Optional idempotency key for this specific message part. Use this to prevent
-	// duplicate sends of the same part.
-	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	// Any publicly accessible HTTPS URL to the media file. The server downloads and
 	// sends the file automatically — no pre-upload step required.
 	//
