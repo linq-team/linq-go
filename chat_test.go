@@ -32,8 +32,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.MessageContentPartTextParam{
-					Value:          "Hello! How can I help you today?",
-					IdempotencyKey: linqgo.String("text-part-abc123"),
+					Value: "Hello! How can I help you today?",
 				},
 			}},
 			Effect: linqgo.MessageEffectParam{
