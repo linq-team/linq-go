@@ -14,6 +14,9 @@ import (
 	"github.com/linq-team/linq-go/packages/respjson"
 )
 
+// Check whether a recipient address supports iMessage or RCS before sending a
+// message.
+//
 // CapabilityService contains methods and other services that help with interacting
 // with the linq-api-v3 API.
 //

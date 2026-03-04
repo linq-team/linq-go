@@ -28,10 +28,54 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewChatService] method instead.
 type ChatService struct {
-	Options      []option.RequestOption
+	Options []option.RequestOption
+	// A Chat is a conversation thread with one or more participants.
+	//
+	// To begin a chat, you must create a Chat with at least one recipient handle.
+	// Including multiple handles creates a group chat.
+	//
+	// When creating a chat, the `from` field specifies which of your authorized phone
+	// numbers the message originates from. Your authentication token grants access to
+	// one or more phone numbers, but the `from` field determines the actual sender.
+	//
+	// **Handle Format:**
+	//
+	//   - Handles can be phone numbers or email addresses
+	//   - Phone numbers MUST be in E.164 format (starting with +)
+	//   - Phone format: `+[country code][subscriber number]`
+	//   - Example phone: `+12223334444` (US), `+442071234567` (UK), `+81312345678`
+	//     (Japan)
+	//   - Example email: `user@example.com`
+	//   - No spaces, dashes, or parentheses in phone numbers
 	Participants ChatParticipantService
-	Typing       ChatTypingService
-	Messages     ChatMessageService
+	// A Chat is a conversation thread with one or more participants.
+	//
+	// To begin a chat, you must create a Chat with at least one recipient handle.
+	// Including multiple handles creates a group chat.
+	//
+	// When creating a chat, the `from` field specifies which of your authorized phone
+	// numbers the message originates from. Your authentication token grants access to
+	// one or more phone numbers, but the `from` field determines the actual sender.
+	//
+	// **Handle Format:**
+	//
+	//   - Handles can be phone numbers or email addresses
+	//   - Phone numbers MUST be in E.164 format (starting with +)
+	//   - Phone format: `+[country code][subscriber number]`
+	//   - Example phone: `+12223334444` (US), `+442071234567` (UK), `+81312345678`
+	//     (Japan)
+	//   - Example email: `user@example.com`
+	//   - No spaces, dashes, or parentheses in phone numbers
+	Typing ChatTypingService
+	// Messages are individual text or multimedia communications within a chat thread.
+	//
+	// Messages can include text, attachments, special effects (like confetti or
+	// fireworks), and reactions. All messages are associated with a specific chat and
+	// sent from a phone number you own.
+	//
+	// Messages support delivery status tracking, read receipts, and editing
+	// capabilities.
+	Messages ChatMessageService
 }
 
 // NewChatService generates a new service that applies the given options to each
