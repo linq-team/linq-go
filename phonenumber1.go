@@ -13,6 +13,14 @@ import (
 	"github.com/linq-team/linq-go/packages/respjson"
 )
 
+// Phone Numbers represent the phone numbers assigned to your partner account.
+//
+// Use the list phone numbers endpoint to discover which phone numbers are
+// available for sending messages.
+//
+// When creating chats, listing chats, or sending a voice memo, use one of your
+// assigned phone numbers in the `from` field.
+//
 // PhoneNumberService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //

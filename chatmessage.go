@@ -21,6 +21,15 @@ import (
 	"github.com/linq-team/linq-go/shared"
 )
 
+// Messages are individual text or multimedia communications within a chat thread.
+//
+// Messages can include text, attachments, special effects (like confetti or
+// fireworks), and reactions. All messages are associated with a specific chat and
+// sent from a phone number you own.
+//
+// Messages support delivery status tracking, read receipts, and editing
+// capabilities.
+//
 // ChatMessageService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //
