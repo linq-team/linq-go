@@ -123,7 +123,7 @@ type SentMessage struct {
 	// iMessage effect applied to a message (screen or bubble effect)
 	Effect MessageEffect `json:"effect" api:"nullable"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle" api:"nullable"`
+	FromHandle shared.ChatHandle `json:"from_handle" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -174,8 +174,8 @@ const (
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
-	Reactions []Reaction `json:"reactions"`
-	Type      string     `json:"type"`
+	Reactions []shared.Reaction `json:"reactions"`
+	Type      string            `json:"type"`
 	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
 	// This field is from variant [shared.MediaPartResponse].
