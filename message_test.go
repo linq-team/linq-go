@@ -36,6 +36,36 @@ func TestMessageGet(t *testing.T) {
 	}
 }
 
+func TestMessageUpdateWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := linqgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messages.Update(
+		context.TODO(),
+		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
+		linqgo.MessageUpdateParams{
+			Text:      "This is the edited message content",
+			PartIndex: linqgo.Int(0),
+		},
+	)
+	if err != nil {
+		var apierr *linqgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestMessageDelete(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"

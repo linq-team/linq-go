@@ -63,6 +63,18 @@ func (r *MessageService) Get(ctx context.Context, messageID string, opts ...opti
 	return
 }
 
+// Edit the text content of a specific part of a previously sent message.
+func (r *MessageService) Update(ctx context.Context, messageID string, body MessageUpdateParams, opts ...option.RequestOption) (res *Message, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if messageID == "" {
+		err = errors.New("missing required messageId parameter")
+		return
+	}
+	path := fmt.Sprintf("v3/messages/%s", messageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	return
+}
+
 // Deletes a message from the Linq API only. This does NOT unsend or remove the
 // message from the actual chat - recipients will still see the message.
 //
@@ -528,6 +540,22 @@ type MessageAddReactionResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageUpdateParams struct {
+	// New text content for the message part
+	Text string `json:"text" api:"required"`
+	// Index of the message part to edit. Defaults to 0.
+	PartIndex param.Opt[int64] `json:"part_index,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
