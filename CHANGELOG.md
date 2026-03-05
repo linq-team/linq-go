@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.2.0 (2026-03-05)
+
+Full Changelog: [v0.1.2...v0.2.0](https://github.com/linq-team/linq-go/compare/v0.1.2...v0.2.0)
+
+### Features
+
+* Allow 100 presigned URL or uploaded attachments (URL + ID) in a message ([2b32bbd](https://github.com/linq-team/linq-go/commit/2b32bbdf33ee1928793d062bde5bbed222c6ae8c))
+* Plt 361 synapse support editing messages in v3 ([2b7c25b](https://github.com/linq-team/linq-go/commit/2b7c25bff5a81de8a14619afcbb56a37bc3930ff))
+
+
+### Bug Fixes
+
+* remove unused part-level idempotency_key from OpenAPI spec ([19d060d](https://github.com/linq-team/linq-go/commit/19d060d98438be63c51097dbd9041fd7433f6b81))
+
+
+### Chores
+
+* **internal:** codegen related update ([b3938fe](https://github.com/linq-team/linq-go/commit/b3938fe08bb14412c79bde8d97f03379a5c044e4))
+
 ## 0.1.2 (2026-02-25)
 
 Full Changelog: [v0.1.1...v0.1.2](https://github.com/linq-team/linq-go/compare/v0.1.1...v0.1.2)
