@@ -13,7 +13,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 )
 
-func TestCapabilityCheckImessageWithOptionalParams(t *testing.T) {
+func TestCapabilityCheckiMessageWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,7 +26,7 @@ func TestCapabilityCheckImessageWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Capability.CheckImessage(context.TODO(), linqgo.CapabilityCheckImessageParams{
+	_, err := client.Capability.CheckiMessage(context.TODO(), linqgo.CapabilityCheckiMessageParams{
 		Address: "+15551234567",
 		From:    linqgo.String("+15559876543"),
 	})
@@ -39,7 +39,7 @@ func TestCapabilityCheckImessageWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestCapabilityCheckRcsWithOptionalParams(t *testing.T) {
+func TestCapabilityCheckRCSWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -52,7 +52,7 @@ func TestCapabilityCheckRcsWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Capability.CheckRcs(context.TODO(), linqgo.CapabilityCheckRcsParams{
+	_, err := client.Capability.CheckRCS(context.TODO(), linqgo.CapabilityCheckRCSParams{
 		Address: "+15551234567",
 		From:    linqgo.String("+15559876543"),
 	})

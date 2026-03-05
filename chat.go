@@ -15,10 +15,10 @@ import (
 	"github.com/linq-team/linq-go/internal/apiquery"
 	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/pagination"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
-	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with
@@ -154,11 +154,42 @@ func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdate
 // 2. Response includes `next_cursor: "20"` (more results exist)
 // 3. Next request: `GET /v3/chats?from=%2B12223334444&limit=20&cursor=20`
 // 4. Response includes `next_cursor: null` (no more results)
-func (r *ChatService) List(ctx context.Context, query ChatListParams, opts ...option.RequestOption) (res *ChatListResponse, err error) {
+func (r *ChatService) ListChats(ctx context.Context, query ChatListChatsParams, opts ...option.RequestOption) (res *pagination.ListChatsPagination[Chat], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "v3/chats"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieves a paginated list of chats for the authenticated partner filtered by
+// phone number. Returns all chats involving the specified phone number with their
+// participants and recent activity.
+//
+// **Pagination:**
+//
+// - Use `limit` to control page size (default: 20, max: 100)
+// - The response includes `next_cursor` for fetching the next page
+// - When `next_cursor` is `null`, there are no more results to fetch
+// - Pass the `next_cursor` value as the `cursor` parameter for the next request
+//
+// **Example pagination flow:**
+//
+// 1. First request: `GET /v3/chats?from=%2B12223334444&limit=20`
+// 2. Response includes `next_cursor: "20"` (more results exist)
+// 3. Next request: `GET /v3/chats?from=%2B12223334444&limit=20&cursor=20`
+// 4. Response includes `next_cursor: null` (no more results)
+func (r *ChatService) ListChatsAutoPaging(ctx context.Context, query ChatListChatsParams, opts ...option.RequestOption) *pagination.ListChatsPaginationAutoPager[Chat] {
+	return pagination.NewListChatsPaginationAutoPager(r.ListChats(ctx, query, opts...))
 }
 
 // Mark all messages in a chat as read.
@@ -258,6 +289,65 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Type is required.
+type MediaPartParam struct {
+	// Indicates this is a media attachment part
+	//
+	// Any of "media".
+	Type MediaPartType `json:"type,omitzero" api:"required"`
+	// Reference to a file pre-uploaded via `POST /v3/attachments` (optional). The file
+	// is already stored, so sends using this ID skip the download step — useful when
+	// sending the same file to many recipients.
+	//
+	// Either `url` or `attachment_id` must be provided, but not both.
+	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
+	// Any publicly accessible HTTPS URL to the media file. The server downloads and
+	// sends the file automatically — no pre-upload step required.
+	//
+	// **Size limit:** 10MB maximum for URL-based downloads. For larger files (up to
+	// 100MB), use the pre-upload flow: `POST /v3/attachments` to get a presigned URL,
+	// upload directly, then reference by `attachment_id`.
+	//
+	// **Requirements:**
+	//
+	//   - URL must use HTTPS
+	//   - File content must be a supported format (the server validates the actual file
+	//     content)
+	//
+	// **Supported formats:**
+	//
+	//   - Images: .jpg, .jpeg, .png, .gif, .heic, .heif, .tif, .tiff, .bmp
+	//   - Videos: .mp4, .mov, .m4v, .mpeg, .mpg, .3gp
+	//   - Audio: .m4a, .mp3, .aac, .caf, .wav, .aiff, .amr
+	//   - Documents: .pdf, .txt, .rtf, .csv, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
+	//     .pages, .numbers, .key, .epub, .zip, .html, .htm
+	//   - Contact & Calendar: .vcf, .ics
+	//
+	// **Tip:** Audio sent here appears as a regular file attachment. To send audio as
+	// an iMessage voice memo bubble (with inline playback), use
+	// `/v3/chats/{chatId}/voicememo`. For repeated sends of the same file, use
+	// `attachment_id` to avoid redundant downloads.
+	//
+	// Either `url` or `attachment_id` must be provided, but not both.
+	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	paramObj
+}
+
+func (r MediaPartParam) MarshalJSON() (data []byte, err error) {
+	type shadow MediaPartParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MediaPartParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates this is a media attachment part
+type MediaPartType string
+
+const (
+	MediaPartTypeMedia MediaPartType = "media"
+)
+
 // Message content container. Groups all message-related fields together,
 // separating the "what" (message content) from the "where" (routing fields like
 // from/to).
@@ -319,8 +409,8 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type MessageContentPartUnionParam struct {
-	OfText  *MessageContentPartTextParam  `json:",omitzero,inline"`
-	OfMedia *MessageContentPartMediaParam `json:",omitzero,inline"`
+	OfText  *TextPartParam  `json:",omitzero,inline"`
+	OfMedia *MediaPartParam `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -334,81 +424,36 @@ func (u *MessageContentPartUnionParam) UnmarshalJSON(data []byte) error {
 func init() {
 	apijson.RegisterUnion[MessageContentPartUnionParam](
 		"type",
-		apijson.Discriminator[MessageContentPartTextParam]("text"),
-		apijson.Discriminator[MessageContentPartMediaParam]("media"),
+		apijson.Discriminator[TextPartParam]("text"),
+		apijson.Discriminator[MediaPartParam]("media"),
 	)
 }
 
 // The properties Type, Value are required.
-type MessageContentPartTextParam struct {
-	// The text content
-	Value string `json:"value" api:"required"`
+type TextPartParam struct {
 	// Indicates this is a text message part
 	//
-	// This field can be elided, and will marshal its zero value as "text".
-	Type constant.Text `json:"type" api:"required"`
+	// Any of "text".
+	Type TextPartType `json:"type,omitzero" api:"required"`
+	// The text content
+	Value string `json:"value" api:"required"`
 	paramObj
 }
 
-func (r MessageContentPartTextParam) MarshalJSON() (data []byte, err error) {
-	type shadow MessageContentPartTextParam
+func (r TextPartParam) MarshalJSON() (data []byte, err error) {
+	type shadow TextPartParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MessageContentPartTextParam) UnmarshalJSON(data []byte) error {
+func (r *TextPartParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Type is required.
-type MessageContentPartMediaParam struct {
-	// Reference to a file pre-uploaded via `POST /v3/attachments` (optional). The file
-	// is already stored, so sends using this ID skip the download step — useful when
-	// sending the same file to many recipients.
-	//
-	// Either `url` or `attachment_id` must be provided, but not both.
-	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
-	// Any publicly accessible HTTPS URL to the media file. The server downloads and
-	// sends the file automatically — no pre-upload step required.
-	//
-	// **Size limit:** 10MB maximum for URL-based downloads. For larger files (up to
-	// 100MB), use the pre-upload flow: `POST /v3/attachments` to get a presigned URL,
-	// upload directly, then reference by `attachment_id`.
-	//
-	// **Requirements:**
-	//
-	//   - URL must use HTTPS
-	//   - File content must be a supported format (the server validates the actual file
-	//     content)
-	//
-	// **Supported formats:**
-	//
-	//   - Images: .jpg, .jpeg, .png, .gif, .heic, .heif, .tif, .tiff, .bmp
-	//   - Videos: .mp4, .mov, .m4v, .mpeg, .mpg, .3gp
-	//   - Audio: .m4a, .mp3, .aac, .caf, .wav, .aiff, .amr
-	//   - Documents: .pdf, .txt, .rtf, .csv, .doc, .docx, .xls, .xlsx, .ppt, .pptx,
-	//     .pages, .numbers, .key, .epub, .zip, .html, .htm
-	//   - Contact & Calendar: .vcf, .ics
-	//
-	// **Tip:** Audio sent here appears as a regular file attachment. To send audio as
-	// an iMessage voice memo bubble (with inline playback), use
-	// `/v3/chats/{chatId}/voicememo`. For repeated sends of the same file, use
-	// `attachment_id` to avoid redundant downloads.
-	//
-	// Either `url` or `attachment_id` must be provided, but not both.
-	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
-	// Indicates this is a media attachment part
-	//
-	// This field can be elided, and will marshal its zero value as "media".
-	Type constant.Media `json:"type" api:"required"`
-	paramObj
-}
+// Indicates this is a text message part
+type TextPartType string
 
-func (r MessageContentPartMediaParam) MarshalJSON() (data []byte, err error) {
-	type shadow MessageContentPartMediaParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *MessageContentPartMediaParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	TextPartTypeText TextPartType = "text"
+)
 
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
@@ -460,27 +505,6 @@ type ChatNewResponseChat struct {
 // Returns the unmodified JSON received from the API
 func (r ChatNewResponseChat) RawJSON() string { return r.JSON.raw }
 func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ChatListResponse struct {
-	// List of chats
-	Chats []Chat `json:"chats" api:"required"`
-	// Cursor for fetching the next page of results. Null if there are no more results
-	// to fetch. Pass this value as the `cursor` parameter in the next request.
-	NextCursor string `json:"next_cursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Chats       respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChatListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ChatListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -640,7 +664,7 @@ func (r *ChatUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ChatListParams struct {
+type ChatListChatsParams struct {
 	// Phone number to filter chats by. Returns all chats made from this phone number.
 	// Must be in E.164 format (e.g., `+13343284472`). The `+` is automatically
 	// URL-encoded by HTTP clients.
@@ -653,8 +677,8 @@ type ChatListParams struct {
 	paramObj
 }
 
-// URLQuery serializes [ChatListParams]'s query parameters as `url.Values`.
-func (r ChatListParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [ChatListChatsParams]'s query parameters as `url.Values`.
+func (r ChatListChatsParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,

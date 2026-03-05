@@ -307,6 +307,7 @@ type Client struct {
 	// Check whether a recipient address supports iMessage or RCS before sending a
 	// message.
 	Capability CapabilityService
+	Webhooks   WebhookService
 }
 
 // DefaultClientOptions read from the environment (LINQ_API_V3_API_KEY,
@@ -339,6 +340,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebhookEvents = NewWebhookEventService(opts...)
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
 	r.Capability = NewCapabilityService(opts...)
+	r.Webhooks = NewWebhookService(opts...)
 
 	return
 }

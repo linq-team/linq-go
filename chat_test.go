@@ -31,7 +31,8 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -40,7 +41,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				Type: linqgo.MessageEffectTypeScreen,
 			},
 			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
-			PreferredService: shared.ServiceTypeIMessage,
+			PreferredService: shared.ServiceTypeiMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
 				PartIndex: linqgo.Int(0),
@@ -110,7 +111,7 @@ func TestChatUpdateWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestChatListWithOptionalParams(t *testing.T) {
+func TestChatListChatsWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -123,7 +124,7 @@ func TestChatListWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Chats.List(context.TODO(), linqgo.ChatListParams{
+	_, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
 		From:   "+13343284472",
 		Cursor: linqgo.String("20"),
 		Limit:  linqgo.Int(20),
