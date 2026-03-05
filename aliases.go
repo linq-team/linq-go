@@ -16,6 +16,23 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// This is an alias to an internal type.
+type ChatHandle = shared.ChatHandle
+
+// Participant status
+//
+// This is an alias to an internal type.
+type ChatHandleStatus = shared.ChatHandleStatus
+
+// Equals "active"
+const ChatHandleStatusActive = shared.ChatHandleStatusActive
+
+// Equals "left"
+const ChatHandleStatusLeft = shared.ChatHandleStatusLeft
+
+// Equals "removed"
+const ChatHandleStatusRemoved = shared.ChatHandleStatusRemoved
+
 // A media attachment part
 //
 // This is an alias to an internal type.

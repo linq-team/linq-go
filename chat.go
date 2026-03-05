@@ -257,7 +257,7 @@ type Chat struct {
 	DisplayName string `json:"display_name" api:"required"`
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
-	Handles []ChatHandle `json:"handles" api:"required"`
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
 	// Whether the chat is archived
 	IsArchived bool `json:"is_archived" api:"required"`
 	// Whether this is a group chat
@@ -480,7 +480,7 @@ type ChatNewResponseChat struct {
 	DisplayName string `json:"display_name" api:"required"`
 	// List of participants in the chat. Always contains at least two handles (your
 	// phone number and the other participant).
-	Handles []ChatHandle `json:"handles" api:"required"`
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
@@ -567,7 +567,7 @@ type ChatSendVoicememoResponseVoiceMemoChat struct {
 	// Chat identifier
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Chat participants
-	Handles []ChatHandle `json:"handles" api:"required"`
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
 	// Whether the chat is active
 	IsActive bool `json:"is_active" api:"required"`
 	// Whether this is a group chat
