@@ -11,6 +11,7 @@ import (
 	"github.com/linq-team/linq-go"
 	"github.com/linq-team/linq-go/internal/testutil"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/shared"
 )
 
 func TestMessageGet(t *testing.T) {
@@ -113,7 +114,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
 		linqgo.MessageAddReactionParams{
 			Operation:   linqgo.MessageAddReactionParamsOperationAdd,
-			Type:        linqgo.ReactionTypeLove,
+			Type:        shared.ReactionTypeLove,
 			CustomEmoji: linqgo.String("😍"),
 			PartIndex:   linqgo.Int(1),
 		},

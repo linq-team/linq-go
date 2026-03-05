@@ -386,7 +386,7 @@ type ReactionEventBase struct {
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
-	ReactionType ReactionType `json:"reaction_type" api:"required"`
+	ReactionType shared.ReactionType `json:"reaction_type" api:"required"`
 	// Chat identifier (UUID)
 	ChatID string `json:"chat_id"`
 	// The actual emoji when reaction_type is "custom". Null for standard tapbacks.
@@ -3552,7 +3552,7 @@ type EventsWebhookEventUnionData struct {
 	Reason    string    `json:"reason"`
 	IsFromMe  bool      `json:"is_from_me"`
 	// This field is from variant [ReactionEventBase].
-	ReactionType ReactionType `json:"reaction_type"`
+	ReactionType shared.ReactionType `json:"reaction_type"`
 	// This field is from variant [ReactionEventBase].
 	CustomEmoji string `json:"custom_emoji"`
 	From        string `json:"from"`
