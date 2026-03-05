@@ -143,6 +143,7 @@ const (
 	WebhookEventTypeMessageRead                WebhookEventType = "message.read"
 	WebhookEventTypeMessageDelivered           WebhookEventType = "message.delivered"
 	WebhookEventTypeMessageFailed              WebhookEventType = "message.failed"
+	WebhookEventTypeMessageEdited              WebhookEventType = "message.edited"
 	WebhookEventTypeReactionAdded              WebhookEventType = "reaction.added"
 	WebhookEventTypeReactionRemoved            WebhookEventType = "reaction.removed"
 	WebhookEventTypeParticipantAdded           WebhookEventType = "participant.added"
