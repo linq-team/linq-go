@@ -12,7 +12,8 @@ import (
 	"github.com/linq-team/linq-go/option"
 )
 
-func TestUsage(t *testing.T) {
+func TestManualPagination(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,21 +25,23 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	t.Skip("Mock server tests are disabled")
-	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+	page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
+		From: "+13343284472",
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", chat.Chat)
+	for _, chat := range page.Chats {
+		t.Logf("%+v\n", chat.ID)
+	}
+	// The mock server isn't going to give us real pagination
+	page, err = page.GetNextPage()
+	if err != nil {
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+	if page != nil {
+		for _, chat := range page.Chats {
+			t.Logf("%+v\n", chat.ID)
+		}
+	}
 }

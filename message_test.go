@@ -97,7 +97,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestMessageGetThreadWithOptionalParams(t *testing.T) {
+func TestMessageListMessagesThreadWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -110,13 +110,13 @@ func TestMessageGetThreadWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Messages.GetThread(
+	_, err := client.Messages.ListMessagesThread(
 		context.TODO(),
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
-		linqgo.MessageGetThreadParams{
+		linqgo.MessageListMessagesThreadParams{
 			Cursor: linqgo.String("cursor"),
 			Limit:  linqgo.Int(1),
-			Order:  linqgo.MessageGetThreadParamsOrderAsc,
+			Order:  linqgo.MessageListMessagesThreadParamsOrderAsc,
 		},
 	)
 	if err != nil {

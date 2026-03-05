@@ -16,6 +16,7 @@ import (
 	"github.com/linq-team/linq-go/internal/apiquery"
 	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/pagination"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
@@ -50,15 +51,30 @@ func NewChatMessageService(opts ...option.RequestOption) (r ChatMessageService) 
 }
 
 // Retrieve messages from a specific chat with pagination support.
-func (r *ChatMessageService) List(ctx context.Context, chatID string, query ChatMessageListParams, opts ...option.RequestOption) (res *ChatMessageListResponse, err error) {
+func (r *ChatMessageService) List(ctx context.Context, chatID string, query ChatMessageListParams, opts ...option.RequestOption) (res *pagination.ListMessagesPagination[Message], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
 		return
 	}
 	path := fmt.Sprintf("v3/chats/%s/messages", chatID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve messages from a specific chat with pagination support.
+func (r *ChatMessageService) ListAutoPaging(ctx context.Context, chatID string, query ChatMessageListParams, opts ...option.RequestOption) *pagination.ListMessagesPaginationAutoPager[Message] {
+	return pagination.NewListMessagesPaginationAutoPager(r.List(ctx, chatID, query, opts...))
 }
 
 // Send a message to an existing chat. Use this endpoint when you already have a
@@ -154,23 +170,23 @@ const (
 )
 
 // SentMessagePartUnion contains all possible properties and values from
-// [TextPart], [MediaPart].
+// [shared.TextPartResponse], [shared.MediaPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
 	Reactions []Reaction `json:"reactions"`
 	Type      string     `json:"type"`
-	// This field is from variant [TextPart].
+	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	Filename string `json:"filename"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	MimeType string `json:"mime_type"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
 		Reactions respjson.Field
@@ -185,12 +201,12 @@ type SentMessagePartUnion struct {
 	} `json:"-"`
 }
 
-func (u SentMessagePartUnion) AsTextPart() (v TextPart) {
+func (u SentMessagePartUnion) AsTextPartResponse() (v shared.TextPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u SentMessagePartUnion) AsMediaPart() (v MediaPart) {
+func (u SentMessagePartUnion) AsMediaPartResponse() (v shared.MediaPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -199,27 +215,6 @@ func (u SentMessagePartUnion) AsMediaPart() (v MediaPart) {
 func (u SentMessagePartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ChatMessageListResponse struct {
-	// List of messages
-	Messages []Message `json:"messages" api:"required"`
-	// Cursor for fetching the next page of results. Null if there are no more results
-	// to fetch. Pass this value as the `cursor` parameter in the next request.
-	NextCursor string `json:"next_cursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Messages    respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChatMessageListResponse) RawJSON() string { return r.JSON.raw }
-func (r *ChatMessageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
