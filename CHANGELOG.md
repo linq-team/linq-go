@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0 (2026-03-05)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/linq-team/linq-go/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** add new endpoint ([5b3366a](https://github.com/linq-team/linq-go/commit/5b3366aebde57537fd323db056e02560a43b5224))
+
 ## 0.2.0 (2026-03-05)
 
 Full Changelog: [v0.1.2...v0.2.0](https://github.com/linq-team/linq-go/compare/v0.1.2...v0.2.0)
