@@ -24,7 +24,7 @@ type MediaPartResponse struct {
 	// MIME type of the file
 	MimeType string `json:"mime_type" api:"required"`
 	// Reactions on this message part
-	Reactions []linqgo.Reaction `json:"reactions" api:"required"`
+	Reactions []Reaction `json:"reactions" api:"required"`
 	// File size in bytes
 	SizeBytes int64 `json:"size_bytes" api:"required"`
 	// Indicates this is a media attachment part
@@ -60,6 +60,89 @@ const (
 	MediaPartResponseTypeMedia MediaPartResponseType = "media"
 )
 
+type Reaction struct {
+	Handle linqgo.ChatHandle `json:"handle" api:"required"`
+	// Whether this reaction is from the current user
+	IsMe bool `json:"is_me" api:"required"`
+	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
+	// emphasize, question. Custom emoji reactions have type "custom" with the actual
+	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
+	// sticker attachment details in the sticker field.
+	//
+	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
+	// "sticker".
+	Type ReactionType `json:"type" api:"required"`
+	// Custom emoji if type is "custom", null otherwise
+	CustomEmoji string `json:"custom_emoji" api:"nullable"`
+	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
+	// reactions.
+	Sticker ReactionSticker `json:"sticker" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		IsMe        respjson.Field
+		Type        respjson.Field
+		CustomEmoji respjson.Field
+		Sticker     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r Reaction) RawJSON() string { return r.JSON.raw }
+func (r *Reaction) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
+// reactions.
+type ReactionSticker struct {
+	// Filename of the sticker
+	FileName string `json:"file_name"`
+	// Sticker image height in pixels
+	Height int64 `json:"height"`
+	// MIME type of the sticker image
+	MimeType string `json:"mime_type"`
+	// Presigned URL for downloading the sticker image (expires in 1 hour).
+	URL string `json:"url" format:"uri"`
+	// Sticker image width in pixels
+	Width int64 `json:"width"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FileName    respjson.Field
+		Height      respjson.Field
+		MimeType    respjson.Field
+		URL         respjson.Field
+		Width       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReactionSticker) RawJSON() string { return r.JSON.raw }
+func (r *ReactionSticker) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
+// emphasize, question. Custom emoji reactions have type "custom" with the actual
+// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
+// sticker attachment details in the sticker field.
+type ReactionType string
+
+const (
+	ReactionTypeLove      ReactionType = "love"
+	ReactionTypeLike      ReactionType = "like"
+	ReactionTypeDislike   ReactionType = "dislike"
+	ReactionTypeLaugh     ReactionType = "laugh"
+	ReactionTypeEmphasize ReactionType = "emphasize"
+	ReactionTypeQuestion  ReactionType = "question"
+	ReactionTypeCustom    ReactionType = "custom"
+	ReactionTypeSticker   ReactionType = "sticker"
+)
+
 // Messaging service type
 type ServiceType string
 
@@ -72,7 +155,7 @@ const (
 // A text message part
 type TextPartResponse struct {
 	// Reactions on this message part
-	Reactions []linqgo.Reaction `json:"reactions" api:"required"`
+	Reactions []Reaction `json:"reactions" api:"required"`
 	// Indicates this is a text message part
 	//
 	// Any of "text".

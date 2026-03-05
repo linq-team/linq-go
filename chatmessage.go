@@ -174,8 +174,8 @@ const (
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
-	Reactions []Reaction `json:"reactions"`
-	Type      string     `json:"type"`
+	Reactions []shared.Reaction `json:"reactions"`
+	Type      string            `json:"type"`
 	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
 	// This field is from variant [shared.MediaPartResponse].
