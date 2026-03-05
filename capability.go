@@ -14,6 +14,9 @@ import (
 	"github.com/linq-team/linq-go/packages/respjson"
 )
 
+// Check whether a recipient address supports iMessage or RCS before sending a
+// message.
+//
 // CapabilityService contains methods and other services that help with interacting
 // with the linq-api-v3 API.
 //
@@ -35,7 +38,7 @@ func NewCapabilityService(opts ...option.RequestOption) (r CapabilityService) {
 
 // Check whether a recipient address (phone number or email) is reachable via
 // iMessage.
-func (r *CapabilityService) CheckImessage(ctx context.Context, body CapabilityCheckImessageParams, opts ...option.RequestOption) (res *CapabilityCheckImessageResponse, err error) {
+func (r *CapabilityService) CheckiMessage(ctx context.Context, body CapabilityCheckiMessageParams, opts ...option.RequestOption) (res *CapabilityCheckiMessageResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_imessage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -43,14 +46,14 @@ func (r *CapabilityService) CheckImessage(ctx context.Context, body CapabilityCh
 }
 
 // Check whether a recipient address (phone number) supports RCS messaging.
-func (r *CapabilityService) CheckRcs(ctx context.Context, body CapabilityCheckRcsParams, opts ...option.RequestOption) (res *CapabilityCheckRcsResponse, err error) {
+func (r *CapabilityService) CheckRCS(ctx context.Context, body CapabilityCheckRCSParams, opts ...option.RequestOption) (res *CapabilityCheckRCSResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_rcs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
-type CapabilityCheckImessageResponse struct {
+type CapabilityCheckiMessageResponse struct {
 	// The recipient address that was checked
 	Address string `json:"address" api:"required"`
 	// Whether the recipient supports the checked messaging service
@@ -65,12 +68,12 @@ type CapabilityCheckImessageResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CapabilityCheckImessageResponse) RawJSON() string { return r.JSON.raw }
-func (r *CapabilityCheckImessageResponse) UnmarshalJSON(data []byte) error {
+func (r CapabilityCheckiMessageResponse) RawJSON() string { return r.JSON.raw }
+func (r *CapabilityCheckiMessageResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CapabilityCheckRcsResponse struct {
+type CapabilityCheckRCSResponse struct {
 	// The recipient address that was checked
 	Address string `json:"address" api:"required"`
 	// Whether the recipient supports the checked messaging service
@@ -85,12 +88,12 @@ type CapabilityCheckRcsResponse struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r CapabilityCheckRcsResponse) RawJSON() string { return r.JSON.raw }
-func (r *CapabilityCheckRcsResponse) UnmarshalJSON(data []byte) error {
+func (r CapabilityCheckRCSResponse) RawJSON() string { return r.JSON.raw }
+func (r *CapabilityCheckRCSResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CapabilityCheckImessageParams struct {
+type CapabilityCheckiMessageParams struct {
 	// The recipient phone number or email address to check
 	Address string `json:"address" api:"required"`
 	// Optional sender phone number. If omitted, an available phone from your pool is
@@ -99,15 +102,15 @@ type CapabilityCheckImessageParams struct {
 	paramObj
 }
 
-func (r CapabilityCheckImessageParams) MarshalJSON() (data []byte, err error) {
-	type shadow CapabilityCheckImessageParams
+func (r CapabilityCheckiMessageParams) MarshalJSON() (data []byte, err error) {
+	type shadow CapabilityCheckiMessageParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *CapabilityCheckImessageParams) UnmarshalJSON(data []byte) error {
+func (r *CapabilityCheckiMessageParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CapabilityCheckRcsParams struct {
+type CapabilityCheckRCSParams struct {
 	// The recipient phone number or email address to check
 	Address string `json:"address" api:"required"`
 	// Optional sender phone number. If omitted, an available phone from your pool is
@@ -116,10 +119,10 @@ type CapabilityCheckRcsParams struct {
 	paramObj
 }
 
-func (r CapabilityCheckRcsParams) MarshalJSON() (data []byte, err error) {
-	type shadow CapabilityCheckRcsParams
+func (r CapabilityCheckRCSParams) MarshalJSON() (data []byte, err error) {
+	type shadow CapabilityCheckRCSParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *CapabilityCheckRcsParams) UnmarshalJSON(data []byte) error {
+func (r *CapabilityCheckRCSParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

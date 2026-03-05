@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/linq-team/linq-go@v0.1.2'
+go get -u 'github.com/linq-team/linq-go@v0.2.0'
 ```
 
 <!-- x-release-please-end -->
@@ -60,7 +60,8 @@ func main() {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -294,8 +295,37 @@ This library provides some conveniences for working with paginated list endpoint
 
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
+```go
+iter := client.Chats.ListChatsAutoPaging(context.TODO(), linqgo.ChatListChatsParams{
+	From: "+13343284472",
+})
+// Automatically fetches more pages as needed.
+for iter.Next() {
+	chat := iter.Current()
+	fmt.Printf("%+v\n", chat)
+}
+if err := iter.Err(); err != nil {
+	panic(err.Error())
+}
+```
+
 Or you can use simple `.List()` methods to fetch a single page and receive a standard response object
 with additional helper methods like `.GetNextPage()`, e.g.:
+
+```go
+page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
+	From: "+13343284472",
+})
+for page != nil {
+	for _, chat := range page.Chats {
+		fmt.Printf("%+v\n", chat)
+	}
+	page, err = page.GetNextPage()
+}
+if err != nil {
+	panic(err.Error())
+}
+```
 
 ### Errors
 
@@ -311,7 +341,8 @@ _, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 	From: "+12052535597",
 	Message: linqgo.MessageContentParam{
 		Parts: []linqgo.MessageContentPartUnionParam{{
-			OfText: &linqgo.MessageContentPartTextParam{
+			OfText: &linqgo.TextPartParam{
+				Type:  linqgo.TextPartTypeText,
 				Value: "Hello! How can I help you today?",
 			},
 		}},
@@ -348,7 +379,8 @@ client.Chats.New(
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -394,7 +426,8 @@ client.Chats.New(
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -419,7 +452,8 @@ chat, err := client.Chats.New(
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},

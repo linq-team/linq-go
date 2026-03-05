@@ -63,9 +63,9 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 		linqgo.ChatMessageSendParams{
 			Message: linqgo.MessageContentParam{
 				Parts: []linqgo.MessageContentPartUnionParam{{
-					OfText: &linqgo.MessageContentPartTextParam{
-						Value:          "Hello, world!",
-						IdempotencyKey: linqgo.String("text-part-abc123"),
+					OfText: &linqgo.TextPartParam{
+						Type:  linqgo.TextPartTypeText,
+						Value: "Hello, world!",
 					},
 				}},
 				Effect: linqgo.MessageEffectParam{
@@ -73,7 +73,7 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 					Type: linqgo.MessageEffectTypeScreen,
 				},
 				IdempotencyKey:   linqgo.String("msg-abc123xyz"),
-				PreferredService: shared.ServiceTypeIMessage,
+				PreferredService: shared.ServiceTypeiMessage,
 				ReplyTo: linqgo.ReplyToParam{
 					MessageID: "550e8400-e29b-41d4-a716-446655440000",
 					PartIndex: linqgo.Int(0),

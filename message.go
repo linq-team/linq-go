@@ -16,11 +16,21 @@ import (
 	"github.com/linq-team/linq-go/internal/apiquery"
 	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/pagination"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
 )
 
+// Messages are individual text or multimedia communications within a chat thread.
+//
+// Messages can include text, attachments, special effects (like confetti or
+// fireworks), and reactions. All messages are associated with a specific chat and
+// sent from a phone number you own.
+//
+// Messages support delivery status tracking, read receipts, and editing
+// capabilities.
+//
 // MessageService contains methods and other services that help with interacting
 // with the linq-api-v3 API.
 //
@@ -99,15 +109,35 @@ func (r *MessageService) AddReaction(ctx context.Context, messageID string, body
 // If the message is not part of a thread, returns just that single message.
 //
 // Supports pagination and configurable ordering.
-func (r *MessageService) GetThread(ctx context.Context, messageID string, query MessageGetThreadParams, opts ...option.RequestOption) (res *MessageGetThreadResponse, err error) {
+func (r *MessageService) ListMessagesThread(ctx context.Context, messageID string, query MessageListMessagesThreadParams, opts ...option.RequestOption) (res *pagination.ListMessagesPagination[Message], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
 		return
 	}
 	path := fmt.Sprintf("v3/messages/%s/thread", messageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve all messages in a conversation thread. Given any message ID in the
+// thread, returns the originator message and all replies in chronological order.
+//
+// If the message is not part of a thread, returns just that single message.
+//
+// Supports pagination and configurable ordering.
+func (r *MessageService) ListMessagesThreadAutoPaging(ctx context.Context, messageID string, query MessageListMessagesThreadParams, opts ...option.RequestOption) *pagination.ListMessagesPaginationAutoPager[Message] {
+	return pagination.NewListMessagesPaginationAutoPager(r.ListMessagesThread(ctx, messageID, query, opts...))
 }
 
 type ChatHandle struct {
@@ -156,51 +186,6 @@ const (
 	ChatHandleStatusActive  ChatHandleStatus = "active"
 	ChatHandleStatusLeft    ChatHandleStatus = "left"
 	ChatHandleStatusRemoved ChatHandleStatus = "removed"
-)
-
-// A media attachment part
-type MediaPart struct {
-	// Unique attachment identifier
-	ID string `json:"id" api:"required" format:"uuid"`
-	// Original filename
-	Filename string `json:"filename" api:"required"`
-	// MIME type of the file
-	MimeType string `json:"mime_type" api:"required"`
-	// Reactions on this message part
-	Reactions []Reaction `json:"reactions" api:"required"`
-	// File size in bytes
-	SizeBytes int64 `json:"size_bytes" api:"required"`
-	// Indicates this is a media attachment part
-	//
-	// Any of "media".
-	Type MediaPartType `json:"type" api:"required"`
-	// Presigned URL for downloading the attachment (expires in 1 hour).
-	URL string `json:"url" api:"required" format:"uri"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Filename    respjson.Field
-		MimeType    respjson.Field
-		Reactions   respjson.Field
-		SizeBytes   respjson.Field
-		Type        respjson.Field
-		URL         respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MediaPart) RawJSON() string { return r.JSON.raw }
-func (r *MediaPart) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Indicates this is a media attachment part
-type MediaPartType string
-
-const (
-	MediaPartTypeMedia MediaPartType = "media"
 )
 
 type Message struct {
@@ -274,24 +259,24 @@ func (r *Message) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// MessagePartUnion contains all possible properties and values from [TextPart],
-// [MediaPart].
+// MessagePartUnion contains all possible properties and values from
+// [shared.TextPartResponse], [shared.MediaPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessagePartUnion struct {
 	Reactions []Reaction `json:"reactions"`
 	Type      string     `json:"type"`
-	// This field is from variant [TextPart].
+	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	Filename string `json:"filename"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	MimeType string `json:"mime_type"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant [MediaPart].
+	// This field is from variant [shared.MediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
 		Reactions respjson.Field
@@ -306,12 +291,12 @@ type MessagePartUnion struct {
 	} `json:"-"`
 }
 
-func (u MessagePartUnion) AsTextPart() (v TextPart) {
+func (u MessagePartUnion) AsTextPartResponse() (v shared.TextPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u MessagePartUnion) AsMediaPart() (v MediaPart) {
+func (u MessagePartUnion) AsMediaPartResponse() (v shared.MediaPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -526,39 +511,6 @@ func (r *ReplyToParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A text message part
-type TextPart struct {
-	// Reactions on this message part
-	Reactions []Reaction `json:"reactions" api:"required"`
-	// Indicates this is a text message part
-	//
-	// Any of "text".
-	Type TextPartType `json:"type" api:"required"`
-	// The text content
-	Value string `json:"value" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reactions   respjson.Field
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TextPart) RawJSON() string { return r.JSON.raw }
-func (r *TextPart) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Indicates this is a text message part
-type TextPartType string
-
-const (
-	TextPartTypeText TextPartType = "text"
-)
-
 type MessageAddReactionResponse struct {
 	Message string `json:"message"`
 	Status  string `json:"status"`
@@ -576,27 +528,6 @@ type MessageAddReactionResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Response containing messages in a thread with pagination
-type MessageGetThreadResponse struct {
-	// Messages in the thread, ordered by the specified order parameter
-	Messages []Message `json:"messages" api:"required"`
-	// Cursor for fetching the next page of results (null if no more results)
-	NextCursor string `json:"next_cursor" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Messages    respjson.Field
-		NextCursor  respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r MessageGetThreadResponse) RawJSON() string { return r.JSON.raw }
-func (r *MessageGetThreadResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -651,7 +582,7 @@ const (
 	MessageAddReactionParamsOperationRemove MessageAddReactionParamsOperation = "remove"
 )
 
-type MessageGetThreadParams struct {
+type MessageListMessagesThreadParams struct {
 	// Pagination cursor from previous next_cursor response
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
 	// Maximum number of messages to return
@@ -659,12 +590,13 @@ type MessageGetThreadParams struct {
 	// Sort order for messages (asc = oldest first, desc = newest first)
 	//
 	// Any of "asc", "desc".
-	Order MessageGetThreadParamsOrder `query:"order,omitzero" json:"-"`
+	Order MessageListMessagesThreadParamsOrder `query:"order,omitzero" json:"-"`
 	paramObj
 }
 
-// URLQuery serializes [MessageGetThreadParams]'s query parameters as `url.Values`.
-func (r MessageGetThreadParams) URLQuery() (v url.Values, err error) {
+// URLQuery serializes [MessageListMessagesThreadParams]'s query parameters as
+// `url.Values`.
+func (r MessageListMessagesThreadParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
 		ArrayFormat:  apiquery.ArrayQueryFormatComma,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
@@ -672,9 +604,9 @@ func (r MessageGetThreadParams) URLQuery() (v url.Values, err error) {
 }
 
 // Sort order for messages (asc = oldest first, desc = newest first)
-type MessageGetThreadParamsOrder string
+type MessageListMessagesThreadParamsOrder string
 
 const (
-	MessageGetThreadParamsOrderAsc  MessageGetThreadParamsOrder = "asc"
-	MessageGetThreadParamsOrderDesc MessageGetThreadParamsOrder = "desc"
+	MessageListMessagesThreadParamsOrderAsc  MessageListMessagesThreadParamsOrder = "asc"
+	MessageListMessagesThreadParamsOrderDesc MessageListMessagesThreadParamsOrder = "desc"
 )

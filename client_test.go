@@ -42,7 +42,8 @@ func TestUserAgentHeader(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -76,7 +77,8 @@ func TestRetryAfter(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -121,7 +123,8 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -161,7 +164,8 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -200,7 +204,8 @@ func TestRetryAfterMs(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -233,7 +238,8 @@ func TestContextCancel(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -263,7 +269,8 @@ func TestContextCancelDelay(t *testing.T) {
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.MessageContentPartTextParam{
+				OfText: &linqgo.TextPartParam{
+					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
 				},
 			}},
@@ -299,7 +306,8 @@ func TestContextDeadline(t *testing.T) {
 			From: "+12052535597",
 			Message: linqgo.MessageContentParam{
 				Parts: []linqgo.MessageContentPartUnionParam{{
-					OfText: &linqgo.MessageContentPartTextParam{
+					OfText: &linqgo.TextPartParam{
+						Type:  linqgo.TextPartTypeText,
 						Value: "Hello! How can I help you today?",
 					},
 				}},
