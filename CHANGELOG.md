@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 (2026-03-05)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/linq-team/linq-go/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** fix shared ([eec3ea8](https://github.com/linq-team/linq-go/commit/eec3ea8555cc2726c3e5d7273653e7a45ab11fc7))
+* **api:** update shared types ([b607b9a](https://github.com/linq-team/linq-go/commit/b607b9aaa3b40198a64391e3740a1331d52955c5))
+
 ## 0.3.0 (2026-03-05)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/linq-team/linq-go/compare/v0.2.0...v0.3.0)
