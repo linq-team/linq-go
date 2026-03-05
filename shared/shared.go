@@ -3,7 +3,8 @@
 package shared
 
 import (
-	"github.com/linq-team/linq-go"
+	"time"
+
 	"github.com/linq-team/linq-go/internal/apijson"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
@@ -14,6 +15,54 @@ type paramUnion = param.APIUnion
 
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
+
+type ChatHandle struct {
+	// Unique identifier for this handle
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Phone number (E.164) or email address of the participant
+	Handle string `json:"handle" api:"required"`
+	// When this participant joined the chat
+	JoinedAt time.Time `json:"joined_at" api:"required" format:"date-time"`
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
+	Service ServiceType `json:"service" api:"required"`
+	// Whether this handle belongs to the sender (your phone number)
+	IsMe bool `json:"is_me" api:"nullable"`
+	// When they left (if applicable)
+	LeftAt time.Time `json:"left_at" api:"nullable" format:"date-time"`
+	// Participant status
+	//
+	// Any of "active", "left", "removed".
+	Status ChatHandleStatus `json:"status" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Handle      respjson.Field
+		JoinedAt    respjson.Field
+		Service     respjson.Field
+		IsMe        respjson.Field
+		LeftAt      respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatHandle) RawJSON() string { return r.JSON.raw }
+func (r *ChatHandle) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Participant status
+type ChatHandleStatus string
+
+const (
+	ChatHandleStatusActive  ChatHandleStatus = "active"
+	ChatHandleStatusLeft    ChatHandleStatus = "left"
+	ChatHandleStatusRemoved ChatHandleStatus = "removed"
+)
 
 // A media attachment part
 type MediaPartResponse struct {
@@ -61,7 +110,7 @@ const (
 )
 
 type Reaction struct {
-	Handle linqgo.ChatHandle `json:"handle" api:"required"`
+	Handle ChatHandle `json:"handle" api:"required"`
 	// Whether this reaction is from the current user
 	IsMe bool `json:"is_me" api:"required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,

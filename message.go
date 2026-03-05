@@ -152,54 +152,6 @@ func (r *MessageService) ListMessagesThreadAutoPaging(ctx context.Context, messa
 	return pagination.NewListMessagesPaginationAutoPager(r.ListMessagesThread(ctx, messageID, query, opts...))
 }
 
-type ChatHandle struct {
-	// Unique identifier for this handle
-	ID string `json:"id" api:"required" format:"uuid"`
-	// Phone number (E.164) or email address of the participant
-	Handle string `json:"handle" api:"required"`
-	// When this participant joined the chat
-	JoinedAt time.Time `json:"joined_at" api:"required" format:"date-time"`
-	// Messaging service type
-	//
-	// Any of "iMessage", "SMS", "RCS".
-	Service shared.ServiceType `json:"service" api:"required"`
-	// Whether this handle belongs to the sender (your phone number)
-	IsMe bool `json:"is_me" api:"nullable"`
-	// When they left (if applicable)
-	LeftAt time.Time `json:"left_at" api:"nullable" format:"date-time"`
-	// Participant status
-	//
-	// Any of "active", "left", "removed".
-	Status ChatHandleStatus `json:"status" api:"nullable"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Handle      respjson.Field
-		JoinedAt    respjson.Field
-		Service     respjson.Field
-		IsMe        respjson.Field
-		LeftAt      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChatHandle) RawJSON() string { return r.JSON.raw }
-func (r *ChatHandle) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Participant status
-type ChatHandleStatus string
-
-const (
-	ChatHandleStatusActive  ChatHandleStatus = "active"
-	ChatHandleStatusLeft    ChatHandleStatus = "left"
-	ChatHandleStatusRemoved ChatHandleStatus = "removed"
-)
-
 type Message struct {
 	// Unique identifier for the message
 	ID string `json:"id" api:"required" format:"uuid"`
@@ -224,7 +176,7 @@ type Message struct {
 	// Deprecated: deprecated
 	From string `json:"from" api:"nullable"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle" api:"nullable"`
+	FromHandle shared.ChatHandle `json:"from_handle" api:"nullable"`
 	// Message parts in order (text and media)
 	Parts []MessagePartUnion `json:"parts" api:"nullable"`
 	// Messaging service type

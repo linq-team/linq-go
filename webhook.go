@@ -71,7 +71,7 @@ type MessageEventV2 struct {
 	// Message parts (text and/or media)
 	Parts []MessageEventV2PartUnion `json:"parts" api:"required"`
 	// The handle that sent this message
-	SenderHandle ChatHandle `json:"sender_handle" api:"required"`
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -125,7 +125,7 @@ type MessageEventV2Chat struct {
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"nullable"`
 	// Your phone number's handle. Always has is_me=true.
-	OwnerHandle ChatHandle `json:"owner_handle" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -397,7 +397,7 @@ type ReactionEventBase struct {
 	// Deprecated: deprecated
 	From string `json:"from"`
 	// The person who added/removed the reaction as a full handle object
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// Message identifier (UUID) that the reaction was added to or removed from
 	MessageID string `json:"message_id"`
 	// Index of the message part that was reacted to (0-based)
@@ -1079,7 +1079,7 @@ type ParticipantAddedV2026WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id"`
 	// The added participant as a full handle object
-	Participant ChatHandle `json:"participant"`
+	Participant shared.ChatHandle `json:"participant"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handle      respjson.Field
@@ -1156,7 +1156,7 @@ type ParticipantRemovedV2026WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id"`
 	// The removed participant as a full handle object
-	Participant ChatHandle `json:"participant"`
+	Participant shared.ChatHandle `json:"participant"`
 	// When the participant was removed
 	RemovedAt time.Time `json:"removed_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1232,7 +1232,7 @@ type ChatGroupNameUpdatedV2026WebhookEventData struct {
 	// When the update occurred
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// The handle who made the change.
-	ChangedByHandle ChatHandle `json:"changed_by_handle" api:"nullable"`
+	ChangedByHandle shared.ChatHandle `json:"changed_by_handle" api:"nullable"`
 	// New group name (null if the name was removed)
 	NewValue string `json:"new_value" api:"nullable"`
 	// Previous group name (null if no previous name)
@@ -1311,7 +1311,7 @@ type ChatGroupIconUpdatedV2026WebhookEventData struct {
 	// When the update occurred
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// The handle who made the change.
-	ChangedByHandle ChatHandle `json:"changed_by_handle" api:"nullable"`
+	ChangedByHandle shared.ChatHandle `json:"changed_by_handle" api:"nullable"`
 	// New icon URL (null if the icon was removed)
 	NewValue string `json:"new_value" api:"nullable"`
 	// Previous icon URL (null if no previous icon)
@@ -1550,7 +1550,7 @@ type ChatCreatedV2026WebhookEventData struct {
 	DisplayName string `json:"display_name" api:"required"`
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
-	Handles []ChatHandle `json:"handles" api:"required"`
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
@@ -1878,7 +1878,7 @@ type MessageSentV2025WebhookEventData struct {
 	// Deprecated: deprecated
 	From string `json:"from"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// Idempotency key for the message. Used for deduplication of outbound messages.
 	IdempotencyKey string `json:"idempotency_key" api:"nullable"`
 	// Whether the message was sent by us (true for sent events, false for received
@@ -1896,7 +1896,7 @@ type MessageSentV2025WebhookEventData struct {
 	ReceivedAt time.Time `json:"received_at" api:"nullable" format:"date-time"`
 	// Our phone number that received the message as a full handle object. Null for
 	// sent events.
-	RecipientHandle ChatHandle `json:"recipient_handle" api:"nullable"`
+	RecipientHandle shared.ChatHandle `json:"recipient_handle" api:"nullable"`
 	// DEPRECATED: Use recipient_handle instead. Our phone number that received the
 	// message. Null for sent events.
 	//
@@ -1992,7 +1992,7 @@ type MessageReceivedV2025WebhookEventData struct {
 	// Deprecated: deprecated
 	From string `json:"from"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// Idempotency key for the message. Used for deduplication of outbound messages.
 	IdempotencyKey string `json:"idempotency_key" api:"nullable"`
 	// Whether the message was sent by us (true for sent events, false for received
@@ -2010,7 +2010,7 @@ type MessageReceivedV2025WebhookEventData struct {
 	ReceivedAt time.Time `json:"received_at" api:"nullable" format:"date-time"`
 	// Our phone number that received the message as a full handle object. Null for
 	// sent events.
-	RecipientHandle ChatHandle `json:"recipient_handle" api:"nullable"`
+	RecipientHandle shared.ChatHandle `json:"recipient_handle" api:"nullable"`
 	// DEPRECATED: Use recipient_handle instead. Our phone number that received the
 	// message. Null for sent events.
 	//
@@ -2108,7 +2108,7 @@ type MessageReadV2025WebhookEventData struct {
 	// Deprecated: deprecated
 	From string `json:"from"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// Idempotency key for the message. Used for deduplication of outbound messages.
 	IdempotencyKey string `json:"idempotency_key" api:"nullable"`
 	// Whether the message was sent by us (true for sent events, false for received
@@ -2128,7 +2128,7 @@ type MessageReadV2025WebhookEventData struct {
 	ReceivedAt time.Time `json:"received_at" api:"nullable" format:"date-time"`
 	// Our phone number that received the message as a full handle object. Null for
 	// sent events.
-	RecipientHandle ChatHandle `json:"recipient_handle" api:"nullable"`
+	RecipientHandle shared.ChatHandle `json:"recipient_handle" api:"nullable"`
 	// DEPRECATED: Use recipient_handle instead. Our phone number that received the
 	// message. Null for sent events.
 	//
@@ -2228,7 +2228,7 @@ type MessageDeliveredV2025WebhookEventData struct {
 	// Deprecated: deprecated
 	From string `json:"from"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// Idempotency key for the message. Used for deduplication of outbound messages.
 	IdempotencyKey string `json:"idempotency_key" api:"nullable"`
 	// Whether the message was sent by us (true for sent events, false for received
@@ -2248,7 +2248,7 @@ type MessageDeliveredV2025WebhookEventData struct {
 	ReceivedAt time.Time `json:"received_at" api:"nullable" format:"date-time"`
 	// Our phone number that received the message as a full handle object. Null for
 	// sent events.
-	RecipientHandle ChatHandle `json:"recipient_handle" api:"nullable"`
+	RecipientHandle shared.ChatHandle `json:"recipient_handle" api:"nullable"`
 	// DEPRECATED: Use recipient_handle instead. Our phone number that received the
 	// message. Null for sent events.
 	//
@@ -2527,7 +2527,7 @@ type ParticipantAddedV2025WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id"`
 	// The added participant as a full handle object
-	Participant ChatHandle `json:"participant"`
+	Participant shared.ChatHandle `json:"participant"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Handle      respjson.Field
@@ -2604,7 +2604,7 @@ type ParticipantRemovedV2025WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id"`
 	// The removed participant as a full handle object
-	Participant ChatHandle `json:"participant"`
+	Participant shared.ChatHandle `json:"participant"`
 	// When the participant was removed
 	RemovedAt time.Time `json:"removed_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2680,7 +2680,7 @@ type ChatGroupNameUpdatedV2025WebhookEventData struct {
 	// When the update occurred
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// The handle who made the change.
-	ChangedByHandle ChatHandle `json:"changed_by_handle" api:"nullable"`
+	ChangedByHandle shared.ChatHandle `json:"changed_by_handle" api:"nullable"`
 	// New group name (null if the name was removed)
 	NewValue string `json:"new_value" api:"nullable"`
 	// Previous group name (null if no previous name)
@@ -2759,7 +2759,7 @@ type ChatGroupIconUpdatedV2025WebhookEventData struct {
 	// When the update occurred
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// The handle who made the change.
-	ChangedByHandle ChatHandle `json:"changed_by_handle" api:"nullable"`
+	ChangedByHandle shared.ChatHandle `json:"changed_by_handle" api:"nullable"`
 	// New icon URL (null if the icon was removed)
 	NewValue string `json:"new_value" api:"nullable"`
 	// Previous icon URL (null if no previous icon)
@@ -2998,7 +2998,7 @@ type ChatCreatedV2025WebhookEventData struct {
 	DisplayName string `json:"display_name" api:"required"`
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
-	Handles []ChatHandle `json:"handles" api:"required"`
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
@@ -3532,7 +3532,7 @@ type EventsWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	Parts []MessageEventV2PartUnion `json:"parts"`
 	// This field is from variant [MessageEventV2].
-	SenderHandle ChatHandle `json:"sender_handle"`
+	SenderHandle shared.ChatHandle `json:"sender_handle"`
 	// This field is from variant [MessageEventV2].
 	Service     shared.ServiceType `json:"service"`
 	DeliveredAt time.Time          `json:"delivered_at"`
@@ -3557,7 +3557,7 @@ type EventsWebhookEventUnionData struct {
 	CustomEmoji string `json:"custom_emoji"`
 	From        string `json:"from"`
 	// This field is from variant [ReactionEventBase].
-	FromHandle ChatHandle `json:"from_handle"`
+	FromHandle shared.ChatHandle `json:"from_handle"`
 	// This field is from variant [ReactionEventBase].
 	PartIndex int64 `json:"part_index"`
 	// This field is from variant [ReactionEventBase].
@@ -3567,28 +3567,28 @@ type EventsWebhookEventUnionData struct {
 	Handle  string                   `json:"handle"`
 	AddedAt time.Time                `json:"added_at"`
 	// This field is from variant [ParticipantAddedV2026WebhookEventData].
-	Participant ChatHandle `json:"participant"`
-	RemovedAt   time.Time  `json:"removed_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
+	Participant shared.ChatHandle `json:"participant"`
+	RemovedAt   time.Time         `json:"removed_at"`
+	UpdatedAt   time.Time         `json:"updated_at"`
 	// This field is from variant [ChatGroupNameUpdatedV2026WebhookEventData].
-	ChangedByHandle ChatHandle   `json:"changed_by_handle"`
-	NewValue        string       `json:"new_value"`
-	OldValue        string       `json:"old_value"`
-	ErrorCode       int64        `json:"error_code"`
-	CreatedAt       time.Time    `json:"created_at"`
-	DisplayName     string       `json:"display_name"`
-	Handles         []ChatHandle `json:"handles"`
-	IsGroup         bool         `json:"is_group"`
-	ChangedAt       time.Time    `json:"changed_at"`
-	NewStatus       string       `json:"new_status"`
-	PhoneNumber     string       `json:"phone_number"`
-	PreviousStatus  string       `json:"previous_status"`
+	ChangedByHandle shared.ChatHandle   `json:"changed_by_handle"`
+	NewValue        string              `json:"new_value"`
+	OldValue        string              `json:"old_value"`
+	ErrorCode       int64               `json:"error_code"`
+	CreatedAt       time.Time           `json:"created_at"`
+	DisplayName     string              `json:"display_name"`
+	Handles         []shared.ChatHandle `json:"handles"`
+	IsGroup         bool                `json:"is_group"`
+	ChangedAt       time.Time           `json:"changed_at"`
+	NewStatus       string              `json:"new_status"`
+	PhoneNumber     string              `json:"phone_number"`
+	PreviousStatus  string              `json:"previous_status"`
 	// This field is from variant [MessageSentV2025WebhookEventData].
 	Message    MessagePayload `json:"message"`
 	ReceivedAt time.Time      `json:"received_at"`
 	// This field is from variant [MessageSentV2025WebhookEventData].
-	RecipientHandle ChatHandle `json:"recipient_handle"`
-	RecipientPhone  string     `json:"recipient_phone"`
+	RecipientHandle shared.ChatHandle `json:"recipient_handle"`
+	RecipientPhone  string            `json:"recipient_phone"`
 	JSON            struct {
 		ID               respjson.Field
 		Chat             respjson.Field

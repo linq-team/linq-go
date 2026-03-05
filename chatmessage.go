@@ -123,7 +123,7 @@ type SentMessage struct {
 	// iMessage effect applied to a message (screen or bubble effect)
 	Effect MessageEffect `json:"effect" api:"nullable"`
 	// The sender of this message as a full handle object
-	FromHandle ChatHandle `json:"from_handle" api:"nullable"`
+	FromHandle shared.ChatHandle `json:"from_handle" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".

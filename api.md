@@ -5,6 +5,7 @@
 
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#ChatHandle">ChatHandle</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#MediaPartResponse">MediaPartResponse</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#Reaction">Reaction</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#ReactionType">ReactionType</a>
@@ -75,7 +76,6 @@ Params Types:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatHandle">ChatHandle</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Message">Message</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageEffect">MessageEffect</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ReplyTo">ReplyTo</a>
