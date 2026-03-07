@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.0 (2026-03-07)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/linq-team/linq-go/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* Programmatically update contact card ([f3d2e8b](https://github.com/linq-team/linq-go/commit/f3d2e8b13e9adc583723eb423de0efebde8355e2))
+
+
+### Chores
+
+* **internal:** codegen related update ([c6c0327](https://github.com/linq-team/linq-go/commit/c6c0327e9fce2c1046658038edeb29214729ab1b))
+
 ## 0.4.0 (2026-03-05)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/linq-team/linq-go/compare/v0.3.0...v0.4.0)
