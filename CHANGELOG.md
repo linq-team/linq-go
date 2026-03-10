@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.1 (2026-03-10)
+
+Full Changelog: [v0.5.0...v0.5.1](https://github.com/linq-team/linq-go/compare/v0.5.0...v0.5.1)
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([b7b858f](https://github.com/linq-team/linq-go/commit/b7b858fab1383b330c87e412f43f219b33ba9f78))
+
 ## 0.5.0 (2026-03-07)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/linq-team/linq-go/compare/v0.4.0...v0.5.0)
