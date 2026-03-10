@@ -66,6 +66,15 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 					OfText: &linqgo.TextPartParam{
 						Type:  linqgo.TextPartTypeText,
 						Value: "Hello, world!",
+						TextDecorations: []linqgo.TextPartTextDecorationParam{{
+							Range:     []int64{0, 5},
+							Animation: "shake",
+							Style:     "bold",
+						}, {
+							Range:     []int64{6, 11},
+							Animation: "shake",
+							Style:     "bold",
+						}},
 					},
 				}},
 				Effect: linqgo.MessageEffectParam{

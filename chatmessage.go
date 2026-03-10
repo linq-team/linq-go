@@ -93,6 +93,34 @@ func (r *ChatMessageService) ListAutoPaging(ctx context.Context, chatID string, 
 // **Bubble Effects:** `slam`, `loud`, `gentle`, `invisible`
 //
 // Only one effect type can be applied per message.
+//
+// ## Inline Text Decorations (iMessage only)
+//
+// Use the `text_decorations` array on a text part to apply styling and animations
+// to character ranges.
+//
+// Each decoration specifies a `range: [start, end)` and exactly one of `style` or
+// `animation`.
+//
+// **Styles:** `bold`, `italic`, `strikethrough`, `underline` **Animations:**
+// `big`, `small`, `shake`, `nod`, `explode`, `ripple`, `bloom`, `jitter`
+//
+// ```json
+//
+//	{
+//	  "type": "text",
+//	  "value": "Hello world",
+//	  "text_decorations": [
+//	    { "range": [0, 5], "style": "bold" },
+//	    { "range": [6, 11], "animation": "shake" }
+//	  ]
+//	}
+//
+// ```
+//
+// **Note:** Style ranges (bold, italic, etc.) may overlap, but animation ranges
+// must not overlap with other animations or styles. Text decorations only render
+// for iMessage recipients. For SMS/RCS, text decorations are not applied.
 func (r *ChatMessageService) Send(ctx context.Context, chatID string, body ChatMessageSendParams, opts ...option.RequestOption) (res *ChatMessageSendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
@@ -178,6 +206,8 @@ type SentMessagePartUnion struct {
 	Type      string            `json:"type"`
 	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
+	// This field is from variant [shared.TextPartResponse].
+	TextDecorations []shared.TextPartResponseTextDecoration `json:"text_decorations"`
 	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [shared.MediaPartResponse].
@@ -189,15 +219,16 @@ type SentMessagePartUnion struct {
 	// This field is from variant [shared.MediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
-		Reactions respjson.Field
-		Type      respjson.Field
-		Value     respjson.Field
-		ID        respjson.Field
-		Filename  respjson.Field
-		MimeType  respjson.Field
-		SizeBytes respjson.Field
-		URL       respjson.Field
-		raw       string
+		Reactions       respjson.Field
+		Type            respjson.Field
+		Value           respjson.Field
+		TextDecorations respjson.Field
+		ID              respjson.Field
+		Filename        respjson.Field
+		MimeType        respjson.Field
+		SizeBytes       respjson.Field
+		URL             respjson.Field
+		raw             string
 	} `json:"-"`
 }
 

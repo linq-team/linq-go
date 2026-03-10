@@ -232,6 +232,8 @@ type MessagePartUnion struct {
 	Type      string            `json:"type"`
 	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
+	// This field is from variant [shared.TextPartResponse].
+	TextDecorations []shared.TextPartResponseTextDecoration `json:"text_decorations"`
 	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [shared.MediaPartResponse].
@@ -243,15 +245,16 @@ type MessagePartUnion struct {
 	// This field is from variant [shared.MediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
-		Reactions respjson.Field
-		Type      respjson.Field
-		Value     respjson.Field
-		ID        respjson.Field
-		Filename  respjson.Field
-		MimeType  respjson.Field
-		SizeBytes respjson.Field
-		URL       respjson.Field
-		raw       string
+		Reactions       respjson.Field
+		Type            respjson.Field
+		Value           respjson.Field
+		TextDecorations respjson.Field
+		ID              respjson.Field
+		Filename        respjson.Field
+		MimeType        respjson.Field
+		SizeBytes       respjson.Field
+		URL             respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
