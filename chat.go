@@ -106,6 +106,34 @@ func NewChatService(opts ...option.RequestOption) (r ChatService) {
 // **Bubble Effects:** `slam`, `loud`, `gentle`, `invisible`
 //
 // Only one effect type can be applied per message.
+//
+// ## Inline Text Decorations (iMessage only)
+//
+// Use the `text_decorations` array on a text part to apply styling and animations
+// to character ranges.
+//
+// Each decoration specifies a `range: [start, end)` and exactly one of `style` or
+// `animation`.
+//
+// **Styles:** `bold`, `italic`, `strikethrough`, `underline` **Animations:**
+// `big`, `small`, `shake`, `nod`, `explode`, `ripple`, `bloom`, `jitter`
+//
+// ```json
+//
+//	{
+//	  "type": "text",
+//	  "value": "Hello world",
+//	  "text_decorations": [
+//	    { "range": [0, 5], "style": "bold" },
+//	    { "range": [6, 11], "animation": "shake" }
+//	  ]
+//	}
+//
+// ```
+//
+// **Note:** Style ranges (bold, italic, etc.) may overlap, but animation ranges
+// must not overlap with other animations or styles. Text decorations only render
+// for iMessage recipients. For SMS/RCS, text decorations are not applied.
 func (r *ChatService) New(ctx context.Context, body ChatNewParams, opts ...option.RequestOption) (res *ChatNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/chats"
@@ -439,8 +467,28 @@ type TextPartParam struct {
 	//
 	// Any of "text".
 	Type TextPartType `json:"type,omitzero" api:"required"`
-	// The text content
+	// The text content of the message. This value is sent as-is with no parsing or
+	// transformation — Markdown syntax will be delivered as plain text. Use
+	// `text_decorations` to apply inline formatting and animations (iMessage only).
 	Value string `json:"value" api:"required"`
+	// Optional array of text decorations applied to character ranges in the `value`
+	// field (iMessage only).
+	//
+	// Each decoration specifies a character range `[start, end)` and exactly one of
+	// `style` or `animation`.
+	//
+	// **Styles:** `bold`, `italic`, `strikethrough`, `underline` **Animations:**
+	// `big`, `small`, `shake`, `nod`, `explode`, `ripple`, `bloom`, `jitter`
+	//
+	// Style ranges may overlap (e.g. bold + italic on the same text), but animation
+	// ranges must not overlap with other animations or styles.
+	//
+	// _Characters are measured as UTF-16 code units. Most characters count as 1; some
+	// emoji count as 2._
+	//
+	// **Note:** Text decorations only render for iMessage recipients. For SMS/RCS,
+	// text decorations are not applied.
+	TextDecorations []TextPartTextDecorationParam `json:"text_decorations,omitzero"`
 	paramObj
 }
 
@@ -458,6 +506,40 @@ type TextPartType string
 const (
 	TextPartTypeText TextPartType = "text"
 )
+
+// The property Range is required.
+type TextPartTextDecorationParam struct {
+	// Character range `[start, end)` in the `value` string where the decoration
+	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
+	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
+	Range []int64 `json:"range,omitzero" api:"required"`
+	// Animated text effect to apply. Mutually exclusive with `style`.
+	//
+	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
+	Animation string `json:"animation,omitzero"`
+	// Text style to apply. Mutually exclusive with `animation`.
+	//
+	// Any of "bold", "italic", "strikethrough", "underline".
+	Style string `json:"style,omitzero"`
+	paramObj
+}
+
+func (r TextPartTextDecorationParam) MarshalJSON() (data []byte, err error) {
+	type shadow TextPartTextDecorationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextPartTextDecorationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
+		"animation", "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter",
+	)
+	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
+		"style", "bold", "italic", "strikethrough", "underline",
+	)
+}
 
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
