@@ -56,11 +56,11 @@ func (r *MessageService) Get(ctx context.Context, messageID string, opts ...opti
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/messages/%s", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Edit the text content of a specific part of a previously sent message.
@@ -68,11 +68,11 @@ func (r *MessageService) Update(ctx context.Context, messageID string, body Mess
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/messages/%s", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Deletes a message from the Linq API only. This does NOT unsend or remove the
@@ -85,11 +85,11 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, body Mess
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/messages/%s", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Add or remove emoji reactions to messages. Reactions let users express their
@@ -108,11 +108,11 @@ func (r *MessageService) AddReaction(ctx context.Context, messageID string, body
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/messages/%s/reactions", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all messages in a conversation thread. Given any message ID in the
@@ -127,7 +127,7 @@ func (r *MessageService) ListMessagesThread(ctx context.Context, messageID strin
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if messageID == "" {
 		err = errors.New("missing required messageId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/messages/%s/thread", messageID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
