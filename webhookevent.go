@@ -131,7 +131,7 @@ func (r *WebhookEventService) List(ctx context.Context, opts ...option.RequestOp
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/webhook-events"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Valid webhook event types that can be subscribed to

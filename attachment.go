@@ -189,7 +189,7 @@ func (r *AttachmentService) New(ctx context.Context, body AttachmentNewParams, o
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/attachments"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve metadata for a specific attachment including its status, file
@@ -198,11 +198,11 @@ func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts .
 	opts = slices.Concat(r.Options, opts)
 	if attachmentID == "" {
 		err = errors.New("missing required attachmentId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/attachments/%s", attachmentID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Supported MIME types for file attachments and media URLs.

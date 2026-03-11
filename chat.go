@@ -138,7 +138,7 @@ func (r *ChatService) New(ctx context.Context, body ChatNewParams, opts ...optio
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/chats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a chat by its unique identifier.
@@ -146,11 +146,11 @@ func (r *ChatService) Get(ctx context.Context, chatID string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update chat properties such as display name and group chat icon.
@@ -158,11 +158,11 @@ func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdate
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieves a paginated list of chats for the authenticated partner filtered by
@@ -226,11 +226,11 @@ func (r *ChatService) MarkAsRead(ctx context.Context, chatID string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/read", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Send an audio file as an **iMessage voice memo bubble** to all participants in a
@@ -251,11 +251,11 @@ func (r *ChatService) SendVoicememo(ctx context.Context, chatID string, body Cha
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/voicememo", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // **Deprecated:** Use `POST /v3/my_cards/{chatId}/share` instead.
@@ -272,11 +272,11 @@ func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/share_contact_card", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Chat struct {

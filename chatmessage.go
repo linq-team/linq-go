@@ -57,7 +57,7 @@ func (r *ChatMessageService) List(ctx context.Context, chatID string, query Chat
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/messages", chatID)
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -125,11 +125,11 @@ func (r *ChatMessageService) Send(ctx context.Context, chatID string, body ChatM
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/messages", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // A message that was sent (used in CreateChat and SendMessage responses)

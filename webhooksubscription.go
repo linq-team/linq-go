@@ -145,7 +145,7 @@ func (r *WebhookSubscriptionService) New(ctx context.Context, body WebhookSubscr
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/webhook-subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve details for a specific webhook subscription including its target URL,
@@ -154,11 +154,11 @@ func (r *WebhookSubscriptionService) Get(ctx context.Context, subscriptionID str
 	opts = slices.Concat(r.Options, opts)
 	if subscriptionID == "" {
 		err = errors.New("missing required subscriptionId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/webhook-subscriptions/%s", url.PathEscape(subscriptionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update an existing webhook subscription. You can modify the target URL,
@@ -169,11 +169,11 @@ func (r *WebhookSubscriptionService) Update(ctx context.Context, subscriptionID 
 	opts = slices.Concat(r.Options, opts)
 	if subscriptionID == "" {
 		err = errors.New("missing required subscriptionId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/webhook-subscriptions/%s", url.PathEscape(subscriptionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve all webhook subscriptions for the authenticated partner. Returns a list
@@ -182,7 +182,7 @@ func (r *WebhookSubscriptionService) List(ctx context.Context, opts ...option.Re
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/webhook-subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a webhook subscription.
@@ -191,11 +191,11 @@ func (r *WebhookSubscriptionService) Delete(ctx context.Context, subscriptionID 
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if subscriptionID == "" {
 		err = errors.New("missing required subscriptionId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/webhook-subscriptions/%s", url.PathEscape(subscriptionID))
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type WebhookSubscription struct {

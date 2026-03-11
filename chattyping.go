@@ -59,11 +59,11 @@ func (r *ChatTypingService) Start(ctx context.Context, chatID string, opts ...op
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/typing", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Stop the typing indicator for the chat.
@@ -77,9 +77,9 @@ func (r *ChatTypingService) Stop(ctx context.Context, chatID string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/typing", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
