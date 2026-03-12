@@ -165,9 +165,15 @@ func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdate
 	return res, err
 }
 
-// Retrieves a paginated list of chats for the authenticated partner filtered by
-// phone number. Returns all chats involving the specified phone number with their
-// participants and recent activity.
+// Retrieves a paginated list of chats for the authenticated partner.
+//
+// **Filtering:**
+//
+//   - If `from` is provided, returns chats for that specific phone number
+//   - If `from` is omitted, returns chats across all phone numbers owned by the
+//     partner
+//   - If `to` is provided, only returns chats where the specified handle is a
+//     participant
 //
 // **Pagination:**
 //
@@ -199,9 +205,15 @@ func (r *ChatService) ListChats(ctx context.Context, query ChatListChatsParams, 
 	return res, nil
 }
 
-// Retrieves a paginated list of chats for the authenticated partner filtered by
-// phone number. Returns all chats involving the specified phone number with their
-// participants and recent activity.
+// Retrieves a paginated list of chats for the authenticated partner.
+//
+// **Filtering:**
+//
+//   - If `from` is provided, returns chats for that specific phone number
+//   - If `from` is omitted, returns chats across all phone numbers owned by the
+//     partner
+//   - If `to` is provided, only returns chats where the specified handle is a
+//     participant
 //
 // **Pagination:**
 //
@@ -747,15 +759,21 @@ func (r *ChatUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ChatListChatsParams struct {
-	// Phone number to filter chats by. Returns all chats made from this phone number.
-	// Must be in E.164 format (e.g., `+13343284472`). The `+` is automatically
-	// URL-encoded by HTTP clients.
-	From string `query:"from" api:"required" json:"-"`
 	// Pagination cursor from the previous response's `next_cursor` field. Omit this
 	// parameter for the first page of results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Phone number to filter chats by. Returns chats made from this phone number. Must
+	// be in E.164 format (e.g., `+13343284472`). The `+` is automatically URL-encoded
+	// by HTTP clients. If omitted, returns chats across all phone numbers owned by the
+	// partner.
+	From param.Opt[string] `query:"from,omitzero" json:"-"`
 	// Maximum number of chats to return per page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter chats by a participant handle. Only returns chats where this handle is a
+	// participant. Can be an E.164 phone number (e.g., `+13343284472`) or an email
+	// address (e.g., `user@example.com`). For phone numbers, the `+` is automatically
+	// URL-encoded by HTTP clients.
+	To param.Opt[string] `query:"to,omitzero" json:"-"`
 	paramObj
 }
 

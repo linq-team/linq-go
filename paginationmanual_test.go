@@ -25,9 +25,7 @@ func TestManualPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
-		From: "+13343284472",
-	})
+	page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
