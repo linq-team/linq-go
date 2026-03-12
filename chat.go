@@ -106,11 +106,39 @@ func NewChatService(opts ...option.RequestOption) (r ChatService) {
 // **Bubble Effects:** `slam`, `loud`, `gentle`, `invisible`
 //
 // Only one effect type can be applied per message.
+//
+// ## Inline Text Decorations (iMessage only)
+//
+// Use the `text_decorations` array on a text part to apply styling and animations
+// to character ranges.
+//
+// Each decoration specifies a `range: [start, end)` and exactly one of `style` or
+// `animation`.
+//
+// **Styles:** `bold`, `italic`, `strikethrough`, `underline` **Animations:**
+// `big`, `small`, `shake`, `nod`, `explode`, `ripple`, `bloom`, `jitter`
+//
+// ```json
+//
+//	{
+//	  "type": "text",
+//	  "value": "Hello world",
+//	  "text_decorations": [
+//	    { "range": [0, 5], "style": "bold" },
+//	    { "range": [6, 11], "animation": "shake" }
+//	  ]
+//	}
+//
+// ```
+//
+// **Note:** Style ranges (bold, italic, etc.) may overlap, but animation ranges
+// must not overlap with other animations or styles. Text decorations only render
+// for iMessage recipients. For SMS/RCS, text decorations are not applied.
 func (r *ChatService) New(ctx context.Context, body ChatNewParams, opts ...option.RequestOption) (res *ChatNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/chats"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a chat by its unique identifier.
@@ -118,11 +146,11 @@ func (r *ChatService) Get(ctx context.Context, chatID string, opts ...option.Req
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Update chat properties such as display name and group chat icon.
@@ -130,16 +158,22 @@ func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdate
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// Retrieves a paginated list of chats for the authenticated partner filtered by
-// phone number. Returns all chats involving the specified phone number with their
-// participants and recent activity.
+// Retrieves a paginated list of chats for the authenticated partner.
+//
+// **Filtering:**
+//
+//   - If `from` is provided, returns chats for that specific phone number
+//   - If `from` is omitted, returns chats across all phone numbers owned by the
+//     partner
+//   - If `to` is provided, only returns chats where the specified handle is a
+//     participant
 //
 // **Pagination:**
 //
@@ -171,9 +205,15 @@ func (r *ChatService) ListChats(ctx context.Context, query ChatListChatsParams, 
 	return res, nil
 }
 
-// Retrieves a paginated list of chats for the authenticated partner filtered by
-// phone number. Returns all chats involving the specified phone number with their
-// participants and recent activity.
+// Retrieves a paginated list of chats for the authenticated partner.
+//
+// **Filtering:**
+//
+//   - If `from` is provided, returns chats for that specific phone number
+//   - If `from` is omitted, returns chats across all phone numbers owned by the
+//     partner
+//   - If `to` is provided, only returns chats where the specified handle is a
+//     participant
 //
 // **Pagination:**
 //
@@ -198,11 +238,11 @@ func (r *ChatService) MarkAsRead(ctx context.Context, chatID string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/read", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Send an audio file as an **iMessage voice memo bubble** to all participants in a
@@ -223,32 +263,28 @@ func (r *ChatService) SendVoicememo(ctx context.Context, chatID string, body Cha
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/voicememo", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
-// **Deprecated:** Use `POST /v3/my_cards/{chatId}/share` instead.
-//
 // Share your contact information (Name and Photo Sharing) with a chat.
 //
 // **Note:** A contact card must be configured before sharing. You can set up your
 // contact card on the
 // [Linq dashboard](https://dashboard.linqapp.com/contact-cards).
-//
-// Deprecated: deprecated
 func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("v3/chats/%s/share_contact_card", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Chat struct {
@@ -439,8 +475,28 @@ type TextPartParam struct {
 	//
 	// Any of "text".
 	Type TextPartType `json:"type,omitzero" api:"required"`
-	// The text content
+	// The text content of the message. This value is sent as-is with no parsing or
+	// transformation — Markdown syntax will be delivered as plain text. Use
+	// `text_decorations` to apply inline formatting and animations (iMessage only).
 	Value string `json:"value" api:"required"`
+	// Optional array of text decorations applied to character ranges in the `value`
+	// field (iMessage only).
+	//
+	// Each decoration specifies a character range `[start, end)` and exactly one of
+	// `style` or `animation`.
+	//
+	// **Styles:** `bold`, `italic`, `strikethrough`, `underline` **Animations:**
+	// `big`, `small`, `shake`, `nod`, `explode`, `ripple`, `bloom`, `jitter`
+	//
+	// Style ranges may overlap (e.g. bold + italic on the same text), but animation
+	// ranges must not overlap with other animations or styles.
+	//
+	// _Characters are measured as UTF-16 code units. Most characters count as 1; some
+	// emoji count as 2._
+	//
+	// **Note:** Text decorations only render for iMessage recipients. For SMS/RCS,
+	// text decorations are not applied.
+	TextDecorations []TextPartTextDecorationParam `json:"text_decorations,omitzero"`
 	paramObj
 }
 
@@ -458,6 +514,40 @@ type TextPartType string
 const (
 	TextPartTypeText TextPartType = "text"
 )
+
+// The property Range is required.
+type TextPartTextDecorationParam struct {
+	// Character range `[start, end)` in the `value` string where the decoration
+	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
+	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
+	Range []int64 `json:"range,omitzero" api:"required"`
+	// Animated text effect to apply. Mutually exclusive with `style`.
+	//
+	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
+	Animation string `json:"animation,omitzero"`
+	// Text style to apply. Mutually exclusive with `animation`.
+	//
+	// Any of "bold", "italic", "strikethrough", "underline".
+	Style string `json:"style,omitzero"`
+	paramObj
+}
+
+func (r TextPartTextDecorationParam) MarshalJSON() (data []byte, err error) {
+	type shadow TextPartTextDecorationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextPartTextDecorationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
+		"animation", "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter",
+	)
+	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
+		"style", "bold", "italic", "strikethrough", "underline",
+	)
+}
 
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
@@ -669,15 +759,21 @@ func (r *ChatUpdateParams) UnmarshalJSON(data []byte) error {
 }
 
 type ChatListChatsParams struct {
-	// Phone number to filter chats by. Returns all chats made from this phone number.
-	// Must be in E.164 format (e.g., `+13343284472`). The `+` is automatically
-	// URL-encoded by HTTP clients.
-	From string `query:"from" api:"required" json:"-"`
 	// Pagination cursor from the previous response's `next_cursor` field. Omit this
 	// parameter for the first page of results.
 	Cursor param.Opt[string] `query:"cursor,omitzero" json:"-"`
+	// Phone number to filter chats by. Returns chats made from this phone number. Must
+	// be in E.164 format (e.g., `+13343284472`). The `+` is automatically URL-encoded
+	// by HTTP clients. If omitted, returns chats across all phone numbers owned by the
+	// partner.
+	From param.Opt[string] `query:"from,omitzero" json:"-"`
 	// Maximum number of chats to return per page
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
+	// Filter chats by a participant handle. Only returns chats where this handle is a
+	// participant. Can be an E.164 phone number (e.g., `+13343284472`) or an email
+	// address (e.g., `user@example.com`). For phone numbers, the `+` is automatically
+	// URL-encoded by HTTP clients.
+	To param.Opt[string] `query:"to,omitzero" json:"-"`
 	paramObj
 }
 

@@ -25,9 +25,7 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	iter := client.Chats.ListChatsAutoPaging(context.TODO(), linqgo.ChatListChatsParams{
-		From: "+13343284472",
-	})
+	iter := client.Chats.ListChatsAutoPaging(context.TODO(), linqgo.ChatListChatsParams{})
 	// The mock server isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
 		chat := iter.Current()

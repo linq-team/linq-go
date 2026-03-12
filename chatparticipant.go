@@ -67,11 +67,11 @@ func (r *ChatParticipantService) Add(ctx context.Context, chatID string, body Ch
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/participants", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Remove a participant from an existing group chat.
@@ -84,11 +84,11 @@ func (r *ChatParticipantService) Remove(ctx context.Context, chatID string, body
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v3/chats/%s/participants", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type ChatParticipantAddResponse struct {

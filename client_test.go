@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Chats.New(context.Background(), linqgo.ChatNewParams{
+	_, _ = client.Chats.New(context.Background(), linqgo.ChatNewParams{
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
 			Parts: []linqgo.MessageContentPartUnionParam{{

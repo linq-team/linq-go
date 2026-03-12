@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.0 (2026-03-12)
+
+Full Changelog: [v0.5.1...v0.6.0](https://github.com/linq-team/linq-go/compare/v0.5.1...v0.6.0)
+
+### Features
+
+* make `from` optional on GET /v3/chats and add `to` filter ([8a556e9](https://github.com/linq-team/linq-go/commit/8a556e9bfe2be480ea168f6fe9525bae56d222ea))
+* PDEV(Synapse): support markdown and text effects ([928c0b5](https://github.com/linq-team/linq-go/commit/928c0b50d0b9e6a79c9317430f9414ab33f6d3c3))
+* Plt 397 patch update contact card endpoint rename my cards endpoints ([175e2ac](https://github.com/linq-team/linq-go/commit/175e2acfe96e1f562a0579f38bf4cc5dcbbad569))
+
+
+### Chores
+
+* **internal:** minor cleanup ([5cc3cae](https://github.com/linq-team/linq-go/commit/5cc3cae1c002314ac7024d40ece45228a64f7a23))
+* **internal:** use explicit returns ([88e43a9](https://github.com/linq-team/linq-go/commit/88e43a9416323fa258978fc181f27fb0a2d21f55))
+* **internal:** use explicit returns in more places ([9106e56](https://github.com/linq-team/linq-go/commit/9106e5607168f5804e9047757d01291b273e001a))
+
 ## 0.5.1 (2026-03-10)
 
 Full Changelog: [v0.5.0...v0.5.1](https://github.com/linq-team/linq-go/compare/v0.5.0...v0.5.1)

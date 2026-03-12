@@ -34,6 +34,15 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
+					TextDecorations: []linqgo.TextPartTextDecorationParam{{
+						Range:     []int64{0, 5},
+						Animation: "shake",
+						Style:     "bold",
+					}, {
+						Range:     []int64{6, 11},
+						Animation: "shake",
+						Style:     "bold",
+					}},
 				},
 			}},
 			Effect: linqgo.MessageEffectParam{
@@ -125,9 +134,10 @@ func TestChatListChatsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
-		From:   "+13343284472",
 		Cursor: linqgo.String("20"),
+		From:   linqgo.String("+13343284472"),
 		Limit:  linqgo.Int(20),
+		To:     linqgo.String("+13343284472"),
 	})
 	if err != nil {
 		var apierr *linqgo.Error

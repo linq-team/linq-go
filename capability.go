@@ -42,7 +42,7 @@ func (r *CapabilityService) CheckiMessage(ctx context.Context, body CapabilityCh
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_imessage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check whether a recipient address (phone number) supports RCS messaging.
@@ -50,7 +50,7 @@ func (r *CapabilityService) CheckRCS(ctx context.Context, body CapabilityCheckRC
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_rcs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type CapabilityCheckiMessageResponse struct {

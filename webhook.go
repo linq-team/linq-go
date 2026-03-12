@@ -161,6 +161,8 @@ type MessageEventV2PartUnion struct {
 	Type string `json:"type"`
 	// This field is from variant [SchemasTextPartResponse].
 	Value string `json:"value"`
+	// This field is from variant [SchemasTextPartResponse].
+	TextDecorations []SchemasTextPartResponseTextDecoration `json:"text_decorations"`
 	// This field is from variant [SchemasMediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [SchemasMediaPartResponse].
@@ -172,14 +174,15 @@ type MessageEventV2PartUnion struct {
 	// This field is from variant [SchemasMediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
-		Type      respjson.Field
-		Value     respjson.Field
-		ID        respjson.Field
-		Filename  respjson.Field
-		MimeType  respjson.Field
-		SizeBytes respjson.Field
-		URL       respjson.Field
-		raw       string
+		Type            respjson.Field
+		Value           respjson.Field
+		TextDecorations respjson.Field
+		ID              respjson.Field
+		Filename        respjson.Field
+		MimeType        respjson.Field
+		SizeBytes       respjson.Field
+		URL             respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -315,6 +318,8 @@ type MessagePayloadPartUnion struct {
 	Type string `json:"type"`
 	// This field is from variant [SchemasTextPartResponse].
 	Value string `json:"value"`
+	// This field is from variant [SchemasTextPartResponse].
+	TextDecorations []SchemasTextPartResponseTextDecoration `json:"text_decorations"`
 	// This field is from variant [SchemasMediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [SchemasMediaPartResponse].
@@ -326,14 +331,15 @@ type MessagePayloadPartUnion struct {
 	// This field is from variant [SchemasMediaPartResponse].
 	URL  string `json:"url"`
 	JSON struct {
-		Type      respjson.Field
-		Value     respjson.Field
-		ID        respjson.Field
-		Filename  respjson.Field
-		MimeType  respjson.Field
-		SizeBytes respjson.Field
-		URL       respjson.Field
-		raw       string
+		Type            respjson.Field
+		Value           respjson.Field
+		TextDecorations respjson.Field
+		ID              respjson.Field
+		Filename        respjson.Field
+		MimeType        respjson.Field
+		SizeBytes       respjson.Field
+		URL             respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -547,12 +553,15 @@ type SchemasTextPartResponse struct {
 	Type SchemasTextPartResponseType `json:"type" api:"required"`
 	// The text content
 	Value string `json:"value" api:"required"`
+	// Text decorations applied to character ranges in the value
+	TextDecorations []SchemasTextPartResponseTextDecoration `json:"text_decorations" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Type            respjson.Field
+		Value           respjson.Field
+		TextDecorations respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -568,6 +577,35 @@ type SchemasTextPartResponseType string
 const (
 	SchemasTextPartResponseTypeText SchemasTextPartResponseType = "text"
 )
+
+type SchemasTextPartResponseTextDecoration struct {
+	// Character range `[start, end)` in the `value` string where the decoration
+	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
+	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
+	Range []int64 `json:"range" api:"required"`
+	// Animated text effect to apply. Mutually exclusive with `style`.
+	//
+	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
+	Animation string `json:"animation"`
+	// Text style to apply. Mutually exclusive with `animation`.
+	//
+	// Any of "bold", "italic", "strikethrough", "underline".
+	Style string `json:"style"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Range       respjson.Field
+		Animation   respjson.Field
+		Style       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SchemasTextPartResponseTextDecoration) RawJSON() string { return r.JSON.raw }
+func (r *SchemasTextPartResponseTextDecoration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Complete webhook payload for message.sent events (2026-02-03 format)
 type MessageSentV2026WebhookEvent struct {
