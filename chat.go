@@ -258,15 +258,11 @@ func (r *ChatService) SendVoicememo(ctx context.Context, chatID string, body Cha
 	return res, err
 }
 
-// **Deprecated:** Use `POST /v3/my_cards/{chatId}/share` instead.
-//
 // Share your contact information (Name and Photo Sharing) with a chat.
 //
 // **Note:** A contact card must be configured before sharing. You can set up your
 // contact card on the
 // [Linq dashboard](https://dashboard.linqapp.com/contact-cards).
-//
-// Deprecated: deprecated
 func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
