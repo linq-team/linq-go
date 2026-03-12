@@ -134,9 +134,10 @@ func TestChatListChatsWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
-		From:   "+13343284472",
 		Cursor: linqgo.String("20"),
+		From:   linqgo.String("+13343284472"),
 		Limit:  linqgo.Int(20),
+		To:     linqgo.String("+13343284472"),
 	})
 	if err != nil {
 		var apierr *linqgo.Error

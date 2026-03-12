@@ -296,9 +296,7 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Chats.ListChatsAutoPaging(context.TODO(), linqgo.ChatListChatsParams{
-	From: "+13343284472",
-})
+iter := client.Chats.ListChatsAutoPaging(context.TODO(), linqgo.ChatListChatsParams{})
 // Automatically fetches more pages as needed.
 for iter.Next() {
 	chat := iter.Current()
@@ -313,9 +311,7 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{
-	From: "+13343284472",
-})
+page, err := client.Chats.ListChats(context.TODO(), linqgo.ChatListChatsParams{})
 for page != nil {
 	for _, chat := range page.Chats {
 		fmt.Printf("%+v\n", chat)
