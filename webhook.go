@@ -635,7 +635,11 @@ type MessageSentV2026WebhookEvent struct {
 	Data MessageEventV2 `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -702,7 +706,11 @@ type MessageReceivedV2026WebhookEvent struct {
 	Data MessageEventV2 `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -769,7 +777,11 @@ type MessageReadV2026WebhookEvent struct {
 	Data MessageEventV2 `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -836,7 +848,11 @@ type MessageDeliveredV2026WebhookEvent struct {
 	Data MessageEventV2 `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -887,7 +903,11 @@ type MessageFailedV2026WebhookEvent struct {
 	Data MessageFailedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -968,7 +988,11 @@ type ReactionAddedV2026WebhookEvent struct {
 	Data ReactionEventBase `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1017,7 +1041,11 @@ type ReactionRemovedV2026WebhookEvent struct {
 	Data ReactionEventBase `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1066,7 +1094,11 @@ type ParticipantAddedV2026WebhookEvent struct {
 	Data ParticipantAddedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1145,7 +1177,11 @@ type ParticipantRemovedV2026WebhookEvent struct {
 	Data ParticipantRemovedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1224,7 +1260,11 @@ type ChatGroupNameUpdatedV2026WebhookEvent struct {
 	Data ChatGroupNameUpdatedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1303,7 +1343,11 @@ type ChatGroupIconUpdatedV2026WebhookEvent struct {
 	Data ChatGroupIconUpdatedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1384,7 +1428,11 @@ type ChatGroupNameUpdateFailedV2026WebhookEvent struct {
 	Data ChatGroupNameUpdateFailedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1461,7 +1509,11 @@ type ChatGroupIconUpdateFailedV2026WebhookEvent struct {
 	Data ChatGroupIconUpdateFailedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1537,7 +1589,11 @@ type ChatCreatedV2026WebhookEvent struct {
 	Data ChatCreatedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1627,7 +1683,11 @@ type ChatTypingIndicatorStartedV2026WebhookEvent struct {
 	Data ChatTypingIndicatorStartedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1694,7 +1754,11 @@ type ChatTypingIndicatorStoppedV2026WebhookEvent struct {
 	Data ChatTypingIndicatorStoppedV2026WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1748,6 +1812,145 @@ type ChatTypingIndicatorStoppedV2026WebhookEventData struct {
 // Returns the unmodified JSON received from the API
 func (r ChatTypingIndicatorStoppedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
 func (r *ChatTypingIndicatorStoppedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for message.edited events (2026-02-03 format only)
+type MessageEditedV2026WebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for `message.edited` events (2026-02-03 format).
+	//
+	// Describes which part of a message was edited and when. Only text parts can be
+	// edited. Only available for subscriptions using `webhook_version: "2026-02-03"`.
+	Data MessageEditedV2026WebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEditedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for `message.edited` events (2026-02-03 format).
+//
+// Describes which part of a message was edited and when. Only text parts can be
+// edited. Only available for subscriptions using `webhook_version: "2026-02-03"`.
+type MessageEditedV2026WebhookEventData struct {
+	// Message identifier
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Chat context
+	Chat MessageEditedV2026WebhookEventDataChat `json:"chat" api:"required"`
+	// "outbound" if you sent the original message, "inbound" if you received it
+	//
+	// Any of "outbound", "inbound".
+	Direction string `json:"direction" api:"required"`
+	// When the edit occurred
+	EditedAt time.Time `json:"edited_at" api:"required" format:"date-time"`
+	// The edited part
+	Part MessageEditedV2026WebhookEventDataPart `json:"part" api:"required"`
+	// The handle that sent (and edited) this message
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID           respjson.Field
+		Chat         respjson.Field
+		Direction    respjson.Field
+		EditedAt     respjson.Field
+		Part         respjson.Field
+		SenderHandle respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEditedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat context
+type MessageEditedV2026WebhookEventDataChat struct {
+	// Chat identifier
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Whether this is a group chat
+	IsGroup bool `json:"is_group" api:"required"`
+	// The handle that owns this chat (your phone number)
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEditedV2026WebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026WebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The edited part
+type MessageEditedV2026WebhookEventDataPart struct {
+	// Zero-based index of the edited part within the message
+	Index int64 `json:"index" api:"required"`
+	// New text content of the part
+	Text string `json:"text" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Index       respjson.Field
+		Text        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEditedV2026WebhookEventDataPart) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026WebhookEventDataPart) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1866,7 +2069,11 @@ type MessageSentV2025WebhookEvent struct {
 	Data MessageSentV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -1980,7 +2187,11 @@ type MessageReceivedV2025WebhookEvent struct {
 	Data MessageReceivedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2094,7 +2305,11 @@ type MessageReadV2025WebhookEvent struct {
 	Data MessageReadV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2214,7 +2429,11 @@ type MessageDeliveredV2025WebhookEvent struct {
 	Data MessageDeliveredV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2335,7 +2554,11 @@ type MessageFailedV2025WebhookEvent struct {
 	Data MessageFailedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2416,7 +2639,11 @@ type ReactionAddedV2025WebhookEvent struct {
 	Data ReactionEventBase `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2465,7 +2692,11 @@ type ReactionRemovedV2025WebhookEvent struct {
 	Data ReactionEventBase `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2514,7 +2745,11 @@ type ParticipantAddedV2025WebhookEvent struct {
 	Data ParticipantAddedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2593,7 +2828,11 @@ type ParticipantRemovedV2025WebhookEvent struct {
 	Data ParticipantRemovedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2672,7 +2911,11 @@ type ChatGroupNameUpdatedV2025WebhookEvent struct {
 	Data ChatGroupNameUpdatedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2751,7 +2994,11 @@ type ChatGroupIconUpdatedV2025WebhookEvent struct {
 	Data ChatGroupIconUpdatedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2832,7 +3079,11 @@ type ChatGroupNameUpdateFailedV2025WebhookEvent struct {
 	Data ChatGroupNameUpdateFailedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2909,7 +3160,11 @@ type ChatGroupIconUpdateFailedV2025WebhookEvent struct {
 	Data ChatGroupIconUpdateFailedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -2985,7 +3240,11 @@ type ChatCreatedV2025WebhookEvent struct {
 	Data ChatCreatedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -3075,7 +3334,11 @@ type ChatTypingIndicatorStartedV2025WebhookEvent struct {
 	Data ChatTypingIndicatorStartedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -3142,7 +3405,11 @@ type ChatTypingIndicatorStoppedV2025WebhookEvent struct {
 	Data ChatTypingIndicatorStoppedV2025WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
-	// Valid webhook event types that can be subscribed to
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
@@ -3313,7 +3580,7 @@ const (
 // [ChatGroupNameUpdateFailedV2026WebhookEvent],
 // [ChatGroupIconUpdateFailedV2026WebhookEvent], [ChatCreatedV2026WebhookEvent],
 // [ChatTypingIndicatorStartedV2026WebhookEvent],
-// [ChatTypingIndicatorStoppedV2026WebhookEvent],
+// [ChatTypingIndicatorStoppedV2026WebhookEvent], [MessageEditedV2026WebhookEvent],
 // [PhoneNumberStatusUpdatedV2026WebhookEvent], [MessageSentV2025WebhookEvent],
 // [MessageReceivedV2025WebhookEvent], [MessageReadV2025WebhookEvent],
 // [MessageDeliveredV2025WebhookEvent], [MessageFailedV2025WebhookEvent],
@@ -3343,6 +3610,7 @@ type EventsWebhookEventUnion struct {
 	// [ChatCreatedV2026WebhookEventData],
 	// [ChatTypingIndicatorStartedV2026WebhookEventData],
 	// [ChatTypingIndicatorStoppedV2026WebhookEventData],
+	// [MessageEditedV2026WebhookEventData],
 	// [PhoneNumberStatusUpdatedV2026WebhookEventData],
 	// [MessageSentV2025WebhookEventData], [MessageReceivedV2025WebhookEventData],
 	// [MessageReadV2025WebhookEventData], [MessageDeliveredV2025WebhookEventData],
@@ -3360,7 +3628,7 @@ type EventsWebhookEventUnion struct {
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -3454,6 +3722,11 @@ func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedV2026WebhookEvent()
 }
 
 func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedV2026WebhookEvent() (v ChatTypingIndicatorStoppedV2026WebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u EventsWebhookEventUnion) AsMessageEditedV2026WebhookEvent() (v MessageEditedV2026WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -3563,10 +3836,10 @@ func (r *EventsWebhookEventUnion) UnmarshalJSON(data []byte) error {
 // [EventsWebhookEventUnion].
 type EventsWebhookEventUnionData struct {
 	ID string `json:"id"`
-	// This field is from variant [MessageEventV2].
-	Chat MessageEventV2Chat `json:"chat"`
-	// This field is from variant [MessageEventV2].
-	Direction MessageEventV2Direction `json:"direction"`
+	// This field is a union of [MessageEventV2Chat],
+	// [MessageEditedV2026WebhookEventDataChat]
+	Chat      EventsWebhookEventUnionDataChat `json:"chat"`
+	Direction string                          `json:"direction"`
 	// This field is from variant [MessageEventV2].
 	Parts []MessageEventV2PartUnion `json:"parts"`
 	// This field is from variant [MessageEventV2].
@@ -3617,10 +3890,14 @@ type EventsWebhookEventUnionData struct {
 	DisplayName     string              `json:"display_name"`
 	Handles         []shared.ChatHandle `json:"handles"`
 	IsGroup         bool                `json:"is_group"`
-	ChangedAt       time.Time           `json:"changed_at"`
-	NewStatus       string              `json:"new_status"`
-	PhoneNumber     string              `json:"phone_number"`
-	PreviousStatus  string              `json:"previous_status"`
+	// This field is from variant [MessageEditedV2026WebhookEventData].
+	EditedAt time.Time `json:"edited_at"`
+	// This field is from variant [MessageEditedV2026WebhookEventData].
+	Part           MessageEditedV2026WebhookEventDataPart `json:"part"`
+	ChangedAt      time.Time                              `json:"changed_at"`
+	NewStatus      string                                 `json:"new_status"`
+	PhoneNumber    string                                 `json:"phone_number"`
+	PreviousStatus string                                 `json:"previous_status"`
 	// This field is from variant [MessageSentV2025WebhookEventData].
 	Message    MessagePayload `json:"message"`
 	ReceivedAt time.Time      `json:"received_at"`
@@ -3667,6 +3944,8 @@ type EventsWebhookEventUnionData struct {
 		DisplayName      respjson.Field
 		Handles          respjson.Field
 		IsGroup          respjson.Field
+		EditedAt         respjson.Field
+		Part             respjson.Field
 		ChangedAt        respjson.Field
 		NewStatus        respjson.Field
 		PhoneNumber      respjson.Field
@@ -3680,5 +3959,28 @@ type EventsWebhookEventUnionData struct {
 }
 
 func (r *EventsWebhookEventUnionData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// EventsWebhookEventUnionDataChat is an implicit subunion of
+// [EventsWebhookEventUnion]. EventsWebhookEventUnionDataChat provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [EventsWebhookEventUnion].
+type EventsWebhookEventUnionDataChat struct {
+	ID      string `json:"id"`
+	IsGroup bool   `json:"is_group"`
+	// This field is from variant [MessageEventV2Chat].
+	OwnerHandle shared.ChatHandle `json:"owner_handle"`
+	JSON        struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (r *EventsWebhookEventUnionDataChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

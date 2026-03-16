@@ -188,7 +188,6 @@ func TestChatSendVoicememo(t *testing.T) {
 		context.TODO(),
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
 		linqgo.ChatSendVoicememoParams{
-			From:         "+12052535597",
 			VoiceMemoURL: "https://example.com/voice-memo.m4a",
 		},
 	)

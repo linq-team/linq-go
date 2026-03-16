@@ -154,7 +154,11 @@ func (r *ChatService) Get(ctx context.Context, chatID string, opts ...option.Req
 }
 
 // Update chat properties such as display name and group chat icon.
-func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdateParams, opts ...option.RequestOption) (res *Chat, err error) {
+//
+// Listen for `chat.group_name_updated`, `chat.group_icon_updated`,
+// `chat.group_name_update_failed`, or `chat.group_icon_update_failed` webhook
+// events to confirm the outcome.
+func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdateParams, opts ...option.RequestOption) (res *ChatUpdateResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if chatID == "" {
 		err = errors.New("missing required chatId parameter")
@@ -602,6 +606,24 @@ func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type ChatUpdateResponse struct {
+	ChatID string `json:"chat_id" format:"uuid"`
+	Status string `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChatID      respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *ChatUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response for sending a voice memo to a chat
 type ChatSendVoicememoResponse struct {
 	VoiceMemo ChatSendVoicememoResponseVoiceMemo `json:"voice_memo" api:"required"`
@@ -786,8 +808,6 @@ func (r ChatListChatsParams) URLQuery() (v url.Values, err error) {
 }
 
 type ChatSendVoicememoParams struct {
-	// Sender phone number in E.164 format
-	From string `json:"from" api:"required"`
 	// URL of the voice memo audio file. Must be a publicly accessible HTTPS URL.
 	VoiceMemoURL string `json:"voice_memo_url" api:"required" format:"uri"`
 	paramObj
