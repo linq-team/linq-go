@@ -143,14 +143,20 @@ func NewAttachmentService(opts ...option.RequestOption) (r AttachmentService) {
 // ## Step 2: Upload the file
 //
 // Make a PUT request to the `upload_url` with the raw file bytes as the request
-// body.. Include the headers from `required_headers`. The request body is the
-// binary file content — **not** JSON, **not** multipart form data.
+// body. You **must** include all headers from `required_headers` exactly as
+// returned — the presigned URL is signed with these values and S3 will reject the
+// upload if they don't match.
+//
+// The request body is the binary file content — **not** JSON, **not** multipart
+// form data. The file must equal `size_bytes` bytes (the value you declared in
+// step 1).
 //
 // ```bash
 //
 //	curl -X PUT "<upload_url from step 1>" \
 //	  -H "Content-Type: image/jpeg" \
-//	  --data-binary @filebytes
+//	  -H "Content-Length: 1024000" \
+//	  --data-binary @photo.jpg
 //
 // ```
 //
@@ -299,7 +305,8 @@ type AttachmentNewResponse struct {
 	//
 	// Any of "PUT".
 	HTTPMethod AttachmentNewResponseHTTPMethod `json:"http_method" api:"required"`
-	// HTTP headers required for the upload request
+	// HTTP headers that must be set on the upload request. The presigned URL is signed
+	// with these exact values — S3 will reject the upload if they don't match.
 	RequiredHeaders map[string]string `json:"required_headers" api:"required"`
 	// Presigned URL for uploading the file. PUT the raw binary file content to this
 	// URL with the `required_headers`. Do not JSON-encode or multipart-wrap the body.
