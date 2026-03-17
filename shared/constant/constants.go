@@ -19,14 +19,17 @@ func ValueOf[T Constant[T]]() T {
 }
 
 type HTTPSApidocsLinqappComDocumentationWebhookEvents string // Always "https://apidocs.linqapp.com/documentation/webhook-events"
+type Link string                                             // Always "link"
 
 func (c HTTPSApidocsLinqappComDocumentationWebhookEvents) Default() HTTPSApidocsLinqappComDocumentationWebhookEvents {
 	return "https://apidocs.linqapp.com/documentation/webhook-events"
 }
+func (c Link) Default() Link { return "link" }
 
 func (c HTTPSApidocsLinqappComDocumentationWebhookEvents) MarshalJSON() ([]byte, error) {
 	return marshalString(c)
 }
+func (c Link) MarshalJSON() ([]byte, error) { return marshalString(c) }
 
 type constant[T any] interface {
 	Constant[T]
