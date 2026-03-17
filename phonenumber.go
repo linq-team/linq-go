@@ -76,9 +76,7 @@ type PhonenumberListResponsePhoneNumber struct {
 	// Deprecated. Always null.
 	CountryCode string `json:"country_code"`
 	// Deprecated. Always null.
-	//
-	// Any of "TWILIO", "APPLE_ID".
-	Type string `json:"type"`
+	Type string `json:"type" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field

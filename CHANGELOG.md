@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.6.1 (2026-03-17)
+
+Full Changelog: [v0.6.0...v0.6.1](https://github.com/linq-team/linq-go/compare/v0.6.0...v0.6.1)
+
+### Bug Fixes
+
+* enforce server-side authorization on DELETE /v3/messages/{messageId} ([b60931f](https://github.com/linq-team/linq-go/commit/b60931f716ef325d3bd97ed03706b304834815a5))
+* **openapi:** correct schema errors and example inconsistencies ([82dc722](https://github.com/linq-team/linq-go/commit/82dc722bfee331da0689603812d221a7cb56e37e))
+
+
+### Chores
+
+* **internal:** tweak CI branches ([95c472f](https://github.com/linq-team/linq-go/commit/95c472f4d80bee944d706d3d7846a8114805ffd0))
+
 ## 0.6.0 (2026-03-12)
 
 Full Changelog: [v0.5.1...v0.6.0](https://github.com/linq-team/linq-go/compare/v0.5.1...v0.6.0)

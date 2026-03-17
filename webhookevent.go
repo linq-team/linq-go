@@ -134,7 +134,11 @@ func (r *WebhookEventService) List(ctx context.Context, opts ...option.RequestOp
 	return res, err
 }
 
-// Valid webhook event types that can be subscribed to
+// Valid webhook event types that can be subscribed to.
+//
+// **Note:** `message.edited` is only delivered to subscriptions using
+// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+// subscription will not produce any deliveries.
 type WebhookEventType string
 
 const (

@@ -80,13 +80,7 @@ func TestMessageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	err := client.Messages.Delete(
-		context.TODO(),
-		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
-		linqgo.MessageDeleteParams{
-			ChatID: "94c6bf33-31d9-40e3-a0e9-f94250ecedb9",
-		},
-	)
+	err := client.Messages.Delete(context.TODO(), "69a37c7d-af4f-4b5e-af42-e28e98ce873a")
 	if err != nil {
 		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
