@@ -80,7 +80,7 @@ func (r *MessageService) Update(ctx context.Context, messageID string, body Mess
 //
 // Use this endpoint to remove messages from your records and prevent them from
 // appearing in API responses.
-func (r *MessageService) Delete(ctx context.Context, messageID string, body MessageDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if messageID == "" {
@@ -88,7 +88,7 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, body Mess
 		return err
 	}
 	path := fmt.Sprintf("v3/messages/%s", messageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, nil, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
@@ -428,20 +428,6 @@ func (r MessageUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type MessageDeleteParams struct {
-	// ID of the chat containing the message to delete
-	ChatID string `json:"chat_id" api:"required" format:"uuid"`
-	paramObj
-}
-
-func (r MessageDeleteParams) MarshalJSON() (data []byte, err error) {
-	type shadow MessageDeleteParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *MessageDeleteParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
