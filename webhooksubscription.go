@@ -132,6 +132,16 @@ func NewWebhookSubscriptionService(opts ...option.RequestOption) (r WebhookSubsc
 // creation, a signing secret is generated for verifying webhook authenticity.
 // **Store this secret securely — it cannot be retrieved later.**
 //
+// **Phone Number Filtering:**
+//
+//   - Optionally specify `phone_numbers` to only receive events for specific lines
+//   - If omitted, events from all phone numbers are delivered (default behavior)
+//   - Use multiple subscriptions with different `phone_numbers` to route different
+//     lines to different endpoints
+//   - Each `target_url` can only be used once per account. To route different lines
+//     to different destinations, use a unique URL per subscription (e.g., append a
+//     query parameter: `https://example.com/webhook?line=1`)
+//
 // **Webhook Delivery:**
 //
 //   - Events are sent via HTTP POST to the target URL
@@ -211,6 +221,9 @@ type WebhookSubscription struct {
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Phone numbers this subscription filters for. If null or empty, events from all
+	// phone numbers are delivered.
+	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -219,6 +232,7 @@ type WebhookSubscription struct {
 		SubscribedEvents respjson.Field
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
+		PhoneNumbers     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -248,6 +262,9 @@ type WebhookSubscriptionNewResponse struct {
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// Phone numbers this subscription filters for. If null or empty, events from all
+	// phone numbers are delivered.
+	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -257,6 +274,7 @@ type WebhookSubscriptionNewResponse struct {
 		SubscribedEvents respjson.Field
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
+		PhoneNumbers     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -290,6 +308,11 @@ type WebhookSubscriptionNewParams struct {
 	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero" api:"required"`
 	// URL where webhook events will be sent. Must be HTTPS.
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
+	// Optional list of phone numbers to filter events for. Only events originating
+	// from these phone numbers will be delivered to this subscription. If omitted or
+	// empty, events from all phone numbers are delivered. Phone numbers must be in
+	// E.164 format.
+	PhoneNumbers []string `json:"phone_numbers,omitzero"`
 	paramObj
 }
 
@@ -306,6 +329,11 @@ type WebhookSubscriptionUpdateParams struct {
 	IsActive param.Opt[bool] `json:"is_active,omitzero"`
 	// New target URL for webhook events
 	TargetURL param.Opt[string] `json:"target_url,omitzero" format:"uri"`
+	// Updated list of phone numbers to filter events for. Set to a non-empty array to
+	// filter events to specific phone numbers. Set to an empty array or null to remove
+	// the filter and receive events from all phone numbers. Phone numbers must be in
+	// E.164 format.
+	PhoneNumbers []string `json:"phone_numbers,omitzero"`
 	// Updated list of event types to subscribe to
 	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero"`
 	paramObj

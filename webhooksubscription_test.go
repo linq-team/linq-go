@@ -13,7 +13,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 )
 
-func TestWebhookSubscriptionNew(t *testing.T) {
+func TestWebhookSubscriptionNewWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -29,6 +29,7 @@ func TestWebhookSubscriptionNew(t *testing.T) {
 	_, err := client.WebhookSubscriptions.New(context.TODO(), linqgo.WebhookSubscriptionNewParams{
 		SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered, linqgo.WebhookEventTypeMessageRead},
 		TargetURL:        "https://webhooks.example.com/linq/events",
+		PhoneNumbers:     []string{"+12025551234", "+12025559876"},
 	})
 	if err != nil {
 		var apierr *linqgo.Error
@@ -80,6 +81,7 @@ func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
 		"b2c3d4e5-f6a7-8901-bcde-f23456789012",
 		linqgo.WebhookSubscriptionUpdateParams{
 			IsActive:         linqgo.Bool(true),
+			PhoneNumbers:     []string{"+12025551234"},
 			SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered},
 			TargetURL:        linqgo.String("https://webhooks.example.com/linq/events"),
 		},
