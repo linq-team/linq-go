@@ -207,7 +207,7 @@ type SentMessagePartUnion struct {
 	// This field is from variant [shared.TextPartResponse].
 	Value string `json:"value"`
 	// This field is from variant [shared.TextPartResponse].
-	TextDecorations []shared.TextPartResponseTextDecoration `json:"text_decorations"`
+	TextDecorations []shared.TextDecoration `json:"text_decorations"`
 	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [shared.MediaPartResponse].

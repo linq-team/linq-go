@@ -101,6 +101,58 @@ const ServiceTypeSMS = shared.ServiceTypeSMS
 // Equals "RCS"
 const ServiceTypeRCS = shared.ServiceTypeRCS
 
+// This is an alias to an internal type.
+type TextDecoration = shared.TextDecoration
+
+// Animated text effect to apply. Mutually exclusive with `style`.
+//
+// This is an alias to an internal type.
+type TextDecorationAnimation = shared.TextDecorationAnimation
+
+// Equals "big"
+const TextDecorationAnimationBig = shared.TextDecorationAnimationBig
+
+// Equals "small"
+const TextDecorationAnimationSmall = shared.TextDecorationAnimationSmall
+
+// Equals "shake"
+const TextDecorationAnimationShake = shared.TextDecorationAnimationShake
+
+// Equals "nod"
+const TextDecorationAnimationNod = shared.TextDecorationAnimationNod
+
+// Equals "explode"
+const TextDecorationAnimationExplode = shared.TextDecorationAnimationExplode
+
+// Equals "ripple"
+const TextDecorationAnimationRipple = shared.TextDecorationAnimationRipple
+
+// Equals "bloom"
+const TextDecorationAnimationBloom = shared.TextDecorationAnimationBloom
+
+// Equals "jitter"
+const TextDecorationAnimationJitter = shared.TextDecorationAnimationJitter
+
+// Text style to apply. Mutually exclusive with `animation`.
+//
+// This is an alias to an internal type.
+type TextDecorationStyle = shared.TextDecorationStyle
+
+// Equals "bold"
+const TextDecorationStyleBold = shared.TextDecorationStyleBold
+
+// Equals "italic"
+const TextDecorationStyleItalic = shared.TextDecorationStyleItalic
+
+// Equals "strikethrough"
+const TextDecorationStyleStrikethrough = shared.TextDecorationStyleStrikethrough
+
+// Equals "underline"
+const TextDecorationStyleUnderline = shared.TextDecorationStyleUnderline
+
+// This is an alias to an internal type.
+type TextDecorationParam = shared.TextDecorationParam
+
 // A text message part
 //
 // This is an alias to an internal type.
@@ -113,6 +165,3 @@ type TextPartResponseType = shared.TextPartResponseType
 
 // Equals "text"
 const TextPartResponseTypeText = shared.TextPartResponseTypeText
-
-// This is an alias to an internal type.
-type TextPartResponseTextDecoration = shared.TextPartResponseTextDecoration

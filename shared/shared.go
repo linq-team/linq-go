@@ -3,6 +3,7 @@
 package shared
 
 import (
+	"encoding/json"
 	"time"
 
 	"github.com/linq-team/linq-go/internal/apijson"
@@ -201,6 +202,93 @@ const (
 	ServiceTypeRCS      ServiceType = "RCS"
 )
 
+type TextDecoration struct {
+	// Character range `[start, end)` in the `value` string where the decoration
+	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
+	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
+	Range []int64 `json:"range" api:"required"`
+	// Animated text effect to apply. Mutually exclusive with `style`.
+	//
+	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
+	Animation TextDecorationAnimation `json:"animation"`
+	// Text style to apply. Mutually exclusive with `animation`.
+	//
+	// Any of "bold", "italic", "strikethrough", "underline".
+	Style TextDecorationStyle `json:"style"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Range       respjson.Field
+		Animation   respjson.Field
+		Style       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TextDecoration) RawJSON() string { return r.JSON.raw }
+func (r *TextDecoration) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// ToParam converts this TextDecoration to a TextDecorationParam.
+//
+// Warning: the fields of the param type will not be present. ToParam should only
+// be used at the last possible moment before sending a request. Test for this with
+// TextDecorationParam.Overrides()
+func (r TextDecoration) ToParam() TextDecorationParam {
+	return param.Override[TextDecorationParam](json.RawMessage(r.RawJSON()))
+}
+
+// Animated text effect to apply. Mutually exclusive with `style`.
+type TextDecorationAnimation string
+
+const (
+	TextDecorationAnimationBig     TextDecorationAnimation = "big"
+	TextDecorationAnimationSmall   TextDecorationAnimation = "small"
+	TextDecorationAnimationShake   TextDecorationAnimation = "shake"
+	TextDecorationAnimationNod     TextDecorationAnimation = "nod"
+	TextDecorationAnimationExplode TextDecorationAnimation = "explode"
+	TextDecorationAnimationRipple  TextDecorationAnimation = "ripple"
+	TextDecorationAnimationBloom   TextDecorationAnimation = "bloom"
+	TextDecorationAnimationJitter  TextDecorationAnimation = "jitter"
+)
+
+// Text style to apply. Mutually exclusive with `animation`.
+type TextDecorationStyle string
+
+const (
+	TextDecorationStyleBold          TextDecorationStyle = "bold"
+	TextDecorationStyleItalic        TextDecorationStyle = "italic"
+	TextDecorationStyleStrikethrough TextDecorationStyle = "strikethrough"
+	TextDecorationStyleUnderline     TextDecorationStyle = "underline"
+)
+
+// The property Range is required.
+type TextDecorationParam struct {
+	// Character range `[start, end)` in the `value` string where the decoration
+	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
+	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
+	Range []int64 `json:"range,omitzero" api:"required"`
+	// Animated text effect to apply. Mutually exclusive with `style`.
+	//
+	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
+	Animation TextDecorationAnimation `json:"animation,omitzero"`
+	// Text style to apply. Mutually exclusive with `animation`.
+	//
+	// Any of "bold", "italic", "strikethrough", "underline".
+	Style TextDecorationStyle `json:"style,omitzero"`
+	paramObj
+}
+
+func (r TextDecorationParam) MarshalJSON() (data []byte, err error) {
+	type shadow TextDecorationParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TextDecorationParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A text message part
 type TextPartResponse struct {
 	// Reactions on this message part
@@ -212,7 +300,7 @@ type TextPartResponse struct {
 	// The text content
 	Value string `json:"value" api:"required"`
 	// Text decorations applied to character ranges in the value
-	TextDecorations []TextPartResponseTextDecoration `json:"text_decorations" api:"nullable"`
+	TextDecorations []TextDecoration `json:"text_decorations" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reactions       respjson.Field
@@ -236,32 +324,3 @@ type TextPartResponseType string
 const (
 	TextPartResponseTypeText TextPartResponseType = "text"
 )
-
-type TextPartResponseTextDecoration struct {
-	// Character range `[start, end)` in the `value` string where the decoration
-	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
-	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
-	Range []int64 `json:"range" api:"required"`
-	// Animated text effect to apply. Mutually exclusive with `style`.
-	//
-	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
-	Animation string `json:"animation"`
-	// Text style to apply. Mutually exclusive with `animation`.
-	//
-	// Any of "bold", "italic", "strikethrough", "underline".
-	Style string `json:"style"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Range       respjson.Field
-		Animation   respjson.Field
-		Style       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TextPartResponseTextDecoration) RawJSON() string { return r.JSON.raw }
-func (r *TextPartResponseTextDecoration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}

@@ -19,7 +19,6 @@ import (
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
-	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with
@@ -167,6 +166,30 @@ func (r *ChatService) Update(ctx context.Context, chatID string, body ChatUpdate
 	}
 	path := fmt.Sprintf("v3/chats/%s", chatID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
+// Removes your phone number from a group chat. Once you leave, you will no longer
+// receive messages from the group and all interaction endpoints (send message,
+// typing, mark read, etc.) will return 409.
+//
+// A `participant.removed` webhook will fire once the leave has been processed.
+//
+// **Supported**
+//
+// - iMessage group chats with 4 or more active participants (including yourself)
+//
+// **Not supported**
+//
+// - DM (1-on-1) chats — use the chat directly to continue the conversation
+func (r *ChatService) LeaveChat(ctx context.Context, chatID string, opts ...option.RequestOption) (res *ChatLeaveChatResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if chatID == "" {
+		err = errors.New("missing required chatId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/chats/%s/leave", chatID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
 
@@ -334,6 +357,36 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The properties Type, Value are required.
+type LinkPartParam struct {
+	// Indicates this is a rich link preview part
+	//
+	// Any of "link".
+	Type LinkPartType `json:"type,omitzero" api:"required"`
+	// URL to send with a rich link preview. The recipient will see an inline card with
+	// the page's title, description, and preview image (when available).
+	//
+	// A `link` part must be the **only** part in the message. To send a URL as plain
+	// text (no preview card), use a `text` part instead.
+	Value string `json:"value" api:"required" format:"uri"`
+	paramObj
+}
+
+func (r LinkPartParam) MarshalJSON() (data []byte, err error) {
+	type shadow LinkPartParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *LinkPartParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates this is a rich link preview part
+type LinkPartType string
+
+const (
+	LinkPartTypeLink LinkPartType = "link"
+)
+
 // The property Type is required.
 type MediaPartParam struct {
 	// Indicates this is a media attachment part
@@ -454,9 +507,9 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type MessageContentPartUnionParam struct {
-	OfText  *TextPartParam               `json:",omitzero,inline"`
-	OfMedia *MediaPartParam              `json:",omitzero,inline"`
-	OfLink  *MessageContentPartLinkParam `json:",omitzero,inline"`
+	OfText  *TextPartParam  `json:",omitzero,inline"`
+	OfMedia *MediaPartParam `json:",omitzero,inline"`
+	OfLink  *LinkPartParam  `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -472,31 +525,8 @@ func init() {
 		"type",
 		apijson.Discriminator[TextPartParam]("text"),
 		apijson.Discriminator[MediaPartParam]("media"),
-		apijson.Discriminator[MessageContentPartLinkParam]("link"),
+		apijson.Discriminator[LinkPartParam]("link"),
 	)
-}
-
-// The properties Type, Value are required.
-type MessageContentPartLinkParam struct {
-	// URL to send with a rich link preview. The recipient will see an inline card with
-	// the page's title, description, and preview image (when available).
-	//
-	// A `link` part must be the **only** part in the message. To send a URL as plain
-	// text (no preview card), use a `text` part instead.
-	Value string `json:"value" api:"required" format:"uri"`
-	// Indicates this is a rich link preview part
-	//
-	// This field can be elided, and will marshal its zero value as "link".
-	Type constant.Link `json:"type" api:"required"`
-	paramObj
-}
-
-func (r MessageContentPartLinkParam) MarshalJSON() (data []byte, err error) {
-	type shadow MessageContentPartLinkParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *MessageContentPartLinkParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Type, Value are required.
@@ -526,7 +556,7 @@ type TextPartParam struct {
 	//
 	// **Note:** Text decorations only render for iMessage recipients. For SMS/RCS,
 	// text decorations are not applied.
-	TextDecorations []TextPartTextDecorationParam `json:"text_decorations,omitzero"`
+	TextDecorations []shared.TextDecorationParam `json:"text_decorations,omitzero"`
 	paramObj
 }
 
@@ -544,40 +574,6 @@ type TextPartType string
 const (
 	TextPartTypeText TextPartType = "text"
 )
-
-// The property Range is required.
-type TextPartTextDecorationParam struct {
-	// Character range `[start, end)` in the `value` string where the decoration
-	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
-	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
-	Range []int64 `json:"range,omitzero" api:"required"`
-	// Animated text effect to apply. Mutually exclusive with `style`.
-	//
-	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
-	Animation string `json:"animation,omitzero"`
-	// Text style to apply. Mutually exclusive with `animation`.
-	//
-	// Any of "bold", "italic", "strikethrough", "underline".
-	Style string `json:"style,omitzero"`
-	paramObj
-}
-
-func (r TextPartTextDecorationParam) MarshalJSON() (data []byte, err error) {
-	type shadow TextPartTextDecorationParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TextPartTextDecorationParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
-		"animation", "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter",
-	)
-	apijson.RegisterFieldValidator[TextPartTextDecorationParam](
-		"style", "bold", "italic", "strikethrough", "underline",
-	)
-}
 
 // Response for creating a new chat with an initial message
 type ChatNewResponse struct {
@@ -647,6 +643,26 @@ type ChatUpdateResponse struct {
 // Returns the unmodified JSON received from the API
 func (r ChatUpdateResponse) RawJSON() string { return r.JSON.raw }
 func (r *ChatUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ChatLeaveChatResponse struct {
+	Message string `json:"message"`
+	Status  string `json:"status"`
+	TraceID string `json:"trace_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Status      respjson.Field
+		TraceID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatLeaveChatResponse) RawJSON() string { return r.JSON.raw }
+func (r *ChatLeaveChatResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

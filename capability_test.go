@@ -27,8 +27,10 @@ func TestCapabilityCheckiMessageWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Capability.CheckiMessage(context.TODO(), linqgo.CapabilityCheckiMessageParams{
-		Address: "+15551234567",
-		From:    linqgo.String("+15559876543"),
+		HandleCheck: linqgo.HandleCheckParam{
+			Address: "+15551234567",
+			From:    linqgo.String("+15559876543"),
+		},
 	})
 	if err != nil {
 		var apierr *linqgo.Error
@@ -53,8 +55,10 @@ func TestCapabilityCheckRCSWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.Capability.CheckRCS(context.TODO(), linqgo.CapabilityCheckRCSParams{
-		Address: "+15551234567",
-		From:    linqgo.String("+15559876543"),
+		HandleCheck: linqgo.HandleCheckParam{
+			Address: "+15551234567",
+			From:    linqgo.String("+15559876543"),
+		},
 	})
 	if err != nil {
 		var apierr *linqgo.Error

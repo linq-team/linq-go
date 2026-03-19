@@ -34,14 +34,14 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
-					TextDecorations: []linqgo.TextPartTextDecorationParam{{
+					TextDecorations: []shared.TextDecorationParam{{
 						Range:     []int64{0, 5},
-						Animation: "shake",
-						Style:     "bold",
+						Animation: shared.TextDecorationAnimationShake,
+						Style:     shared.TextDecorationStyleBold,
 					}, {
 						Range:     []int64{6, 11},
-						Animation: "shake",
-						Style:     "bold",
+						Animation: shared.TextDecorationAnimationShake,
+						Style:     shared.TextDecorationStyleBold,
 					}},
 				},
 			}},
@@ -111,6 +111,29 @@ func TestChatUpdateWithOptionalParams(t *testing.T) {
 			GroupChatIcon: linqgo.String("https://example.com/icon.png"),
 		},
 	)
+	if err != nil {
+		var apierr *linqgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestChatLeaveChat(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := linqgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Chats.LeaveChat(context.TODO(), "550e8400-e29b-41d4-a716-446655440000")
 	if err != nil {
 		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {

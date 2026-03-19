@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.0 (2026-03-19)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/linq-team/linq-go/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** manual updates ([f78d201](https://github.com/linq-team/linq-go/commit/f78d201fb059e0ee4ce1a3ce997e5f973f990699))
+* **api:** update config ([72e87bd](https://github.com/linq-team/linq-go/commit/72e87bdad5592a359d5beea55c49e054724db0ae))
+
 ## 0.7.0 (2026-03-19)
 
 Full Changelog: [v0.6.1...v0.7.0](https://github.com/linq-team/linq-go/compare/v0.6.1...v0.7.0)
