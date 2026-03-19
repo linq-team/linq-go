@@ -19,6 +19,7 @@ import (
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
+	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with
@@ -453,13 +454,14 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type MessageContentPartUnionParam struct {
-	OfText  *TextPartParam  `json:",omitzero,inline"`
-	OfMedia *MediaPartParam `json:",omitzero,inline"`
+	OfText  *TextPartParam               `json:",omitzero,inline"`
+	OfMedia *MediaPartParam              `json:",omitzero,inline"`
+	OfLink  *MessageContentPartLinkParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u MessageContentPartUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfMedia)
+	return param.MarshalUnion(u, u.OfText, u.OfMedia, u.OfLink)
 }
 func (u *MessageContentPartUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -470,7 +472,31 @@ func init() {
 		"type",
 		apijson.Discriminator[TextPartParam]("text"),
 		apijson.Discriminator[MediaPartParam]("media"),
+		apijson.Discriminator[MessageContentPartLinkParam]("link"),
 	)
+}
+
+// The properties Type, Value are required.
+type MessageContentPartLinkParam struct {
+	// URL to send with a rich link preview. The recipient will see an inline card with
+	// the page's title, description, and preview image (when available).
+	//
+	// A `link` part must be the **only** part in the message. To send a URL as plain
+	// text (no preview card), use a `text` part instead.
+	Value string `json:"value" api:"required" format:"uri"`
+	// Indicates this is a rich link preview part
+	//
+	// This field can be elided, and will marshal its zero value as "link".
+	Type constant.Link `json:"type" api:"required"`
+	paramObj
+}
+
+func (r MessageContentPartLinkParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentPartLinkParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentPartLinkParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Type, Value are required.
