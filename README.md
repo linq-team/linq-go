@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The Linq API V3 Go library provides convenient access to the Linq API V3 REST API
+The Linq API V3 Go library provides convenient access to the [Linq API V3 REST API](https://apidocs.linqapp.com)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).

@@ -556,7 +556,7 @@ type TextPartParam struct {
 	//
 	// **Note:** Text decorations only render for iMessage recipients. For SMS/RCS,
 	// text decorations are not applied.
-	TextDecorations []TextDecorationParam `json:"text_decorations,omitzero"`
+	TextDecorations []shared.TextDecorationParam `json:"text_decorations,omitzero"`
 	paramObj
 }
 
