@@ -5,6 +5,7 @@ package shared
 import (
 	"time"
 
+	"github.com/linq-team/linq-go"
 	"github.com/linq-team/linq-go/internal/apijson"
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
@@ -212,7 +213,7 @@ type TextPartResponse struct {
 	// The text content
 	Value string `json:"value" api:"required"`
 	// Text decorations applied to character ranges in the value
-	TextDecorations []TextPartResponseTextDecoration `json:"text_decorations" api:"nullable"`
+	TextDecorations []linqgo.TextDecoration `json:"text_decorations" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reactions       respjson.Field
@@ -236,32 +237,3 @@ type TextPartResponseType string
 const (
 	TextPartResponseTypeText TextPartResponseType = "text"
 )
-
-type TextPartResponseTextDecoration struct {
-	// Character range `[start, end)` in the `value` string where the decoration
-	// applies. `start` is inclusive, `end` is exclusive. _Characters are measured as
-	// UTF-16 code units. Most characters count as 1; some emoji count as 2._
-	Range []int64 `json:"range" api:"required"`
-	// Animated text effect to apply. Mutually exclusive with `style`.
-	//
-	// Any of "big", "small", "shake", "nod", "explode", "ripple", "bloom", "jitter".
-	Animation string `json:"animation"`
-	// Text style to apply. Mutually exclusive with `animation`.
-	//
-	// Any of "bold", "italic", "strikethrough", "underline".
-	Style string `json:"style"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Range       respjson.Field
-		Animation   respjson.Field
-		Style       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TextPartResponseTextDecoration) RawJSON() string { return r.JSON.raw }
-func (r *TextPartResponseTextDecoration) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}

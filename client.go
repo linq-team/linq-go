@@ -308,6 +308,13 @@ type Client struct {
 	// message.
 	Capability CapabilityService
 	Webhooks   WebhookService
+	// Contact Card lets you set and share your contact information (name and profile
+	// photo) with chat participants via iMessage Name and Photo Sharing.
+	//
+	// Use `POST /v3/contact_card` to create or update a card for a phone number. Use
+	// `PATCH /v3/contact_card` to update an existing active card. Use
+	// `GET /v3/contact_card` to retrieve the active card(s) for your partner account.
+	ContactCard ContactCardService
 }
 
 // DefaultClientOptions read from the environment (LINQ_API_V3_API_KEY,
@@ -341,6 +348,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
 	r.Capability = NewCapabilityService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
+	r.ContactCard = NewContactCardService(opts...)
 
 	return
 }
