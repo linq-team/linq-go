@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.7.0 (2026-03-19)
+
+Full Changelog: [v0.6.1...v0.7.0](https://github.com/linq-team/linq-go/compare/v0.6.1...v0.7.0)
+
+### Features
+
+* BUG: support rich media ddscan in links ([c49b87f](https://github.com/linq-team/linq-go/commit/c49b87f3a6b255989af02c948dd2dacb5f6d8cf4))
+* PLT(Synapse): Add Content-Type validation for outbound presigned URL uploads ([33ea384](https://github.com/linq-team/linq-go/commit/33ea384df63694bcc96016ba02b72870f9c51b1e))
+
 ## 0.6.1 (2026-03-17)
 
 Full Changelog: [v0.6.0...v0.6.1](https://github.com/linq-team/linq-go/compare/v0.6.0...v0.6.1)
