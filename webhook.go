@@ -162,7 +162,7 @@ type MessageEventV2PartUnion struct {
 	// This field is from variant [SchemasTextPartResponse].
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
-	TextDecorations []TextDecoration `json:"text_decorations"`
+	TextDecorations []shared.TextDecoration `json:"text_decorations"`
 	// This field is from variant [SchemasMediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [SchemasMediaPartResponse].
@@ -319,7 +319,7 @@ type MessagePayloadPartUnion struct {
 	// This field is from variant [SchemasTextPartResponse].
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
-	TextDecorations []TextDecoration `json:"text_decorations"`
+	TextDecorations []shared.TextDecoration `json:"text_decorations"`
 	// This field is from variant [SchemasMediaPartResponse].
 	ID string `json:"id"`
 	// This field is from variant [SchemasMediaPartResponse].
@@ -554,7 +554,7 @@ type SchemasTextPartResponse struct {
 	// The text content
 	Value string `json:"value" api:"required"`
 	// Text decorations applied to character ranges in the value
-	TextDecorations []TextDecoration `json:"text_decorations" api:"nullable"`
+	TextDecorations []shared.TextDecoration `json:"text_decorations" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Type            respjson.Field

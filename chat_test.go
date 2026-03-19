@@ -34,14 +34,14 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
 					Value: "Hello! How can I help you today?",
-					TextDecorations: []linqgo.TextDecorationParam{{
+					TextDecorations: []shared.TextDecorationParam{{
 						Range:     []int64{0, 5},
-						Animation: linqgo.TextDecorationAnimationShake,
-						Style:     linqgo.TextDecorationStyleBold,
+						Animation: shared.TextDecorationAnimationShake,
+						Style:     shared.TextDecorationStyleBold,
 					}, {
 						Range:     []int64{6, 11},
-						Animation: linqgo.TextDecorationAnimationShake,
-						Style:     linqgo.TextDecorationStyleBold,
+						Animation: shared.TextDecorationAnimationShake,
+						Style:     shared.TextDecorationStyleBold,
 					}},
 				},
 			}},
