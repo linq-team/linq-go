@@ -113,6 +113,3 @@ type TextPartResponseType = shared.TextPartResponseType
 
 // Equals "text"
 const TextPartResponseTypeText = shared.TextPartResponseTypeText
-
-// This is an alias to an internal type.
-type TextPartResponseTextDecoration = shared.TextPartResponseTextDecoration
