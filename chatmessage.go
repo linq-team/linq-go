@@ -22,14 +22,26 @@ import (
 	"github.com/linq-team/linq-go/shared"
 )
 
-// Messages are individual text or multimedia communications within a chat thread.
+// Messages are individual communications within a chat thread.
 //
-// Messages can include text, attachments, special effects (like confetti or
-// fireworks), and reactions. All messages are associated with a specific chat and
-// sent from a phone number you own.
+// Messages can include text, media attachments, rich link previews, special
+// effects (like confetti or fireworks), and reactions. All messages are associated
+// with a specific chat and sent from a phone number you own.
 //
 // Messages support delivery status tracking, read receipts, and editing
 // capabilities.
+//
+// ## Rich Link Previews
+//
+// Send a URL as a `link` part to deliver it with a rich preview card showing the
+// page's title, description, and image (when available). A `link` part must be the
+// **only** part in the message — it cannot be combined with text or media parts.
+// To send a URL without a preview card, include it in a `text` part instead.
+//
+// **Limitations:**
+//
+// - A `link` part cannot be combined with other parts in the same message.
+// - Maximum URL length: 2,048 characters.
 //
 // ChatMessageService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
@@ -142,7 +154,7 @@ type SentMessage struct {
 	DeliveryStatus SentMessageDeliveryStatus `json:"delivery_status" api:"required"`
 	// Whether the message has been read
 	IsRead bool `json:"is_read" api:"required"`
-	// Message parts in order (text and media)
+	// Message parts in order (text, media, and link)
 	Parts []SentMessagePartUnion `json:"parts" api:"required"`
 	// When the message was sent
 	SentAt time.Time `json:"sent_at" api:"required" format:"date-time"`
@@ -198,14 +210,14 @@ const (
 )
 
 // SentMessagePartUnion contains all possible properties and values from
-// [shared.TextPartResponse], [shared.MediaPartResponse].
+// [shared.TextPartResponse], [shared.MediaPartResponse],
+// [SentMessagePartLinkPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
 	Reactions []shared.Reaction `json:"reactions"`
 	Type      string            `json:"type"`
-	// This field is from variant [shared.TextPartResponse].
-	Value string `json:"value"`
+	Value     string            `json:"value"`
 	// This field is from variant [shared.TextPartResponse].
 	TextDecorations []shared.TextDecoration `json:"text_decorations"`
 	// This field is from variant [shared.MediaPartResponse].
@@ -242,10 +254,41 @@ func (u SentMessagePartUnion) AsMediaPartResponse() (v shared.MediaPartResponse)
 	return
 }
 
+func (u SentMessagePartUnion) AsSentMessagePartLinkPartResponse() (v SentMessagePartLinkPartResponse) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u SentMessagePartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A rich link preview part
+type SentMessagePartLinkPartResponse struct {
+	// Reactions on this message part
+	Reactions []shared.Reaction `json:"reactions" api:"required"`
+	// Indicates this is a rich link preview part
+	//
+	// Any of "link".
+	Type string `json:"type" api:"required"`
+	// The URL
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reactions   respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SentMessagePartLinkPartResponse) RawJSON() string { return r.JSON.raw }
+func (r *SentMessagePartLinkPartResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
