@@ -18,14 +18,26 @@ import (
 type Client struct {
 	Options []option.RequestOption
 	Chats   ChatService
-	// Messages are individual text or multimedia communications within a chat thread.
+	// Messages are individual communications within a chat thread.
 	//
-	// Messages can include text, attachments, special effects (like confetti or
-	// fireworks), and reactions. All messages are associated with a specific chat and
-	// sent from a phone number you own.
+	// Messages can include text, media attachments, rich link previews, special
+	// effects (like confetti or fireworks), and reactions. All messages are associated
+	// with a specific chat and sent from a phone number you own.
 	//
 	// Messages support delivery status tracking, read receipts, and editing
 	// capabilities.
+	//
+	// ## Rich Link Previews
+	//
+	// Send a URL as a `link` part to deliver it with a rich preview card showing the
+	// page's title, description, and image (when available). A `link` part must be the
+	// **only** part in the message — it cannot be combined with text or media parts.
+	// To send a URL without a preview card, include it in a `text` part instead.
+	//
+	// **Limitations:**
+	//
+	// - A `link` part cannot be combined with other parts in the same message.
+	// - Maximum URL length: 2,048 characters.
 	Messages MessageService
 	// Send files (images, videos, documents, audio) with messages by providing a URL
 	// in a media part. Pre-uploading via `POST /v3/attachments` is **optional** and

@@ -67,14 +67,26 @@ type ChatService struct {
 	//   - Example email: `user@example.com`
 	//   - No spaces, dashes, or parentheses in phone numbers
 	Typing ChatTypingService
-	// Messages are individual text or multimedia communications within a chat thread.
+	// Messages are individual communications within a chat thread.
 	//
-	// Messages can include text, attachments, special effects (like confetti or
-	// fireworks), and reactions. All messages are associated with a specific chat and
-	// sent from a phone number you own.
+	// Messages can include text, media attachments, rich link previews, special
+	// effects (like confetti or fireworks), and reactions. All messages are associated
+	// with a specific chat and sent from a phone number you own.
 	//
 	// Messages support delivery status tracking, read receipts, and editing
 	// capabilities.
+	//
+	// ## Rich Link Previews
+	//
+	// Send a URL as a `link` part to deliver it with a rich preview card showing the
+	// page's title, description, and image (when available). A `link` part must be the
+	// **only** part in the message — it cannot be combined with text or media parts.
+	// To send a URL without a preview card, include it in a `text` part instead.
+	//
+	// **Limitations:**
+	//
+	// - A `link` part cannot be combined with other parts in the same message.
+	// - Maximum URL length: 2,048 characters.
 	Messages ChatMessageService
 }
 
@@ -452,8 +464,15 @@ const (
 //
 // The property Parts is required.
 type MessageContentParam struct {
-	// Array of message parts. Each part can be either text or media. Parts are
-	// displayed in order. Text and media can be mixed.
+	// Array of message parts. Each part can be text, media, or link. Parts are
+	// displayed in order. Text and media can be mixed freely, but a `link` part must
+	// be the only part in the message.
+	//
+	// **Rich Link Previews:**
+	//
+	// - Use a `link` part to send a URL with a rich preview card
+	// - A `link` part must be the **only** part in the message
+	// - To send a URL as plain text (no preview), use a `text` part instead
 	//
 	// **Supported Media:**
 	//
@@ -473,6 +492,8 @@ type MessageContentParam struct {
 	//
 	// **Validation Rules:**
 	//
+	//   - A `link` part must be the **only** part in the message. It cannot be combined
+	//     with text or media parts.
 	//   - Consecutive text parts are not allowed. Text parts must be separated by media
 	//     parts. For example, [text, text] is invalid, but [text, media, text] is valid.
 	//   - Maximum of **100 parts** total.

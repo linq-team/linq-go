@@ -10,6 +10,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
+	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -151,15 +152,14 @@ const (
 )
 
 // MessageEventV2PartUnion contains all possible properties and values from
-// [SchemasTextPartResponse], [SchemasMediaPartResponse].
+// [SchemasTextPartResponse], [SchemasMediaPartResponse], [MessageEventV2PartLink].
 //
 // Use the [MessageEventV2PartUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessageEventV2PartUnion struct {
-	// Any of "text", "media".
-	Type string `json:"type"`
-	// This field is from variant [SchemasTextPartResponse].
+	// Any of "text", "media", "link".
+	Type  string `json:"type"`
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
 	TextDecorations []shared.TextDecoration `json:"text_decorations"`
@@ -195,12 +195,14 @@ type anyMessageEventV2Part interface {
 
 func (SchemasTextPartResponse) implMessageEventV2PartUnion()  {}
 func (SchemasMediaPartResponse) implMessageEventV2PartUnion() {}
+func (MessageEventV2PartLink) implMessageEventV2PartUnion()   {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := MessageEventV2PartUnion.AsAny().(type) {
 //	case linqgo.SchemasTextPartResponse:
 //	case linqgo.SchemasMediaPartResponse:
+//	case linqgo.MessageEventV2PartLink:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -210,6 +212,8 @@ func (u MessageEventV2PartUnion) AsAny() anyMessageEventV2Part {
 		return u.AsText()
 	case "media":
 		return u.AsMedia()
+	case "link":
+		return u.AsLink()
 	}
 	return nil
 }
@@ -224,10 +228,36 @@ func (u MessageEventV2PartUnion) AsMedia() (v SchemasMediaPartResponse) {
 	return
 }
 
+func (u MessageEventV2PartUnion) AsLink() (v MessageEventV2PartLink) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u MessageEventV2PartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *MessageEventV2PartUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A rich link preview part
+type MessageEventV2PartLink struct {
+	// Indicates this is a rich link preview part
+	Type constant.Link `json:"type" api:"required"`
+	// The URL
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2PartLink) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2PartLink) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -311,12 +341,12 @@ func (r *MessagePayload) UnmarshalJSON(data []byte) error {
 }
 
 // MessagePayloadPartUnion contains all possible properties and values from
-// [SchemasTextPartResponse], [SchemasMediaPartResponse].
+// [SchemasTextPartResponse], [SchemasMediaPartResponse],
+// [MessagePayloadPartSchemasLinkPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessagePayloadPartUnion struct {
-	Type string `json:"type"`
-	// This field is from variant [SchemasTextPartResponse].
+	Type  string `json:"type"`
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
 	TextDecorations []shared.TextDecoration `json:"text_decorations"`
@@ -353,10 +383,38 @@ func (u MessagePayloadPartUnion) AsSchemasMediaPartResponse() (v SchemasMediaPar
 	return
 }
 
+func (u MessagePayloadPartUnion) AsMessagePayloadPartSchemasLinkPartResponse() (v MessagePayloadPartSchemasLinkPartResponse) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u MessagePayloadPartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *MessagePayloadPartUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A rich link preview part
+type MessagePayloadPartSchemasLinkPartResponse struct {
+	// Indicates this is a rich link preview part
+	//
+	// Any of "link".
+	Type string `json:"type" api:"required"`
+	// The URL
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagePayloadPartSchemasLinkPartResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagePayloadPartSchemasLinkPartResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
