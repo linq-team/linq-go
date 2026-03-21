@@ -20,8 +20,8 @@ import (
 // Configure webhook endpoints to receive events such as messages sent/received,
 // delivery status changes, reactions, typing indicators, and more.
 //
-// Failed deliveries (5xx, 429, network errors) are retried up to 10 times over ~2
-// hours with exponential backoff. Each event includes a unique ID for
+// Failed deliveries (5xx, 429, network errors) are retried up to 10 times over ~25
+// minutes with exponential backoff. Each event includes a unique ID for
 // deduplication.
 //
 // ## Webhook Headers
