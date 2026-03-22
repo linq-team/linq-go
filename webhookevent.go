@@ -160,6 +160,13 @@ const (
 	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
 	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
 	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
+	WebhookEventTypeCallInitiated              WebhookEventType = "call.initiated"
+	WebhookEventTypeCallRinging                WebhookEventType = "call.ringing"
+	WebhookEventTypeCallAnswered               WebhookEventType = "call.answered"
+	WebhookEventTypeCallEnded                  WebhookEventType = "call.ended"
+	WebhookEventTypeCallFailed                 WebhookEventType = "call.failed"
+	WebhookEventTypeCallDeclined               WebhookEventType = "call.declined"
+	WebhookEventTypeCallNoAnswer               WebhookEventType = "call.no_answer"
 )
 
 type WebhookEventListResponse struct {
