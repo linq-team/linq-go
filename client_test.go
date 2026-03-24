@@ -3,8 +3,10 @@
 package linqgo_test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"testing"
@@ -21,6 +23,14 @@ type closureTransport struct {
 
 func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	return t.fn(req)
+}
+
+type closureDoer struct {
+	fn func(req *http.Request) (*http.Response, error)
+}
+
+func (d closureDoer) Do(req *http.Request) (*http.Response, error) {
+	return d.fn(req)
 }
 
 func TestUserAgentHeader(t *testing.T) {
@@ -327,5 +337,48 @@ func TestContextDeadline(t *testing.T) {
 		if diff := time.Since(deadline); diff < -30*time.Millisecond || 30*time.Millisecond < diff {
 			t.Fatalf("client did not return within 30ms of context deadline, got %s", diff)
 		}
+	}
+}
+
+func TestPaginationPreservesCustomHTTPDoer(t *testing.T) {
+	requests := make([]string, 0, 2)
+	client := linqgo.NewClient(
+		option.WithAPIKey("My API Key"),
+		option.WithHTTPClient(closureDoer{
+			fn: func(req *http.Request) (*http.Response, error) {
+				requests = append(requests, req.URL.RawQuery)
+
+				body := `{"chats":[{"id":"chat_123","created_at":"2026-01-01T00:00:00Z","display_name":"Test","handles":[],"is_archived":false,"is_group":false,"updated_at":"2026-01-01T00:00:00Z"}],"next_cursor":""}`
+				if len(requests) == 1 {
+					body = `{"chats":[{"id":"chat_123","created_at":"2026-01-01T00:00:00Z","display_name":"Test","handles":[],"is_archived":false,"is_group":false,"updated_at":"2026-01-01T00:00:00Z"}],"next_cursor":"cursor_2"}`
+				}
+
+				return &http.Response{
+					StatusCode: http.StatusOK,
+					Header:     http.Header{"Content-Type": []string{"application/json"}},
+					Body:       io.NopCloser(bytes.NewBufferString(body)),
+				}, nil
+			},
+		}),
+	)
+
+	page, err := client.Chats.ListChats(context.Background(), linqgo.ChatListChatsParams{
+		From: "+12052535597",
+	})
+	if err != nil {
+		t.Fatalf("expected first page to succeed: %s", err)
+	}
+
+	nextPage, err := page.GetNextPage()
+	if err != nil {
+		t.Fatalf("expected second page to succeed: %s", err)
+	}
+	if nextPage == nil {
+		t.Fatal("expected a second page")
+	}
+
+	expectedRequests := []string{"from=%2B12052535597", "cursor=cursor_2&from=%2B12052535597"}
+	if !reflect.DeepEqual(requests, expectedRequests) {
+		t.Fatalf("expected pagination requests %v, got %v", expectedRequests, requests)
 	}
 }
