@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.11.0 (2026-03-24)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/linq-team/linq-go/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* Clean up mess in docs ([72fd9d2](https://github.com/linq-team/linq-go/commit/72fd9d29512b7b1118be62871c4b5183fb5085a4))
+
 ## 0.10.0 (2026-03-24)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/linq-team/linq-go/compare/v0.9.0...v0.10.0)
