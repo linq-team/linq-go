@@ -637,7 +637,7 @@ const (
 )
 
 // Complete webhook payload for message.sent events (2026-02-03 format)
-type MessageSentV2026WebhookEvent struct {
+type MessageSentV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -703,13 +703,13 @@ type MessageSentV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageSentV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageSentV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageSentV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageSentV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.received events (2026-02-03 format)
-type MessageReceivedV2026WebhookEvent struct {
+type MessageReceivedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -775,13 +775,13 @@ type MessageReceivedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReceivedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageReceivedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageReceivedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageReceivedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.read events (2026-02-03 format)
-type MessageReadV2026WebhookEvent struct {
+type MessageReadV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -847,13 +847,13 @@ type MessageReadV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReadV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageReadV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageReadV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageReadV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.delivered events (2026-02-03 format)
-type MessageDeliveredV2026WebhookEvent struct {
+type MessageDeliveredV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -919,13 +919,13 @@ type MessageDeliveredV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageDeliveredV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageDeliveredV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageDeliveredV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageDeliveredV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.failed events
-type MessageFailedV2026WebhookEvent struct {
+type MessageFailedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -933,7 +933,7 @@ type MessageFailedV2026WebhookEvent struct {
 	// Error details for message.failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data MessageFailedV2026WebhookEventData `json:"data" api:"required"`
+	Data MessageFailedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -975,15 +975,15 @@ type MessageFailedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageFailedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageFailedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageFailedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageFailedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for message.failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type MessageFailedV2026WebhookEventData struct {
+type MessageFailedV2026_02_03WebhookEventData struct {
 	// Error codes in webhook failure events (3007, 4001).
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
@@ -1007,13 +1007,13 @@ type MessageFailedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageFailedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageFailedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageFailedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageFailedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for reaction.added events
-type ReactionAddedV2026WebhookEvent struct {
+type ReactionAddedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -1061,13 +1061,13 @@ type ReactionAddedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReactionAddedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ReactionAddedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ReactionAddedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ReactionAddedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for reaction.removed events
-type ReactionRemovedV2026WebhookEvent struct {
+type ReactionRemovedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -1115,19 +1115,19 @@ type ReactionRemovedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReactionRemovedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ReactionRemovedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ReactionRemovedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ReactionRemovedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for participant.added events
-type ParticipantAddedV2026WebhookEvent struct {
+type ParticipantAddedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for participant.added webhook events
-	Data ParticipantAddedV2026WebhookEventData `json:"data" api:"required"`
+	Data ParticipantAddedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1169,13 +1169,13 @@ type ParticipantAddedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantAddedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantAddedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ParticipantAddedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantAddedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for participant.added webhook events
-type ParticipantAddedV2026WebhookEventData struct {
+type ParticipantAddedV2026_02_03WebhookEventData struct {
 	// DEPRECATED: Use participant instead. Handle (phone number or email address) of
 	// the added participant.
 	//
@@ -1199,19 +1199,19 @@ type ParticipantAddedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantAddedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantAddedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ParticipantAddedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantAddedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for participant.removed events
-type ParticipantRemovedV2026WebhookEvent struct {
+type ParticipantRemovedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for participant.removed webhook events
-	Data ParticipantRemovedV2026WebhookEventData `json:"data" api:"required"`
+	Data ParticipantRemovedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1253,13 +1253,13 @@ type ParticipantRemovedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantRemovedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantRemovedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ParticipantRemovedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantRemovedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for participant.removed webhook events
-type ParticipantRemovedV2026WebhookEventData struct {
+type ParticipantRemovedV2026_02_03WebhookEventData struct {
 	// DEPRECATED: Use participant instead. Handle (phone number or email address) of
 	// the removed participant.
 	//
@@ -1283,19 +1283,19 @@ type ParticipantRemovedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantRemovedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantRemovedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ParticipantRemovedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantRemovedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_name_updated events
-type ChatGroupNameUpdatedV2026WebhookEvent struct {
+type ChatGroupNameUpdatedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.group_name_updated webhook events
-	Data ChatGroupNameUpdatedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupNameUpdatedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1337,13 +1337,13 @@ type ChatGroupNameUpdatedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdatedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdatedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdatedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdatedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.group_name_updated webhook events
-type ChatGroupNameUpdatedV2026WebhookEventData struct {
+type ChatGroupNameUpdatedV2026_02_03WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// When the update occurred
@@ -1367,19 +1367,19 @@ type ChatGroupNameUpdatedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdatedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdatedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdatedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdatedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_icon_updated events
-type ChatGroupIconUpdatedV2026WebhookEvent struct {
+type ChatGroupIconUpdatedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.group_icon_updated webhook events
-	Data ChatGroupIconUpdatedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupIconUpdatedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1421,13 +1421,13 @@ type ChatGroupIconUpdatedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdatedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdatedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdatedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdatedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.group_icon_updated webhook events
-type ChatGroupIconUpdatedV2026WebhookEventData struct {
+type ChatGroupIconUpdatedV2026_02_03WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// When the update occurred
@@ -1451,13 +1451,13 @@ type ChatGroupIconUpdatedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdatedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdatedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdatedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdatedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_name_update_failed events
-type ChatGroupNameUpdateFailedV2026WebhookEvent struct {
+type ChatGroupNameUpdateFailedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -1465,7 +1465,7 @@ type ChatGroupNameUpdateFailedV2026WebhookEvent struct {
 	// Error details for chat.group_name_update_failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data ChatGroupNameUpdateFailedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupNameUpdateFailedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1507,15 +1507,15 @@ type ChatGroupNameUpdateFailedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdateFailedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdateFailedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdateFailedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdateFailedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for chat.group_name_update_failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type ChatGroupNameUpdateFailedV2026WebhookEventData struct {
+type ChatGroupNameUpdateFailedV2026_02_03WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events (3007, 4001).
@@ -1533,13 +1533,13 @@ type ChatGroupNameUpdateFailedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdateFailedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdateFailedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdateFailedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdateFailedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_icon_update_failed events
-type ChatGroupIconUpdateFailedV2026WebhookEvent struct {
+type ChatGroupIconUpdateFailedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -1547,7 +1547,7 @@ type ChatGroupIconUpdateFailedV2026WebhookEvent struct {
 	// Error details for chat.group_icon_update_failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data ChatGroupIconUpdateFailedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupIconUpdateFailedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1589,15 +1589,15 @@ type ChatGroupIconUpdateFailedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdateFailedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdateFailedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdateFailedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdateFailedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for chat.group_icon_update_failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type ChatGroupIconUpdateFailedV2026WebhookEventData struct {
+type ChatGroupIconUpdateFailedV2026_02_03WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events (3007, 4001).
@@ -1615,20 +1615,20 @@ type ChatGroupIconUpdateFailedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdateFailedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdateFailedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdateFailedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdateFailedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.created events
-type ChatCreatedV2026WebhookEvent struct {
+type ChatCreatedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.created webhook events. Matches GET /v3/chats/{chatId}
 	// response.
-	Data ChatCreatedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatCreatedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1670,14 +1670,14 @@ type ChatCreatedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatCreatedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatCreatedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatCreatedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatCreatedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.created webhook events. Matches GET /v3/chats/{chatId}
 // response.
-type ChatCreatedV2026WebhookEventData struct {
+type ChatCreatedV2026_02_03WebhookEventData struct {
 	// Unique identifier for the chat
 	ID string `json:"id" api:"required" format:"uuid"`
 	// When the chat was created
@@ -1711,19 +1711,19 @@ type ChatCreatedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatCreatedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatCreatedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatCreatedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatCreatedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.typing_indicator.started events
-type ChatTypingIndicatorStartedV2026WebhookEvent struct {
+type ChatTypingIndicatorStartedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.typing_indicator.started webhook events
-	Data ChatTypingIndicatorStartedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatTypingIndicatorStartedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1765,13 +1765,13 @@ type ChatTypingIndicatorStartedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStartedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStartedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStartedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStartedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.typing_indicator.started webhook events
-type ChatTypingIndicatorStartedV2026WebhookEventData struct {
+type ChatTypingIndicatorStartedV2026_02_03WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1783,19 +1783,19 @@ type ChatTypingIndicatorStartedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStartedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStartedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStartedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStartedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.typing_indicator.stopped events
-type ChatTypingIndicatorStoppedV2026WebhookEvent struct {
+type ChatTypingIndicatorStoppedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.typing_indicator.stopped webhook events
-	Data ChatTypingIndicatorStoppedV2026WebhookEventData `json:"data" api:"required"`
+	Data ChatTypingIndicatorStoppedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1837,13 +1837,13 @@ type ChatTypingIndicatorStoppedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStoppedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStoppedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStoppedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStoppedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.typing_indicator.stopped webhook events
-type ChatTypingIndicatorStoppedV2026WebhookEventData struct {
+type ChatTypingIndicatorStoppedV2026_02_03WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1855,13 +1855,13 @@ type ChatTypingIndicatorStoppedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStoppedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStoppedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStoppedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStoppedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.edited events (2026-02-03 format only)
-type MessageEditedV2026WebhookEvent struct {
+type MessageEditedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -1870,7 +1870,7 @@ type MessageEditedV2026WebhookEvent struct {
 	//
 	// Describes which part of a message was edited and when. Only text parts can be
 	// edited. Only available for subscriptions using `webhook_version: "2026-02-03"`.
-	Data MessageEditedV2026WebhookEventData `json:"data" api:"required"`
+	Data MessageEditedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -1912,8 +1912,8 @@ type MessageEditedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageEditedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageEditedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageEditedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1921,11 +1921,11 @@ func (r *MessageEditedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
 //
 // Describes which part of a message was edited and when. Only text parts can be
 // edited. Only available for subscriptions using `webhook_version: "2026-02-03"`.
-type MessageEditedV2026WebhookEventData struct {
+type MessageEditedV2026_02_03WebhookEventData struct {
 	// Message identifier
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Chat context
-	Chat MessageEditedV2026WebhookEventDataChat `json:"chat" api:"required"`
+	Chat MessageEditedV2026_02_03WebhookEventDataChat `json:"chat" api:"required"`
 	// "outbound" if you sent the original message, "inbound" if you received it
 	//
 	// Any of "outbound", "inbound".
@@ -1933,7 +1933,7 @@ type MessageEditedV2026WebhookEventData struct {
 	// When the edit occurred
 	EditedAt time.Time `json:"edited_at" api:"required" format:"date-time"`
 	// The edited part
-	Part MessageEditedV2026WebhookEventDataPart `json:"part" api:"required"`
+	Part MessageEditedV2026_02_03WebhookEventDataPart `json:"part" api:"required"`
 	// The handle that sent (and edited) this message
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -1950,13 +1950,13 @@ type MessageEditedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageEditedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageEditedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageEditedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Chat context
-type MessageEditedV2026WebhookEventDataChat struct {
+type MessageEditedV2026_02_03WebhookEventDataChat struct {
 	// Chat identifier
 	ID string `json:"id" api:"required" format:"uuid"`
 	// Whether this is a group chat
@@ -1974,13 +1974,13 @@ type MessageEditedV2026WebhookEventDataChat struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageEditedV2026WebhookEventDataChat) RawJSON() string { return r.JSON.raw }
-func (r *MessageEditedV2026WebhookEventDataChat) UnmarshalJSON(data []byte) error {
+func (r MessageEditedV2026_02_03WebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026_02_03WebhookEventDataChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The edited part
-type MessageEditedV2026WebhookEventDataPart struct {
+type MessageEditedV2026_02_03WebhookEventDataPart struct {
 	// Zero-based index of the edited part within the message
 	Index int64 `json:"index" api:"required"`
 	// New text content of the part
@@ -1995,19 +1995,19 @@ type MessageEditedV2026WebhookEventDataPart struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageEditedV2026WebhookEventDataPart) RawJSON() string { return r.JSON.raw }
-func (r *MessageEditedV2026WebhookEventDataPart) UnmarshalJSON(data []byte) error {
+func (r MessageEditedV2026_02_03WebhookEventDataPart) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedV2026_02_03WebhookEventDataPart) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for phone_number.status_updated events
-type PhoneNumberStatusUpdatedV2026WebhookEvent struct {
+type PhoneNumberStatusUpdatedV2026_02_03WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for phone_number.status_updated webhook events
-	Data PhoneNumberStatusUpdatedV2026WebhookEventData `json:"data" api:"required"`
+	Data PhoneNumberStatusUpdatedV2026_02_03WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// The type of event
@@ -2020,7 +2020,7 @@ type PhoneNumberStatusUpdatedV2026WebhookEvent struct {
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
 	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
-	EventType PhoneNumberStatusUpdatedV2026WebhookEventEventType `json:"event_type" api:"required"`
+	EventType PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
 	// Trace ID for debugging and correlation across systems.
@@ -2045,13 +2045,13 @@ type PhoneNumberStatusUpdatedV2026WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberStatusUpdatedV2026WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberStatusUpdatedV2026WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberStatusUpdatedV2026_02_03WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberStatusUpdatedV2026_02_03WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for phone_number.status_updated webhook events
-type PhoneNumberStatusUpdatedV2026WebhookEventData struct {
+type PhoneNumberStatusUpdatedV2026_02_03WebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
 	// The new service status
@@ -2076,51 +2076,51 @@ type PhoneNumberStatusUpdatedV2026WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberStatusUpdatedV2026WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberStatusUpdatedV2026WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberStatusUpdatedV2026_02_03WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberStatusUpdatedV2026_02_03WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The type of event
-type PhoneNumberStatusUpdatedV2026WebhookEventEventType string
+type PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType string
 
 const (
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageSent                PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.sent"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageReceived            PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.received"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageRead                PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.read"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageDelivered           PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.delivered"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageFailed              PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.failed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeMessageEdited              PhoneNumberStatusUpdatedV2026WebhookEventEventType = "message.edited"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeReactionAdded              PhoneNumberStatusUpdatedV2026WebhookEventEventType = "reaction.added"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeReactionRemoved            PhoneNumberStatusUpdatedV2026WebhookEventEventType = "reaction.removed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeParticipantAdded           PhoneNumberStatusUpdatedV2026WebhookEventEventType = "participant.added"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeParticipantRemoved         PhoneNumberStatusUpdatedV2026WebhookEventEventType = "participant.removed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatCreated                PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.created"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatGroupNameUpdated       PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.group_name_updated"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatGroupIconUpdated       PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.group_icon_updated"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.group_name_update_failed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.group_icon_update_failed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.typing_indicator.started"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedV2026WebhookEventEventType = "chat.typing_indicator.stopped"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedV2026WebhookEventEventType = "phone_number.status_updated"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallInitiated              PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.initiated"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallRinging                PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.ringing"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallAnswered               PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.answered"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallEnded                  PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.ended"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallFailed                 PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.failed"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallDeclined               PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.declined"
-	PhoneNumberStatusUpdatedV2026WebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedV2026WebhookEventEventType = "call.no_answer"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageSent                PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.sent"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageReceived            PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.received"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageRead                PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.read"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageDelivered           PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.delivered"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageFailed              PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.failed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeMessageEdited              PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "message.edited"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeReactionAdded              PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "reaction.added"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeReactionRemoved            PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "reaction.removed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeParticipantAdded           PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "participant.added"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeParticipantRemoved         PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "participant.removed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatCreated                PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.created"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatGroupNameUpdated       PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.group_name_updated"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatGroupIconUpdated       PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.group_icon_updated"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.group_name_update_failed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.typing_indicator.started"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "chat.typing_indicator.stopped"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallInitiated              PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.initiated"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallRinging                PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.ringing"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallAnswered               PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.answered"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallEnded                  PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.ended"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallFailed                 PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.failed"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallDeclined               PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.declined"
+	PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedV2026_02_03WebhookEventEventType = "call.no_answer"
 )
 
 // Complete webhook payload for message.sent events (2025-01-01 format)
-type MessageSentV2025WebhookEvent struct {
+type MessageSentV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unified payload for message.sent and message.received webhook events (2025-01-01
 	// format)
-	Data MessageSentV2025WebhookEventData `json:"data" api:"required"`
+	Data MessageSentV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2162,14 +2162,14 @@ type MessageSentV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageSentV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageSentV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageSentV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageSentV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Unified payload for message.sent and message.received webhook events (2025-01-01
 // format)
-type MessageSentV2025WebhookEventData struct {
+type MessageSentV2025_01_01WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" format:"uuid"`
 	// DEPRECATED: Use from_handle instead. Phone number or email address of the
@@ -2226,20 +2226,20 @@ type MessageSentV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageSentV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageSentV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageSentV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageSentV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.received events (2025-01-01 format)
-type MessageReceivedV2025WebhookEvent struct {
+type MessageReceivedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Unified payload for message.sent and message.received webhook events (2025-01-01
 	// format)
-	Data MessageReceivedV2025WebhookEventData `json:"data" api:"required"`
+	Data MessageReceivedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2281,14 +2281,14 @@ type MessageReceivedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReceivedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageReceivedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageReceivedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageReceivedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Unified payload for message.sent and message.received webhook events (2025-01-01
 // format)
-type MessageReceivedV2025WebhookEventData struct {
+type MessageReceivedV2025_01_01WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" format:"uuid"`
 	// DEPRECATED: Use from_handle instead. Phone number or email address of the
@@ -2345,20 +2345,20 @@ type MessageReceivedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReceivedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageReceivedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageReceivedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageReceivedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.read events (2025-01-01 format)
-type MessageReadV2025WebhookEvent struct {
+type MessageReadV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for message.read webhook events (2025-01-01 format). Extends
 	// MessageEvent with read_at and message_id.
-	Data MessageReadV2025WebhookEventData `json:"data" api:"required"`
+	Data MessageReadV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2400,14 +2400,14 @@ type MessageReadV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReadV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageReadV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageReadV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageReadV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for message.read webhook events (2025-01-01 format). Extends
 // MessageEvent with read_at and message_id.
-type MessageReadV2025WebhookEventData struct {
+type MessageReadV2025_01_01WebhookEventData struct {
 	// When the message was read
 	ReadAt time.Time `json:"read_at" api:"required" format:"date-time"`
 	// Chat identifier
@@ -2470,20 +2470,20 @@ type MessageReadV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageReadV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageReadV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageReadV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageReadV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.delivered events (2025-01-01 format)
-type MessageDeliveredV2025WebhookEvent struct {
+type MessageDeliveredV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for message.delivered webhook events (2025-01-01 format). Extends
 	// MessageEvent with delivered_at and message_id.
-	Data MessageDeliveredV2025WebhookEventData `json:"data" api:"required"`
+	Data MessageDeliveredV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2525,14 +2525,14 @@ type MessageDeliveredV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageDeliveredV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageDeliveredV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageDeliveredV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageDeliveredV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for message.delivered webhook events (2025-01-01 format). Extends
 // MessageEvent with delivered_at and message_id.
-type MessageDeliveredV2025WebhookEventData struct {
+type MessageDeliveredV2025_01_01WebhookEventData struct {
 	// When the message was delivered to the recipient's device
 	DeliveredAt time.Time `json:"delivered_at" api:"required" format:"date-time"`
 	// Chat identifier
@@ -2595,13 +2595,13 @@ type MessageDeliveredV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageDeliveredV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageDeliveredV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageDeliveredV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageDeliveredV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for message.failed events
-type MessageFailedV2025WebhookEvent struct {
+type MessageFailedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -2609,7 +2609,7 @@ type MessageFailedV2025WebhookEvent struct {
 	// Error details for message.failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data MessageFailedV2025WebhookEventData `json:"data" api:"required"`
+	Data MessageFailedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2651,15 +2651,15 @@ type MessageFailedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageFailedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *MessageFailedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r MessageFailedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *MessageFailedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for message.failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type MessageFailedV2025WebhookEventData struct {
+type MessageFailedV2025_01_01WebhookEventData struct {
 	// Error codes in webhook failure events (3007, 4001).
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
@@ -2683,13 +2683,13 @@ type MessageFailedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageFailedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *MessageFailedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r MessageFailedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *MessageFailedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for reaction.added events
-type ReactionAddedV2025WebhookEvent struct {
+type ReactionAddedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -2737,13 +2737,13 @@ type ReactionAddedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReactionAddedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ReactionAddedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ReactionAddedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ReactionAddedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for reaction.removed events
-type ReactionRemovedV2025WebhookEvent struct {
+type ReactionRemovedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -2791,19 +2791,19 @@ type ReactionRemovedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReactionRemovedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ReactionRemovedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ReactionRemovedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ReactionRemovedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for participant.added events
-type ParticipantAddedV2025WebhookEvent struct {
+type ParticipantAddedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for participant.added webhook events
-	Data ParticipantAddedV2025WebhookEventData `json:"data" api:"required"`
+	Data ParticipantAddedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2845,13 +2845,13 @@ type ParticipantAddedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantAddedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantAddedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ParticipantAddedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantAddedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for participant.added webhook events
-type ParticipantAddedV2025WebhookEventData struct {
+type ParticipantAddedV2025_01_01WebhookEventData struct {
 	// DEPRECATED: Use participant instead. Handle (phone number or email address) of
 	// the added participant.
 	//
@@ -2875,19 +2875,19 @@ type ParticipantAddedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantAddedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantAddedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ParticipantAddedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantAddedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for participant.removed events
-type ParticipantRemovedV2025WebhookEvent struct {
+type ParticipantRemovedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for participant.removed webhook events
-	Data ParticipantRemovedV2025WebhookEventData `json:"data" api:"required"`
+	Data ParticipantRemovedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -2929,13 +2929,13 @@ type ParticipantRemovedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantRemovedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantRemovedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ParticipantRemovedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantRemovedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for participant.removed webhook events
-type ParticipantRemovedV2025WebhookEventData struct {
+type ParticipantRemovedV2025_01_01WebhookEventData struct {
 	// DEPRECATED: Use participant instead. Handle (phone number or email address) of
 	// the removed participant.
 	//
@@ -2959,19 +2959,19 @@ type ParticipantRemovedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ParticipantRemovedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ParticipantRemovedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ParticipantRemovedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ParticipantRemovedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_name_updated events
-type ChatGroupNameUpdatedV2025WebhookEvent struct {
+type ChatGroupNameUpdatedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.group_name_updated webhook events
-	Data ChatGroupNameUpdatedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupNameUpdatedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3013,13 +3013,13 @@ type ChatGroupNameUpdatedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdatedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdatedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdatedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdatedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.group_name_updated webhook events
-type ChatGroupNameUpdatedV2025WebhookEventData struct {
+type ChatGroupNameUpdatedV2025_01_01WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// When the update occurred
@@ -3043,19 +3043,19 @@ type ChatGroupNameUpdatedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdatedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdatedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdatedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdatedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_icon_updated events
-type ChatGroupIconUpdatedV2025WebhookEvent struct {
+type ChatGroupIconUpdatedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.group_icon_updated webhook events
-	Data ChatGroupIconUpdatedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupIconUpdatedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3097,13 +3097,13 @@ type ChatGroupIconUpdatedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdatedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdatedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdatedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdatedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.group_icon_updated webhook events
-type ChatGroupIconUpdatedV2025WebhookEventData struct {
+type ChatGroupIconUpdatedV2025_01_01WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// When the update occurred
@@ -3127,13 +3127,13 @@ type ChatGroupIconUpdatedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdatedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdatedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdatedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdatedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_name_update_failed events
-type ChatGroupNameUpdateFailedV2025WebhookEvent struct {
+type ChatGroupNameUpdateFailedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -3141,7 +3141,7 @@ type ChatGroupNameUpdateFailedV2025WebhookEvent struct {
 	// Error details for chat.group_name_update_failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data ChatGroupNameUpdateFailedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupNameUpdateFailedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3183,15 +3183,15 @@ type ChatGroupNameUpdateFailedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdateFailedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdateFailedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdateFailedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdateFailedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for chat.group_name_update_failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type ChatGroupNameUpdateFailedV2025WebhookEventData struct {
+type ChatGroupNameUpdateFailedV2025_01_01WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events (3007, 4001).
@@ -3209,13 +3209,13 @@ type ChatGroupNameUpdateFailedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupNameUpdateFailedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupNameUpdateFailedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupNameUpdateFailedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupNameUpdateFailedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.group_icon_update_failed events
-type ChatGroupIconUpdateFailedV2025WebhookEvent struct {
+type ChatGroupIconUpdateFailedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
@@ -3223,7 +3223,7 @@ type ChatGroupIconUpdateFailedV2025WebhookEvent struct {
 	// Error details for chat.group_icon_update_failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
-	Data ChatGroupIconUpdateFailedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatGroupIconUpdateFailedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3265,15 +3265,15 @@ type ChatGroupIconUpdateFailedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdateFailedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdateFailedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdateFailedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdateFailedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Error details for chat.group_icon_update_failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
-type ChatGroupIconUpdateFailedV2025WebhookEventData struct {
+type ChatGroupIconUpdateFailedV2025_01_01WebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events (3007, 4001).
@@ -3291,20 +3291,20 @@ type ChatGroupIconUpdateFailedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatGroupIconUpdateFailedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatGroupIconUpdateFailedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatGroupIconUpdateFailedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatGroupIconUpdateFailedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.created events
-type ChatCreatedV2025WebhookEvent struct {
+type ChatCreatedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.created webhook events. Matches GET /v3/chats/{chatId}
 	// response.
-	Data ChatCreatedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatCreatedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3346,14 +3346,14 @@ type ChatCreatedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatCreatedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatCreatedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatCreatedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatCreatedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.created webhook events. Matches GET /v3/chats/{chatId}
 // response.
-type ChatCreatedV2025WebhookEventData struct {
+type ChatCreatedV2025_01_01WebhookEventData struct {
 	// Unique identifier for the chat
 	ID string `json:"id" api:"required" format:"uuid"`
 	// When the chat was created
@@ -3387,19 +3387,19 @@ type ChatCreatedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatCreatedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatCreatedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatCreatedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatCreatedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.typing_indicator.started events
-type ChatTypingIndicatorStartedV2025WebhookEvent struct {
+type ChatTypingIndicatorStartedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.typing_indicator.started webhook events
-	Data ChatTypingIndicatorStartedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatTypingIndicatorStartedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3441,13 +3441,13 @@ type ChatTypingIndicatorStartedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStartedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStartedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStartedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStartedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.typing_indicator.started webhook events
-type ChatTypingIndicatorStartedV2025WebhookEventData struct {
+type ChatTypingIndicatorStartedV2025_01_01WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3459,19 +3459,19 @@ type ChatTypingIndicatorStartedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStartedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStartedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStartedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStartedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for chat.typing_indicator.stopped events
-type ChatTypingIndicatorStoppedV2025WebhookEvent struct {
+type ChatTypingIndicatorStoppedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for chat.typing_indicator.stopped webhook events
-	Data ChatTypingIndicatorStoppedV2025WebhookEventData `json:"data" api:"required"`
+	Data ChatTypingIndicatorStoppedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// Valid webhook event types that can be subscribed to.
@@ -3513,13 +3513,13 @@ type ChatTypingIndicatorStoppedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStoppedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStoppedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStoppedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStoppedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for chat.typing_indicator.stopped webhook events
-type ChatTypingIndicatorStoppedV2025WebhookEventData struct {
+type ChatTypingIndicatorStoppedV2025_01_01WebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -3531,19 +3531,19 @@ type ChatTypingIndicatorStoppedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatTypingIndicatorStoppedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *ChatTypingIndicatorStoppedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r ChatTypingIndicatorStoppedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatTypingIndicatorStoppedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Complete webhook payload for phone_number.status_updated events
-type PhoneNumberStatusUpdatedV2025WebhookEvent struct {
+type PhoneNumberStatusUpdatedV2025_01_01WebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
 	// When the event was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Payload for phone_number.status_updated webhook events
-	Data PhoneNumberStatusUpdatedV2025WebhookEventData `json:"data" api:"required"`
+	Data PhoneNumberStatusUpdatedV2025_01_01WebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
 	// The type of event
@@ -3556,7 +3556,7 @@ type PhoneNumberStatusUpdatedV2025WebhookEvent struct {
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
 	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
-	EventType PhoneNumberStatusUpdatedV2025WebhookEventEventType `json:"event_type" api:"required"`
+	EventType PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
 	// Trace ID for debugging and correlation across systems.
@@ -3581,13 +3581,13 @@ type PhoneNumberStatusUpdatedV2025WebhookEvent struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberStatusUpdatedV2025WebhookEvent) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberStatusUpdatedV2025WebhookEvent) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberStatusUpdatedV2025_01_01WebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberStatusUpdatedV2025_01_01WebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Payload for phone_number.status_updated webhook events
-type PhoneNumberStatusUpdatedV2025WebhookEventData struct {
+type PhoneNumberStatusUpdatedV2025_01_01WebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
 	// The new service status
@@ -3612,65 +3612,72 @@ type PhoneNumberStatusUpdatedV2025WebhookEventData struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberStatusUpdatedV2025WebhookEventData) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberStatusUpdatedV2025WebhookEventData) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberStatusUpdatedV2025_01_01WebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberStatusUpdatedV2025_01_01WebhookEventData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The type of event
-type PhoneNumberStatusUpdatedV2025WebhookEventEventType string
+type PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType string
 
 const (
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageSent                PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.sent"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageReceived            PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.received"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageRead                PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.read"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageDelivered           PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.delivered"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageFailed              PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.failed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeMessageEdited              PhoneNumberStatusUpdatedV2025WebhookEventEventType = "message.edited"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeReactionAdded              PhoneNumberStatusUpdatedV2025WebhookEventEventType = "reaction.added"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeReactionRemoved            PhoneNumberStatusUpdatedV2025WebhookEventEventType = "reaction.removed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeParticipantAdded           PhoneNumberStatusUpdatedV2025WebhookEventEventType = "participant.added"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeParticipantRemoved         PhoneNumberStatusUpdatedV2025WebhookEventEventType = "participant.removed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatCreated                PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.created"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatGroupNameUpdated       PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.group_name_updated"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatGroupIconUpdated       PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.group_icon_updated"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.group_name_update_failed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.group_icon_update_failed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.typing_indicator.started"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedV2025WebhookEventEventType = "chat.typing_indicator.stopped"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedV2025WebhookEventEventType = "phone_number.status_updated"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallInitiated              PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.initiated"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallRinging                PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.ringing"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallAnswered               PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.answered"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallEnded                  PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.ended"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallFailed                 PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.failed"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallDeclined               PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.declined"
-	PhoneNumberStatusUpdatedV2025WebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedV2025WebhookEventEventType = "call.no_answer"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageSent                PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.sent"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageReceived            PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.received"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageRead                PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.read"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageDelivered           PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.delivered"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageFailed              PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.failed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeMessageEdited              PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "message.edited"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeReactionAdded              PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "reaction.added"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeReactionRemoved            PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "reaction.removed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeParticipantAdded           PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "participant.added"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeParticipantRemoved         PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "participant.removed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatCreated                PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.created"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatGroupNameUpdated       PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.group_name_updated"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatGroupIconUpdated       PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.group_icon_updated"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.group_name_update_failed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.typing_indicator.started"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "chat.typing_indicator.stopped"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallInitiated              PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.initiated"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallRinging                PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.ringing"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallAnswered               PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.answered"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallEnded                  PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.ended"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallFailed                 PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.failed"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallDeclined               PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.declined"
+	PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedV2025_01_01WebhookEventEventType = "call.no_answer"
 )
 
 // EventsWebhookEventUnion contains all possible properties and values from
-// [MessageSentV2026WebhookEvent], [MessageReceivedV2026WebhookEvent],
-// [MessageReadV2026WebhookEvent], [MessageDeliveredV2026WebhookEvent],
-// [MessageFailedV2026WebhookEvent], [ReactionAddedV2026WebhookEvent],
-// [ReactionRemovedV2026WebhookEvent], [ParticipantAddedV2026WebhookEvent],
-// [ParticipantRemovedV2026WebhookEvent], [ChatGroupNameUpdatedV2026WebhookEvent],
-// [ChatGroupIconUpdatedV2026WebhookEvent],
-// [ChatGroupNameUpdateFailedV2026WebhookEvent],
-// [ChatGroupIconUpdateFailedV2026WebhookEvent], [ChatCreatedV2026WebhookEvent],
-// [ChatTypingIndicatorStartedV2026WebhookEvent],
-// [ChatTypingIndicatorStoppedV2026WebhookEvent], [MessageEditedV2026WebhookEvent],
-// [PhoneNumberStatusUpdatedV2026WebhookEvent], [MessageSentV2025WebhookEvent],
-// [MessageReceivedV2025WebhookEvent], [MessageReadV2025WebhookEvent],
-// [MessageDeliveredV2025WebhookEvent], [MessageFailedV2025WebhookEvent],
-// [ReactionAddedV2025WebhookEvent], [ReactionRemovedV2025WebhookEvent],
-// [ParticipantAddedV2025WebhookEvent], [ParticipantRemovedV2025WebhookEvent],
-// [ChatGroupNameUpdatedV2025WebhookEvent],
-// [ChatGroupIconUpdatedV2025WebhookEvent],
-// [ChatGroupNameUpdateFailedV2025WebhookEvent],
-// [ChatGroupIconUpdateFailedV2025WebhookEvent], [ChatCreatedV2025WebhookEvent],
-// [ChatTypingIndicatorStartedV2025WebhookEvent],
-// [ChatTypingIndicatorStoppedV2025WebhookEvent],
-// [PhoneNumberStatusUpdatedV2025WebhookEvent].
+// [MessageSentV2026_02_03WebhookEvent], [MessageReceivedV2026_02_03WebhookEvent],
+// [MessageReadV2026_02_03WebhookEvent], [MessageDeliveredV2026_02_03WebhookEvent],
+// [MessageFailedV2026_02_03WebhookEvent], [ReactionAddedV2026_02_03WebhookEvent],
+// [ReactionRemovedV2026_02_03WebhookEvent],
+// [ParticipantAddedV2026_02_03WebhookEvent],
+// [ParticipantRemovedV2026_02_03WebhookEvent],
+// [ChatGroupNameUpdatedV2026_02_03WebhookEvent],
+// [ChatGroupIconUpdatedV2026_02_03WebhookEvent],
+// [ChatGroupNameUpdateFailedV2026_02_03WebhookEvent],
+// [ChatGroupIconUpdateFailedV2026_02_03WebhookEvent],
+// [ChatCreatedV2026_02_03WebhookEvent],
+// [ChatTypingIndicatorStartedV2026_02_03WebhookEvent],
+// [ChatTypingIndicatorStoppedV2026_02_03WebhookEvent],
+// [MessageEditedV2026_02_03WebhookEvent],
+// [PhoneNumberStatusUpdatedV2026_02_03WebhookEvent],
+// [MessageSentV2025_01_01WebhookEvent], [MessageReceivedV2025_01_01WebhookEvent],
+// [MessageReadV2025_01_01WebhookEvent], [MessageDeliveredV2025_01_01WebhookEvent],
+// [MessageFailedV2025_01_01WebhookEvent], [ReactionAddedV2025_01_01WebhookEvent],
+// [ReactionRemovedV2025_01_01WebhookEvent],
+// [ParticipantAddedV2025_01_01WebhookEvent],
+// [ParticipantRemovedV2025_01_01WebhookEvent],
+// [ChatGroupNameUpdatedV2025_01_01WebhookEvent],
+// [ChatGroupIconUpdatedV2025_01_01WebhookEvent],
+// [ChatGroupNameUpdateFailedV2025_01_01WebhookEvent],
+// [ChatGroupIconUpdateFailedV2025_01_01WebhookEvent],
+// [ChatCreatedV2025_01_01WebhookEvent],
+// [ChatTypingIndicatorStartedV2025_01_01WebhookEvent],
+// [ChatTypingIndicatorStoppedV2025_01_01WebhookEvent],
+// [PhoneNumberStatusUpdatedV2025_01_01WebhookEvent].
 //
 // Use the [EventsWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -3678,30 +3685,34 @@ const (
 type EventsWebhookEventUnion struct {
 	APIVersion string    `json:"api_version"`
 	CreatedAt  time.Time `json:"created_at"`
-	// This field is a union of [MessageEventV2], [MessageFailedV2026WebhookEventData],
-	// [ReactionEventBase], [ParticipantAddedV2026WebhookEventData],
-	// [ParticipantRemovedV2026WebhookEventData],
-	// [ChatGroupNameUpdatedV2026WebhookEventData],
-	// [ChatGroupIconUpdatedV2026WebhookEventData],
-	// [ChatGroupNameUpdateFailedV2026WebhookEventData],
-	// [ChatGroupIconUpdateFailedV2026WebhookEventData],
-	// [ChatCreatedV2026WebhookEventData],
-	// [ChatTypingIndicatorStartedV2026WebhookEventData],
-	// [ChatTypingIndicatorStoppedV2026WebhookEventData],
-	// [MessageEditedV2026WebhookEventData],
-	// [PhoneNumberStatusUpdatedV2026WebhookEventData],
-	// [MessageSentV2025WebhookEventData], [MessageReceivedV2025WebhookEventData],
-	// [MessageReadV2025WebhookEventData], [MessageDeliveredV2025WebhookEventData],
-	// [MessageFailedV2025WebhookEventData], [ParticipantAddedV2025WebhookEventData],
-	// [ParticipantRemovedV2025WebhookEventData],
-	// [ChatGroupNameUpdatedV2025WebhookEventData],
-	// [ChatGroupIconUpdatedV2025WebhookEventData],
-	// [ChatGroupNameUpdateFailedV2025WebhookEventData],
-	// [ChatGroupIconUpdateFailedV2025WebhookEventData],
-	// [ChatCreatedV2025WebhookEventData],
-	// [ChatTypingIndicatorStartedV2025WebhookEventData],
-	// [ChatTypingIndicatorStoppedV2025WebhookEventData],
-	// [PhoneNumberStatusUpdatedV2025WebhookEventData]
+	// This field is a union of [MessageEventV2],
+	// [MessageFailedV2026_02_03WebhookEventData], [ReactionEventBase],
+	// [ParticipantAddedV2026_02_03WebhookEventData],
+	// [ParticipantRemovedV2026_02_03WebhookEventData],
+	// [ChatGroupNameUpdatedV2026_02_03WebhookEventData],
+	// [ChatGroupIconUpdatedV2026_02_03WebhookEventData],
+	// [ChatGroupNameUpdateFailedV2026_02_03WebhookEventData],
+	// [ChatGroupIconUpdateFailedV2026_02_03WebhookEventData],
+	// [ChatCreatedV2026_02_03WebhookEventData],
+	// [ChatTypingIndicatorStartedV2026_02_03WebhookEventData],
+	// [ChatTypingIndicatorStoppedV2026_02_03WebhookEventData],
+	// [MessageEditedV2026_02_03WebhookEventData],
+	// [PhoneNumberStatusUpdatedV2026_02_03WebhookEventData],
+	// [MessageSentV2025_01_01WebhookEventData],
+	// [MessageReceivedV2025_01_01WebhookEventData],
+	// [MessageReadV2025_01_01WebhookEventData],
+	// [MessageDeliveredV2025_01_01WebhookEventData],
+	// [MessageFailedV2025_01_01WebhookEventData],
+	// [ParticipantAddedV2025_01_01WebhookEventData],
+	// [ParticipantRemovedV2025_01_01WebhookEventData],
+	// [ChatGroupNameUpdatedV2025_01_01WebhookEventData],
+	// [ChatGroupIconUpdatedV2025_01_01WebhookEventData],
+	// [ChatGroupNameUpdateFailedV2025_01_01WebhookEventData],
+	// [ChatGroupIconUpdateFailedV2025_01_01WebhookEventData],
+	// [ChatCreatedV2025_01_01WebhookEventData],
+	// [ChatTypingIndicatorStartedV2025_01_01WebhookEventData],
+	// [ChatTypingIndicatorStoppedV2025_01_01WebhookEventData],
+	// [PhoneNumberStatusUpdatedV2025_01_01WebhookEventData]
 	Data    EventsWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
@@ -3724,177 +3735,177 @@ type EventsWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u EventsWebhookEventUnion) AsMessageSentV2026WebhookEvent() (v MessageSentV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageSentV2026_02_03WebhookEvent() (v MessageSentV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReceivedV2026WebhookEvent() (v MessageReceivedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageReceivedV2026_02_03WebhookEvent() (v MessageReceivedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReadV2026WebhookEvent() (v MessageReadV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageReadV2026_02_03WebhookEvent() (v MessageReadV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageDeliveredV2026WebhookEvent() (v MessageDeliveredV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageDeliveredV2026_02_03WebhookEvent() (v MessageDeliveredV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageFailedV2026WebhookEvent() (v MessageFailedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageFailedV2026_02_03WebhookEvent() (v MessageFailedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionAddedV2026WebhookEvent() (v ReactionAddedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsReactionAddedV2026_02_03WebhookEvent() (v ReactionAddedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionRemovedV2026WebhookEvent() (v ReactionRemovedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsReactionRemovedV2026_02_03WebhookEvent() (v ReactionRemovedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantAddedV2026WebhookEvent() (v ParticipantAddedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsParticipantAddedV2026_02_03WebhookEvent() (v ParticipantAddedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantRemovedV2026WebhookEvent() (v ParticipantRemovedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsParticipantRemovedV2026_02_03WebhookEvent() (v ParticipantRemovedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdatedV2026WebhookEvent() (v ChatGroupNameUpdatedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupNameUpdatedV2026_02_03WebhookEvent() (v ChatGroupNameUpdatedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdatedV2026WebhookEvent() (v ChatGroupIconUpdatedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupIconUpdatedV2026_02_03WebhookEvent() (v ChatGroupIconUpdatedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdateFailedV2026WebhookEvent() (v ChatGroupNameUpdateFailedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupNameUpdateFailedV2026_02_03WebhookEvent() (v ChatGroupNameUpdateFailedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdateFailedV2026WebhookEvent() (v ChatGroupIconUpdateFailedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupIconUpdateFailedV2026_02_03WebhookEvent() (v ChatGroupIconUpdateFailedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatCreatedV2026WebhookEvent() (v ChatCreatedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatCreatedV2026_02_03WebhookEvent() (v ChatCreatedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedV2026WebhookEvent() (v ChatTypingIndicatorStartedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedV2026_02_03WebhookEvent() (v ChatTypingIndicatorStartedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedV2026WebhookEvent() (v ChatTypingIndicatorStoppedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedV2026_02_03WebhookEvent() (v ChatTypingIndicatorStoppedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageEditedV2026WebhookEvent() (v MessageEditedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageEditedV2026_02_03WebhookEvent() (v MessageEditedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsPhoneNumberStatusUpdatedV2026WebhookEvent() (v PhoneNumberStatusUpdatedV2026WebhookEvent) {
+func (u EventsWebhookEventUnion) AsPhoneNumberStatusUpdatedV2026_02_03WebhookEvent() (v PhoneNumberStatusUpdatedV2026_02_03WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageSentV2025WebhookEvent() (v MessageSentV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageSentV2025_01_01WebhookEvent() (v MessageSentV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReceivedV2025WebhookEvent() (v MessageReceivedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageReceivedV2025_01_01WebhookEvent() (v MessageReceivedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReadV2025WebhookEvent() (v MessageReadV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageReadV2025_01_01WebhookEvent() (v MessageReadV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageDeliveredV2025WebhookEvent() (v MessageDeliveredV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageDeliveredV2025_01_01WebhookEvent() (v MessageDeliveredV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageFailedV2025WebhookEvent() (v MessageFailedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsMessageFailedV2025_01_01WebhookEvent() (v MessageFailedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionAddedV2025WebhookEvent() (v ReactionAddedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsReactionAddedV2025_01_01WebhookEvent() (v ReactionAddedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionRemovedV2025WebhookEvent() (v ReactionRemovedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsReactionRemovedV2025_01_01WebhookEvent() (v ReactionRemovedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantAddedV2025WebhookEvent() (v ParticipantAddedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsParticipantAddedV2025_01_01WebhookEvent() (v ParticipantAddedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantRemovedV2025WebhookEvent() (v ParticipantRemovedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsParticipantRemovedV2025_01_01WebhookEvent() (v ParticipantRemovedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdatedV2025WebhookEvent() (v ChatGroupNameUpdatedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupNameUpdatedV2025_01_01WebhookEvent() (v ChatGroupNameUpdatedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdatedV2025WebhookEvent() (v ChatGroupIconUpdatedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupIconUpdatedV2025_01_01WebhookEvent() (v ChatGroupIconUpdatedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdateFailedV2025WebhookEvent() (v ChatGroupNameUpdateFailedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupNameUpdateFailedV2025_01_01WebhookEvent() (v ChatGroupNameUpdateFailedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdateFailedV2025WebhookEvent() (v ChatGroupIconUpdateFailedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatGroupIconUpdateFailedV2025_01_01WebhookEvent() (v ChatGroupIconUpdateFailedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatCreatedV2025WebhookEvent() (v ChatCreatedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatCreatedV2025_01_01WebhookEvent() (v ChatCreatedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedV2025WebhookEvent() (v ChatTypingIndicatorStartedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedV2025_01_01WebhookEvent() (v ChatTypingIndicatorStartedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedV2025WebhookEvent() (v ChatTypingIndicatorStoppedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedV2025_01_01WebhookEvent() (v ChatTypingIndicatorStoppedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsPhoneNumberStatusUpdatedV2025WebhookEvent() (v PhoneNumberStatusUpdatedV2025WebhookEvent) {
+func (u EventsWebhookEventUnion) AsPhoneNumberStatusUpdatedV2025_01_01WebhookEvent() (v PhoneNumberStatusUpdatedV2025_01_01WebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -3915,7 +3926,7 @@ func (r *EventsWebhookEventUnion) UnmarshalJSON(data []byte) error {
 type EventsWebhookEventUnionData struct {
 	ID string `json:"id"`
 	// This field is a union of [MessageEventV2Chat],
-	// [MessageEditedV2026WebhookEventDataChat]
+	// [MessageEditedV2026_02_03WebhookEventDataChat]
 	Chat      EventsWebhookEventUnionDataChat `json:"chat"`
 	Direction string                          `json:"direction"`
 	// This field is from variant [MessageEventV2].
@@ -3955,11 +3966,11 @@ type EventsWebhookEventUnionData struct {
 	Sticker ReactionEventBaseSticker `json:"sticker"`
 	Handle  string                   `json:"handle"`
 	AddedAt time.Time                `json:"added_at"`
-	// This field is from variant [ParticipantAddedV2026WebhookEventData].
+	// This field is from variant [ParticipantAddedV2026_02_03WebhookEventData].
 	Participant shared.ChatHandle `json:"participant"`
 	RemovedAt   time.Time         `json:"removed_at"`
 	UpdatedAt   time.Time         `json:"updated_at"`
-	// This field is from variant [ChatGroupNameUpdatedV2026WebhookEventData].
+	// This field is from variant [ChatGroupNameUpdatedV2026_02_03WebhookEventData].
 	ChangedByHandle shared.ChatHandle   `json:"changed_by_handle"`
 	NewValue        string              `json:"new_value"`
 	OldValue        string              `json:"old_value"`
@@ -3968,18 +3979,18 @@ type EventsWebhookEventUnionData struct {
 	DisplayName     string              `json:"display_name"`
 	Handles         []shared.ChatHandle `json:"handles"`
 	IsGroup         bool                `json:"is_group"`
-	// This field is from variant [MessageEditedV2026WebhookEventData].
+	// This field is from variant [MessageEditedV2026_02_03WebhookEventData].
 	EditedAt time.Time `json:"edited_at"`
-	// This field is from variant [MessageEditedV2026WebhookEventData].
-	Part           MessageEditedV2026WebhookEventDataPart `json:"part"`
-	ChangedAt      time.Time                              `json:"changed_at"`
-	NewStatus      string                                 `json:"new_status"`
-	PhoneNumber    string                                 `json:"phone_number"`
-	PreviousStatus string                                 `json:"previous_status"`
-	// This field is from variant [MessageSentV2025WebhookEventData].
+	// This field is from variant [MessageEditedV2026_02_03WebhookEventData].
+	Part           MessageEditedV2026_02_03WebhookEventDataPart `json:"part"`
+	ChangedAt      time.Time                                    `json:"changed_at"`
+	NewStatus      string                                       `json:"new_status"`
+	PhoneNumber    string                                       `json:"phone_number"`
+	PreviousStatus string                                       `json:"previous_status"`
+	// This field is from variant [MessageSentV2025_01_01WebhookEventData].
 	Message    MessagePayload `json:"message"`
 	ReceivedAt time.Time      `json:"received_at"`
-	// This field is from variant [MessageSentV2025WebhookEventData].
+	// This field is from variant [MessageSentV2025_01_01WebhookEventData].
 	RecipientHandle shared.ChatHandle `json:"recipient_handle"`
 	RecipientPhone  string            `json:"recipient_phone"`
 	JSON            struct {
