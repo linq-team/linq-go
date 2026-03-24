@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.10.0 (2026-03-24)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/linq-team/linq-go/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* BUG: soft delete messages in V3 ([d392bd9](https://github.com/linq-team/linq-go/commit/d392bd91c08932a74669796512a510d9e4a91253))
+* Pdev 6191 facetime orchestrator hub api service call service webhook ([f97d6e1](https://github.com/linq-team/linq-go/commit/f97d6e15304545a0390c7e7139cade363ce376c2))
+
+
+### Bug Fixes
+
+* **webhook:** add NATS BackOff retry + tighten squawk linter ([02dd2d6](https://github.com/linq-team/linq-go/commit/02dd2d6df8921a9756195cf9df6b33f445df0c0c))
+
+
+### Chores
+
+* **internal:** update gitignore ([a468c50](https://github.com/linq-team/linq-go/commit/a468c5086b98ac16e90c5b8ebdb5e773aed81a94))
+
 ## 0.9.0 (2026-03-20)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/linq-team/linq-go/compare/v0.8.0...v0.9.0)

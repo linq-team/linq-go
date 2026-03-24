@@ -88,10 +88,7 @@ func (r *MessageService) Update(ctx context.Context, messageID string, body Mess
 }
 
 // Deletes a message from the Linq API only. This does NOT unsend or remove the
-// message from the actual chat - recipients will still see the message.
-//
-// Use this endpoint to remove messages from your records and prevent them from
-// appearing in API responses.
+// message from the actual chat — recipients will still see the message.
 func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)

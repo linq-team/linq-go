@@ -20,8 +20,8 @@ import (
 // Configure webhook endpoints to receive events such as messages sent/received,
 // delivery status changes, reactions, typing indicators, and more.
 //
-// Failed deliveries (5xx, 429, network errors) are retried up to 10 times over ~2
-// hours with exponential backoff. Each event includes a unique ID for
+// Failed deliveries (5xx, 429, network errors) are retried up to 10 times over ~25
+// minutes with exponential backoff. Each event includes a unique ID for
 // deduplication.
 //
 // ## Webhook Headers
@@ -160,6 +160,13 @@ const (
 	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
 	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
 	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
+	WebhookEventTypeCallInitiated              WebhookEventType = "call.initiated"
+	WebhookEventTypeCallRinging                WebhookEventType = "call.ringing"
+	WebhookEventTypeCallAnswered               WebhookEventType = "call.answered"
+	WebhookEventTypeCallEnded                  WebhookEventType = "call.ended"
+	WebhookEventTypeCallFailed                 WebhookEventType = "call.failed"
+	WebhookEventTypeCallDeclined               WebhookEventType = "call.declined"
+	WebhookEventTypeCallNoAnswer               WebhookEventType = "call.no_answer"
 )
 
 type WebhookEventListResponse struct {
