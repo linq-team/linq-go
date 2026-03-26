@@ -53,7 +53,8 @@ func NewChatTypingService(opts ...option.RequestOption) (r ChatTypingService) {
 
 // Send a typing indicator to show that someone is typing in the chat.
 //
-// **Note:** Group chat typing indicators are not currently supported.
+// **Note:** Group chat typing indicators are not currently supported. Attempting
+// to start a typing indicator in a group chat will return a `403` error.
 func (r *ChatTypingService) Start(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -71,7 +72,8 @@ func (r *ChatTypingService) Start(ctx context.Context, chatID string, opts ...op
 // **Note:** Typing indicators are automatically stopped when a message is sent, so
 // calling this endpoint after sending a message is unnecessary.
 //
-// **Note:** Group chat typing indicators are not currently supported.
+// **Note:** Group chat typing indicators are not currently supported. Attempting
+// to stop a typing indicator in a group chat will return a `403` error.
 func (r *ChatTypingService) Stop(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
