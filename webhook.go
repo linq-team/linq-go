@@ -243,7 +243,7 @@ func (r *MessageEventV2PartUnion) UnmarshalJSON(data []byte) error {
 // A rich link preview part
 type MessageEventV2PartLink struct {
 	// Indicates this is a rich link preview part
-	Type constant.Link `json:"type" api:"required"`
+	Type constant.Link `json:"type" default:"link"`
 	// The URL
 	Value string `json:"value" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

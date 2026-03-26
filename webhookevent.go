@@ -171,7 +171,7 @@ const (
 
 type WebhookEventListResponse struct {
 	// URL to the webhook events documentation
-	DocURL constant.HTTPSApidocsLinqappComDocumentationWebhookEvents `json:"doc_url" api:"required"`
+	DocURL constant.HTTPSApidocsLinqappComDocumentationWebhookEvents `json:"doc_url" default:"https://apidocs.linqapp.com/documentation/webhook-events"`
 	// List of all available webhook event types
 	Events []WebhookEventType `json:"events" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
