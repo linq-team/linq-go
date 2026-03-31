@@ -194,7 +194,7 @@ func TestChatMarkAsRead(t *testing.T) {
 	}
 }
 
-func TestChatSendVoicememo(t *testing.T) {
+func TestChatSendVoicememoWithOptionalParams(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -211,7 +211,8 @@ func TestChatSendVoicememo(t *testing.T) {
 		context.TODO(),
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
 		linqgo.ChatSendVoicememoParams{
-			VoiceMemoURL: "https://example.com/voice-memo.m4a",
+			AttachmentID: linqgo.String("550e8400-e29b-41d4-a716-446655440000"),
+			VoiceMemoURL: linqgo.String("https://example.com/voice-memo.m4a"),
 		},
 	)
 	if err != nil {
