@@ -1,5 +1,32 @@
 # Changelog
 
+## 0.12.0 (2026-04-01)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/linq-team/linq-go/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** fix webhook model ([9df7242](https://github.com/linq-team/linq-go/commit/9df724230dac439ec6f7cf84399acc0082a4adf3))
+* **internal:** support comma format in multipart form encoding ([ec8156b](https://github.com/linq-team/linq-go/commit/ec8156b30819ad897be0526fcdd869e31e12ed3e))
+* PLT(Synapse): Add attachment_id support and tests to voice memo endpoint ([94e805f](https://github.com/linq-team/linq-go/commit/94e805f6d35b6b15a433d2a36443ee1056790bc6))
+* Return 403 for group chat typing indicators ([835f8d9](https://github.com/linq-team/linq-go/commit/835f8d9926e4ba5a8a24190ec12f319c3e9e0520))
+
+
+### Bug Fixes
+
+* fix issue with unmarshaling in some cases ([6e746ef](https://github.com/linq-team/linq-go/commit/6e746ef4ecad30c20d5ce53507d2a16fbda759d6))
+* prevent duplicate ? in query params ([38e4bf9](https://github.com/linq-team/linq-go/commit/38e4bf99ec4bf5e2203570e0c9ef036b7262a23a))
+
+
+### Chores
+
+* **ci:** skip lint on metadata-only changes ([2ef87de](https://github.com/linq-team/linq-go/commit/2ef87def714fdd0d359d6429fb01957c1cac09ff))
+* **ci:** support opting out of skipping builds on metadata-only commits ([83b9552](https://github.com/linq-team/linq-go/commit/83b95525205f04bc0304d930f616cc2ca485c85b))
+* **client:** fix multipart serialisation of Default() fields ([5db0ada](https://github.com/linq-team/linq-go/commit/5db0ada36b91f99391777fe980f36fde73956d68))
+* **internal:** support default value struct tag ([eb74b74](https://github.com/linq-team/linq-go/commit/eb74b743ce88821287533390d4ac4a649c97ca4d))
+* remove unnecessary error check for url parsing ([320d34e](https://github.com/linq-team/linq-go/commit/320d34ee77821e77695ef266881a4d578c84798b))
+* update docs for api:"required" ([576fb67](https://github.com/linq-team/linq-go/commit/576fb67c7671c53f0006d3d5803c668dd888de6a))
+
 ## 0.11.0 (2026-03-24)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/linq-team/linq-go/compare/v0.10.0...v0.11.0)
