@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.1 (2026-04-01)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/linq-team/linq-go/compare/v0.12.0...v0.12.1)
+
+### Documentation
+
+* update contact card API docs with setup and sharing guidance ([69a6fcc](https://github.com/linq-team/linq-go/commit/69a6fccbc328f51bf90f30f4791afbb6e0fd6fd7))
+
 ## 0.12.0 (2026-04-01)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/linq-team/linq-go/compare/v0.11.0...v0.12.0)
