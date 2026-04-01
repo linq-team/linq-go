@@ -326,6 +326,10 @@ type Client struct {
 	// Use `POST /v3/contact_card` to create or update a card for a phone number. Use
 	// `PATCH /v3/contact_card` to update an existing active card. Use
 	// `GET /v3/contact_card` to retrieve the active card(s) for your partner account.
+	//
+	// **Sharing behavior:** Sharing may not take effect in every chat due to
+	// limitations outside our control. We recommend calling the share endpoint once
+	// per day, after the first outbound activity.
 	ContactCard ContactCardService
 }
 
