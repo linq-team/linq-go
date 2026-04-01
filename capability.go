@@ -4,7 +4,6 @@ package linqgo
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"slices"
 
@@ -102,7 +101,7 @@ func (r CapabilityCheckiMessageParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.HandleCheck)
 }
 func (r *CapabilityCheckiMessageParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.HandleCheck)
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type CapabilityCheckRCSParams struct {
@@ -114,5 +113,5 @@ func (r CapabilityCheckRCSParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.HandleCheck)
 }
 func (r *CapabilityCheckRCSParams) UnmarshalJSON(data []byte) error {
-	return json.Unmarshal(data, &r.HandleCheck)
+	return apijson.UnmarshalRoot(data, r)
 }
