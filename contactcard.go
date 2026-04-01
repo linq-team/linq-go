@@ -23,6 +23,10 @@ import (
 // `PATCH /v3/contact_card` to update an existing active card. Use
 // `GET /v3/contact_card` to retrieve the active card(s) for your partner account.
 //
+// **Sharing behavior:** Sharing may not take effect in every chat due to
+// limitations outside our control. We recommend calling the share endpoint once
+// per day, after the first outbound activity.
+//
 // ContactCardService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //
@@ -42,11 +46,15 @@ func NewContactCardService(opts ...option.RequestOption) (r ContactCardService) 
 	return
 }
 
-// Creates a contact card for a phone number.
+// Creates a contact card for a phone number. This endpoint is intended for
+// initial, one-time setup only.
 //
 // The contact card is stored in an inactive state first. Once it's applied
 // successfully, it is activated and `is_active` is returned as `true`. On failure,
 // `is_active` is `false`.
+//
+// **Note:** To update an existing contact card after setup, use
+// `PATCH /v3/contact_card` instead.
 func (r *ContactCardService) New(ctx context.Context, body ContactCardNewParams, opts ...option.RequestOption) (res *SetContactCard, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/contact_card"
