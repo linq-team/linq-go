@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.0 (2026-04-04)
+
+Full Changelog: [v0.12.1...v0.13.0](https://github.com/linq-team/linq-go/compare/v0.12.1...v0.13.0)
+
+### Features
+
+* **api:** config cleanup ([3cb9687](https://github.com/linq-team/linq-go/commit/3cb96871f18e82a6a1b94510b26c6df7f89e3ac1))
+
 ## 0.12.1 (2026-04-01)
 
 Full Changelog: [v0.12.0...v0.12.1](https://github.com/linq-team/linq-go/compare/v0.12.0...v0.12.1)
