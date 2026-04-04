@@ -65,6 +65,39 @@ const (
 	ChatHandleStatusRemoved ChatHandleStatus = "removed"
 )
 
+// A rich link preview part
+type LinkPartResponse struct {
+	// Reactions on this message part
+	Reactions []Reaction `json:"reactions" api:"required"`
+	// Indicates this is a rich link preview part
+	//
+	// Any of "link".
+	Type LinkPartResponseType `json:"type" api:"required"`
+	// The URL
+	Value string `json:"value" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reactions   respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LinkPartResponse) RawJSON() string { return r.JSON.raw }
+func (r *LinkPartResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Indicates this is a rich link preview part
+type LinkPartResponseType string
+
+const (
+	LinkPartResponseTypeLink LinkPartResponseType = "link"
+)
+
 // A media attachment part
 type MediaPartResponse struct {
 	// Unique attachment identifier
