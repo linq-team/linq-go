@@ -211,7 +211,7 @@ const (
 
 // SentMessagePartUnion contains all possible properties and values from
 // [shared.TextPartResponse], [shared.MediaPartResponse],
-// [SentMessagePartLinkPartResponse].
+// [shared.LinkPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
@@ -254,7 +254,7 @@ func (u SentMessagePartUnion) AsMediaPartResponse() (v shared.MediaPartResponse)
 	return
 }
 
-func (u SentMessagePartUnion) AsSentMessagePartLinkPartResponse() (v SentMessagePartLinkPartResponse) {
+func (u SentMessagePartUnion) AsLinkPartResponse() (v shared.LinkPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -263,32 +263,6 @@ func (u SentMessagePartUnion) AsSentMessagePartLinkPartResponse() (v SentMessage
 func (u SentMessagePartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A rich link preview part
-type SentMessagePartLinkPartResponse struct {
-	// Reactions on this message part
-	Reactions []shared.Reaction `json:"reactions" api:"required"`
-	// Indicates this is a rich link preview part
-	//
-	// Any of "link".
-	Type string `json:"type" api:"required"`
-	// The URL
-	Value string `json:"value" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reactions   respjson.Field
-		Type        respjson.Field
-		Value       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SentMessagePartLinkPartResponse) RawJSON() string { return r.JSON.raw }
-func (r *SentMessagePartLinkPartResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

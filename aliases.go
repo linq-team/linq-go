@@ -33,6 +33,19 @@ const ChatHandleStatusLeft = shared.ChatHandleStatusLeft
 // Equals "removed"
 const ChatHandleStatusRemoved = shared.ChatHandleStatusRemoved
 
+// A rich link preview part
+//
+// This is an alias to an internal type.
+type LinkPartResponse = shared.LinkPartResponse
+
+// Indicates this is a rich link preview part
+//
+// This is an alias to an internal type.
+type LinkPartResponseType = shared.LinkPartResponseType
+
+// Equals "link"
+const LinkPartResponseTypeLink = shared.LinkPartResponseTypeLink
+
 // A media attachment part
 //
 // This is an alias to an internal type.

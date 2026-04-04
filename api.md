@@ -7,6 +7,7 @@
 # Shared Response Types
 
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#ChatHandle">ChatHandle</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#LinkPartResponse">LinkPartResponse</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#MediaPartResponse">MediaPartResponse</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#Reaction">Reaction</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go/shared#ReactionType">ReactionType</a>
