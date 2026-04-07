@@ -216,62 +216,73 @@ func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts .
 // Supported MIME types for file attachments and media URLs.
 //
 // **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
-// image/tiff, image/bmp
+// image/tiff, image/bmp, image/svg+xml, image/webp, image/x-icon
 //
-// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
+// **Videos:** video/mp4, video/quicktime, video/mpeg, video/mpeg2,
+// video/x-msvideo, video/3gpp
 //
-// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
-// audio/aiff, audio/aac, audio/amr
+// **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
+// audio/aac, audio/midi, audio/amr
 //
 // **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
-// text/csv, text/html, text/calendar, application/msword,
+// text/csv, text/html, text/calendar, text/xml, application/json,
+// application/msword,
 // application/vnd.openxmlformats-officedocument.wordprocessingml.document,
 // application/vnd.ms-excel,
 // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
 // application/vnd.ms-powerpoint,
 // application/vnd.openxmlformats-officedocument.presentationml.presentation,
-// application/vnd.apple.pages, application/vnd.apple.numbers,
-// application/vnd.apple.keynote, application/epub+zip, application/zip
+// application/x-iwork-pages-sffpages, application/x-iwork-numbers-sffnumbers,
+// application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
+// application/x-gzip
 //
-// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
-// rejected.
+// **Deprecated (accepted but transcoded):**
+//
+//   - `audio/mp3` — Deprecated. Use `audio/mpeg` instead. Files sent as audio/mp3
+//     will be delivered as audio/mpeg.
+//   - `audio/mp4` — Deprecated. Use `audio/x-m4a` instead. Files sent as audio/mp4
+//     will be delivered as audio/x-m4a.
+//   - `audio/aiff` — Deprecated. Use `audio/x-aiff` instead. Files sent as
+//     audio/aiff will be delivered as audio/x-aiff.
+//   - `image/tiff` — Accepted, but TIFF images are transcoded to JPEG for delivery.
+//
+// **Unsupported:** FLAC, OGG, and executable files are explicitly rejected.
 type SupportedContentType string
 
 const (
 	SupportedContentTypeImageJpeg                                                            SupportedContentType = "image/jpeg"
-	SupportedContentTypeImageJpg                                                             SupportedContentType = "image/jpg"
 	SupportedContentTypeImagePng                                                             SupportedContentType = "image/png"
 	SupportedContentTypeImageGif                                                             SupportedContentType = "image/gif"
 	SupportedContentTypeImageHeic                                                            SupportedContentType = "image/heic"
 	SupportedContentTypeImageHeif                                                            SupportedContentType = "image/heif"
 	SupportedContentTypeImageTiff                                                            SupportedContentType = "image/tiff"
 	SupportedContentTypeImageBmp                                                             SupportedContentType = "image/bmp"
-	SupportedContentTypeImageXMsBmp                                                          SupportedContentType = "image/x-ms-bmp"
+	SupportedContentTypeImageSvgXml                                                          SupportedContentType = "image/svg+xml"
+	SupportedContentTypeImageWebp                                                            SupportedContentType = "image/webp"
+	SupportedContentTypeImageXIcon                                                           SupportedContentType = "image/x-icon"
 	SupportedContentTypeVideoMP4                                                             SupportedContentType = "video/mp4"
 	SupportedContentTypeVideoQuicktime                                                       SupportedContentType = "video/quicktime"
 	SupportedContentTypeVideoMpeg                                                            SupportedContentType = "video/mpeg"
+	SupportedContentTypeVideoMpeg2                                                           SupportedContentType = "video/mpeg2"
 	SupportedContentTypeVideoXM4v                                                            SupportedContentType = "video/x-m4v"
+	SupportedContentTypeVideoXMsvideo                                                        SupportedContentType = "video/x-msvideo"
 	SupportedContentTypeVideo3gpp                                                            SupportedContentType = "video/3gpp"
 	SupportedContentTypeAudioMpeg                                                            SupportedContentType = "audio/mpeg"
 	SupportedContentTypeAudioMP3                                                             SupportedContentType = "audio/mp3"
-	SupportedContentTypeAudioMP4                                                             SupportedContentType = "audio/mp4"
 	SupportedContentTypeAudioXM4a                                                            SupportedContentType = "audio/x-m4a"
-	SupportedContentTypeAudioM4a                                                             SupportedContentType = "audio/m4a"
+	SupportedContentTypeAudioMP4                                                             SupportedContentType = "audio/mp4"
 	SupportedContentTypeAudioXCaf                                                            SupportedContentType = "audio/x-caf"
-	SupportedContentTypeAudioWav                                                             SupportedContentType = "audio/wav"
 	SupportedContentTypeAudioXWav                                                            SupportedContentType = "audio/x-wav"
-	SupportedContentTypeAudioAiff                                                            SupportedContentType = "audio/aiff"
 	SupportedContentTypeAudioXAiff                                                           SupportedContentType = "audio/x-aiff"
+	SupportedContentTypeAudioAiff                                                            SupportedContentType = "audio/aiff"
 	SupportedContentTypeAudioAac                                                             SupportedContentType = "audio/aac"
-	SupportedContentTypeAudioXAac                                                            SupportedContentType = "audio/x-aac"
+	SupportedContentTypeAudioMidi                                                            SupportedContentType = "audio/midi"
 	SupportedContentTypeAudioAmr                                                             SupportedContentType = "audio/amr"
 	SupportedContentTypeApplicationPdf                                                       SupportedContentType = "application/pdf"
 	SupportedContentTypeTextPlain                                                            SupportedContentType = "text/plain"
 	SupportedContentTypeTextMarkdown                                                         SupportedContentType = "text/markdown"
 	SupportedContentTypeTextVcard                                                            SupportedContentType = "text/vcard"
-	SupportedContentTypeTextXVcard                                                           SupportedContentType = "text/x-vcard"
 	SupportedContentTypeTextRtf                                                              SupportedContentType = "text/rtf"
-	SupportedContentTypeApplicationRtf                                                       SupportedContentType = "application/rtf"
 	SupportedContentTypeTextCsv                                                              SupportedContentType = "text/csv"
 	SupportedContentTypeTextHTML                                                             SupportedContentType = "text/html"
 	SupportedContentTypeTextCalendar                                                         SupportedContentType = "text/calendar"
@@ -281,15 +292,14 @@ const (
 	SupportedContentTypeApplicationVndOpenxmlformatsOfficedocumentSpreadsheetmlSheet         SupportedContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 	SupportedContentTypeApplicationVndMsPowerpoint                                           SupportedContentType = "application/vnd.ms-powerpoint"
 	SupportedContentTypeApplicationVndOpenxmlformatsOfficedocumentPresentationmlPresentation SupportedContentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-	SupportedContentTypeApplicationVndApplePages                                             SupportedContentType = "application/vnd.apple.pages"
 	SupportedContentTypeApplicationXIworkPagesSffpages                                       SupportedContentType = "application/x-iwork-pages-sffpages"
-	SupportedContentTypeApplicationVndAppleNumbers                                           SupportedContentType = "application/vnd.apple.numbers"
 	SupportedContentTypeApplicationXIworkNumbersSffnumbers                                   SupportedContentType = "application/x-iwork-numbers-sffnumbers"
-	SupportedContentTypeApplicationVndAppleKeynote                                           SupportedContentType = "application/vnd.apple.keynote"
 	SupportedContentTypeApplicationXIworkKeynoteSffkey                                       SupportedContentType = "application/x-iwork-keynote-sffkey"
 	SupportedContentTypeApplicationEpubZip                                                   SupportedContentType = "application/epub+zip"
+	SupportedContentTypeTextXml                                                              SupportedContentType = "text/xml"
+	SupportedContentTypeApplicationJson                                                      SupportedContentType = "application/json"
 	SupportedContentTypeApplicationZip                                                       SupportedContentType = "application/zip"
-	SupportedContentTypeApplicationXZipCompressed                                            SupportedContentType = "application/x-zip-compressed"
+	SupportedContentTypeApplicationXGzip                                                     SupportedContentType = "application/x-gzip"
 )
 
 type AttachmentNewResponse struct {
@@ -344,43 +354,54 @@ type AttachmentGetResponse struct {
 	// Supported MIME types for file attachments and media URLs.
 	//
 	// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
-	// image/tiff, image/bmp
+	// image/tiff, image/bmp, image/svg+xml, image/webp, image/x-icon
 	//
-	// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
+	// **Videos:** video/mp4, video/quicktime, video/mpeg, video/mpeg2,
+	// video/x-msvideo, video/3gpp
 	//
-	// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
-	// audio/aiff, audio/aac, audio/amr
+	// **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
+	// audio/aac, audio/midi, audio/amr
 	//
 	// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
-	// text/csv, text/html, text/calendar, application/msword,
+	// text/csv, text/html, text/calendar, text/xml, application/json,
+	// application/msword,
 	// application/vnd.openxmlformats-officedocument.wordprocessingml.document,
 	// application/vnd.ms-excel,
 	// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
 	// application/vnd.ms-powerpoint,
 	// application/vnd.openxmlformats-officedocument.presentationml.presentation,
-	// application/vnd.apple.pages, application/vnd.apple.numbers,
-	// application/vnd.apple.keynote, application/epub+zip, application/zip
+	// application/x-iwork-pages-sffpages, application/x-iwork-numbers-sffnumbers,
+	// application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
+	// application/x-gzip
 	//
-	// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
-	// rejected.
+	// **Deprecated (accepted but transcoded):**
 	//
-	// Any of "image/jpeg", "image/jpg", "image/png", "image/gif", "image/heic",
-	// "image/heif", "image/tiff", "image/bmp", "image/x-ms-bmp", "video/mp4",
-	// "video/quicktime", "video/mpeg", "video/x-m4v", "video/3gpp", "audio/mpeg",
-	// "audio/mp3", "audio/mp4", "audio/x-m4a", "audio/m4a", "audio/x-caf",
-	// "audio/wav", "audio/x-wav", "audio/aiff", "audio/x-aiff", "audio/aac",
-	// "audio/x-aac", "audio/amr", "application/pdf", "text/plain", "text/markdown",
-	// "text/vcard", "text/x-vcard", "text/rtf", "application/rtf", "text/csv",
-	// "text/html", "text/calendar", "application/msword",
+	//   - `audio/mp3` — Deprecated. Use `audio/mpeg` instead. Files sent as audio/mp3
+	//     will be delivered as audio/mpeg.
+	//   - `audio/mp4` — Deprecated. Use `audio/x-m4a` instead. Files sent as audio/mp4
+	//     will be delivered as audio/x-m4a.
+	//   - `audio/aiff` — Deprecated. Use `audio/x-aiff` instead. Files sent as
+	//     audio/aiff will be delivered as audio/x-aiff.
+	//   - `image/tiff` — Accepted, but TIFF images are transcoded to JPEG for delivery.
+	//
+	// **Unsupported:** FLAC, OGG, and executable files are explicitly rejected.
+	//
+	// Any of "image/jpeg", "image/png", "image/gif", "image/heic", "image/heif",
+	// "image/tiff", "image/bmp", "image/svg+xml", "image/webp", "image/x-icon",
+	// "video/mp4", "video/quicktime", "video/mpeg", "video/mpeg2", "video/x-m4v",
+	// "video/x-msvideo", "video/3gpp", "audio/mpeg", "audio/mp3", "audio/x-m4a",
+	// "audio/mp4", "audio/x-caf", "audio/x-wav", "audio/x-aiff", "audio/aiff",
+	// "audio/aac", "audio/midi", "audio/amr", "application/pdf", "text/plain",
+	// "text/markdown", "text/vcard", "text/rtf", "text/csv", "text/html",
+	// "text/calendar", "application/msword",
 	// "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 	// "application/vnd.ms-excel",
 	// "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 	// "application/vnd.ms-powerpoint",
 	// "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-	// "application/vnd.apple.pages", "application/x-iwork-pages-sffpages",
-	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
-	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
-	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
+	// "application/x-iwork-pages-sffpages", "application/x-iwork-numbers-sffnumbers",
+	// "application/x-iwork-keynote-sffkey", "application/epub+zip", "text/xml",
+	// "application/json", "application/zip", "application/x-gzip".
 	ContentType SupportedContentType `json:"content_type" api:"required"`
 	// When the attachment was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
@@ -427,43 +448,54 @@ type AttachmentNewParams struct {
 	// Supported MIME types for file attachments and media URLs.
 	//
 	// **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
-	// image/tiff, image/bmp
+	// image/tiff, image/bmp, image/svg+xml, image/webp, image/x-icon
 	//
-	// **Videos:** video/mp4, video/quicktime, video/mpeg, video/3gpp
+	// **Videos:** video/mp4, video/quicktime, video/mpeg, video/mpeg2,
+	// video/x-msvideo, video/3gpp
 	//
-	// **Audio:** audio/mpeg, audio/mp4, audio/x-m4a, audio/x-caf, audio/wav,
-	// audio/aiff, audio/aac, audio/amr
+	// **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
+	// audio/aac, audio/midi, audio/amr
 	//
 	// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
-	// text/csv, text/html, text/calendar, application/msword,
+	// text/csv, text/html, text/calendar, text/xml, application/json,
+	// application/msword,
 	// application/vnd.openxmlformats-officedocument.wordprocessingml.document,
 	// application/vnd.ms-excel,
 	// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
 	// application/vnd.ms-powerpoint,
 	// application/vnd.openxmlformats-officedocument.presentationml.presentation,
-	// application/vnd.apple.pages, application/vnd.apple.numbers,
-	// application/vnd.apple.keynote, application/epub+zip, application/zip
+	// application/x-iwork-pages-sffpages, application/x-iwork-numbers-sffnumbers,
+	// application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
+	// application/x-gzip
 	//
-	// **Unsupported:** WebP, SVG, FLAC, OGG, and executable files are explicitly
-	// rejected.
+	// **Deprecated (accepted but transcoded):**
 	//
-	// Any of "image/jpeg", "image/jpg", "image/png", "image/gif", "image/heic",
-	// "image/heif", "image/tiff", "image/bmp", "image/x-ms-bmp", "video/mp4",
-	// "video/quicktime", "video/mpeg", "video/x-m4v", "video/3gpp", "audio/mpeg",
-	// "audio/mp3", "audio/mp4", "audio/x-m4a", "audio/m4a", "audio/x-caf",
-	// "audio/wav", "audio/x-wav", "audio/aiff", "audio/x-aiff", "audio/aac",
-	// "audio/x-aac", "audio/amr", "application/pdf", "text/plain", "text/markdown",
-	// "text/vcard", "text/x-vcard", "text/rtf", "application/rtf", "text/csv",
-	// "text/html", "text/calendar", "application/msword",
+	//   - `audio/mp3` — Deprecated. Use `audio/mpeg` instead. Files sent as audio/mp3
+	//     will be delivered as audio/mpeg.
+	//   - `audio/mp4` — Deprecated. Use `audio/x-m4a` instead. Files sent as audio/mp4
+	//     will be delivered as audio/x-m4a.
+	//   - `audio/aiff` — Deprecated. Use `audio/x-aiff` instead. Files sent as
+	//     audio/aiff will be delivered as audio/x-aiff.
+	//   - `image/tiff` — Accepted, but TIFF images are transcoded to JPEG for delivery.
+	//
+	// **Unsupported:** FLAC, OGG, and executable files are explicitly rejected.
+	//
+	// Any of "image/jpeg", "image/png", "image/gif", "image/heic", "image/heif",
+	// "image/tiff", "image/bmp", "image/svg+xml", "image/webp", "image/x-icon",
+	// "video/mp4", "video/quicktime", "video/mpeg", "video/mpeg2", "video/x-m4v",
+	// "video/x-msvideo", "video/3gpp", "audio/mpeg", "audio/mp3", "audio/x-m4a",
+	// "audio/mp4", "audio/x-caf", "audio/x-wav", "audio/x-aiff", "audio/aiff",
+	// "audio/aac", "audio/midi", "audio/amr", "application/pdf", "text/plain",
+	// "text/markdown", "text/vcard", "text/rtf", "text/csv", "text/html",
+	// "text/calendar", "application/msword",
 	// "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 	// "application/vnd.ms-excel",
 	// "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 	// "application/vnd.ms-powerpoint",
 	// "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-	// "application/vnd.apple.pages", "application/x-iwork-pages-sffpages",
-	// "application/vnd.apple.numbers", "application/x-iwork-numbers-sffnumbers",
-	// "application/vnd.apple.keynote", "application/x-iwork-keynote-sffkey",
-	// "application/epub+zip", "application/zip", "application/x-zip-compressed".
+	// "application/x-iwork-pages-sffpages", "application/x-iwork-numbers-sffnumbers",
+	// "application/x-iwork-keynote-sffkey", "application/epub+zip", "text/xml",
+	// "application/json", "application/zip", "application/x-gzip".
 	ContentType SupportedContentType `json:"content_type,omitzero" api:"required"`
 	// Name of the file to upload
 	Filename string `json:"filename" api:"required"`
