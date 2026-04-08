@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.2 (2026-04-08)
+
+Full Changelog: [v0.13.1...v0.13.2](https://github.com/linq-team/linq-go/compare/v0.13.1...v0.13.2)
+
+### Bug Fixes
+
+* **api-service:** add created_at and make sent_at nullable in SentMessage ([0a4e049](https://github.com/linq-team/linq-go/commit/0a4e0497a1a696ffbdad10d7e7667021cd11f991))
+* block SMS group participant changes and fix e2e test failures ([d204608](https://github.com/linq-team/linq-go/commit/d204608f61abc318d7f37e0825295afbb1c7d32c))
+
 ## 0.13.1 (2026-04-07)
 
 Full Changelog: [v0.13.0...v0.13.1](https://github.com/linq-team/linq-go/compare/v0.13.0...v0.13.1)
