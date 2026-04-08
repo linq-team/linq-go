@@ -148,6 +148,8 @@ func (r *ChatMessageService) Send(ctx context.Context, chatID string, body ChatM
 type SentMessage struct {
 	// Message identifier (UUID)
 	ID string `json:"id" api:"required" format:"uuid"`
+	// When the message was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Current delivery status of a message
 	//
 	// Any of "pending", "queued", "sent", "delivered", "failed".
@@ -156,7 +158,7 @@ type SentMessage struct {
 	IsRead bool `json:"is_read" api:"required"`
 	// Message parts in order (text, media, and link)
 	Parts []SentMessagePartUnion `json:"parts" api:"required"`
-	// When the message was sent
+	// When the message was actually sent (null if still queued)
 	SentAt time.Time `json:"sent_at" api:"required" format:"date-time"`
 	// When the message was delivered
 	DeliveredAt time.Time `json:"delivered_at" api:"nullable" format:"date-time"`
@@ -177,6 +179,7 @@ type SentMessage struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
+		CreatedAt        respjson.Field
 		DeliveryStatus   respjson.Field
 		IsRead           respjson.Field
 		Parts            respjson.Field
