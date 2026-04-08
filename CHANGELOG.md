@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.1 (2026-04-07)
+
+Full Changelog: [v0.13.0...v0.13.1](https://github.com/linq-team/linq-go/compare/v0.13.0...v0.13.1)
+
+### Bug Fixes
+
+* add SVG support to synapse attachments ([5cc4ad1](https://github.com/linq-team/linq-go/commit/5cc4ad1cd43e789e82bbd48a428061743dae0061))
+
 ## 0.13.0 (2026-04-04)
 
 Full Changelog: [v0.12.1...v0.13.0](https://github.com/linq-team/linq-go/compare/v0.12.1...v0.13.0)
