@@ -236,6 +236,10 @@ func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts .
 // application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
 // application/x-gzip
 //
+// **Transcoded on delivery:**
+//
+// - `audio/x-caf` — CAF files are transcoded to `audio/mp4` for delivery.
+//
 // **Deprecated (accepted but transcoded):**
 //
 //   - `audio/mp3` — Deprecated. Use `audio/mpeg` instead. Files sent as audio/mp3
@@ -374,6 +378,10 @@ type AttachmentGetResponse struct {
 	// application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
 	// application/x-gzip
 	//
+	// **Transcoded on delivery:**
+	//
+	// - `audio/x-caf` — CAF files are transcoded to `audio/mp4` for delivery.
+	//
 	// **Deprecated (accepted but transcoded):**
 	//
 	//   - `audio/mp3` — Deprecated. Use `audio/mpeg` instead. Files sent as audio/mp3
@@ -467,6 +475,10 @@ type AttachmentNewParams struct {
 	// application/x-iwork-pages-sffpages, application/x-iwork-numbers-sffnumbers,
 	// application/x-iwork-keynote-sffkey, application/epub+zip, application/zip,
 	// application/x-gzip
+	//
+	// **Transcoded on delivery:**
+	//
+	// - `audio/x-caf` — CAF files are transcoded to `audio/mp4` for delivery.
 	//
 	// **Deprecated (accepted but transcoded):**
 	//
