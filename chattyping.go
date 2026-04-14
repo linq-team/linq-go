@@ -53,8 +53,20 @@ func NewChatTypingService(opts ...option.RequestOption) (r ChatTypingService) {
 
 // Send a typing indicator to show that someone is typing in the chat.
 //
-// **Note:** Group chat typing indicators are not currently supported. Attempting
-// to start a typing indicator in a group chat will return a `403` error.
+// ## Behavior & Limitations
+//
+// Typing indicators are best-effort signals with the following limitations:
+//
+//   - **Active conversations only:** The recipient must have sent or received a
+//     message in this chat within the **last 5 minutes**. If the chat is inactive,
+//     the request is still accepted (`204`) but the indicator will not reach the
+//     recipient's device.
+//
+//   - **No delivery guarantee:** Even for active chats, a `204` response only
+//     indicates the request was accepted for processing.
+//
+//   - **Group chats not supported:** Attempting to start a typing indicator in a
+//     group chat will return a `403` error.
 func (r *ChatTypingService) Start(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -69,11 +81,12 @@ func (r *ChatTypingService) Start(ctx context.Context, chatID string, opts ...op
 
 // Stop the typing indicator for the chat.
 //
-// **Note:** Typing indicators are automatically stopped when a message is sent, so
-// calling this endpoint after sending a message is unnecessary.
+// Typing indicators are automatically stopped when a message is sent, so calling
+// this endpoint after sending a message is unnecessary.
 //
-// **Note:** Group chat typing indicators are not currently supported. Attempting
-// to stop a typing indicator in a group chat will return a `403` error.
+// See the `POST` endpoint above for behavior details and limitations.
+//
+// **Note:** Group chats are not supported and will return a `403` error.
 func (r *ChatTypingService) Stop(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
