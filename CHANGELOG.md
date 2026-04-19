@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.3 (2026-04-14)
+
+Full Changelog: [v0.13.2...v0.13.3](https://github.com/linq-team/linq-go/compare/v0.13.2...v0.13.3)
+
+### Documentation
+
+* **openapi:** document typing indicator behavior and limitations ([5e9887a](https://github.com/linq-team/linq-go/commit/5e9887a6c49a94e83355fea1a2ff2efea938dd21))
+
 ## 0.13.2 (2026-04-08)
 
 Full Changelog: [v0.13.1...v0.13.2](https://github.com/linq-team/linq-go/compare/v0.13.1...v0.13.2)
