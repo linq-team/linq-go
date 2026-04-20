@@ -76,6 +76,9 @@ func (r *MessageService) Get(ctx context.Context, messageID string, opts ...opti
 }
 
 // Edit the text content of a specific part of a previously sent message.
+//
+// **Note:** A message can be edited up to 5 times, and only within 15 minutes of
+// when it was originally sent.
 func (r *MessageService) Update(ctx context.Context, messageID string, body MessageUpdateParams, opts ...option.RequestOption) (res *Message, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
