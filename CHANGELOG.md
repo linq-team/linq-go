@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 (2026-04-24)
+
+Full Changelog: [v0.14.1...v0.15.0](https://github.com/linq-team/linq-go/compare/v0.14.1...v0.15.0)
+
+### Features
+
+* make compliance webhooks (message.opt_out/opt_in) GA ([ddf48f8](https://github.com/linq-team/linq-go/commit/ddf48f8178c1f066e523e545ec2316d8084b509a))
+
 ## 0.14.1 (2026-04-24)
 
 Full Changelog: [v0.14.0...v0.14.1](https://github.com/linq-team/linq-go/compare/v0.14.0...v0.14.1)
