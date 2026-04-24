@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.1 (2026-04-24)
+
+Full Changelog: [v0.14.0...v0.14.1](https://github.com/linq-team/linq-go/compare/v0.14.0...v0.14.1)
+
+### Documentation
+
+* **api:** add first outbound message link restriction note to POST /v3/chats ([e6cbd4f](https://github.com/linq-team/linq-go/commit/e6cbd4fae005f3d56d316b22e3c6843e4b9a09fa))
+
 ## 0.14.0 (2026-04-23)
 
 Full Changelog: [v0.13.3...v0.14.0](https://github.com/linq-team/linq-go/compare/v0.13.3...v0.14.0)
