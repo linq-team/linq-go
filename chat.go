@@ -146,6 +146,17 @@ func NewChatService(opts ...option.RequestOption) (r ChatService) {
 // **Note:** Style ranges (bold, italic, etc.) may overlap, but animation ranges
 // must not overlap with other animations or styles. Text decorations only render
 // for iMessage recipients. For SMS/RCS, text decorations are not applied.
+//
+// ## First-Message Link Restriction
+//
+// To protect sender deliverability, the **first outbound message** of a new chat
+// cannot be a link. The request is rejected with `400` (error code `1005`) when:
+//
+// - The message contains a `link` part (explicit rich-preview link), or
+// - Any `text` part contains a URL.
+//
+// This rule applies only to `POST /v3/chats`. Follow-up messages on an existing
+// chat (`POST /v3/chats/{chatId}/messages`) are not subject to this restriction.
 func (r *ChatService) New(ctx context.Context, body ChatNewParams, opts ...option.RequestOption) (res *ChatNewResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/chats"
