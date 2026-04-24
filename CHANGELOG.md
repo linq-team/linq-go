@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.14.0 (2026-04-23)
+
+Full Changelog: [v0.13.3...v0.14.0](https://github.com/linq-team/linq-go/compare/v0.13.3...v0.14.0)
+
+### Features
+
+* **api:** expose health_score on chats (BETA) ([fa0433a](https://github.com/linq-team/linq-go/commit/fa0433ae8960429da3a85a9ec27be5977d02d72c))
+
+
+### Chores
+
+* **internal:** more robust bootstrap script ([5155430](https://github.com/linq-team/linq-go/commit/51554303e3275855eb7be943e126783756d2bd3f))
+
+
+### Documentation
+
+* **api:** document edit message limits (BUG-7607) ([cf5add2](https://github.com/linq-team/linq-go/commit/cf5add22ef2bcb8dfbcc685cb710550f2539dd65))
+
 ## 0.13.3 (2026-04-14)
 
 Full Changelog: [v0.13.2...v0.13.3](https://github.com/linq-team/linq-go/compare/v0.13.2...v0.13.3)

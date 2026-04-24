@@ -344,6 +344,8 @@ type Chat struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+	HealthScore ChatHealthScore `json:"health_score" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -357,6 +359,7 @@ type Chat struct {
 		IsArchived  respjson.Field
 		IsGroup     respjson.Field
 		UpdatedAt   respjson.Field
+		HealthScore respjson.Field
 		Service     respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -366,6 +369,27 @@ type Chat struct {
 // Returns the unmodified JSON received from the API
 func (r Chat) RawJSON() string { return r.JSON.raw }
 func (r *Chat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+type ChatHealthScore struct {
+	// Short summary of what's affecting the score. Empty when the score is 100.
+	Reason string `json:"reason" api:"required"`
+	// Health score from 0 to 100. Higher is healthier.
+	Score int64 `json:"score" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		Score       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatHealthScore) RawJSON() string { return r.JSON.raw }
+func (r *ChatHealthScore) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -630,6 +654,8 @@ type ChatNewResponseChat struct {
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
+	// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+	HealthScore ChatNewResponseChatHealthScore `json:"health_score" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -638,6 +664,7 @@ type ChatNewResponseChat struct {
 		IsGroup     respjson.Field
 		Message     respjson.Field
 		Service     respjson.Field
+		HealthScore respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -646,6 +673,27 @@ type ChatNewResponseChat struct {
 // Returns the unmodified JSON received from the API
 func (r ChatNewResponseChat) RawJSON() string { return r.JSON.raw }
 func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+type ChatNewResponseChatHealthScore struct {
+	// Short summary of what's affecting the score. Empty when the score is 100.
+	Reason string `json:"reason" api:"required"`
+	// Health score from 0 to 100. Higher is healthier.
+	Score int64 `json:"score" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		Score       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatNewResponseChatHealthScore) RawJSON() string { return r.JSON.raw }
+func (r *ChatNewResponseChatHealthScore) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
