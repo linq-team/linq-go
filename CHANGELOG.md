@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.1 (2026-04-25)
+
+Full Changelog: [v0.15.0...v0.15.1](https://github.com/linq-team/linq-go/compare/v0.15.0...v0.15.1)
+
+### Chores
+
+* configure new SDK language ([f68f8ff](https://github.com/linq-team/linq-go/commit/f68f8ffb41046a3e6397feaaf7dc97e7343c7390))
+
 ## 0.15.0 (2026-04-24)
 
 Full Changelog: [v0.14.1...v0.15.0](https://github.com/linq-team/linq-go/compare/v0.14.1...v0.15.0)
