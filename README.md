@@ -6,7 +6,7 @@
 
 <!-- x-release-please-end -->
 
-The Linq API V3 Go library provides convenient access to the [Linq API V3 REST API](https://apidocs.linqapp.com)
+The Linq API V3 Go library provides convenient access to the [Linq API V3 REST API](https://docs.linqapp.com)
 from applications written in Go.
 
 It is generated with [Stainless](https://www.stainless.com/).
@@ -37,7 +37,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/linq-team/linq-go@v0.15.1'
+go get -u 'github.com/linq-team/linq-go@v0.16.0'
 ```
 
 <!-- x-release-please-end -->

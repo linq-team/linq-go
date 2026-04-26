@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.16.0 (2026-04-26)
+
+Full Changelog: [v0.15.1...v0.16.0](https://github.com/linq-team/linq-go/compare/v0.15.1...v0.16.0)
+
+### Features
+
+* **api:** update docs link ([51f1b12](https://github.com/linq-team/linq-go/commit/51f1b129d701f8d035da6e42ffe646916c229c82))
+
 ## 0.15.1 (2026-04-25)
 
 Full Changelog: [v0.15.0...v0.15.1](https://github.com/linq-team/linq-go/compare/v0.15.0...v0.15.1)
