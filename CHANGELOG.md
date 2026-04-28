@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.17.0 (2026-04-28)
+
+Full Changelog: [v0.16.0...v0.17.0](https://github.com/linq-team/linq-go/compare/v0.16.0...v0.17.0)
+
+### Features
+
+* **go:** add default http client with timeout ([0275783](https://github.com/linq-team/linq-go/commit/0275783f2dd9f31afced33bfddfad79978ba5af0))
+* support setting headers via env ([95fac35](https://github.com/linq-team/linq-go/commit/95fac35e5db8462d594a52e85f53270fca17a60d))
+
+
+### Bug Fixes
+
+* **openapi:** enforce mutual exclusivity constraints on reaction and voice memo schemas ([de8552a](https://github.com/linq-team/linq-go/commit/de8552ac472cb2bf4ebdf6d92830b6c553a4eb33))
+
 ## 0.16.0 (2026-04-26)
 
 Full Changelog: [v0.15.1...v0.16.0](https://github.com/linq-team/linq-go/compare/v0.15.1...v0.16.0)
