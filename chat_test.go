@@ -211,7 +211,7 @@ func TestChatSendVoicememoWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
 		linqgo.ChatSendVoicememoParams{
-			AttachmentID: linqgo.String("550e8400-e29b-41d4-a716-446655440000"),
+			AttachmentID: linqgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 			VoiceMemoURL: linqgo.String("https://example.com/voice-memo.m4a"),
 		},
 	)

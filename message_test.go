@@ -109,7 +109,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 		linqgo.MessageAddReactionParams{
 			Operation:   linqgo.MessageAddReactionParamsOperationAdd,
 			Type:        shared.ReactionTypeLove,
-			CustomEmoji: linqgo.String("😍"),
+			CustomEmoji: linqgo.String("custom_emoji"),
 			PartIndex:   linqgo.Int(1),
 		},
 	)
