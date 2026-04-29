@@ -81,6 +81,9 @@ type MessageEventV2 struct {
 	DeliveredAt time.Time `json:"delivered_at" api:"nullable" format:"date-time"`
 	// iMessage effect applied to a message (screen or bubble animation)
 	Effect SchemasMessageEffect `json:"effect" api:"nullable"`
+	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+	// when a score isn't available yet. Scoring may change during beta.
+	HealthScore MessageEventV2HealthScore `json:"health_score" api:"nullable"`
 	// Idempotency key for deduplication of outbound messages.
 	IdempotencyKey string `json:"idempotency_key" api:"nullable"`
 	// Preferred messaging service type. Includes "auto" for default fallback behavior.
@@ -103,6 +106,7 @@ type MessageEventV2 struct {
 		Service          respjson.Field
 		DeliveredAt      respjson.Field
 		Effect           respjson.Field
+		HealthScore      respjson.Field
 		IdempotencyKey   respjson.Field
 		PreferredService respjson.Field
 		ReadAt           respjson.Field
@@ -258,6 +262,28 @@ type MessageEventV2PartLink struct {
 // Returns the unmodified JSON received from the API
 func (r MessageEventV2PartLink) RawJSON() string { return r.JSON.raw }
 func (r *MessageEventV2PartLink) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+// when a score isn't available yet. Scoring may change during beta.
+type MessageEventV2HealthScore struct {
+	// Short summary of what's affecting the score. Empty when the score is 100.
+	Reason string `json:"reason" api:"required"`
+	// Health score from 0 to 100. Higher is healthier.
+	Score int64 `json:"score" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason      respjson.Field
+		Score       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2HealthScore) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2HealthScore) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2155,6 +2181,8 @@ type EventsWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
+	HealthScore MessageEventV2HealthScore `json:"health_score"`
+	// This field is from variant [MessageEventV2].
 	IdempotencyKey string `json:"idempotency_key"`
 	// This field is from variant [MessageEventV2].
 	PreferredService MessageEventV2PreferredService `json:"preferred_service"`
@@ -2229,6 +2257,7 @@ type EventsWebhookEventUnionData struct {
 		Service          respjson.Field
 		DeliveredAt      respjson.Field
 		Effect           respjson.Field
+		HealthScore      respjson.Field
 		IdempotencyKey   respjson.Field
 		PreferredService respjson.Field
 		ReadAt           respjson.Field
