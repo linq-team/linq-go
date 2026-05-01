@@ -391,10 +391,13 @@ type ChatHealthScore struct {
 	Reason string `json:"reason" api:"required"`
 	// Health score from 0 to 100. Higher is healthier.
 	Score int64 `json:"score" api:"required"`
+	// When this health score was last computed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
 		Score       respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -697,10 +700,13 @@ type ChatNewResponseChatHealthScore struct {
 	Reason string `json:"reason" api:"required"`
 	// Health score from 0 to 100. Higher is healthier.
 	Score int64 `json:"score" api:"required"`
+	// When this health score was last computed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Reason      respjson.Field
 		Score       respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
