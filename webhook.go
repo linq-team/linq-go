@@ -123,21 +123,44 @@ func (r *MessageEventV2) UnmarshalJSON(data []byte) error {
 type MessageEventV2Chat struct {
 	// Chat identifier
 	ID string `json:"id" api:"required" format:"uuid"`
-	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-	// when a score isn't available yet. Scoring may change during beta.
+	// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
+	// instead — it's the long-term contract.
+	//
+	// Higher `score` is healthier. `null` when a score isn't available yet. Low health
+	// scores across multiple chats increase risk of line flagging. Scoring model may
+	// change during beta. This field will be removed in a future release; partners on
+	// new integrations should switch on `health_status.status`.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
+	// how it relates to line health.
+	//
+	// Deprecated: deprecated
 	HealthScore MessageEventV2ChatHealthScore `json:"health_score" api:"nullable"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus MessageEventV2ChatHealthStatus `json:"health_status"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"nullable"`
 	// Your phone number's handle. Always has is_me=true.
 	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		HealthScore respjson.Field
-		IsGroup     respjson.Field
-		OwnerHandle respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		HealthScore  respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		OwnerHandle  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -147,8 +170,18 @@ func (r *MessageEventV2Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-// when a score isn't available yet. Scoring may change during beta.
+// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
+// instead — it's the long-term contract.
+//
+// Higher `score` is healthier. `null` when a score isn't available yet. Low health
+// scores across multiple chats increase risk of line flagging. Scoring model may
+// change during beta. This field will be removed in a future release; partners on
+// new integrations should switch on `health_status.status`.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
+// how it relates to line health.
+//
+// Deprecated: deprecated
 type MessageEventV2ChatHealthScore struct {
 	// Short summary of what's affecting the score. Empty when the score is 100.
 	Reason string `json:"reason" api:"required"`
@@ -169,6 +202,44 @@ type MessageEventV2ChatHealthScore struct {
 // Returns the unmodified JSON received from the API
 func (r MessageEventV2ChatHealthScore) RawJSON() string { return r.JSON.raw }
 func (r *MessageEventV2ChatHealthScore) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type MessageEventV2ChatHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2ChatHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2ChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2293,15 +2364,18 @@ type EventsWebhookEventUnionDataChat struct {
 	ID string `json:"id"`
 	// This field is from variant [MessageEventV2Chat].
 	HealthScore MessageEventV2ChatHealthScore `json:"health_score"`
-	IsGroup     bool                          `json:"is_group"`
+	// This field is from variant [MessageEventV2Chat].
+	HealthStatus MessageEventV2ChatHealthStatus `json:"health_status"`
+	IsGroup      bool                           `json:"is_group"`
 	// This field is from variant [MessageEventV2Chat].
 	OwnerHandle shared.ChatHandle `json:"owner_handle"`
 	JSON        struct {
-		ID          respjson.Field
-		HealthScore respjson.Field
-		IsGroup     respjson.Field
-		OwnerHandle respjson.Field
-		raw         string
+		ID           respjson.Field
+		HealthScore  respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		OwnerHandle  respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
