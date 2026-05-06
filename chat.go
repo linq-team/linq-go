@@ -367,19 +367,6 @@ type Chat struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
-	// instead — it's the long-term contract.
-	//
-	// Higher `score` is healthier. `null` when a score isn't available yet. Low health
-	// scores across multiple chats increase risk of line flagging. Scoring model may
-	// change during beta. This field will be removed in a future release; partners on
-	// new integrations should switch on `health_status.status`.
-	//
-	// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
-	// how it relates to line health.
-	//
-	// Deprecated: deprecated
-	HealthScore ChatHealthScore `json:"health_score" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -394,7 +381,6 @@ type Chat struct {
 		IsArchived   respjson.Field
 		IsGroup      respjson.Field
 		UpdatedAt    respjson.Field
-		HealthScore  respjson.Field
 		Service      respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
@@ -442,41 +428,6 @@ type ChatHealthStatus struct {
 // Returns the unmodified JSON received from the API
 func (r ChatHealthStatus) RawJSON() string { return r.JSON.raw }
 func (r *ChatHealthStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
-// instead — it's the long-term contract.
-//
-// Higher `score` is healthier. `null` when a score isn't available yet. Low health
-// scores across multiple chats increase risk of line flagging. Scoring model may
-// change during beta. This field will be removed in a future release; partners on
-// new integrations should switch on `health_status.status`.
-//
-// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
-// how it relates to line health.
-//
-// Deprecated: deprecated
-type ChatHealthScore struct {
-	// Short summary of what's affecting the score. Empty when the score is 100.
-	Reason string `json:"reason" api:"required"`
-	// Health score from 0 to 100. Higher is healthier.
-	Score int64 `json:"score" api:"required"`
-	// When this health score was last computed.
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		Score       respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChatHealthScore) RawJSON() string { return r.JSON.raw }
-func (r *ChatHealthScore) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -753,19 +704,6 @@ type ChatNewResponseChat struct {
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
-	// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
-	// instead — it's the long-term contract.
-	//
-	// Higher `score` is healthier. `null` when a score isn't available yet. Low health
-	// scores across multiple chats increase risk of line flagging. Scoring model may
-	// change during beta. This field will be removed in a future release; partners on
-	// new integrations should switch on `health_status.status`.
-	//
-	// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
-	// how it relates to line health.
-	//
-	// Deprecated: deprecated
-	HealthScore ChatNewResponseChatHealthScore `json:"health_score" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
@@ -775,7 +713,6 @@ type ChatNewResponseChat struct {
 		IsGroup      respjson.Field
 		Message      respjson.Field
 		Service      respjson.Field
-		HealthScore  respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -822,41 +759,6 @@ type ChatNewResponseChatHealthStatus struct {
 // Returns the unmodified JSON received from the API
 func (r ChatNewResponseChatHealthStatus) RawJSON() string { return r.JSON.raw }
 func (r *ChatNewResponseChatHealthStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **[BETA — DEPRECATED]** Legacy health assessment for a chat. Use `health_status`
-// instead — it's the long-term contract.
-//
-// Higher `score` is healthier. `null` when a score isn't available yet. Low health
-// scores across multiple chats increase risk of line flagging. Scoring model may
-// change during beta. This field will be removed in a future release; partners on
-// new integrations should switch on `health_status.status`.
-//
-// See the [Chat Health guide](/guides/chats/chat-health) for what we score on and
-// how it relates to line health.
-//
-// Deprecated: deprecated
-type ChatNewResponseChatHealthScore struct {
-	// Short summary of what's affecting the score. Empty when the score is 100.
-	Reason string `json:"reason" api:"required"`
-	// Health score from 0 to 100. Higher is healthier.
-	Score int64 `json:"score" api:"required"`
-	// When this health score was last computed.
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Reason      respjson.Field
-		Score       respjson.Field
-		UpdatedAt   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChatNewResponseChatHealthScore) RawJSON() string { return r.JSON.raw }
-func (r *ChatNewResponseChatHealthScore) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
