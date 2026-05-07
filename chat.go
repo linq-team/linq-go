@@ -349,32 +349,41 @@ type Chat struct {
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
 	Handles []shared.ChatHandle `json:"handles" api:"required"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus ChatHealthStatus `json:"health_status" api:"required"`
 	// Whether the chat is archived
 	IsArchived bool `json:"is_archived" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-	// when a score isn't available yet. Scoring may change during beta.
-	HealthScore ChatHealthScore `json:"health_score" api:"nullable"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		DisplayName respjson.Field
-		Handles     respjson.Field
-		IsArchived  respjson.Field
-		IsGroup     respjson.Field
-		UpdatedAt   respjson.Field
-		HealthScore respjson.Field
-		Service     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		DisplayName  respjson.Field
+		Handles      respjson.Field
+		HealthStatus respjson.Field
+		IsArchived   respjson.Field
+		IsGroup      respjson.Field
+		UpdatedAt    respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -384,25 +393,41 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-// when a score isn't available yet. Scoring may change during beta.
-type ChatHealthScore struct {
-	// Short summary of what's affecting the score. Empty when the score is 100.
-	Reason string `json:"reason" api:"required"`
-	// Health score from 0 to 100. Higher is healthier.
-	Score int64 `json:"score" api:"required"`
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type ChatHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Reason      respjson.Field
-		Score       respjson.Field
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatHealthScore) RawJSON() string { return r.JSON.raw }
-func (r *ChatHealthScore) UnmarshalJSON(data []byte) error {
+func (r ChatHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *ChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -659,6 +684,18 @@ type ChatNewResponseChat struct {
 	// List of participants in the chat. Always contains at least two handles (your
 	// phone number and the other participant).
 	Handles []shared.ChatHandle `json:"handles" api:"required"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus ChatNewResponseChatHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
@@ -667,20 +704,17 @@ type ChatNewResponseChat struct {
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
-	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-	// when a score isn't available yet. Scoring may change during beta.
-	HealthScore ChatNewResponseChatHealthScore `json:"health_score" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		DisplayName respjson.Field
-		Handles     respjson.Field
-		IsGroup     respjson.Field
-		Message     respjson.Field
-		Service     respjson.Field
-		HealthScore respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		DisplayName  respjson.Field
+		Handles      respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		Message      respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -690,25 +724,41 @@ func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-// when a score isn't available yet. Scoring may change during beta.
-type ChatNewResponseChatHealthScore struct {
-	// Short summary of what's affecting the score. Empty when the score is 100.
-	Reason string `json:"reason" api:"required"`
-	// Health score from 0 to 100. Higher is healthier.
-	Score int64 `json:"score" api:"required"`
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type ChatNewResponseChatHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Reason      respjson.Field
-		Score       respjson.Field
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r ChatNewResponseChatHealthScore) RawJSON() string { return r.JSON.raw }
-func (r *ChatNewResponseChatHealthScore) UnmarshalJSON(data []byte) error {
+func (r ChatNewResponseChatHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *ChatNewResponseChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

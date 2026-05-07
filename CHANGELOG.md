@@ -1,5 +1,30 @@
 # Changelog
 
+## 0.19.0 (2026-05-07)
+
+Full Changelog: [v0.18.0...v0.19.0](https://github.com/linq-team/linq-go/compare/v0.18.0...v0.19.0)
+
+### Features
+
+* **chat-service:** expose health_score.updated_at on chat reads + webhooks ([e9941f2](https://github.com/linq-team/linq-go/commit/e9941f2d18b5f3280b5447a323dd4f059cf8c087))
+* remove health_score from synapse — health_status is the contract ([7f5ba4a](https://github.com/linq-team/linq-go/commit/7f5ba4ac1e32b88990bb7a43da625e61406b8683))
+
+
+### Bug Fixes
+
+* **chat-service:** stamp health_status from risk-service sync reply ([38b8283](https://github.com/linq-team/linq-go/commit/38b8283a8a00ae58a02d3b1527ab72a6808c445f))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([e39c2d8](https://github.com/linq-team/linq-go/commit/e39c2d887851925cbaac3e4228a1b974d20faa16))
+
+
+### Documentation
+
+* **openapi:** add HealthStatus [BETA] + deprecate HealthScore ([259e487](https://github.com/linq-team/linq-go/commit/259e487802018e95f1010ab3ad7de21331d84384))
+* **openapi:** add named examples to unblock docs OpExample ([f708eb9](https://github.com/linq-team/linq-go/commit/f708eb9bf57f98b30cb3eff2a23d4af99107046b))
+
 ## 0.18.0 (2026-04-30)
 
 Full Changelog: [v0.17.0...v0.18.0](https://github.com/linq-team/linq-go/compare/v0.17.0...v0.18.0)

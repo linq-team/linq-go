@@ -123,21 +123,30 @@ func (r *MessageEventV2) UnmarshalJSON(data []byte) error {
 type MessageEventV2Chat struct {
 	// Chat identifier
 	ID string `json:"id" api:"required" format:"uuid"`
-	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-	// when a score isn't available yet. Scoring may change during beta.
-	HealthScore MessageEventV2ChatHealthScore `json:"health_score" api:"nullable"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus MessageEventV2ChatHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"nullable"`
 	// Your phone number's handle. Always has is_me=true.
 	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		HealthScore respjson.Field
-		IsGroup     respjson.Field
-		OwnerHandle respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		OwnerHandle  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -147,25 +156,41 @@ func (r *MessageEventV2Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
-// when a score isn't available yet. Scoring may change during beta.
-type MessageEventV2ChatHealthScore struct {
-	// Short summary of what's affecting the score. Empty when the score is 100.
-	Reason string `json:"reason" api:"required"`
-	// Health score from 0 to 100. Higher is healthier.
-	Score int64 `json:"score" api:"required"`
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type MessageEventV2ChatHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Reason      respjson.Field
-		Score       respjson.Field
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r MessageEventV2ChatHealthScore) RawJSON() string { return r.JSON.raw }
-func (r *MessageEventV2ChatHealthScore) UnmarshalJSON(data []byte) error {
+func (r MessageEventV2ChatHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2ChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -990,23 +1015,74 @@ func (r *MessageEditedWebhookEventData) UnmarshalJSON(data []byte) error {
 type MessageEditedWebhookEventDataChat struct {
 	// Chat identifier
 	ID string `json:"id" api:"required" format:"uuid"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus MessageEditedWebhookEventDataChatHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// The handle that owns this chat (your phone number)
 	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		IsGroup     respjson.Field
-		OwnerHandle respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		OwnerHandle  respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r MessageEditedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
 func (r *MessageEditedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type MessageEditedWebhookEventDataChatHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEditedWebhookEventDataChatHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *MessageEditedWebhookEventDataChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1375,6 +1451,18 @@ type ChatCreatedWebhookEventData struct {
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
 	Handles []shared.ChatHandle `json:"handles" api:"required"`
+	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// and may shift based on engagement and delivery signals on the conversation. Many
+	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// flagging.
+	//
+	// Switch on `status` to gate sends or surface line health in your UI — the enum is
+	// the long-term contract. Each status carries a `doc_url` that deep-links to the
+	// relevant section of the Chat Health guide.
+	//
+	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+	// means and how to react.
+	HealthStatus ChatCreatedWebhookEventDataHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
@@ -1385,21 +1473,60 @@ type ChatCreatedWebhookEventData struct {
 	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		DisplayName respjson.Field
-		Handles     respjson.Field
-		IsGroup     respjson.Field
-		UpdatedAt   respjson.Field
-		Service     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID           respjson.Field
+		CreatedAt    respjson.Field
+		DisplayName  respjson.Field
+		Handles      respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		UpdatedAt    respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
 func (r ChatCreatedWebhookEventData) RawJSON() string { return r.JSON.raw }
 func (r *ChatCreatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// and may shift based on engagement and delivery signals on the conversation. Many
+// `at_risk` or `critical` chats on a single line increase the risk of line
+// flagging.
+//
+// Switch on `status` to gate sends or surface line health in your UI — the enum is
+// the long-term contract. Each status carries a `doc_url` that deep-links to the
+// relevant section of the Chat Health guide.
+//
+// See the [Chat Health guide](/guides/chats/chat-health) for what each status
+// means and how to react.
+type ChatCreatedWebhookEventDataHealthStatus struct {
+	// Deep-link to the relevant section of the Chat Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current health bucket for the chat. See the
+	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
+	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// Any of "healthy", "at_risk", "critical", "opted_out".
+	Status string `json:"status" api:"required"`
+	// When this status last changed.
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DocURL      respjson.Field
+		Status      respjson.Field
+		UpdatedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatCreatedWebhookEventDataHealthStatus) RawJSON() string { return r.JSON.raw }
+func (r *ChatCreatedWebhookEventDataHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2211,6 +2338,8 @@ type EventsWebhookEventUnionData struct {
 	// This field is from variant [ChatCreatedWebhookEventData].
 	Handles []shared.ChatHandle `json:"handles"`
 	// This field is from variant [ChatCreatedWebhookEventData].
+	HealthStatus ChatCreatedWebhookEventDataHealthStatus `json:"health_status"`
+	// This field is from variant [ChatCreatedWebhookEventData].
 	IsGroup   bool      `json:"is_group"`
 	UpdatedAt time.Time `json:"updated_at"`
 	// This field is from variant [ChatGroupNameUpdatedWebhookEventData].
@@ -2262,6 +2391,7 @@ type EventsWebhookEventUnionData struct {
 		CreatedAt        respjson.Field
 		DisplayName      respjson.Field
 		Handles          respjson.Field
+		HealthStatus     respjson.Field
 		IsGroup          respjson.Field
 		UpdatedAt        respjson.Field
 		ChangedByHandle  respjson.Field
@@ -2288,20 +2418,43 @@ func (r *EventsWebhookEventUnionData) UnmarshalJSON(data []byte) error {
 // [EventsWebhookEventUnion].
 type EventsWebhookEventUnionDataChat struct {
 	ID string `json:"id"`
-	// This field is from variant [MessageEventV2Chat].
-	HealthScore MessageEventV2ChatHealthScore `json:"health_score"`
-	IsGroup     bool                          `json:"is_group"`
+	// This field is a union of [MessageEventV2ChatHealthStatus],
+	// [MessageEditedWebhookEventDataChatHealthStatus]
+	HealthStatus EventsWebhookEventUnionDataChatHealthStatus `json:"health_status"`
+	IsGroup      bool                                        `json:"is_group"`
 	// This field is from variant [MessageEventV2Chat].
 	OwnerHandle shared.ChatHandle `json:"owner_handle"`
 	JSON        struct {
-		ID          respjson.Field
-		HealthScore respjson.Field
-		IsGroup     respjson.Field
-		OwnerHandle respjson.Field
-		raw         string
+		ID           respjson.Field
+		HealthStatus respjson.Field
+		IsGroup      respjson.Field
+		OwnerHandle  respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
 func (r *EventsWebhookEventUnionDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// EventsWebhookEventUnionDataChatHealthStatus is an implicit subunion of
+// [EventsWebhookEventUnion]. EventsWebhookEventUnionDataChatHealthStatus provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [EventsWebhookEventUnion].
+type EventsWebhookEventUnionDataChatHealthStatus struct {
+	DocURL    string    `json:"doc_url"`
+	Status    string    `json:"status"`
+	UpdatedAt time.Time `json:"updated_at"`
+	JSON      struct {
+		DocURL    respjson.Field
+		Status    respjson.Field
+		UpdatedAt respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+func (r *EventsWebhookEventUnionDataChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
