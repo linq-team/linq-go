@@ -27,10 +27,10 @@ func TestContactCardNewWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.ContactCard.New(context.TODO(), linqgo.ContactCardNewParams{
-		FirstName:   "John",
+		FirstName:   "Acme",
 		PhoneNumber: "+15551234567",
 		ImageURL:    linqgo.String("https://cdn.linqapp.com/contact-card/example.jpg"),
-		LastName:    linqgo.String("Doe"),
+		LastName:    linqgo.String("Support"),
 	})
 	if err != nil {
 		var apierr *linqgo.Error
