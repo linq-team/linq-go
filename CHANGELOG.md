@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.18.0 (2026-04-30)
+
+Full Changelog: [v0.17.0...v0.18.0](https://github.com/linq-team/linq-go/compare/v0.17.0...v0.18.0)
+
+### Features
+
+* [PoC] sync risk lookup on message.received via NATS req/reply ([21becc8](https://github.com/linq-team/linq-go/commit/21becc8c1da62e4bd46cbad936ff8b37a46188e5))
+* **webhooks:** nest health_score under chat (PLT-540) + remove standalone opt_out/opt_in webhooks ([9293bf5](https://github.com/linq-team/linq-go/commit/9293bf5f1d0690024eec0c4b986918cbc3c86718))
+
 ## 0.17.0 (2026-04-28)
 
 Full Changelog: [v0.16.0...v0.17.0](https://github.com/linq-team/linq-go/compare/v0.16.0...v0.17.0)

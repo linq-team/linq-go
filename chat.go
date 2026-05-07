@@ -355,7 +355,8 @@ type Chat struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+	// when a score isn't available yet. Scoring may change during beta.
 	HealthScore ChatHealthScore `json:"health_score" api:"nullable"`
 	// Messaging service type
 	//
@@ -383,7 +384,8 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+// when a score isn't available yet. Scoring may change during beta.
 type ChatHealthScore struct {
 	// Short summary of what's affecting the score. Empty when the score is 100.
 	Reason string `json:"reason" api:"required"`
@@ -665,7 +667,8 @@ type ChatNewResponseChat struct {
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
-	// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+	// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+	// when a score isn't available yet. Scoring may change during beta.
 	HealthScore ChatNewResponseChatHealthScore `json:"health_score" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -687,7 +690,8 @@ func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Health assessment for a chat. Higher `score` means a healthier chat.
+// **[BETA]** Health assessment for a chat. Higher `score` is healthier. `null`
+// when a score isn't available yet. Scoring may change during beta.
 type ChatNewResponseChatHealthScore struct {
 	// Short summary of what's affecting the score. Empty when the score is 100.
 	Reason string `json:"reason" api:"required"`
