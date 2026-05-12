@@ -200,8 +200,10 @@ func (r *AttachmentService) New(ctx context.Context, body AttachmentNewParams, o
 	return res, err
 }
 
-// Retrieve metadata for a specific attachment including its status, file
-// information, and URLs for downloading.
+// Retrieve metadata for a specific attachment including file information, and URLs
+// for downloading.
+//
+// `status`: (**deprecated** — will be removed in a future API version)
 func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts ...option.RequestOption) (res *AttachmentGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if attachmentID == "" {
@@ -307,8 +309,7 @@ const (
 )
 
 type AttachmentNewResponse struct {
-	// Unique identifier for the attachment (for status checks via GET
-	// /v3/attachments/{id})
+	// Unique identifier for the attachment
 	AttachmentID string `json:"attachment_id" api:"required" format:"uuid"`
 	// Permanent CDN URL for the file. Does not expire. Use the `attachment_id` to
 	// reference this file in media parts when sending messages.
@@ -417,9 +418,12 @@ type AttachmentGetResponse struct {
 	Filename string `json:"filename" api:"required"`
 	// Size of the attachment in bytes
 	SizeBytes int64 `json:"size_bytes" api:"required"`
-	// Current upload/processing status
+	// **DEPRECATED:** This field is deprecated and will be removed in a future API
+	// version.
 	//
 	// Any of "pending", "complete", "failed".
+	//
+	// Deprecated: status is no longer a useful signal
 	Status AttachmentGetResponseStatus `json:"status" api:"required"`
 	// URL to download the attachment
 	DownloadURL string `json:"download_url" format:"uri"`
@@ -443,7 +447,8 @@ func (r *AttachmentGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current upload/processing status
+// **DEPRECATED:** This field is deprecated and will be removed in a future API
+// version.
 type AttachmentGetResponseStatus string
 
 const (
