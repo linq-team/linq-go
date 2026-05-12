@@ -361,7 +361,10 @@ type Chat struct {
 	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
 	// means and how to react.
 	HealthStatus ChatHealthStatus `json:"health_status" api:"required"`
-	// Whether the chat is archived
+	// **DEPRECATED:** This field is deprecated and will be removed in a future API
+	// version.
+	//
+	// Deprecated: is_archived is no longer a useful signal
 	IsArchived bool `json:"is_archived" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
