@@ -365,6 +365,19 @@ func (r *AttachmentService) Get(ctx context.Context, attachmentID string, opts .
 	return res, err
 }
 
+// Permanently delete an attachment owned by the authenticated partner.
+func (r *AttachmentService) Delete(ctx context.Context, attachmentID string, opts ...option.RequestOption) (err error) {
+	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if attachmentID == "" {
+		err = errors.New("missing required attachmentId parameter")
+		return err
+	}
+	path := fmt.Sprintf("v3/attachments/%s", attachmentID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
+	return err
+}
+
 // Supported MIME types for file attachments and media URLs.
 //
 // **Images:** image/jpeg, image/png, image/gif, image/heic, image/heif,
