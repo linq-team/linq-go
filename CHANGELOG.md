@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.20.0 (2026-05-13)
+
+Full Changelog: [v0.19.0...v0.20.0](https://github.com/linq-team/linq-go/compare/v0.19.0...v0.20.0)
+
+### Features
+
+* **api:** add delete endpoint ([3694944](https://github.com/linq-team/linq-go/commit/36949444b39b7d22353e0f080dd36b8675aa375d))
+
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([0384173](https://github.com/linq-team/linq-go/commit/0384173e2b3da0ed7d4666fb2f39903c0067b7c6))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([1fc1ad6](https://github.com/linq-team/linq-go/commit/1fc1ad610e66ec977846b7bb77d3178a3619deaa))
+
+
+### Documentation
+
+* **api:** document attachment security, ephemeral tier, lifecycle, and deletion ([6f4727d](https://github.com/linq-team/linq-go/commit/6f4727de30cd4e3a5a43c1f1269154e34fc680dd))
+* **api:** mark status field in attachments, is_archived in chat as deprecated ([2261be5](https://github.com/linq-team/linq-go/commit/2261be5122ff4b46c5cc122fc9ddeab183178f5b))
+
 ## 0.19.0 (2026-05-07)
 
 Full Changelog: [v0.18.0...v0.19.0](https://github.com/linq-team/linq-go/compare/v0.18.0...v0.19.0)
