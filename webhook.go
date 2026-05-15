@@ -2060,24 +2060,34 @@ func (r *PhoneNumberStatusUpdatedWebhookEvent) UnmarshalJSON(data []byte) error 
 type PhoneNumberStatusUpdatedWebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
+	// The new line health status
+	//
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	NewHealthStatus string `json:"new_health_status" api:"required"`
 	// The new service status
 	//
 	// Any of "ACTIVE", "FLAGGED".
 	NewStatus string `json:"new_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
+	// The previous line health status
+	//
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	PreviousHealthStatus string `json:"previous_health_status" api:"required"`
 	// The previous service status
 	//
 	// Any of "ACTIVE", "FLAGGED".
 	PreviousStatus string `json:"previous_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ChangedAt      respjson.Field
-		NewStatus      respjson.Field
-		PhoneNumber    respjson.Field
-		PreviousStatus respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
+		ChangedAt            respjson.Field
+		NewHealthStatus      respjson.Field
+		NewStatus            respjson.Field
+		PhoneNumber          respjson.Field
+		PreviousHealthStatus respjson.Field
+		PreviousStatus       respjson.Field
+		ExtraFields          map[string]respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
@@ -2350,59 +2360,65 @@ type EventsWebhookEventUnionData struct {
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	ChangedAt time.Time `json:"changed_at"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	NewHealthStatus string `json:"new_health_status"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewStatus string `json:"new_status"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PhoneNumber string `json:"phone_number"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	PreviousHealthStatus string `json:"previous_health_status"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
 	JSON           struct {
-		ID               respjson.Field
-		Chat             respjson.Field
-		Direction        respjson.Field
-		Parts            respjson.Field
-		SenderHandle     respjson.Field
-		Service          respjson.Field
-		DeliveredAt      respjson.Field
-		Effect           respjson.Field
-		IdempotencyKey   respjson.Field
-		PreferredService respjson.Field
-		ReadAt           respjson.Field
-		ReplyTo          respjson.Field
-		SentAt           respjson.Field
-		Code             respjson.Field
-		FailedAt         respjson.Field
-		ChatID           respjson.Field
-		MessageID        respjson.Field
-		Reason           respjson.Field
-		EditedAt         respjson.Field
-		Part             respjson.Field
-		IsFromMe         respjson.Field
-		ReactionType     respjson.Field
-		CustomEmoji      respjson.Field
-		From             respjson.Field
-		FromHandle       respjson.Field
-		PartIndex        respjson.Field
-		ReactedAt        respjson.Field
-		Sticker          respjson.Field
-		Handle           respjson.Field
-		AddedAt          respjson.Field
-		Participant      respjson.Field
-		RemovedAt        respjson.Field
-		CreatedAt        respjson.Field
-		DisplayName      respjson.Field
-		Handles          respjson.Field
-		HealthStatus     respjson.Field
-		IsGroup          respjson.Field
-		UpdatedAt        respjson.Field
-		ChangedByHandle  respjson.Field
-		NewValue         respjson.Field
-		OldValue         respjson.Field
-		ErrorCode        respjson.Field
-		ChangedAt        respjson.Field
-		NewStatus        respjson.Field
-		PhoneNumber      respjson.Field
-		PreviousStatus   respjson.Field
-		raw              string
+		ID                   respjson.Field
+		Chat                 respjson.Field
+		Direction            respjson.Field
+		Parts                respjson.Field
+		SenderHandle         respjson.Field
+		Service              respjson.Field
+		DeliveredAt          respjson.Field
+		Effect               respjson.Field
+		IdempotencyKey       respjson.Field
+		PreferredService     respjson.Field
+		ReadAt               respjson.Field
+		ReplyTo              respjson.Field
+		SentAt               respjson.Field
+		Code                 respjson.Field
+		FailedAt             respjson.Field
+		ChatID               respjson.Field
+		MessageID            respjson.Field
+		Reason               respjson.Field
+		EditedAt             respjson.Field
+		Part                 respjson.Field
+		IsFromMe             respjson.Field
+		ReactionType         respjson.Field
+		CustomEmoji          respjson.Field
+		From                 respjson.Field
+		FromHandle           respjson.Field
+		PartIndex            respjson.Field
+		ReactedAt            respjson.Field
+		Sticker              respjson.Field
+		Handle               respjson.Field
+		AddedAt              respjson.Field
+		Participant          respjson.Field
+		RemovedAt            respjson.Field
+		CreatedAt            respjson.Field
+		DisplayName          respjson.Field
+		Handles              respjson.Field
+		HealthStatus         respjson.Field
+		IsGroup              respjson.Field
+		UpdatedAt            respjson.Field
+		ChangedByHandle      respjson.Field
+		NewValue             respjson.Field
+		OldValue             respjson.Field
+		ErrorCode            respjson.Field
+		ChangedAt            respjson.Field
+		NewHealthStatus      respjson.Field
+		NewStatus            respjson.Field
+		PhoneNumber          respjson.Field
+		PreviousHealthStatus respjson.Field
+		PreviousStatus       respjson.Field
+		raw                  string
 	} `json:"-"`
 }
 
