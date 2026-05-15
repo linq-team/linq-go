@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.21.0 (2026-05-15)
+
+Full Changelog: [v0.20.0...v0.21.0](https://github.com/linq-team/linq-go/compare/v0.20.0...v0.21.0)
+
+### Features
+
+* **api:** add health_status field to phone number list response ([61a2900](https://github.com/linq-team/linq-go/commit/61a2900da04b051661bcfa137466ddd0f94ff517))
+* **api:** add health_status fields to phone number list and status webhook responses ([72983cf](https://github.com/linq-team/linq-go/commit/72983cf6724fe0747de2edc11f8e9b0825b194a5))
+* **client:** optimize json encoder for internal types ([31e5eee](https://github.com/linq-team/linq-go/commit/31e5eeeb66c19ae24f2755bd2c8d79f14a693a22))
+
+
+### Documentation
+
+* **types:** update ChatHealthStatus enum value casing in documentation ([3c3996a](https://github.com/linq-team/linq-go/commit/3c3996a5c13e2355dc22077781e9887732a11036))
+
 ## 0.20.0 (2026-05-13)
 
 Full Changelog: [v0.19.0...v0.20.0](https://github.com/linq-team/linq-go/compare/v0.19.0...v0.20.0)
