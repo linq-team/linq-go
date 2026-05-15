@@ -349,9 +349,9 @@ type Chat struct {
 	// List of chat participants with full handle details. Always contains at least two
 	// handles (your phone number and the other participant).
 	Handles []shared.ChatHandle `json:"handles" api:"required"`
-	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// **[BETA]** Current health for a chat. Always present — chats start at `HEALTHY`
 	// and may shift based on engagement and delivery signals on the conversation. Many
-	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// `AT_RISK` or `CRITICAL` chats on a single line increase the risk of line
 	// flagging.
 	//
 	// Switch on `status` to gate sends or surface line health in your UI — the enum is
@@ -396,9 +396,9 @@ func (r *Chat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// **[BETA]** Current health for a chat. Always present — chats start at `HEALTHY`
 // and may shift based on engagement and delivery signals on the conversation. Many
-// `at_risk` or `critical` chats on a single line increase the risk of line
+// `AT_RISK` or `CRITICAL` chats on a single line increase the risk of line
 // flagging.
 //
 // Switch on `status` to gate sends or surface line health in your UI — the enum is
@@ -414,7 +414,7 @@ type ChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
-	// Any of "healthy", "at_risk", "critical", "opted_out".
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
 	// When this status last changed.
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
@@ -687,9 +687,9 @@ type ChatNewResponseChat struct {
 	// List of participants in the chat. Always contains at least two handles (your
 	// phone number and the other participant).
 	Handles []shared.ChatHandle `json:"handles" api:"required"`
-	// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+	// **[BETA]** Current health for a chat. Always present — chats start at `HEALTHY`
 	// and may shift based on engagement and delivery signals on the conversation. Many
-	// `at_risk` or `critical` chats on a single line increase the risk of line
+	// `AT_RISK` or `CRITICAL` chats on a single line increase the risk of line
 	// flagging.
 	//
 	// Switch on `status` to gate sends or surface line health in your UI — the enum is
@@ -727,9 +727,9 @@ func (r *ChatNewResponseChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Current health for a chat. Always present — chats start at `healthy`
+// **[BETA]** Current health for a chat. Always present — chats start at `HEALTHY`
 // and may shift based on engagement and delivery signals on the conversation. Many
-// `at_risk` or `critical` chats on a single line increase the risk of line
+// `AT_RISK` or `CRITICAL` chats on a single line increase the risk of line
 // flagging.
 //
 // Switch on `status` to gate sends or surface line health in your UI — the enum is
@@ -745,7 +745,7 @@ type ChatNewResponseChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
-	// Any of "healthy", "at_risk", "critical", "opted_out".
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
 	// When this status last changed.
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
