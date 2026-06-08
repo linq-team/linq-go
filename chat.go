@@ -88,6 +88,17 @@ type ChatService struct {
 	// - A `link` part cannot be combined with other parts in the same message.
 	// - Maximum URL length: 2,048 characters.
 	Messages ChatMessageService
+	// Request and retrieve real-time location data via iMessage.
+	//
+	// Use these endpoints to request a contact's location, retrieve location data for
+	// contacts who are sharing with you, and subscribe to webhooks when someone starts
+	// or stops sharing their location.
+	//
+	// **Coordinates** are returned in
+	// [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) format:
+	// `[longitude, latitude]` or `[longitude, latitude, altitude]` if altitude is
+	// available.
+	Location ChatLocationService
 }
 
 // NewChatService generates a new service that applies the given options to each
@@ -99,6 +110,7 @@ func NewChatService(opts ...option.RequestOption) (r ChatService) {
 	r.Participants = NewChatParticipantService(opts...)
 	r.Typing = NewChatTypingService(opts...)
 	r.Messages = NewChatMessageService(opts...)
+	r.Location = NewChatLocationService(opts...)
 	return
 }
 

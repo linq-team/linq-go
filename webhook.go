@@ -581,7 +581,8 @@ type MessageSentWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -653,7 +654,8 @@ type MessageReceivedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -725,7 +727,8 @@ type MessageReadWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -797,7 +800,8 @@ type MessageDeliveredWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -853,7 +857,8 @@ type MessageFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -888,7 +893,7 @@ func (r *MessageFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
 type MessageFailedWebhookEventData struct {
-	// Error codes in webhook failure events (3007, 4001).
+	// Error codes in webhook failure events (3007, 4001, 4005).
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -942,7 +947,8 @@ type MessageEditedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1130,7 +1136,8 @@ type ReactionAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1184,7 +1191,8 @@ type ReactionRemovedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1238,7 +1246,8 @@ type ParticipantAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1322,7 +1331,8 @@ type ParticipantRemovedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1407,7 +1417,8 @@ type ChatCreatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1553,7 +1564,8 @@ type ChatGroupNameUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1637,7 +1649,8 @@ type ChatGroupIconUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1723,7 +1736,8 @@ type ChatGroupNameUpdateFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1760,7 +1774,7 @@ func (r *ChatGroupNameUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupNameUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001).
+	// Error codes in webhook failure events (3007, 4001, 4005).
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -1805,7 +1819,8 @@ type ChatGroupIconUpdateFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1842,7 +1857,7 @@ func (r *ChatGroupIconUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupIconUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001).
+	// Error codes in webhook failure events (3007, 4001, 4005).
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -1885,7 +1900,8 @@ type ChatTypingIndicatorStartedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1957,7 +1973,8 @@ type ChatTypingIndicatorStoppedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2025,7 +2042,8 @@ type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer".
+	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped".
 	EventType PhoneNumberStatusUpdatedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2126,6 +2144,8 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallFailed                 PhoneNumberStatusUpdatedWebhookEventEventType = "call.failed"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallDeclined               PhoneNumberStatusUpdatedWebhookEventEventType = "call.declined"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedWebhookEventEventType = "call.no_answer"
+	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStarted     PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.started"
+	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStopped     PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.stopped"
 )
 
 // EventsWebhookEventUnion contains all possible properties and values from
