@@ -152,9 +152,12 @@ type SentMessage struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Current delivery status of a message
 	//
-	// Any of "pending", "queued", "sent", "delivered", "failed".
+	// Any of "pending", "queued", "sent", "delivered", "received", "read", "failed".
 	DeliveryStatus SentMessageDeliveryStatus `json:"delivery_status" api:"required"`
-	// Whether the message has been read
+	// DEPRECATED: Use `delivery_status == "read"` instead. Whether the message has
+	// been read.
+	//
+	// Deprecated: deprecated
 	IsRead bool `json:"is_read" api:"required"`
 	// Message parts in order (text, media, and link)
 	Parts []SentMessagePartUnion `json:"parts" api:"required"`
@@ -209,6 +212,8 @@ const (
 	SentMessageDeliveryStatusQueued    SentMessageDeliveryStatus = "queued"
 	SentMessageDeliveryStatusSent      SentMessageDeliveryStatus = "sent"
 	SentMessageDeliveryStatusDelivered SentMessageDeliveryStatus = "delivered"
+	SentMessageDeliveryStatusReceived  SentMessageDeliveryStatus = "received"
+	SentMessageDeliveryStatusRead      SentMessageDeliveryStatus = "read"
 	SentMessageDeliveryStatusFailed    SentMessageDeliveryStatus = "failed"
 )
 

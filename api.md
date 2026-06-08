@@ -219,7 +219,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatTypingIndicatorStartedWebhookEvent">ChatTypingIndicatorStartedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatTypingIndicatorStoppedWebhookEvent">ChatTypingIndicatorStoppedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberStatusUpdatedWebhookEvent">PhoneNumberStatusUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#EventsWebhookEventUnion">EventsWebhookEventUnion</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
 
 # ContactCard
 

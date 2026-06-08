@@ -587,7 +587,8 @@ type Client struct {
 }
 
 // DefaultClientOptions read from the environment (LINQ_API_V3_API_KEY,
-// LINQ_API_V3_BASE_URL). This should be used to initialize new clients.
+// LINQ_WEBHOOK_SECRET, LINQ_API_V3_BASE_URL). This should be used to initialize
+// new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("LINQ_API_V3_BASE_URL"); ok {
@@ -595,6 +596,9 @@ func DefaultClientOptions() []option.RequestOption {
 	}
 	if o, ok := os.LookupEnv("LINQ_API_V3_API_KEY"); ok {
 		defaults = append(defaults, option.WithAPIKey(o))
+	}
+	if o, ok := os.LookupEnv("LINQ_WEBHOOK_SECRET"); ok {
+		defaults = append(defaults, option.WithWebhookSecret(o))
 	}
 	if o, ok := os.LookupEnv("LINQ_API_V3_CUSTOM_HEADERS"); ok {
 		for _, line := range strings.Split(o, "\n") {
@@ -608,9 +612,10 @@ func DefaultClientOptions() []option.RequestOption {
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (LINQ_API_V3_API_KEY, LINQ_API_V3_BASE_URL). The option passed in as
-// arguments are applied after these default arguments, and all option will be
-// passed down to the services and requests that this client makes.
+// environment (LINQ_API_V3_API_KEY, LINQ_WEBHOOK_SECRET, LINQ_API_V3_BASE_URL).
+// The option passed in as arguments are applied after these default arguments, and
+// all option will be passed down to the services and requests that this client
+// makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 
