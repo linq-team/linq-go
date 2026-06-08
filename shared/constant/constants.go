@@ -18,15 +18,15 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type HTTPSApidocsLinqappComDocumentationWebhookEvents string // Always "https://apidocs.linqapp.com/documentation/webhook-events"
-type Link string                                             // Always "link"
+type HTTPSDocsLinqappComGuidesWebhooksEvents string // Always "https://docs.linqapp.com/guides/webhooks/events"
+type Link string                                    // Always "link"
 
-func (c HTTPSApidocsLinqappComDocumentationWebhookEvents) Default() HTTPSApidocsLinqappComDocumentationWebhookEvents {
-	return "https://apidocs.linqapp.com/documentation/webhook-events"
+func (c HTTPSDocsLinqappComGuidesWebhooksEvents) Default() HTTPSDocsLinqappComGuidesWebhooksEvents {
+	return "https://docs.linqapp.com/guides/webhooks/events"
 }
 func (c Link) Default() Link { return "link" }
 
-func (c HTTPSApidocsLinqappComDocumentationWebhookEvents) MarshalJSON() ([]byte, error) {
+func (c HTTPSDocsLinqappComGuidesWebhooksEvents) MarshalJSON() ([]byte, error) {
 	return marshalString(c)
 }
 func (c Link) MarshalJSON() ([]byte, error) { return marshalString(c) }
