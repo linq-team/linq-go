@@ -4,13 +4,18 @@ package linqgo
 
 import (
 	"encoding/json"
+	"errors"
+	"net/http"
+	"slices"
 	"time"
 
 	"github.com/linq-team/linq-go/internal/apijson"
+	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
 	"github.com/linq-team/linq-go/shared/constant"
+	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -32,9 +37,26 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
-func (r *WebhookService) Events(payload []byte, opts ...option.RequestOption) (*EventsWebhookEventUnion, error) {
-	res := &EventsWebhookEventUnion{}
-	err := res.UnmarshalJSON(payload)
+func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEventUnion, error) {
+	opts = slices.Concat(r.Options, opts)
+	cfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	key := cfg.WebhookSecret
+	if key == "" {
+		return nil, errors.New("The WebhookSecret option must be set in order to verify webhook headers")
+	}
+	wh, err := standardwebhooks.NewWebhook(key)
+	if err != nil {
+		return nil, err
+	}
+	err = wh.Verify(payload, headers)
+	if err != nil {
+		return nil, err
+	}
+	res := &UnwrapWebhookEventUnion{}
+	err = res.UnmarshalJSON(payload)
 	if err != nil {
 		return res, err
 	}
@@ -2148,7 +2170,7 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStopped     PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.stopped"
 )
 
-// EventsWebhookEventUnion contains all possible properties and values from
+// UnwrapWebhookEventUnion contains all possible properties and values from
 // [MessageSentWebhookEvent], [MessageReceivedWebhookEvent],
 // [MessageReadWebhookEvent], [MessageDeliveredWebhookEvent],
 // [MessageFailedWebhookEvent], [MessageEditedWebhookEvent],
@@ -2161,10 +2183,10 @@ const (
 // [ChatTypingIndicatorStoppedWebhookEvent],
 // [PhoneNumberStatusUpdatedWebhookEvent].
 //
-// Use the [EventsWebhookEventUnion.AsAny] method to switch on the variant.
+// Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
-type EventsWebhookEventUnion struct {
+type UnwrapWebhookEventUnion struct {
 	APIVersion string    `json:"api_version"`
 	CreatedAt  time.Time `json:"created_at"`
 	// This field is a union of [MessageEventV2], [MessageFailedWebhookEventData],
@@ -2177,7 +2199,7 @@ type EventsWebhookEventUnion struct {
 	// [ChatTypingIndicatorStartedWebhookEventData],
 	// [ChatTypingIndicatorStoppedWebhookEventData],
 	// [PhoneNumberStatusUpdatedWebhookEventData]
-	Data    EventsWebhookEventUnionData `json:"data"`
+	Data    UnwrapWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil.
@@ -2198,114 +2220,114 @@ type EventsWebhookEventUnion struct {
 	} `json:"-"`
 }
 
-func (u EventsWebhookEventUnion) AsMessageSentWebhookEvent() (v MessageSentWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageSentWebhookEvent() (v MessageSentWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReceivedWebhookEvent() (v MessageReceivedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageReceivedWebhookEvent() (v MessageReceivedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageReadWebhookEvent() (v MessageReadWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageReadWebhookEvent() (v MessageReadWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageDeliveredWebhookEvent() (v MessageDeliveredWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageDeliveredWebhookEvent() (v MessageDeliveredWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageFailedWebhookEvent() (v MessageFailedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageFailedWebhookEvent() (v MessageFailedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsMessageEditedWebhookEvent() (v MessageEditedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsMessageEditedWebhookEvent() (v MessageEditedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionAddedWebhookEvent() (v ReactionAddedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsReactionAddedWebhookEvent() (v ReactionAddedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsReactionRemovedWebhookEvent() (v ReactionRemovedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsReactionRemovedWebhookEvent() (v ReactionRemovedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantAddedWebhookEvent() (v ParticipantAddedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsParticipantAddedWebhookEvent() (v ParticipantAddedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsParticipantRemovedWebhookEvent() (v ParticipantRemovedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsParticipantRemovedWebhookEvent() (v ParticipantRemovedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatCreatedWebhookEvent() (v ChatCreatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatCreatedWebhookEvent() (v ChatCreatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdatedWebhookEvent() (v ChatGroupNameUpdatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatGroupNameUpdatedWebhookEvent() (v ChatGroupNameUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdatedWebhookEvent() (v ChatGroupIconUpdatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatGroupIconUpdatedWebhookEvent() (v ChatGroupIconUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupNameUpdateFailedWebhookEvent() (v ChatGroupNameUpdateFailedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatGroupNameUpdateFailedWebhookEvent() (v ChatGroupNameUpdateFailedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatGroupIconUpdateFailedWebhookEvent() (v ChatGroupIconUpdateFailedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatGroupIconUpdateFailedWebhookEvent() (v ChatGroupIconUpdateFailedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStartedWebhookEvent() (v ChatTypingIndicatorStartedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatTypingIndicatorStartedWebhookEvent() (v ChatTypingIndicatorStartedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsChatTypingIndicatorStoppedWebhookEvent() (v ChatTypingIndicatorStoppedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsChatTypingIndicatorStoppedWebhookEvent() (v ChatTypingIndicatorStoppedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u EventsWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v PhoneNumberStatusUpdatedWebhookEvent) {
+func (u UnwrapWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v PhoneNumberStatusUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
 // Returns the unmodified JSON received from the API
-func (u EventsWebhookEventUnion) RawJSON() string { return u.JSON.raw }
+func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
-func (r *EventsWebhookEventUnion) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// EventsWebhookEventUnionData is an implicit subunion of
-// [EventsWebhookEventUnion]. EventsWebhookEventUnionData provides convenient
+// UnwrapWebhookEventUnionData is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionData provides convenient
 // access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
-// [EventsWebhookEventUnion].
-type EventsWebhookEventUnionData struct {
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionData struct {
 	ID string `json:"id"`
 	// This field is a union of [MessageEventV2Chat],
 	// [MessageEditedWebhookEventDataChat]
-	Chat      EventsWebhookEventUnionDataChat `json:"chat"`
+	Chat      UnwrapWebhookEventUnionDataChat `json:"chat"`
 	Direction string                          `json:"direction"`
 	// This field is from variant [MessageEventV2].
 	Parts []MessageEventV2PartUnion `json:"parts"`
@@ -2442,21 +2464,21 @@ type EventsWebhookEventUnionData struct {
 	} `json:"-"`
 }
 
-func (r *EventsWebhookEventUnionData) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// EventsWebhookEventUnionDataChat is an implicit subunion of
-// [EventsWebhookEventUnion]. EventsWebhookEventUnionDataChat provides convenient
+// UnwrapWebhookEventUnionDataChat is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChat provides convenient
 // access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
-// [EventsWebhookEventUnion].
-type EventsWebhookEventUnionDataChat struct {
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataChat struct {
 	ID string `json:"id"`
 	// This field is a union of [MessageEventV2ChatHealthStatus],
 	// [MessageEditedWebhookEventDataChatHealthStatus]
-	HealthStatus EventsWebhookEventUnionDataChatHealthStatus `json:"health_status"`
+	HealthStatus UnwrapWebhookEventUnionDataChatHealthStatus `json:"health_status"`
 	IsGroup      bool                                        `json:"is_group"`
 	// This field is from variant [MessageEventV2Chat].
 	OwnerHandle shared.ChatHandle `json:"owner_handle"`
@@ -2469,17 +2491,17 @@ type EventsWebhookEventUnionDataChat struct {
 	} `json:"-"`
 }
 
-func (r *EventsWebhookEventUnionDataChat) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionDataChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// EventsWebhookEventUnionDataChatHealthStatus is an implicit subunion of
-// [EventsWebhookEventUnion]. EventsWebhookEventUnionDataChatHealthStatus provides
+// UnwrapWebhookEventUnionDataChatHealthStatus is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChatHealthStatus provides
 // convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
-// [EventsWebhookEventUnion].
-type EventsWebhookEventUnionDataChatHealthStatus struct {
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataChatHealthStatus struct {
 	DocURL    string    `json:"doc_url"`
 	Status    string    `json:"status"`
 	UpdatedAt time.Time `json:"updated_at"`
@@ -2491,6 +2513,6 @@ type EventsWebhookEventUnionDataChatHealthStatus struct {
 	} `json:"-"`
 }
 
-func (r *EventsWebhookEventUnionDataChatHealthStatus) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionDataChatHealthStatus) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

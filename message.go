@@ -171,11 +171,21 @@ type Message struct {
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
 	// When the message was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Whether the message has been delivered
+	// Current delivery status of a message
+	//
+	// Any of "pending", "queued", "sent", "delivered", "received", "read", "failed".
+	DeliveryStatus MessageDeliveryStatus `json:"delivery_status" api:"required"`
+	// DEPRECATED: Use `delivery_status` instead (true when `delivery_status` is
+	// `delivered` or `read`). Whether the message has been delivered.
+	//
+	// Deprecated: deprecated
 	IsDelivered bool `json:"is_delivered" api:"required"`
 	// Whether this message was sent by the authenticated user
 	IsFromMe bool `json:"is_from_me" api:"required"`
-	// Whether the message has been read
+	// DEPRECATED: Use `delivery_status == "read"` instead. Whether the message has
+	// been read.
+	//
+	// Deprecated: deprecated
 	IsRead bool `json:"is_read" api:"required"`
 	// When the message was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
@@ -210,6 +220,7 @@ type Message struct {
 		ID               respjson.Field
 		ChatID           respjson.Field
 		CreatedAt        respjson.Field
+		DeliveryStatus   respjson.Field
 		IsDelivered      respjson.Field
 		IsFromMe         respjson.Field
 		IsRead           respjson.Field
@@ -234,6 +245,19 @@ func (r Message) RawJSON() string { return r.JSON.raw }
 func (r *Message) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Current delivery status of a message
+type MessageDeliveryStatus string
+
+const (
+	MessageDeliveryStatusPending   MessageDeliveryStatus = "pending"
+	MessageDeliveryStatusQueued    MessageDeliveryStatus = "queued"
+	MessageDeliveryStatusSent      MessageDeliveryStatus = "sent"
+	MessageDeliveryStatusDelivered MessageDeliveryStatus = "delivered"
+	MessageDeliveryStatusReceived  MessageDeliveryStatus = "received"
+	MessageDeliveryStatusRead      MessageDeliveryStatus = "read"
+	MessageDeliveryStatusFailed    MessageDeliveryStatus = "failed"
+)
 
 // MessagePartUnion contains all possible properties and values from
 // [shared.TextPartResponse], [shared.MediaPartResponse],
