@@ -50,7 +50,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				Type: linqgo.MessageEffectTypeScreen,
 			},
 			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
-			PreferredService: shared.ServiceTypeiMessage,
+			PreferredService: shared.ServiceTypeIMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
 				PartIndex: linqgo.Int(0),

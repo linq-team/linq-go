@@ -39,7 +39,7 @@ func NewCapabilityService(opts ...option.RequestOption) (r CapabilityService) {
 
 // Check whether a recipient address (phone number or email) is reachable via
 // iMessage.
-func (r *CapabilityService) CheckiMessage(ctx context.Context, body CapabilityCheckiMessageParams, opts ...option.RequestOption) (res *HandleCheckResponse, err error) {
+func (r *CapabilityService) CheckIMessage(ctx context.Context, body CapabilityCheckIMessageParams, opts ...option.RequestOption) (res *HandleCheckResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_imessage"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -92,15 +92,15 @@ func (r *HandleCheckResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type CapabilityCheckiMessageParams struct {
+type CapabilityCheckIMessageParams struct {
 	HandleCheck HandleCheckParam
 	paramObj
 }
 
-func (r CapabilityCheckiMessageParams) MarshalJSON() (data []byte, err error) {
+func (r CapabilityCheckIMessageParams) MarshalJSON() (data []byte, err error) {
 	return shimjson.Marshal(r.HandleCheck)
 }
-func (r *CapabilityCheckiMessageParams) UnmarshalJSON(data []byte) error {
+func (r *CapabilityCheckIMessageParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
