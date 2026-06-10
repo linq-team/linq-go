@@ -19,6 +19,7 @@ import (
 	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 	"github.com/linq-team/linq-go/shared"
+	"github.com/linq-team/linq-go/shared/constant"
 )
 
 // ChatService contains methods and other services that help with interacting with
@@ -605,14 +606,15 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type MessageContentPartUnionParam struct {
-	OfText  *TextPartParam  `json:",omitzero,inline"`
-	OfMedia *MediaPartParam `json:",omitzero,inline"`
-	OfLink  *LinkPartParam  `json:",omitzero,inline"`
+	OfText        *TextPartParam                      `json:",omitzero,inline"`
+	OfMedia       *MediaPartParam                     `json:",omitzero,inline"`
+	OfLink        *LinkPartParam                      `json:",omitzero,inline"`
+	OfIMessageApp *MessageContentPartIMessageAppParam `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u MessageContentPartUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfMedia, u.OfLink)
+	return param.MarshalUnion(u, u.OfText, u.OfMedia, u.OfLink, u.OfIMessageApp)
 }
 func (u *MessageContentPartUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -624,7 +626,99 @@ func init() {
 		apijson.Discriminator[TextPartParam]("text"),
 		apijson.Discriminator[MediaPartParam]("media"),
 		apijson.Discriminator[LinkPartParam]("link"),
+		apijson.Discriminator[MessageContentPartIMessageAppParam]("imessage_app"),
 	)
+}
+
+// An iMessage app card, backed by a Messages app extension. iMessage only — an
+// `imessage_app` part must be the **only** part in the message and is never
+// delivered over SMS/RCS. See the IMessageAppServiceUnsupported (2018) and
+// RecipientUnsupportedMessageType (4005) error codes.
+//
+// The properties App, Layout, Type, URL are required.
+type MessageContentPartIMessageAppParam struct {
+	// Identifies the iMessage app (Messages app extension) that backs the card.
+	App MessageContentPartIMessageAppAppParam `json:"app,omitzero" api:"required"`
+	// Visible layout of the card. At least one of `caption`, `subcaption`,
+	// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
+	// the card renders as an empty bubble.
+	Layout MessageContentPartIMessageAppLayoutParam `json:"layout,omitzero" api:"required"`
+	// Absolute HTTPS URL delivered to the recipient's installed iMessage app when they
+	// tap the card. Opaque to Messages.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Text shown on surfaces that cannot render the card (notifications, lock screen).
+	// Defaults to the caption when omitted.
+	FallbackText param.Opt[string] `json:"fallback_text,omitzero"`
+	// Optional client-supplied identifier to correlate updatable/collaborative app
+	// sessions (advanced). Not interpreted by Synapse.
+	SessionID param.Opt[string] `json:"session_id,omitzero"`
+	// Indicates this is an iMessage app card part.
+	//
+	// This field can be elided, and will marshal its zero value as "imessage_app".
+	Type constant.IMessageApp `json:"type" default:"imessage_app"`
+	paramObj
+}
+
+func (r MessageContentPartIMessageAppParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentPartIMessageAppParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentPartIMessageAppParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the iMessage app (Messages app extension) that backs the card.
+//
+// The properties BundleID, Name, TeamID are required.
+type MessageContentPartIMessageAppAppParam struct {
+	// Bundle identifier of the Messages app extension. Must not contain `:`.
+	BundleID string `json:"bundle_id" api:"required"`
+	// Display name of the app, shown by Messages' fallback UI.
+	Name string `json:"name" api:"required"`
+	// The app's 10-character uppercase alphanumeric team identifier.
+	TeamID string `json:"team_id" api:"required"`
+	// The owning app's App Store id (optional). When set, recipients without the
+	// iMessage app installed see a "Get the app" affordance.
+	AppStoreID param.Opt[int64] `json:"app_store_id,omitzero"`
+	paramObj
+}
+
+func (r MessageContentPartIMessageAppAppParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentPartIMessageAppAppParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentPartIMessageAppAppParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Visible layout of the card. At least one of `caption`, `subcaption`,
+// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
+// the card renders as an empty bubble.
+type MessageContentPartIMessageAppLayoutParam struct {
+	// Primary label, top-left and bold.
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// Overlay text shown below `image_title`. Requires `image_url`.
+	ImageSubtitle param.Opt[string] `json:"image_subtitle,omitzero"`
+	// Overlay text shown above the image. Requires `image_url`.
+	ImageTitle param.Opt[string] `json:"image_title,omitzero"`
+	// Optional HTTPS URL of a preview image. The server downloads it and embeds it in
+	// the card as JPEG (10MB max, same fetch rules as media parts).
+	ImageURL param.Opt[string] `json:"image_url,omitzero" format:"uri"`
+	// Secondary label, below `caption` on the left.
+	Subcaption param.Opt[string] `json:"subcaption,omitzero"`
+	// Label shown top-right.
+	TrailingCaption param.Opt[string] `json:"trailing_caption,omitzero"`
+	// Label shown below `trailing_caption`, on the right.
+	TrailingSubcaption param.Opt[string] `json:"trailing_subcaption,omitzero"`
+	paramObj
+}
+
+func (r MessageContentPartIMessageAppLayoutParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentPartIMessageAppLayoutParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentPartIMessageAppLayoutParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 // The properties Type, Value are required.

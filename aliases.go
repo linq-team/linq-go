@@ -106,7 +106,7 @@ const ReactionTypeSticker = shared.ReactionTypeSticker
 type ServiceType = shared.ServiceType
 
 // Equals "iMessage"
-const ServiceTypeiMessage = shared.ServiceTypeiMessage
+const ServiceTypeIMessage = shared.ServiceTypeIMessage
 
 // Equals "SMS"
 const ServiceTypeSMS = shared.ServiceTypeSMS

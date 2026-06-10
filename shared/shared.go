@@ -230,7 +230,7 @@ const (
 type ServiceType string
 
 const (
-	ServiceTypeiMessage ServiceType = "iMessage"
+	ServiceTypeIMessage ServiceType = "iMessage"
 	ServiceTypeSMS      ServiceType = "SMS"
 	ServiceTypeRCS      ServiceType = "RCS"
 )

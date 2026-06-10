@@ -225,13 +225,14 @@ const (
 )
 
 // MessageEventV2PartUnion contains all possible properties and values from
-// [SchemasTextPartResponse], [SchemasMediaPartResponse], [MessageEventV2PartLink].
+// [SchemasTextPartResponse], [SchemasMediaPartResponse], [MessageEventV2PartLink],
+// [MessageEventV2PartIMessageApp].
 //
 // Use the [MessageEventV2PartUnion.AsAny] method to switch on the variant.
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessageEventV2PartUnion struct {
-	// Any of "text", "media", "link".
+	// Any of "text", "media", "link", "imessage_app".
 	Type  string `json:"type"`
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
@@ -243,10 +244,17 @@ type MessageEventV2PartUnion struct {
 	// This field is from variant [SchemasMediaPartResponse].
 	MimeType string `json:"mime_type"`
 	// This field is from variant [SchemasMediaPartResponse].
-	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant [SchemasMediaPartResponse].
-	URL  string `json:"url"`
-	JSON struct {
+	SizeBytes int64  `json:"size_bytes"`
+	URL       string `json:"url"`
+	// This field is from variant [MessageEventV2PartIMessageApp].
+	App MessageEventV2PartIMessageAppApp `json:"app"`
+	// This field is from variant [MessageEventV2PartIMessageApp].
+	Layout MessageEventV2PartIMessageAppLayout `json:"layout"`
+	// This field is from variant [MessageEventV2PartIMessageApp].
+	FallbackText string `json:"fallback_text"`
+	// This field is from variant [MessageEventV2PartIMessageApp].
+	SessionID string `json:"session_id"`
+	JSON      struct {
 		Type            respjson.Field
 		Value           respjson.Field
 		TextDecorations respjson.Field
@@ -255,6 +263,10 @@ type MessageEventV2PartUnion struct {
 		MimeType        respjson.Field
 		SizeBytes       respjson.Field
 		URL             respjson.Field
+		App             respjson.Field
+		Layout          respjson.Field
+		FallbackText    respjson.Field
+		SessionID       respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -266,9 +278,10 @@ type anyMessageEventV2Part interface {
 	implMessageEventV2PartUnion()
 }
 
-func (SchemasTextPartResponse) implMessageEventV2PartUnion()  {}
-func (SchemasMediaPartResponse) implMessageEventV2PartUnion() {}
-func (MessageEventV2PartLink) implMessageEventV2PartUnion()   {}
+func (SchemasTextPartResponse) implMessageEventV2PartUnion()       {}
+func (SchemasMediaPartResponse) implMessageEventV2PartUnion()      {}
+func (MessageEventV2PartLink) implMessageEventV2PartUnion()        {}
+func (MessageEventV2PartIMessageApp) implMessageEventV2PartUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
@@ -276,6 +289,7 @@ func (MessageEventV2PartLink) implMessageEventV2PartUnion()   {}
 //	case linqgo.SchemasTextPartResponse:
 //	case linqgo.SchemasMediaPartResponse:
 //	case linqgo.MessageEventV2PartLink:
+//	case linqgo.MessageEventV2PartIMessageApp:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -287,6 +301,8 @@ func (u MessageEventV2PartUnion) AsAny() anyMessageEventV2Part {
 		return u.AsMedia()
 	case "link":
 		return u.AsLink()
+	case "imessage_app":
+		return u.AsIMessageApp()
 	}
 	return nil
 }
@@ -302,6 +318,11 @@ func (u MessageEventV2PartUnion) AsMedia() (v SchemasMediaPartResponse) {
 }
 
 func (u MessageEventV2PartUnion) AsLink() (v MessageEventV2PartLink) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u MessageEventV2PartUnion) AsIMessageApp() (v MessageEventV2PartIMessageApp) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -334,11 +355,107 @@ func (r *MessageEventV2PartLink) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// An iMessage app card part.
+type MessageEventV2PartIMessageApp struct {
+	// Identifies the iMessage app (Messages app extension) that backs the card.
+	App MessageEventV2PartIMessageAppApp `json:"app" api:"required"`
+	// Visible layout of the card.
+	Layout MessageEventV2PartIMessageAppLayout `json:"layout" api:"required"`
+	// Indicates this is an iMessage app card part.
+	Type constant.IMessageApp `json:"type" default:"imessage_app"`
+	// The URL delivered to the iMessage app on tap.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Fallback text for surfaces that cannot render the card.
+	FallbackText string `json:"fallback_text" api:"nullable"`
+	// Client-supplied session identifier, echoed back when provided.
+	SessionID string `json:"session_id" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		App          respjson.Field
+		Layout       respjson.Field
+		Type         respjson.Field
+		URL          respjson.Field
+		FallbackText respjson.Field
+		SessionID    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2PartIMessageApp) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2PartIMessageApp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the iMessage app (Messages app extension) that backs the card.
+type MessageEventV2PartIMessageAppApp struct {
+	// Bundle identifier of the Messages app extension.
+	BundleID string `json:"bundle_id" api:"required"`
+	// Display name of the app.
+	Name string `json:"name" api:"required"`
+	// The app's 10-character team identifier.
+	TeamID string `json:"team_id" api:"required"`
+	// The owning app's App Store id, when known.
+	AppStoreID int64 `json:"app_store_id" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BundleID    respjson.Field
+		Name        respjson.Field
+		TeamID      respjson.Field
+		AppStoreID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2PartIMessageAppApp) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2PartIMessageAppApp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Visible layout of the card.
+type MessageEventV2PartIMessageAppLayout struct {
+	// Primary label, top-left and bold.
+	Caption string `json:"caption" api:"nullable"`
+	// Overlay text shown below image_title.
+	ImageSubtitle string `json:"image_subtitle" api:"nullable"`
+	// Overlay text shown above the image.
+	ImageTitle string `json:"image_title" api:"nullable"`
+	// Presigned URL of the card preview image, when present.
+	ImageURL string `json:"image_url" api:"nullable" format:"uri"`
+	// Secondary label, below caption on the left.
+	Subcaption string `json:"subcaption" api:"nullable"`
+	// Label shown top-right.
+	TrailingCaption string `json:"trailing_caption" api:"nullable"`
+	// Label shown below trailing_caption.
+	TrailingSubcaption string `json:"trailing_subcaption" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption            respjson.Field
+		ImageSubtitle      respjson.Field
+		ImageTitle         respjson.Field
+		ImageURL           respjson.Field
+		Subcaption         respjson.Field
+		TrailingCaption    respjson.Field
+		TrailingSubcaption respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageEventV2PartIMessageAppLayout) RawJSON() string { return r.JSON.raw }
+func (r *MessageEventV2PartIMessageAppLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Preferred messaging service type. Includes "auto" for default fallback behavior.
 type MessageEventV2PreferredService string
 
 const (
-	MessageEventV2PreferredServiceiMessage MessageEventV2PreferredService = "iMessage"
+	MessageEventV2PreferredServiceIMessage MessageEventV2PreferredService = "iMessage"
 	MessageEventV2PreferredServiceSMS      MessageEventV2PreferredService = "SMS"
 	MessageEventV2PreferredServiceRCS      MessageEventV2PreferredService = "RCS"
 	MessageEventV2PreferredServiceAuto     MessageEventV2PreferredService = "auto"

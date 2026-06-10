@@ -219,7 +219,7 @@ const (
 
 // SentMessagePartUnion contains all possible properties and values from
 // [shared.TextPartResponse], [shared.MediaPartResponse],
-// [shared.LinkPartResponse].
+// [shared.LinkPartResponse], [SentMessagePartIMessageAppPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type SentMessagePartUnion struct {
@@ -235,10 +235,17 @@ type SentMessagePartUnion struct {
 	// This field is from variant [shared.MediaPartResponse].
 	MimeType string `json:"mime_type"`
 	// This field is from variant [shared.MediaPartResponse].
-	SizeBytes int64 `json:"size_bytes"`
-	// This field is from variant [shared.MediaPartResponse].
-	URL  string `json:"url"`
-	JSON struct {
+	SizeBytes int64  `json:"size_bytes"`
+	URL       string `json:"url"`
+	// This field is from variant [SentMessagePartIMessageAppPartResponse].
+	App SentMessagePartIMessageAppPartResponseApp `json:"app"`
+	// This field is from variant [SentMessagePartIMessageAppPartResponse].
+	Layout SentMessagePartIMessageAppPartResponseLayout `json:"layout"`
+	// This field is from variant [SentMessagePartIMessageAppPartResponse].
+	FallbackText string `json:"fallback_text"`
+	// This field is from variant [SentMessagePartIMessageAppPartResponse].
+	SessionID string `json:"session_id"`
+	JSON      struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
@@ -248,6 +255,10 @@ type SentMessagePartUnion struct {
 		MimeType        respjson.Field
 		SizeBytes       respjson.Field
 		URL             respjson.Field
+		App             respjson.Field
+		Layout          respjson.Field
+		FallbackText    respjson.Field
+		SessionID       respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -267,10 +278,122 @@ func (u SentMessagePartUnion) AsLinkPartResponse() (v shared.LinkPartResponse) {
 	return
 }
 
+func (u SentMessagePartUnion) AsSentMessagePartIMessageAppPartResponse() (v SentMessagePartIMessageAppPartResponse) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u SentMessagePartUnion) RawJSON() string { return u.JSON.raw }
 
 func (r *SentMessagePartUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An iMessage app card part.
+type SentMessagePartIMessageAppPartResponse struct {
+	// Identifies the iMessage app (Messages app extension) that backs the card.
+	App SentMessagePartIMessageAppPartResponseApp `json:"app" api:"required"`
+	// Visible layout of the card. At least one of `caption`, `subcaption`,
+	// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
+	// the card renders as an empty bubble.
+	Layout SentMessagePartIMessageAppPartResponseLayout `json:"layout" api:"required"`
+	// Reactions on this message part
+	Reactions []shared.Reaction `json:"reactions" api:"required"`
+	// Indicates this is an iMessage app card part.
+	//
+	// Any of "imessage_app".
+	Type string `json:"type" api:"required"`
+	// The URL delivered to the iMessage app on tap.
+	URL string `json:"url" api:"required" format:"uri"`
+	// Fallback text for surfaces that cannot render the card.
+	FallbackText string `json:"fallback_text" api:"nullable"`
+	// Client-supplied session identifier, echoed back when provided.
+	SessionID string `json:"session_id" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		App          respjson.Field
+		Layout       respjson.Field
+		Reactions    respjson.Field
+		Type         respjson.Field
+		URL          respjson.Field
+		FallbackText respjson.Field
+		SessionID    respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SentMessagePartIMessageAppPartResponse) RawJSON() string { return r.JSON.raw }
+func (r *SentMessagePartIMessageAppPartResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the iMessage app (Messages app extension) that backs the card.
+type SentMessagePartIMessageAppPartResponseApp struct {
+	// Bundle identifier of the Messages app extension. Must not contain `:`.
+	BundleID string `json:"bundle_id" api:"required"`
+	// Display name of the app, shown by Messages' fallback UI.
+	Name string `json:"name" api:"required"`
+	// The app's 10-character uppercase alphanumeric team identifier.
+	TeamID string `json:"team_id" api:"required"`
+	// The owning app's App Store id (optional). When set, recipients without the
+	// iMessage app installed see a "Get the app" affordance.
+	AppStoreID int64 `json:"app_store_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BundleID    respjson.Field
+		Name        respjson.Field
+		TeamID      respjson.Field
+		AppStoreID  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SentMessagePartIMessageAppPartResponseApp) RawJSON() string { return r.JSON.raw }
+func (r *SentMessagePartIMessageAppPartResponseApp) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Visible layout of the card. At least one of `caption`, `subcaption`,
+// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
+// the card renders as an empty bubble.
+type SentMessagePartIMessageAppPartResponseLayout struct {
+	// Primary label, top-left and bold.
+	Caption string `json:"caption"`
+	// Overlay text shown below `image_title`. Requires `image_url`.
+	ImageSubtitle string `json:"image_subtitle"`
+	// Overlay text shown above the image. Requires `image_url`.
+	ImageTitle string `json:"image_title"`
+	// Optional HTTPS URL of a preview image. The server downloads it and embeds it in
+	// the card as JPEG (10MB max, same fetch rules as media parts).
+	ImageURL string `json:"image_url" format:"uri"`
+	// Secondary label, below `caption` on the left.
+	Subcaption string `json:"subcaption"`
+	// Label shown top-right.
+	TrailingCaption string `json:"trailing_caption"`
+	// Label shown below `trailing_caption`, on the right.
+	TrailingSubcaption string `json:"trailing_subcaption"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Caption            respjson.Field
+		ImageSubtitle      respjson.Field
+		ImageTitle         respjson.Field
+		ImageURL           respjson.Field
+		Subcaption         respjson.Field
+		TrailingCaption    respjson.Field
+		TrailingSubcaption respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SentMessagePartIMessageAppPartResponseLayout) RawJSON() string { return r.JSON.raw }
+func (r *SentMessagePartIMessageAppPartResponseLayout) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
