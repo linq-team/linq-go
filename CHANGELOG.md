@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.24.1](https://github.com/linq-team/linq-go/compare/v0.24.0...v0.24.1) (2026-06-10)
+
+
+### Bug Fixes
+
+* **ci:** parse release PR number in shell, not fromJSON in env ([#42](https://github.com/linq-team/linq-go/issues/42)) ([20fef3b](https://github.com/linq-team/linq-go/commit/20fef3b2c94c6f9e969469a86a18d5a23afd2710))
+
 ## [0.24.0](https://github.com/linq-team/linq-go/compare/v0.23.0...v0.24.0) (2026-06-08)
 
 
