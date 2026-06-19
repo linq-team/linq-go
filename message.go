@@ -285,9 +285,7 @@ type MessagePartUnion struct {
 	Layout MessagePartIMessageAppPartResponseLayout `json:"layout"`
 	// This field is from variant [MessagePartIMessageAppPartResponse].
 	FallbackText string `json:"fallback_text"`
-	// This field is from variant [MessagePartIMessageAppPartResponse].
-	SessionID string `json:"session_id"`
-	JSON      struct {
+	JSON         struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
@@ -300,7 +298,6 @@ type MessagePartUnion struct {
 		App             respjson.Field
 		Layout          respjson.Field
 		FallbackText    respjson.Field
-		SessionID       respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -337,8 +334,9 @@ type MessagePartIMessageAppPartResponse struct {
 	// Identifies the iMessage app (Messages app extension) that backs the card.
 	App MessagePartIMessageAppPartResponseApp `json:"app" api:"required"`
 	// Visible layout of the card. At least one of `caption`, `subcaption`,
-	// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
-	// the card renders as an empty bubble.
+	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+	// renders as an empty bubble. Any image on the card is drawn by the recipient's
+	// installed app extension; it cannot be supplied here.
 	Layout MessagePartIMessageAppPartResponseLayout `json:"layout" api:"required"`
 	// Reactions on this message part
 	Reactions []shared.Reaction `json:"reactions" api:"required"`
@@ -350,8 +348,6 @@ type MessagePartIMessageAppPartResponse struct {
 	URL string `json:"url" api:"required" format:"uri"`
 	// Fallback text for surfaces that cannot render the card.
 	FallbackText string `json:"fallback_text" api:"nullable"`
-	// Client-supplied session identifier, echoed back when provided.
-	SessionID string `json:"session_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		App          respjson.Field
@@ -360,7 +356,6 @@ type MessagePartIMessageAppPartResponse struct {
 		Type         respjson.Field
 		URL          respjson.Field
 		FallbackText respjson.Field
-		SessionID    respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -401,18 +396,12 @@ func (r *MessagePartIMessageAppPartResponseApp) UnmarshalJSON(data []byte) error
 }
 
 // Visible layout of the card. At least one of `caption`, `subcaption`,
-// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
-// the card renders as an empty bubble.
+// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+// renders as an empty bubble. Any image on the card is drawn by the recipient's
+// installed app extension; it cannot be supplied here.
 type MessagePartIMessageAppPartResponseLayout struct {
 	// Primary label, top-left and bold.
 	Caption string `json:"caption"`
-	// Overlay text shown below `image_title`. Requires `image_url`.
-	ImageSubtitle string `json:"image_subtitle"`
-	// Overlay text shown above the image. Requires `image_url`.
-	ImageTitle string `json:"image_title"`
-	// Optional HTTPS URL of a preview image. The server downloads it and embeds it in
-	// the card as JPEG (10MB max, same fetch rules as media parts).
-	ImageURL string `json:"image_url" format:"uri"`
 	// Secondary label, below `caption` on the left.
 	Subcaption string `json:"subcaption"`
 	// Label shown top-right.
@@ -422,9 +411,6 @@ type MessagePartIMessageAppPartResponseLayout struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Caption            respjson.Field
-		ImageSubtitle      respjson.Field
-		ImageTitle         respjson.Field
-		ImageURL           respjson.Field
 		Subcaption         respjson.Field
 		TrailingCaption    respjson.Field
 		TrailingSubcaption respjson.Field
