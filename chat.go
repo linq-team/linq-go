@@ -383,23 +383,27 @@ type Chat struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
+	// URL of the group chat icon. Only set for group chats that have an icon; `null`
+	// otherwise.
+	GroupChatIcon string `json:"group_chat_icon" api:"nullable" format:"uri"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		CreatedAt    respjson.Field
-		DisplayName  respjson.Field
-		Handles      respjson.Field
-		HealthStatus respjson.Field
-		IsArchived   respjson.Field
-		IsGroup      respjson.Field
-		UpdatedAt    respjson.Field
-		Service      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		DisplayName   respjson.Field
+		Handles       respjson.Field
+		HealthStatus  respjson.Field
+		IsArchived    respjson.Field
+		IsGroup       respjson.Field
+		UpdatedAt     respjson.Field
+		GroupChatIcon respjson.Field
+		Service       respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -640,8 +644,9 @@ type MessageContentPartIMessageAppParam struct {
 	// Identifies the iMessage app (Messages app extension) that backs the card.
 	App MessageContentPartIMessageAppAppParam `json:"app,omitzero" api:"required"`
 	// Visible layout of the card. At least one of `caption`, `subcaption`,
-	// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
-	// the card renders as an empty bubble.
+	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+	// renders as an empty bubble. Any image on the card is drawn by the recipient's
+	// installed app extension; it cannot be supplied here.
 	Layout MessageContentPartIMessageAppLayoutParam `json:"layout,omitzero" api:"required"`
 	// Absolute HTTPS URL delivered to the recipient's installed iMessage app when they
 	// tap the card. Opaque to Messages.
@@ -649,9 +654,6 @@ type MessageContentPartIMessageAppParam struct {
 	// Text shown on surfaces that cannot render the card (notifications, lock screen).
 	// Defaults to the caption when omitted.
 	FallbackText param.Opt[string] `json:"fallback_text,omitzero"`
-	// Optional client-supplied identifier to correlate updatable/collaborative app
-	// sessions (advanced). Not interpreted by Synapse.
-	SessionID param.Opt[string] `json:"session_id,omitzero"`
 	// Indicates this is an iMessage app card part.
 	//
 	// This field can be elided, and will marshal its zero value as "imessage_app".
@@ -692,18 +694,12 @@ func (r *MessageContentPartIMessageAppAppParam) UnmarshalJSON(data []byte) error
 }
 
 // Visible layout of the card. At least one of `caption`, `subcaption`,
-// `trailing_caption`, `trailing_subcaption`, or `image_url` must be set, otherwise
-// the card renders as an empty bubble.
+// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+// renders as an empty bubble. Any image on the card is drawn by the recipient's
+// installed app extension; it cannot be supplied here.
 type MessageContentPartIMessageAppLayoutParam struct {
 	// Primary label, top-left and bold.
 	Caption param.Opt[string] `json:"caption,omitzero"`
-	// Overlay text shown below `image_title`. Requires `image_url`.
-	ImageSubtitle param.Opt[string] `json:"image_subtitle,omitzero"`
-	// Overlay text shown above the image. Requires `image_url`.
-	ImageTitle param.Opt[string] `json:"image_title,omitzero"`
-	// Optional HTTPS URL of a preview image. The server downloads it and embeds it in
-	// the card as JPEG (10MB max, same fetch rules as media parts).
-	ImageURL param.Opt[string] `json:"image_url,omitzero" format:"uri"`
 	// Secondary label, below `caption` on the left.
 	Subcaption param.Opt[string] `json:"subcaption,omitzero"`
 	// Label shown top-right.

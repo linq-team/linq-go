@@ -70,23 +70,36 @@ func (r *PhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 type PhoneNumberListResponsePhoneNumber struct {
 	// Unique identifier for the phone number
 	ID string `json:"id" api:"required" format:"uuid"`
-	// **[BETA]** Current health for a phone line. Always present — lines start at
+	// **[BETA]** Current reputation for a phone line. Always present — lines start at
 	// `HEALTHY` and may shift based on aggregate engagement and delivery signals
 	// across all conversations on the line.
 	//
-	// Unlike chat health, line health does not include `opted_out` — opt-out applies
-	// to individual recipients, not the whole line.
+	// Unlike chat health, line reputation does not include `opted_out` — opt-out
+	// applies to individual recipients, not the whole line.
 	//
 	// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
 	// status means and how to react.
+	//
+	// Deprecated: deprecated
 	HealthStatus PhoneNumberListResponsePhoneNumberHealthStatus `json:"health_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
+	// **[BETA]** Current reputation for a phone line. Always present — lines start at
+	// `HEALTHY` and may shift based on aggregate engagement and delivery signals
+	// across all conversations on the line.
+	//
+	// Unlike chat health, line reputation does not include `opted_out` — opt-out
+	// applies to individual recipients, not the whole line.
+	//
+	// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
+	// status means and how to react.
+	Reputation PhoneNumberListResponsePhoneNumberReputation `json:"reputation" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID           respjson.Field
 		HealthStatus respjson.Field
 		PhoneNumber  respjson.Field
+		Reputation   respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -98,19 +111,21 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// **[BETA]** Current health for a phone line. Always present — lines start at
+// **[BETA]** Current reputation for a phone line. Always present — lines start at
 // `HEALTHY` and may shift based on aggregate engagement and delivery signals
 // across all conversations on the line.
 //
-// Unlike chat health, line health does not include `opted_out` — opt-out applies
-// to individual recipients, not the whole line.
+// Unlike chat health, line reputation does not include `opted_out` — opt-out
+// applies to individual recipients, not the whole line.
 //
 // See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
 // status means and how to react.
+//
+// Deprecated: deprecated
 type PhoneNumberListResponsePhoneNumberHealthStatus struct {
 	// Deep-link to the relevant section of the Phone Health guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
-	// Current health of this phone line as assessed by risk-service.
+	// Current reputation of this phone line as assessed by risk-service.
 	//
 	//   - `HEALTHY` — No elevated risk detected.
 	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
@@ -134,5 +149,44 @@ type PhoneNumberListResponsePhoneNumberHealthStatus struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberListResponsePhoneNumberHealthStatus) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberListResponsePhoneNumberHealthStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// **[BETA]** Current reputation for a phone line. Always present — lines start at
+// `HEALTHY` and may shift based on aggregate engagement and delivery signals
+// across all conversations on the line.
+//
+// Unlike chat health, line reputation does not include `opted_out` — opt-out
+// applies to individual recipients, not the whole line.
+//
+// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
+// status means and how to react.
+type PhoneNumberListResponsePhoneNumberReputation struct {
+	// Deep-link to the relevant section of the Phone Health guide for this status.
+	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// Current reputation of this phone line as assessed by risk-service.
+	//
+	//   - `HEALTHY` — No elevated risk detected.
+	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
+	//     reviewing messaging patterns.
+	//   - `CRITICAL` — High risk; further sending may result in line flagging or
+	//     restriction.
+	//
+	// Defaults to `HEALTHY` for lines that have not yet been scored.
+	//
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	Status string `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		DocURL      respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberListResponsePhoneNumberReputation) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberListResponsePhoneNumberReputation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

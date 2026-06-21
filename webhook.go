@@ -252,9 +252,7 @@ type MessageEventV2PartUnion struct {
 	Layout MessageEventV2PartIMessageAppLayout `json:"layout"`
 	// This field is from variant [MessageEventV2PartIMessageApp].
 	FallbackText string `json:"fallback_text"`
-	// This field is from variant [MessageEventV2PartIMessageApp].
-	SessionID string `json:"session_id"`
-	JSON      struct {
+	JSON         struct {
 		Type            respjson.Field
 		Value           respjson.Field
 		TextDecorations respjson.Field
@@ -266,7 +264,6 @@ type MessageEventV2PartUnion struct {
 		App             respjson.Field
 		Layout          respjson.Field
 		FallbackText    respjson.Field
-		SessionID       respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -367,8 +364,6 @@ type MessageEventV2PartIMessageApp struct {
 	URL string `json:"url" api:"required" format:"uri"`
 	// Fallback text for surfaces that cannot render the card.
 	FallbackText string `json:"fallback_text" api:"nullable"`
-	// Client-supplied session identifier, echoed back when provided.
-	SessionID string `json:"session_id" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		App          respjson.Field
@@ -376,7 +371,6 @@ type MessageEventV2PartIMessageApp struct {
 		Type         respjson.Field
 		URL          respjson.Field
 		FallbackText respjson.Field
-		SessionID    respjson.Field
 		ExtraFields  map[string]respjson.Field
 		raw          string
 	} `json:"-"`
@@ -419,12 +413,6 @@ func (r *MessageEventV2PartIMessageAppApp) UnmarshalJSON(data []byte) error {
 type MessageEventV2PartIMessageAppLayout struct {
 	// Primary label, top-left and bold.
 	Caption string `json:"caption" api:"nullable"`
-	// Overlay text shown below image_title.
-	ImageSubtitle string `json:"image_subtitle" api:"nullable"`
-	// Overlay text shown above the image.
-	ImageTitle string `json:"image_title" api:"nullable"`
-	// Presigned URL of the card preview image, when present.
-	ImageURL string `json:"image_url" api:"nullable" format:"uri"`
 	// Secondary label, below caption on the left.
 	Subcaption string `json:"subcaption" api:"nullable"`
 	// Label shown top-right.
@@ -434,9 +422,6 @@ type MessageEventV2PartIMessageAppLayout struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Caption            respjson.Field
-		ImageSubtitle      respjson.Field
-		ImageTitle         respjson.Field
-		ImageURL           respjson.Field
 		Subcaption         respjson.Field
 		TrailingCaption    respjson.Field
 		TrailingSubcaption respjson.Field
@@ -2217,20 +2202,48 @@ func (r *PhoneNumberStatusUpdatedWebhookEvent) UnmarshalJSON(data []byte) error 
 type PhoneNumberStatusUpdatedWebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
-	// The new line health status
+	// Current reputation of this phone line as assessed by risk-service.
+	//
+	//   - `HEALTHY` — No elevated risk detected.
+	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
+	//     reviewing messaging patterns.
+	//   - `CRITICAL` — High risk; further sending may result in line flagging or
+	//     restriction.
+	//
+	// Defaults to `HEALTHY` for lines that have not yet been scored.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	//
+	// Deprecated: deprecated
 	NewHealthStatus string `json:"new_health_status" api:"required"`
+	// The new line reputation
+	//
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	NewReputation string `json:"new_reputation" api:"required"`
 	// The new service status
 	//
 	// Any of "ACTIVE", "FLAGGED".
 	NewStatus string `json:"new_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
-	// The previous line health status
+	// Current reputation of this phone line as assessed by risk-service.
+	//
+	//   - `HEALTHY` — No elevated risk detected.
+	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
+	//     reviewing messaging patterns.
+	//   - `CRITICAL` — High risk; further sending may result in line flagging or
+	//     restriction.
+	//
+	// Defaults to `HEALTHY` for lines that have not yet been scored.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	//
+	// Deprecated: deprecated
 	PreviousHealthStatus string `json:"previous_health_status" api:"required"`
+	// The previous line reputation
+	//
+	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
+	PreviousReputation string `json:"previous_reputation" api:"required"`
 	// The previous service status
 	//
 	// Any of "ACTIVE", "FLAGGED".
@@ -2239,9 +2252,11 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 	JSON struct {
 		ChangedAt            respjson.Field
 		NewHealthStatus      respjson.Field
+		NewReputation        respjson.Field
 		NewStatus            respjson.Field
 		PhoneNumber          respjson.Field
 		PreviousHealthStatus respjson.Field
+		PreviousReputation   respjson.Field
 		PreviousStatus       respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
@@ -2521,11 +2536,15 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewHealthStatus string `json:"new_health_status"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	NewReputation string `json:"new_reputation"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewStatus string `json:"new_status"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PhoneNumber string `json:"phone_number"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousHealthStatus string `json:"previous_health_status"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	PreviousReputation string `json:"previous_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
 	JSON           struct {
@@ -2573,9 +2592,11 @@ type UnwrapWebhookEventUnionData struct {
 		ErrorCode            respjson.Field
 		ChangedAt            respjson.Field
 		NewHealthStatus      respjson.Field
+		NewReputation        respjson.Field
 		NewStatus            respjson.Field
 		PhoneNumber          respjson.Field
 		PreviousHealthStatus respjson.Field
+		PreviousReputation   respjson.Field
 		PreviousStatus       respjson.Field
 		raw                  string
 	} `json:"-"`
