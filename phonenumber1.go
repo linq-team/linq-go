@@ -4,12 +4,15 @@ package linqgo
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"slices"
 
 	"github.com/linq-team/linq-go/internal/apijson"
 	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 )
 
@@ -40,6 +43,21 @@ func NewPhoneNumberService(opts ...option.RequestOption) (r PhoneNumberService) 
 	return
 }
 
+// Updates the forwarding number for a phone number. The forwarding number is where
+// inbound calls will be forwarded to.
+//
+// Pass an empty string to clear the forwarding number.
+func (r *PhoneNumberService) Update(ctx context.Context, phoneNumberID string, body PhoneNumberUpdateParams, opts ...option.RequestOption) (res *PhoneNumberUpdateResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if phoneNumberID == "" {
+		err = errors.New("missing required phoneNumberId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/phone_numbers/%s", phoneNumberID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPut, path, body, &res, opts...)
+	return res, err
+}
+
 // Returns all phone numbers assigned to the authenticated partner. Use this
 // endpoint to discover which phone numbers are available for use as the `from`
 // field when creating a chat, listing chats, or sending a voice memo.
@@ -48,6 +66,29 @@ func (r *PhoneNumberService) List(ctx context.Context, opts ...option.RequestOpt
 	path := "v3/phone_numbers"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
+}
+
+type PhoneNumberUpdateResponse struct {
+	// Unique identifier for the phone number
+	ID string `json:"id" api:"required" format:"uuid"`
+	// The forwarding number after the update. Null when cleared.
+	ForwardingNumber string `json:"forwarding_number" api:"required"`
+	// Phone number in E.164 format
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID               respjson.Field
+		ForwardingNumber respjson.Field
+		PhoneNumber      respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberUpdateResponse) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberUpdateResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type PhoneNumberListResponse struct {
@@ -77,8 +118,8 @@ type PhoneNumberListResponsePhoneNumber struct {
 	// Unlike chat health, line reputation does not include `opted_out` — opt-out
 	// applies to individual recipients, not the whole line.
 	//
-	// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
-	// status means and how to react.
+	// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
+	// what each status means and how to react.
 	//
 	// Deprecated: deprecated
 	HealthStatus PhoneNumberListResponsePhoneNumberHealthStatus `json:"health_status" api:"required"`
@@ -91,17 +132,21 @@ type PhoneNumberListResponsePhoneNumber struct {
 	// Unlike chat health, line reputation does not include `opted_out` — opt-out
 	// applies to individual recipients, not the whole line.
 	//
-	// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
-	// status means and how to react.
+	// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
+	// what each status means and how to react.
 	Reputation PhoneNumberListResponsePhoneNumberReputation `json:"reputation" api:"required"`
+	// The forwarding number associated with this phone number, in E.164 format. Null
+	// when no forwarding number is configured.
+	ForwardingNumber string `json:"forwarding_number" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		HealthStatus respjson.Field
-		PhoneNumber  respjson.Field
-		Reputation   respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID               respjson.Field
+		HealthStatus     respjson.Field
+		PhoneNumber      respjson.Field
+		Reputation       respjson.Field
+		ForwardingNumber respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -118,12 +163,12 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 // Unlike chat health, line reputation does not include `opted_out` — opt-out
 // applies to individual recipients, not the whole line.
 //
-// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
-// status means and how to react.
+// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
+// what each status means and how to react.
 //
 // Deprecated: deprecated
 type PhoneNumberListResponsePhoneNumberHealthStatus struct {
-	// Deep-link to the relevant section of the Phone Health guide for this status.
+	// Deep-link to the relevant section of the Phone Reputation guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current reputation of this phone line as assessed by risk-service.
 	//
@@ -159,10 +204,10 @@ func (r *PhoneNumberListResponsePhoneNumberHealthStatus) UnmarshalJSON(data []by
 // Unlike chat health, line reputation does not include `opted_out` — opt-out
 // applies to individual recipients, not the whole line.
 //
-// See the [Phone Health guide](/guides/phone-numbers/phone-health) for what each
-// status means and how to react.
+// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
+// what each status means and how to react.
 type PhoneNumberListResponsePhoneNumberReputation struct {
-	// Deep-link to the relevant section of the Phone Health guide for this status.
+	// Deep-link to the relevant section of the Phone Reputation guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current reputation of this phone line as assessed by risk-service.
 	//
@@ -188,5 +233,19 @@ type PhoneNumberListResponsePhoneNumberReputation struct {
 // Returns the unmodified JSON received from the API
 func (r PhoneNumberListResponsePhoneNumberReputation) RawJSON() string { return r.JSON.raw }
 func (r *PhoneNumberListResponsePhoneNumberReputation) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PhoneNumberUpdateParams struct {
+	// The forwarding number in E.164 format. Set to null or empty string to clear.
+	ForwardingNumber param.Opt[string] `json:"forwarding_number,omitzero" api:"required"`
+	paramObj
+}
+
+func (r PhoneNumberUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow PhoneNumberUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PhoneNumberUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

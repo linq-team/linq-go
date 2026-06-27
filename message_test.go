@@ -152,3 +152,39 @@ func TestMessageListMessagesThreadWithOptionalParams(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 }
+
+func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := linqgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messages.UpdateAppCard(
+		context.TODO(),
+		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
+		linqgo.MessageUpdateAppCardParams{
+			Layout: linqgo.MessageUpdateAppCardParamsLayout{
+				Caption:            linqgo.String("Score: 2 – 1"),
+				Subcaption:         linqgo.String("You said: hello"),
+				TrailingCaption:    linqgo.String("2 min"),
+				TrailingSubcaption: linqgo.String("expires"),
+			},
+			FallbackText: linqgo.String("Score update"),
+			URL:          linqgo.String("https://app.example.com/card?game=7f3a&move=2"),
+		},
+	)
+	if err != nil {
+		var apierr *linqgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
