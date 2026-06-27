@@ -43,6 +43,66 @@ import (
 // - A `link` part cannot be combined with other parts in the same message.
 // - Maximum URL length: 2,048 characters.
 //
+// ## Ephemeral Messages (Privacy Tier)
+//
+// For regulated or sensitive conversations, opt in to the **ephemeral messages**
+// tier by contacting your Linq support contact. When enabled, every message on the
+// covered phone numbers is automatically given a fixed **24-hour retention
+// window** — after that window the platform permanently deletes the message from
+// Linq storage. There is no per-message flag; ephemerality is applied
+// automatically based on your configuration.
+//
+// You can request it at two scopes:
+//
+// | Scope                | Effect                                                                                                                    |
+// | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+// | **Partner-wide**     | Every outbound and inbound message on every phone number under your account is retained for 24 hours, then deleted.       |
+// | **Per phone number** | Only the specified phone numbers have their messages auto-deleted. The rest follow the standard message-retention policy. |
+//
+// **Behavioral differences vs the standard default:**
+//
+// | Aspect                  | Standard                                           | Ephemeral                                                                                                                                   |
+// | ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+// | Retention               | Retained per the standard message-retention policy | **Hard backstop: 24 hours** from when the message is created                                                                                |
+// | After expiry            | Message stays retrievable                          | Message is permanently deleted — `GET /v3/messages/{messageId}` returns `404` and it no longer appears in `GET /v3/chats/{chatId}/messages` |
+// | Content on expiry       | N/A                                                | Text, formatting, and attachment references are scrubbed; the message is gone, not blanked out                                              |
+// | Cross-partner isolation | Enforced                                           | Enforced                                                                                                                                    |
+//
+// **How the 24-hour window works:**
+//
+//   - The window is fixed at **24 hours from message creation** (`created_at`) and
+//     cannot be configured per message.
+//   - It mirrors the ephemeral _attachments_ 1-day backstop, so a message and any
+//     media it carries expire together.
+//   - Expiry is delivery-independent — the clock starts when the message is created,
+//     not when it is delivered or read.
+//
+// **What you observe:**
+//
+//   - **No expiry timestamp is exposed.** API responses and webhook payloads do not
+//     include the deletion time. If you need it, compute `created_at + 24h`
+//     yourself.
+//   - **No deletion webhook is sent.** There is no `message.deleted` event — a
+//     message simply stops being retrievable once its window passes.
+//   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
+//     usual `message.sent` / `message.received` and status webhooks exactly like
+//     standard messages. Only retention changes.
+//
+// **When to choose ephemeral:**
+//
+//   - You have a compliance requirement that the platform must not retain message
+//     content beyond a short window.
+//   - The conversation is high-sensitivity (PHI, financial, identity verification)
+//     and you do not want it sitting in storage long-term.
+//   - Your application is the system of record — you capture what you need from the
+//     delivery webhook in real time and do not rely on reading message history back
+//     from Linq later.
+//
+// **Important:** ephemeral applies in _both directions_ — messages you send
+// **and** messages received by the phone numbers in that scope. Because Linq can
+// no longer return the message after 24 hours, persist anything you need to keep
+// from the webhook payload at the time it is delivered.
+//
 // MessageService contains methods and other services that help with interacting
 // with the linq-api-v3 API.
 //
@@ -162,6 +222,39 @@ func (r *MessageService) ListMessagesThread(ctx context.Context, messageID strin
 // Supports pagination and configurable ordering.
 func (r *MessageService) ListMessagesThreadAutoPaging(ctx context.Context, messageID string, query MessageListMessagesThreadParams, opts ...option.RequestOption) *pagination.ListMessagesPaginationAutoPager[Message] {
 	return pagination.NewListMessagesPaginationAutoPager(r.ListMessagesThread(ctx, messageID, query, opts...))
+}
+
+// Replaces a previously delivered `imessage_app` card on the recipient's screen
+// with new content, instead of posting a new bubble (like a game move redrawing
+// the board).
+//
+// The update is delivered as a **new message** with its own id and delivery
+// lifecycle (`message.sent` / `message.delivered` / `message.failed` webhooks fire
+// for the new id). To update the card again, reference the message id returned by
+// this call.
+//
+// Constraints:
+//
+//   - The referenced message must be an `imessage_app` card sent by you (`400`
+//     otherwise — inbound cards cannot be updated).
+//   - The referenced card must already be delivered (`409` otherwise — retry after
+//     the `message.delivered` webhook for it).
+//   - The app identity (`team_id`, `bundle_id`, name) is inherited from the original
+//     card and cannot change; only `url`, `fallback_text`, and `layout` are
+//     replaced.
+//   - iMessage-only, like all app cards.
+//   - Concurrent updates against the same card are not serialized server-side; the
+//     last one delivered wins on the recipient's screen. Serialize updates by always
+//     referencing the message id returned by the previous call.
+func (r *MessageService) UpdateAppCard(ctx context.Context, messageID string, body MessageUpdateAppCardParams, opts ...option.RequestOption) (res *MessageUpdateAppCardResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if messageID == "" {
+		err = errors.New("missing required messageId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/messages/%s/update", messageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type Message struct {
@@ -565,6 +658,27 @@ func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response for sending a message to a chat
+type MessageUpdateAppCardResponse struct {
+	// Unique identifier of the chat this message was sent to
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// A message that was sent (used in CreateChat and SendMessage responses)
+	Message SentMessage `json:"message" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChatID      respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageUpdateAppCardResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageUpdateAppCardResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageUpdateParams struct {
 	// New text content for the message part
 	Text string `json:"text" api:"required"`
@@ -646,3 +760,49 @@ const (
 	MessageListMessagesThreadParamsOrderAsc  MessageListMessagesThreadParamsOrder = "asc"
 	MessageListMessagesThreadParamsOrderDesc MessageListMessagesThreadParamsOrder = "desc"
 )
+
+type MessageUpdateAppCardParams struct {
+	// Visible layout of the card. At least one of `caption`, `subcaption`,
+	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+	// renders as an empty bubble. Any image on the card is drawn by the recipient's
+	// installed app extension; it cannot be supplied here.
+	Layout MessageUpdateAppCardParamsLayout `json:"layout,omitzero" api:"required"`
+	// Text shown on surfaces that cannot render the card (notifications, lock screen).
+	// Defaults to the caption when omitted.
+	FallbackText param.Opt[string] `json:"fallback_text,omitzero"`
+	// URL the recipient's app opens when they tap the updated card.
+	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Visible layout of the card. At least one of `caption`, `subcaption`,
+// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+// renders as an empty bubble. Any image on the card is drawn by the recipient's
+// installed app extension; it cannot be supplied here.
+type MessageUpdateAppCardParamsLayout struct {
+	// Primary label, top-left and bold.
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// Secondary label, below `caption` on the left.
+	Subcaption param.Opt[string] `json:"subcaption,omitzero"`
+	// Label shown top-right.
+	TrailingCaption param.Opt[string] `json:"trailing_caption,omitzero"`
+	// Label shown below `trailing_caption`, on the right.
+	TrailingSubcaption param.Opt[string] `json:"trailing_subcaption,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParamsLayout) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParamsLayout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParamsLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

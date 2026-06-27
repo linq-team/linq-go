@@ -360,7 +360,7 @@ type MessageEventV2PartIMessageApp struct {
 	Layout MessageEventV2PartIMessageAppLayout `json:"layout" api:"required"`
 	// Indicates this is an iMessage app card part.
 	Type constant.IMessageApp `json:"type" default:"imessage_app"`
-	// The URL delivered to the iMessage app on tap.
+	// The URL the recipient's app opens when the user taps the card.
 	URL string `json:"url" api:"required" format:"uri"`
 	// Fallback text for surfaces that cannot render the card.
 	FallbackText string `json:"fallback_text" api:"nullable"`
