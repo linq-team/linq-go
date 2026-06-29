@@ -43,6 +43,66 @@ import (
 // - A `link` part cannot be combined with other parts in the same message.
 // - Maximum URL length: 2,048 characters.
 //
+// ## Ephemeral Messages (Privacy Tier)
+//
+// For regulated or sensitive conversations, opt in to the **ephemeral messages**
+// tier by contacting your Linq support contact. When enabled, every message on the
+// covered phone numbers is automatically given a fixed **24-hour retention
+// window** — after that window the platform permanently deletes the message from
+// Linq storage. There is no per-message flag; ephemerality is applied
+// automatically based on your configuration.
+//
+// You can request it at two scopes:
+//
+// | Scope                | Effect                                                                                                                    |
+// | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+// | **Partner-wide**     | Every outbound and inbound message on every phone number under your account is retained for 24 hours, then deleted.       |
+// | **Per phone number** | Only the specified phone numbers have their messages auto-deleted. The rest follow the standard message-retention policy. |
+//
+// **Behavioral differences vs the standard default:**
+//
+// | Aspect                  | Standard                                           | Ephemeral                                                                                                                                   |
+// | ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+// | Retention               | Retained per the standard message-retention policy | **Hard backstop: 24 hours** from when the message is created                                                                                |
+// | After expiry            | Message stays retrievable                          | Message is permanently deleted — `GET /v3/messages/{messageId}` returns `404` and it no longer appears in `GET /v3/chats/{chatId}/messages` |
+// | Content on expiry       | N/A                                                | Text, formatting, and attachment references are scrubbed; the message is gone, not blanked out                                              |
+// | Cross-partner isolation | Enforced                                           | Enforced                                                                                                                                    |
+//
+// **How the 24-hour window works:**
+//
+//   - The window is fixed at **24 hours from message creation** (`created_at`) and
+//     cannot be configured per message.
+//   - It mirrors the ephemeral _attachments_ 1-day backstop, so a message and any
+//     media it carries expire together.
+//   - Expiry is delivery-independent — the clock starts when the message is created,
+//     not when it is delivered or read.
+//
+// **What you observe:**
+//
+//   - **No expiry timestamp is exposed.** API responses and webhook payloads do not
+//     include the deletion time. If you need it, compute `created_at + 24h`
+//     yourself.
+//   - **No deletion webhook is sent.** There is no `message.deleted` event — a
+//     message simply stops being retrievable once its window passes.
+//   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
+//     usual `message.sent` / `message.received` and status webhooks exactly like
+//     standard messages. Only retention changes.
+//
+// **When to choose ephemeral:**
+//
+//   - You have a compliance requirement that the platform must not retain message
+//     content beyond a short window.
+//   - The conversation is high-sensitivity (PHI, financial, identity verification)
+//     and you do not want it sitting in storage long-term.
+//   - Your application is the system of record — you capture what you need from the
+//     delivery webhook in real time and do not rely on reading message history back
+//     from Linq later.
+//
+// **Important:** ephemeral applies in _both directions_ — messages you send
+// **and** messages received by the phone numbers in that scope. Because Linq can
+// no longer return the message after 24 hours, persist anything you need to keep
+// from the webhook payload at the time it is delivered.
+//
 // MessageService contains methods and other services that help with interacting
 // with the linq-api-v3 API.
 //
@@ -60,6 +120,56 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 	r = MessageService{}
 	r.Options = opts
 	return
+}
+
+// Send a message to one or more recipients **without supplying a `from` number**.
+// Linq resolves both the sending line and the target chat for you, then returns
+// exactly which line was used, which chat the message landed in, whether a new
+// chat was created, and every resulting message id.
+//
+// This fuses "create chat" and "send message" behind a single message-centric
+// resource. Provide only the recipients (`to`) and the `message`; the platform
+// decides the rest.
+//
+// ## How the from-number and chat are chosen
+//
+//   - **Reuse** — if a chat with exactly these recipients already exists and the
+//     line it lives on is healthy, the message is sent into that chat on its
+//     existing line (`from_selection.reason = reused_active_chat`).
+//   - **New** — if no such chat exists, a new chat is created on the best available
+//     line (`from_selection.reason = new_best_number`).
+//   - **Failover** — if a matching chat exists but its line has been flagged, a
+//     **new** chat is created on a fresh best line and the flagged chat is abandoned
+//     (`from_selection.reason = failover_flagged`, `previous_chat_id` set). If you
+//     supply `continuation_message`, that text is sent as the single message INSTEAD
+//     of `message` (useful as a fresh-number-appropriate opener). Exactly one
+//     message is sent either way.
+//
+// Recipients (`to`) are an order-independent set: a single handle is a direct
+// chat, multiple handles a group chat.
+//
+// ## Differences from POST /v3/chats
+//
+//   - The first message **may contain a link** (including for a newly created chat).
+//     Note: sending a link as the very first message on a freshly selected line can
+//     elevate that line's flagging risk — it is allowed, not recommended.
+//   - Voice memos are **not** supported here. To send an iMessage voice-memo bubble,
+//     use `POST /v3/chats/{chatId}/voicememo` with a known chat id.
+//
+// ## Service preference, effects, decorations
+//
+// Set `message.preferred_service` (`iMessage` | `RCS` | `SMS`), `message.effect`,
+// and per-part `text_decorations` exactly as on the other send endpoints.
+//
+// Always responds `202 Accepted` — chat creation is incidental to the send.
+func (r *MessageService) New(ctx context.Context, params MessageNewParams, opts ...option.RequestOption) (res *MessageNewResponse, err error) {
+	if !param.IsOmitted(params.IdempotencyKey) {
+		opts = append(opts, option.WithHeader("Idempotency-Key", fmt.Sprintf("%v", params.IdempotencyKey.Value)))
+	}
+	opts = slices.Concat(r.Options, opts)
+	path := "v3/messages"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	return res, err
 }
 
 // Retrieve a specific message by its ID. This endpoint returns the full message
@@ -162,6 +272,39 @@ func (r *MessageService) ListMessagesThread(ctx context.Context, messageID strin
 // Supports pagination and configurable ordering.
 func (r *MessageService) ListMessagesThreadAutoPaging(ctx context.Context, messageID string, query MessageListMessagesThreadParams, opts ...option.RequestOption) *pagination.ListMessagesPaginationAutoPager[Message] {
 	return pagination.NewListMessagesPaginationAutoPager(r.ListMessagesThread(ctx, messageID, query, opts...))
+}
+
+// Replaces a previously delivered `imessage_app` card on the recipient's screen
+// with new content, instead of posting a new bubble (like a game move redrawing
+// the board).
+//
+// The update is delivered as a **new message** with its own id and delivery
+// lifecycle (`message.sent` / `message.delivered` / `message.failed` webhooks fire
+// for the new id). To update the card again, reference the message id returned by
+// this call.
+//
+// Constraints:
+//
+//   - The referenced message must be an `imessage_app` card sent by you (`400`
+//     otherwise — inbound cards cannot be updated).
+//   - The referenced card must already be delivered (`409` otherwise — retry after
+//     the `message.delivered` webhook for it).
+//   - The app identity (`team_id`, `bundle_id`, name) is inherited from the original
+//     card and cannot change; only `url`, `fallback_text`, and `layout` are
+//     replaced.
+//   - iMessage-only, like all app cards.
+//   - Concurrent updates against the same card are not serialized server-side; the
+//     last one delivered wins on the recipient's screen. Serialize updates by always
+//     referencing the message id returned by the previous call.
+func (r *MessageService) UpdateAppCard(ctx context.Context, messageID string, body MessageUpdateAppCardParams, opts ...option.RequestOption) (res *MessageUpdateAppCardResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if messageID == "" {
+		err = errors.New("missing required messageId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/messages/%s/update", messageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
 }
 
 type Message struct {
@@ -335,8 +478,14 @@ type MessagePartIMessageAppPartResponse struct {
 	App MessagePartIMessageAppPartResponseApp `json:"app" api:"required"`
 	// Visible layout of the card. At least one of `caption`, `subcaption`,
 	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
-	// renders as an empty bubble. Any image on the card is drawn by the recipient's
-	// installed app extension; it cannot be supplied here.
+	// renders as an empty bubble. These four caption fields are the complete set of
+	// layout properties.
+	//
+	// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+	// your app's own Messages extension, not this API: they only render when an app
+	// composes the message on-device, and cannot be set here (a sender-supplied image,
+	// even delivered as an attachment, does not render). The small icon beside the
+	// caption is likewise the app's own icon, not a settable field.
 	Layout MessagePartIMessageAppPartResponseLayout `json:"layout" api:"required"`
 	// Reactions on this message part
 	Reactions []shared.Reaction `json:"reactions" api:"required"`
@@ -397,8 +546,14 @@ func (r *MessagePartIMessageAppPartResponseApp) UnmarshalJSON(data []byte) error
 
 // Visible layout of the card. At least one of `caption`, `subcaption`,
 // `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
-// renders as an empty bubble. Any image on the card is drawn by the recipient's
-// installed app extension; it cannot be supplied here.
+// renders as an empty bubble. These four caption fields are the complete set of
+// layout properties.
+//
+// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+// your app's own Messages extension, not this API: they only render when an app
+// composes the message on-device, and cannot be set here (a sender-supplied image,
+// even delivered as an attachment, does not render). The small icon beside the
+// caption is likewise the app's own icon, not a settable field.
 type MessagePartIMessageAppPartResponseLayout struct {
 	// Primary label, top-left and bold.
 	Caption string `json:"caption"`
@@ -545,6 +700,79 @@ func (r *ReplyToParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Result of an auto-from send. Self-describing: which line was used, which chat
+// the message landed in, whether a new chat was created, and the resulting message
+// id(s).
+type MessageNewResponse struct {
+	// The resolved chat (reused or newly created) the message landed in.
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// True when a new chat was created (new or failover), false on reuse.
+	CreatedNewChat bool `json:"created_new_chat" api:"required"`
+	// The line (E.164) the message was actually sent from.
+	From string `json:"from" api:"required"`
+	// Why this line/chat was chosen.
+	FromSelection MessageNewResponseFromSelection `json:"from_selection" api:"required"`
+	// Participants of the resolved chat.
+	Handles []shared.ChatHandle `json:"handles" api:"required"`
+	// Whether the resolved chat is a group chat.
+	IsGroup bool `json:"is_group" api:"required"`
+	// A message that was sent (used in CreateChat and SendMessage responses)
+	Message SentMessage `json:"message" api:"required"`
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
+	Service shared.ServiceType `json:"service" api:"required"`
+	// Set ONLY on `failover_flagged`: the abandoned flagged chat that was NOT sent
+	// into. Null otherwise.
+	PreviousChatID string `json:"previous_chat_id" api:"nullable" format:"uuid"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChatID         respjson.Field
+		CreatedNewChat respjson.Field
+		From           respjson.Field
+		FromSelection  respjson.Field
+		Handles        respjson.Field
+		IsGroup        respjson.Field
+		Message        respjson.Field
+		Service        respjson.Field
+		PreviousChatID respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageNewResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageNewResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Why this line/chat was chosen.
+type MessageNewResponseFromSelection struct {
+	//   - `reused_active_chat` — reused an existing chat on its healthy line
+	//   - `new_best_number` — created a new chat on the best available line
+	//   - `failover_flagged` — prior chat's line was flagged; created a new chat on a
+	//     fresh line
+	//
+	// Any of "reused_active_chat", "new_best_number", "failover_flagged".
+	Reason string `json:"reason" api:"required"`
+	// True only when an existing chat was reused.
+	ReusedExistingChat bool `json:"reused_existing_chat" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reason             respjson.Field
+		ReusedExistingChat respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageNewResponseFromSelection) RawJSON() string { return r.JSON.raw }
+func (r *MessageNewResponseFromSelection) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageAddReactionResponse struct {
 	Message string `json:"message"`
 	Status  string `json:"status"`
@@ -562,6 +790,79 @@ type MessageAddReactionResponse struct {
 // Returns the unmodified JSON received from the API
 func (r MessageAddReactionResponse) RawJSON() string { return r.JSON.raw }
 func (r *MessageAddReactionResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Response for sending a message to a chat
+type MessageUpdateAppCardResponse struct {
+	// Unique identifier of the chat this message was sent to
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// A message that was sent (used in CreateChat and SendMessage responses)
+	Message SentMessage `json:"message" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChatID      respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageUpdateAppCardResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageUpdateAppCardResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageNewParams struct {
+	// Message content container. Groups all message-related fields together,
+	// separating the "what" (message content) from the "where" (routing fields like
+	// from/to).
+	Message MessageContentParam `json:"message,omitzero" api:"required"`
+	// Recipient handles (E.164 phone numbers or email addresses). One handle is a
+	// direct chat; multiple handles a group chat. Order-independent — the set
+	// identifies the chat.
+	To             []string          `json:"to,omitzero" api:"required"`
+	IdempotencyKey param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// Text-only fallback that **replaces** `message` ONLY on the failover branch —
+	// when a chat with these recipients already existed but its line was flagged, so a
+	// new chat is created on a fresh line. On that branch this text is sent as the
+	// single message instead of `message` (the recipient is on a new number, so you
+	// typically want a fresh-number-appropriate opener rather than the original
+	// content). Ignored otherwise (a healthy reuse, or genuine first contact). Carries
+	// no parts, media, or effects — exactly one message is ever sent.
+	ContinuationMessage MessageNewParamsContinuationMessage `json:"continuation_message,omitzero"`
+	paramObj
+}
+
+func (r MessageNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Text-only fallback that **replaces** `message` ONLY on the failover branch —
+// when a chat with these recipients already existed but its line was flagged, so a
+// new chat is created on a fresh line. On that branch this text is sent as the
+// single message instead of `message` (the recipient is on a new number, so you
+// typically want a fresh-number-appropriate opener rather than the original
+// content). Ignored otherwise (a healthy reuse, or genuine first contact). Carries
+// no parts, media, or effects — exactly one message is ever sent.
+//
+// The property Text is required.
+type MessageNewParamsContinuationMessage struct {
+	// The replacement message text, sent as the single message on failover.
+	Text string `json:"text" api:"required"`
+	paramObj
+}
+
+func (r MessageNewParamsContinuationMessage) MarshalJSON() (data []byte, err error) {
+	type shadow MessageNewParamsContinuationMessage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageNewParamsContinuationMessage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -646,3 +947,71 @@ const (
 	MessageListMessagesThreadParamsOrderAsc  MessageListMessagesThreadParamsOrder = "asc"
 	MessageListMessagesThreadParamsOrderDesc MessageListMessagesThreadParamsOrder = "desc"
 )
+
+type MessageUpdateAppCardParams struct {
+	// Visible layout of the card. At least one of `caption`, `subcaption`,
+	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+	// renders as an empty bubble. These four caption fields are the complete set of
+	// layout properties.
+	//
+	// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+	// your app's own Messages extension, not this API: they only render when an app
+	// composes the message on-device, and cannot be set here (a sender-supplied image,
+	// even delivered as an attachment, does not render). The small icon beside the
+	// caption is likewise the app's own icon, not a settable field.
+	Layout MessageUpdateAppCardParamsLayout `json:"layout,omitzero" api:"required"`
+	// Text shown on surfaces that cannot render the card (notifications, lock screen).
+	// Defaults to the caption when omitted.
+	FallbackText param.Opt[string] `json:"fallback_text,omitzero"`
+	// Whether the updated card renders as your app's interactive balloon for
+	// recipients who have your iMessage app installed. `true` (default) lets your
+	// installed extension draw its live view; `false` always shows the static `layout`
+	// card. Recipients without your app always see the static card regardless of this
+	// flag.
+	//
+	// Defaults to `true` when omitted — it is **not** inherited from the original
+	// card. To keep a card static across updates, re-send `interactive: false` on each
+	// update.
+	Interactive param.Opt[bool] `json:"interactive,omitzero"`
+	// URL the recipient's app opens when they tap the updated card.
+	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Visible layout of the card. At least one of `caption`, `subcaption`,
+// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
+// renders as an empty bubble. These four caption fields are the complete set of
+// layout properties.
+//
+// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+// your app's own Messages extension, not this API: they only render when an app
+// composes the message on-device, and cannot be set here (a sender-supplied image,
+// even delivered as an attachment, does not render). The small icon beside the
+// caption is likewise the app's own icon, not a settable field.
+type MessageUpdateAppCardParamsLayout struct {
+	// Primary label, top-left and bold.
+	Caption param.Opt[string] `json:"caption,omitzero"`
+	// Secondary label, below `caption` on the left.
+	Subcaption param.Opt[string] `json:"subcaption,omitzero"`
+	// Label shown top-right.
+	TrailingCaption param.Opt[string] `json:"trailing_caption,omitzero"`
+	// Label shown below `trailing_caption`, on the right.
+	TrailingSubcaption param.Opt[string] `json:"trailing_subcaption,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParamsLayout) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParamsLayout
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParamsLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

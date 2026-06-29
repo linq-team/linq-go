@@ -39,6 +39,66 @@ type Client struct {
 	//
 	// - A `link` part cannot be combined with other parts in the same message.
 	// - Maximum URL length: 2,048 characters.
+	//
+	// ## Ephemeral Messages (Privacy Tier)
+	//
+	// For regulated or sensitive conversations, opt in to the **ephemeral messages**
+	// tier by contacting your Linq support contact. When enabled, every message on the
+	// covered phone numbers is automatically given a fixed **24-hour retention
+	// window** — after that window the platform permanently deletes the message from
+	// Linq storage. There is no per-message flag; ephemerality is applied
+	// automatically based on your configuration.
+	//
+	// You can request it at two scopes:
+	//
+	// | Scope                | Effect                                                                                                                    |
+	// | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+	// | **Partner-wide**     | Every outbound and inbound message on every phone number under your account is retained for 24 hours, then deleted.       |
+	// | **Per phone number** | Only the specified phone numbers have their messages auto-deleted. The rest follow the standard message-retention policy. |
+	//
+	// **Behavioral differences vs the standard default:**
+	//
+	// | Aspect                  | Standard                                           | Ephemeral                                                                                                                                   |
+	// | ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+	// | Retention               | Retained per the standard message-retention policy | **Hard backstop: 24 hours** from when the message is created                                                                                |
+	// | After expiry            | Message stays retrievable                          | Message is permanently deleted — `GET /v3/messages/{messageId}` returns `404` and it no longer appears in `GET /v3/chats/{chatId}/messages` |
+	// | Content on expiry       | N/A                                                | Text, formatting, and attachment references are scrubbed; the message is gone, not blanked out                                              |
+	// | Cross-partner isolation | Enforced                                           | Enforced                                                                                                                                    |
+	//
+	// **How the 24-hour window works:**
+	//
+	//   - The window is fixed at **24 hours from message creation** (`created_at`) and
+	//     cannot be configured per message.
+	//   - It mirrors the ephemeral _attachments_ 1-day backstop, so a message and any
+	//     media it carries expire together.
+	//   - Expiry is delivery-independent — the clock starts when the message is created,
+	//     not when it is delivered or read.
+	//
+	// **What you observe:**
+	//
+	//   - **No expiry timestamp is exposed.** API responses and webhook payloads do not
+	//     include the deletion time. If you need it, compute `created_at + 24h`
+	//     yourself.
+	//   - **No deletion webhook is sent.** There is no `message.deleted` event — a
+	//     message simply stops being retrievable once its window passes.
+	//   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
+	//     usual `message.sent` / `message.received` and status webhooks exactly like
+	//     standard messages. Only retention changes.
+	//
+	// **When to choose ephemeral:**
+	//
+	//   - You have a compliance requirement that the platform must not retain message
+	//     content beyond a short window.
+	//   - The conversation is high-sensitivity (PHI, financial, identity verification)
+	//     and you do not want it sitting in storage long-term.
+	//   - Your application is the system of record — you capture what you need from the
+	//     delivery webhook in real time and do not rely on reading message history back
+	//     from Linq later.
+	//
+	// **Important:** ephemeral applies in _both directions_ — messages you send
+	// **and** messages received by the phone numbers in that scope. Because Linq can
+	// no longer return the message after 24 hours, persist anything you need to keep
+	// from the webhook payload at the time it is delivered.
 	Messages MessageService
 	// Send files (images, videos, documents, audio) with messages by providing a URL
 	// in a media part. Pre-uploading via `POST /v3/attachments` is **optional** and
@@ -240,12 +300,12 @@ type Client struct {
 	//
 	// ## Data Lifecycle Summary
 	//
-	// | Data                                                | Persistent tier                        | Ephemeral tier                                            |
-	// | --------------------------------------------------- | -------------------------------------- | --------------------------------------------------------- |
-	// | Attachment bytes                                    | Retained until you `DELETE`            | **Auto-removed after 1 day**, also removable via `DELETE` |
-	// | Attachment metadata (id, filename, mime type, size) | Retained until you `DELETE`            | Removed alongside the bytes                               |
-	// | Message body & parts                                | Retained per message-retention policy  | Retained per message-retention policy                     |
-	// | Audit log of deletions                              | Retained per platform retention policy | Retained per platform retention policy                    |
+	// | Data                                                | Persistent tier                        | Ephemeral tier                                                                                                                                                                                       |
+	// | --------------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+	// | Attachment bytes                                    | Retained until you `DELETE`            | **Auto-removed after 1 day**, also removable via `DELETE`                                                                                                                                            |
+	// | Attachment metadata (id, filename, mime type, size) | Retained until you `DELETE`            | Removed alongside the bytes                                                                                                                                                                          |
+	// | Message body & parts                                | Retained per message-retention policy  | Retained per message-retention policy — unless the line also has **ephemeral messages** enabled (see the Messages page), in which case the message and its parts are deleted 24 hours after creation |
+	// | Audit log of deletions                              | Retained per platform retention policy | Retained per platform retention policy                                                                                                                                                               |
 	//
 	// **In transit:** TLS 1.2+ everywhere. **At rest:** AES-256 (server-side
 	// encryption).
@@ -285,6 +345,14 @@ type Client struct {
 	// When creating chats, listing chats, or sending a voice memo, use one of your
 	// assigned phone numbers in the `from` field.
 	PhoneNumbers PhoneNumberService
+	// Phone Numbers represent the phone numbers assigned to your partner account.
+	//
+	// Use the list phone numbers endpoint to discover which phone numbers are
+	// available for sending messages.
+	//
+	// When creating chats, listing chats, or sending a voice memo, use one of your
+	// assigned phone numbers in the `from` field.
+	AvailableNumber AvailableNumberService
 	// Webhook Subscriptions allow you to receive real-time notifications when events
 	// occur on your account.
 	//
@@ -626,6 +694,7 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Attachments = NewAttachmentService(opts...)
 	r.Phonenumbers = NewPhonenumberService(opts...)
 	r.PhoneNumbers = NewPhoneNumberService(opts...)
+	r.AvailableNumber = NewAvailableNumberService(opts...)
 	r.WebhookEvents = NewWebhookEventService(opts...)
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
 	r.Capability = NewCapabilityService(opts...)
