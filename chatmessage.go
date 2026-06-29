@@ -43,6 +43,66 @@ import (
 // - A `link` part cannot be combined with other parts in the same message.
 // - Maximum URL length: 2,048 characters.
 //
+// ## Ephemeral Messages (Privacy Tier)
+//
+// For regulated or sensitive conversations, opt in to the **ephemeral messages**
+// tier by contacting your Linq support contact. When enabled, every message on the
+// covered phone numbers is automatically given a fixed **24-hour retention
+// window** — after that window the platform permanently deletes the message from
+// Linq storage. There is no per-message flag; ephemerality is applied
+// automatically based on your configuration.
+//
+// You can request it at two scopes:
+//
+// | Scope                | Effect                                                                                                                    |
+// | -------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+// | **Partner-wide**     | Every outbound and inbound message on every phone number under your account is retained for 24 hours, then deleted.       |
+// | **Per phone number** | Only the specified phone numbers have their messages auto-deleted. The rest follow the standard message-retention policy. |
+//
+// **Behavioral differences vs the standard default:**
+//
+// | Aspect                  | Standard                                           | Ephemeral                                                                                                                                   |
+// | ----------------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+// | Retention               | Retained per the standard message-retention policy | **Hard backstop: 24 hours** from when the message is created                                                                                |
+// | After expiry            | Message stays retrievable                          | Message is permanently deleted — `GET /v3/messages/{messageId}` returns `404` and it no longer appears in `GET /v3/chats/{chatId}/messages` |
+// | Content on expiry       | N/A                                                | Text, formatting, and attachment references are scrubbed; the message is gone, not blanked out                                              |
+// | Cross-partner isolation | Enforced                                           | Enforced                                                                                                                                    |
+//
+// **How the 24-hour window works:**
+//
+//   - The window is fixed at **24 hours from message creation** (`created_at`) and
+//     cannot be configured per message.
+//   - It mirrors the ephemeral _attachments_ 1-day backstop, so a message and any
+//     media it carries expire together.
+//   - Expiry is delivery-independent — the clock starts when the message is created,
+//     not when it is delivered or read.
+//
+// **What you observe:**
+//
+//   - **No expiry timestamp is exposed.** API responses and webhook payloads do not
+//     include the deletion time. If you need it, compute `created_at + 24h`
+//     yourself.
+//   - **No deletion webhook is sent.** There is no `message.deleted` event — a
+//     message simply stops being retrievable once its window passes.
+//   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
+//     usual `message.sent` / `message.received` and status webhooks exactly like
+//     standard messages. Only retention changes.
+//
+// **When to choose ephemeral:**
+//
+//   - You have a compliance requirement that the platform must not retain message
+//     content beyond a short window.
+//   - The conversation is high-sensitivity (PHI, financial, identity verification)
+//     and you do not want it sitting in storage long-term.
+//   - Your application is the system of record — you capture what you need from the
+//     delivery webhook in real time and do not rely on reading message history back
+//     from Linq later.
+//
+// **Important:** ephemeral applies in _both directions_ — messages you send
+// **and** messages received by the phone numbers in that scope. Because Linq can
+// no longer return the message after 24 hours, persist anything you need to keep
+// from the webhook payload at the time it is delivered.
+//
 // ChatMessageService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //
@@ -293,8 +353,14 @@ type SentMessagePartIMessageAppPartResponse struct {
 	App SentMessagePartIMessageAppPartResponseApp `json:"app" api:"required"`
 	// Visible layout of the card. At least one of `caption`, `subcaption`,
 	// `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
-	// renders as an empty bubble. Any image on the card is drawn by the recipient's
-	// installed app extension; it cannot be supplied here.
+	// renders as an empty bubble. These four caption fields are the complete set of
+	// layout properties.
+	//
+	// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+	// your app's own Messages extension, not this API: they only render when an app
+	// composes the message on-device, and cannot be set here (a sender-supplied image,
+	// even delivered as an attachment, does not render). The small icon beside the
+	// caption is likewise the app's own icon, not a settable field.
 	Layout SentMessagePartIMessageAppPartResponseLayout `json:"layout" api:"required"`
 	// Reactions on this message part
 	Reactions []shared.Reaction `json:"reactions" api:"required"`
@@ -355,8 +421,14 @@ func (r *SentMessagePartIMessageAppPartResponseApp) UnmarshalJSON(data []byte) e
 
 // Visible layout of the card. At least one of `caption`, `subcaption`,
 // `trailing_caption`, or `trailing_subcaption` must be set, otherwise the card
-// renders as an empty bubble. Any image on the card is drawn by the recipient's
-// installed app extension; it cannot be supplied here.
+// renders as an empty bubble. These four caption fields are the complete set of
+// layout properties.
+//
+// The `image`, `mediaFileURL`, `imageTitle`, and `imageSubtitle` fields belong to
+// your app's own Messages extension, not this API: they only render when an app
+// composes the message on-device, and cannot be set here (a sender-supplied image,
+// even delivered as an attachment, does not render). The small icon beside the
+// caption is likewise the app's own icon, not a settable field.
 type SentMessagePartIMessageAppPartResponseLayout struct {
 	// Primary label, top-left and bold.
 	Caption string `json:"caption"`
