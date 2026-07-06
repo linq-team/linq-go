@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.26.1](https://github.com/linq-team/linq-go/compare/v0.26.0...v0.26.1) (2026-07-06)
+
+
+### Documentation
+
+* clarify phone line reputation status descriptions ([#50](https://github.com/linq-team/linq-go/issues/50)) ([5855d94](https://github.com/linq-team/linq-go/commit/5855d94a8925e32bf4de5abe3dac5e25b0928c3c))
+
 ## [0.26.0](https://github.com/linq-team/linq-go/compare/v0.25.0...v0.26.0) (2026-06-21)
 
 
