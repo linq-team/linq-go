@@ -360,7 +360,7 @@ type MessageEventV2PartIMessageApp struct {
 	Layout MessageEventV2PartIMessageAppLayout `json:"layout" api:"required"`
 	// Indicates this is an iMessage app card part.
 	Type constant.IMessageApp `json:"type" default:"imessage_app"`
-	// The URL delivered to the iMessage app on tap.
+	// The URL the recipient's app opens when the user taps the card.
 	URL string `json:"url" api:"required" format:"uri"`
 	// Fallback text for surfaces that cannot render the card.
 	FallbackText string `json:"fallback_text" api:"nullable"`
@@ -2202,13 +2202,13 @@ func (r *PhoneNumberStatusUpdatedWebhookEvent) UnmarshalJSON(data []byte) error 
 type PhoneNumberStatusUpdatedWebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
-	// Current reputation of this phone line as assessed by risk-service.
+	// Current reputation of this phone line.
 	//
-	//   - `HEALTHY` — No elevated risk detected.
-	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
-	//     reviewing messaging patterns.
-	//   - `CRITICAL` — High risk; further sending may result in line flagging or
-	//     restriction.
+	//   - `HEALTHY` — The line is in good standing. Send normally.
+	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
+	//     send pace and review your messaging patterns.
+	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
+	//     Pause outbound on the line until it recovers.
 	//
 	// Defaults to `HEALTHY` for lines that have not yet been scored.
 	//
@@ -2226,13 +2226,13 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 	NewStatus string `json:"new_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
-	// Current reputation of this phone line as assessed by risk-service.
+	// Current reputation of this phone line.
 	//
-	//   - `HEALTHY` — No elevated risk detected.
-	//   - `AT_RISK` — Elevated risk indicators present; consider reducing send volume or
-	//     reviewing messaging patterns.
-	//   - `CRITICAL` — High risk; further sending may result in line flagging or
-	//     restriction.
+	//   - `HEALTHY` — The line is in good standing. Send normally.
+	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
+	//     send pace and review your messaging patterns.
+	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
+	//     Pause outbound on the line until it recovers.
 	//
 	// Defaults to `HEALTHY` for lines that have not yet been scored.
 	//

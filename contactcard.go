@@ -159,8 +159,7 @@ type ContactCardNewParams struct {
 	FirstName string `json:"first_name" api:"required"`
 	// E.164 phone number to associate the contact card with
 	PhoneNumber string `json:"phone_number" api:"required"`
-	// URL of the profile image to rehost on the CDN. Only re-uploaded when a new value
-	// is provided.
+	// Profile image URL for the contact card.
 	ImageURL param.Opt[string] `json:"image_url,omitzero"`
 	// Last name for the contact card. Optional.
 	LastName param.Opt[string] `json:"last_name,omitzero"`
