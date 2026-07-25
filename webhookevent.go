@@ -208,6 +208,7 @@ const (
 	WebhookEventTypeChatGroupIconUpdated       WebhookEventType = "chat.group_icon_updated"
 	WebhookEventTypeChatGroupNameUpdateFailed  WebhookEventType = "chat.group_name_update_failed"
 	WebhookEventTypeChatGroupIconUpdateFailed  WebhookEventType = "chat.group_icon_update_failed"
+	WebhookEventTypeChatBackgroundUpdated      WebhookEventType = "chat.background_updated"
 	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
 	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
 	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
@@ -220,6 +221,13 @@ const (
 	WebhookEventTypeCallNoAnswer               WebhookEventType = "call.no_answer"
 	WebhookEventTypeLocationSharingStarted     WebhookEventType = "location.sharing.started"
 	WebhookEventTypeLocationSharingStopped     WebhookEventType = "location.sharing.stopped"
+	WebhookEventTypePaymentSucceeded           WebhookEventType = "payment.succeeded"
+	WebhookEventTypePaymentCanceled            WebhookEventType = "payment.canceled"
+	WebhookEventTypePaymentExpired             WebhookEventType = "payment.expired"
+	WebhookEventTypePaymentDeclined            WebhookEventType = "payment.declined"
+	WebhookEventTypePaymentAuthorized          WebhookEventType = "payment.authorized"
+	WebhookEventTypeConnectionCreated          WebhookEventType = "connection.created"
+	WebhookEventTypeConnectionRevoked          WebhookEventType = "connection.revoked"
 )
 
 type WebhookEventListResponse struct {

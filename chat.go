@@ -149,16 +149,45 @@ type ChatService struct {
 	// no longer return the message after 24 hours, persist anything you need to keep
 	// from the webhook payload at the time it is delivered.
 	Messages ChatMessageService
-	// Request and retrieve real-time location data via iMessage.
-	//
-	// Use these endpoints to request a contact's location, retrieve location data for
-	// contacts who are sharing with you, and subscribe to webhooks when someone starts
-	// or stops sharing their location.
+	// Request a contact's location, retrieve location for contacts sharing with you,
+	// and subscribe to webhooks when someone starts or stops sharing.
 	//
 	// **Coordinates** are returned in
 	// [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) format:
 	// `[longitude, latitude]` or `[longitude, latitude, altitude]` if altitude is
 	// available.
+	//
+	// ### Reading location is poll-based
+	//
+	// Poll `GET /v3/chats/{chatId}/location` whenever you need the latest position.
+	// **There is no webhook that pushes updated coordinates** — the
+	// `location.sharing.started` / `location.sharing.stopped` webhooks fire only when
+	// a contact begins or ends sharing, not on each position update. To track a moving
+	// contact, poll the `GET` endpoint.
+	//
+	// ### Freshness
+	//
+	// Each feature's `properties.updated_at` tells you when that participant's
+	// location was last updated — use it to judge freshness.
+	//
+	// ### Polling guidance
+	//
+	// Locations refresh on Apple's cadence, not per request — polling faster than a
+	// participant's location actually updates just returns the same position. Poll at
+	// a modest interval (for example, once every few minutes per chat) rather than
+	// continuously.
+	//
+	// ### Why is location empty after `location.sharing.started` fired?
+	//
+	// If the contact started sharing from the **standalone Find My app** instead of
+	// the Messages conversation, the share may be tied to their **Apple ID email**
+	// rather than their phone number — the webhook's `shared_by` field shows the email
+	// in that case. Location is readable only through a chat with the handle that
+	// shared, so `GET /v3/chats/{chatId}/location` on the phone-number chat stays
+	// empty.
+	//
+	// The fix: have the contact stop sharing and re-share from **Find My inside the
+	// Messages conversation** with your number.
 	Location ChatLocationService
 }
 
