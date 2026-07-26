@@ -703,10 +703,13 @@ type MessageSentWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -776,10 +779,13 @@ type MessageReceivedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -849,10 +855,13 @@ type MessageReadWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -922,10 +931,13 @@ type MessageDeliveredWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -979,10 +991,13 @@ type MessageFailedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1069,10 +1084,13 @@ type MessageEditedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1258,10 +1276,13 @@ type ReactionAddedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1313,10 +1334,13 @@ type ReactionRemovedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1368,10 +1392,13 @@ type ParticipantAddedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1453,10 +1480,13 @@ type ParticipantRemovedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1539,10 +1569,13 @@ type ChatCreatedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1686,10 +1719,13 @@ type ChatGroupNameUpdatedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1771,10 +1807,13 @@ type ChatGroupIconUpdatedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1858,10 +1897,13 @@ type ChatGroupNameUpdateFailedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1941,10 +1983,13 @@ type ChatGroupIconUpdateFailedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2022,10 +2067,13 @@ type ChatTypingIndicatorStartedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2095,10 +2143,13 @@ type ChatTypingIndicatorStoppedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2164,10 +2215,13 @@ type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
-	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "call.initiated", "call.ringing",
-	// "call.answered", "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "location.sharing.stopped".
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType PhoneNumberStatusUpdatedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2202,20 +2256,6 @@ func (r *PhoneNumberStatusUpdatedWebhookEvent) UnmarshalJSON(data []byte) error 
 type PhoneNumberStatusUpdatedWebhookEventData struct {
 	// When the status change occurred
 	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
-	// Current reputation of this phone line.
-	//
-	//   - `HEALTHY` — The line is in good standing. Send normally.
-	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
-	//     send pace and review your messaging patterns.
-	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
-	//     Pause outbound on the line until it recovers.
-	//
-	// Defaults to `HEALTHY` for lines that have not yet been scored.
-	//
-	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
-	//
-	// Deprecated: deprecated
-	NewHealthStatus string `json:"new_health_status" api:"required"`
 	// The new line reputation
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
@@ -2226,20 +2266,6 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 	NewStatus string `json:"new_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
-	// Current reputation of this phone line.
-	//
-	//   - `HEALTHY` — The line is in good standing. Send normally.
-	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
-	//     send pace and review your messaging patterns.
-	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
-	//     Pause outbound on the line until it recovers.
-	//
-	// Defaults to `HEALTHY` for lines that have not yet been scored.
-	//
-	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
-	//
-	// Deprecated: deprecated
-	PreviousHealthStatus string `json:"previous_health_status" api:"required"`
 	// The previous line reputation
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
@@ -2250,16 +2276,14 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 	PreviousStatus string `json:"previous_status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ChangedAt            respjson.Field
-		NewHealthStatus      respjson.Field
-		NewReputation        respjson.Field
-		NewStatus            respjson.Field
-		PhoneNumber          respjson.Field
-		PreviousHealthStatus respjson.Field
-		PreviousReputation   respjson.Field
-		PreviousStatus       respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
+		ChangedAt          respjson.Field
+		NewReputation      respjson.Field
+		NewStatus          respjson.Field
+		PhoneNumber        respjson.Field
+		PreviousReputation respjson.Field
+		PreviousStatus     respjson.Field
+		ExtraFields        map[string]respjson.Field
+		raw                string
 	} `json:"-"`
 }
 
@@ -2288,6 +2312,7 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatGroupIconUpdated       PhoneNumberStatusUpdatedWebhookEventEventType = "chat.group_icon_updated"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberStatusUpdatedWebhookEventEventType = "chat.group_name_update_failed"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberStatusUpdatedWebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberStatusUpdatedWebhookEventEventTypeChatBackgroundUpdated      PhoneNumberStatusUpdatedWebhookEventEventType = "chat.background_updated"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedWebhookEventEventType = "chat.typing_indicator.started"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedWebhookEventEventType = "chat.typing_indicator.stopped"
 	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.status_updated"
@@ -2300,6 +2325,13 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallNoAnswer               PhoneNumberStatusUpdatedWebhookEventEventType = "call.no_answer"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStarted     PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.started"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStopped     PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.stopped"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentSucceeded           PhoneNumberStatusUpdatedWebhookEventEventType = "payment.succeeded"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentCanceled            PhoneNumberStatusUpdatedWebhookEventEventType = "payment.canceled"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentExpired             PhoneNumberStatusUpdatedWebhookEventEventType = "payment.expired"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentDeclined            PhoneNumberStatusUpdatedWebhookEventEventType = "payment.declined"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentAuthorized          PhoneNumberStatusUpdatedWebhookEventEventType = "payment.authorized"
+	PhoneNumberStatusUpdatedWebhookEventEventTypeConnectionCreated          PhoneNumberStatusUpdatedWebhookEventEventType = "connection.created"
+	PhoneNumberStatusUpdatedWebhookEventEventTypeConnectionRevoked          PhoneNumberStatusUpdatedWebhookEventEventType = "connection.revoked"
 )
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
@@ -2534,71 +2566,65 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	ChangedAt time.Time `json:"changed_at"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
-	NewHealthStatus string `json:"new_health_status"`
-	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewReputation string `json:"new_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewStatus string `json:"new_status"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PhoneNumber string `json:"phone_number"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
-	PreviousHealthStatus string `json:"previous_health_status"`
-	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousReputation string `json:"previous_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
 	JSON           struct {
-		ID                   respjson.Field
-		Chat                 respjson.Field
-		Direction            respjson.Field
-		Parts                respjson.Field
-		SenderHandle         respjson.Field
-		Service              respjson.Field
-		DeliveredAt          respjson.Field
-		Effect               respjson.Field
-		IdempotencyKey       respjson.Field
-		PreferredService     respjson.Field
-		ReadAt               respjson.Field
-		ReplyTo              respjson.Field
-		SentAt               respjson.Field
-		Code                 respjson.Field
-		FailedAt             respjson.Field
-		ChatID               respjson.Field
-		MessageID            respjson.Field
-		Reason               respjson.Field
-		EditedAt             respjson.Field
-		Part                 respjson.Field
-		IsFromMe             respjson.Field
-		ReactionType         respjson.Field
-		CustomEmoji          respjson.Field
-		From                 respjson.Field
-		FromHandle           respjson.Field
-		PartIndex            respjson.Field
-		ReactedAt            respjson.Field
-		Sticker              respjson.Field
-		Handle               respjson.Field
-		AddedAt              respjson.Field
-		Participant          respjson.Field
-		RemovedAt            respjson.Field
-		CreatedAt            respjson.Field
-		DisplayName          respjson.Field
-		Handles              respjson.Field
-		HealthStatus         respjson.Field
-		IsGroup              respjson.Field
-		UpdatedAt            respjson.Field
-		ChangedByHandle      respjson.Field
-		NewValue             respjson.Field
-		OldValue             respjson.Field
-		ErrorCode            respjson.Field
-		ChangedAt            respjson.Field
-		NewHealthStatus      respjson.Field
-		NewReputation        respjson.Field
-		NewStatus            respjson.Field
-		PhoneNumber          respjson.Field
-		PreviousHealthStatus respjson.Field
-		PreviousReputation   respjson.Field
-		PreviousStatus       respjson.Field
-		raw                  string
+		ID                 respjson.Field
+		Chat               respjson.Field
+		Direction          respjson.Field
+		Parts              respjson.Field
+		SenderHandle       respjson.Field
+		Service            respjson.Field
+		DeliveredAt        respjson.Field
+		Effect             respjson.Field
+		IdempotencyKey     respjson.Field
+		PreferredService   respjson.Field
+		ReadAt             respjson.Field
+		ReplyTo            respjson.Field
+		SentAt             respjson.Field
+		Code               respjson.Field
+		FailedAt           respjson.Field
+		ChatID             respjson.Field
+		MessageID          respjson.Field
+		Reason             respjson.Field
+		EditedAt           respjson.Field
+		Part               respjson.Field
+		IsFromMe           respjson.Field
+		ReactionType       respjson.Field
+		CustomEmoji        respjson.Field
+		From               respjson.Field
+		FromHandle         respjson.Field
+		PartIndex          respjson.Field
+		ReactedAt          respjson.Field
+		Sticker            respjson.Field
+		Handle             respjson.Field
+		AddedAt            respjson.Field
+		Participant        respjson.Field
+		RemovedAt          respjson.Field
+		CreatedAt          respjson.Field
+		DisplayName        respjson.Field
+		Handles            respjson.Field
+		HealthStatus       respjson.Field
+		IsGroup            respjson.Field
+		UpdatedAt          respjson.Field
+		ChangedByHandle    respjson.Field
+		NewValue           respjson.Field
+		OldValue           respjson.Field
+		ErrorCode          respjson.Field
+		ChangedAt          respjson.Field
+		NewReputation      respjson.Field
+		NewStatus          respjson.Field
+		PhoneNumber        respjson.Field
+		PreviousReputation respjson.Field
+		PreviousStatus     respjson.Field
+		raw                string
 	} `json:"-"`
 }
 

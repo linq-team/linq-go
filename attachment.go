@@ -389,6 +389,8 @@ func (r *AttachmentService) Delete(ctx context.Context, attachmentID string, opt
 // **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
 // audio/aac, audio/midi, audio/amr
 //
+// **Wallet passes:** application/vnd.apple.pkpass
+//
 // **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
 // text/csv, text/html, text/calendar, text/xml, application/json,
 // application/msword,
@@ -448,6 +450,7 @@ const (
 	SupportedContentTypeAudioMidi                                                            SupportedContentType = "audio/midi"
 	SupportedContentTypeAudioAmr                                                             SupportedContentType = "audio/amr"
 	SupportedContentTypeApplicationPdf                                                       SupportedContentType = "application/pdf"
+	SupportedContentTypeApplicationVndApplePkpass                                            SupportedContentType = "application/vnd.apple.pkpass"
 	SupportedContentTypeTextPlain                                                            SupportedContentType = "text/plain"
 	SupportedContentTypeTextMarkdown                                                         SupportedContentType = "text/markdown"
 	SupportedContentTypeTextVcard                                                            SupportedContentType = "text/vcard"
@@ -530,6 +533,8 @@ type AttachmentGetResponse struct {
 	// **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
 	// audio/aac, audio/midi, audio/amr
 	//
+	// **Wallet passes:** application/vnd.apple.pkpass
+	//
 	// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
 	// text/csv, text/html, text/calendar, text/xml, application/json,
 	// application/msword,
@@ -563,9 +568,9 @@ type AttachmentGetResponse struct {
 	// "video/mp4", "video/quicktime", "video/mpeg", "video/mpeg2", "video/x-m4v",
 	// "video/x-msvideo", "video/3gpp", "audio/mpeg", "audio/mp3", "audio/x-m4a",
 	// "audio/mp4", "audio/x-caf", "audio/x-wav", "audio/x-aiff", "audio/aiff",
-	// "audio/aac", "audio/midi", "audio/amr", "application/pdf", "text/plain",
-	// "text/markdown", "text/vcard", "text/rtf", "text/csv", "text/html",
-	// "text/calendar", "application/msword",
+	// "audio/aac", "audio/midi", "audio/amr", "application/pdf",
+	// "application/vnd.apple.pkpass", "text/plain", "text/markdown", "text/vcard",
+	// "text/rtf", "text/csv", "text/html", "text/calendar", "application/msword",
 	// "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 	// "application/vnd.ms-excel",
 	// "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -632,6 +637,8 @@ type AttachmentNewParams struct {
 	// **Audio:** audio/mpeg, audio/x-m4a, audio/x-caf, audio/x-wav, audio/x-aiff,
 	// audio/aac, audio/midi, audio/amr
 	//
+	// **Wallet passes:** application/vnd.apple.pkpass
+	//
 	// **Documents:** application/pdf, text/plain, text/markdown, text/vcard, text/rtf,
 	// text/csv, text/html, text/calendar, text/xml, application/json,
 	// application/msword,
@@ -665,9 +672,9 @@ type AttachmentNewParams struct {
 	// "video/mp4", "video/quicktime", "video/mpeg", "video/mpeg2", "video/x-m4v",
 	// "video/x-msvideo", "video/3gpp", "audio/mpeg", "audio/mp3", "audio/x-m4a",
 	// "audio/mp4", "audio/x-caf", "audio/x-wav", "audio/x-aiff", "audio/aiff",
-	// "audio/aac", "audio/midi", "audio/amr", "application/pdf", "text/plain",
-	// "text/markdown", "text/vcard", "text/rtf", "text/csv", "text/html",
-	// "text/calendar", "application/msword",
+	// "audio/aac", "audio/midi", "audio/amr", "application/pdf",
+	// "application/vnd.apple.pkpass", "text/plain", "text/markdown", "text/vcard",
+	// "text/rtf", "text/csv", "text/html", "text/calendar", "application/msword",
 	// "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 	// "application/vnd.ms-excel",
 	// "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

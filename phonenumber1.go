@@ -111,18 +111,6 @@ func (r *PhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 type PhoneNumberListResponsePhoneNumber struct {
 	// Unique identifier for the phone number
 	ID string `json:"id" api:"required" format:"uuid"`
-	// **[BETA]** Current reputation for a phone line. Always present — lines start at
-	// `HEALTHY` and may shift based on aggregate engagement and delivery signals
-	// across all conversations on the line.
-	//
-	// Unlike chat health, line reputation does not include `opted_out` — opt-out
-	// applies to individual recipients, not the whole line.
-	//
-	// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
-	// what each status means and how to react.
-	//
-	// Deprecated: deprecated
-	HealthStatus PhoneNumberListResponsePhoneNumberHealthStatus `json:"health_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
 	// **[BETA]** Current reputation for a phone line. Always present — lines start at
@@ -141,7 +129,6 @@ type PhoneNumberListResponsePhoneNumber struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
-		HealthStatus     respjson.Field
 		PhoneNumber      respjson.Field
 		Reputation       respjson.Field
 		ForwardingNumber respjson.Field
@@ -165,55 +152,17 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 //
 // See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
 // what each status means and how to react.
-//
-// Deprecated: deprecated
-type PhoneNumberListResponsePhoneNumberHealthStatus struct {
-	// Deep-link to the relevant section of the Phone Reputation guide for this status.
-	DocURL string `json:"doc_url" api:"required" format:"uri"`
-	// Current reputation of this phone line.
-	//
-	//   - `HEALTHY` — The line is in good standing. Send normally.
-	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
-	//     send pace and review your messaging patterns.
-	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
-	//     Pause outbound on the line until it recovers.
-	//
-	// Defaults to `HEALTHY` for lines that have not yet been scored.
-	//
-	// Any of "HEALTHY", "AT_RISK", "CRITICAL".
-	Status string `json:"status" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DocURL      respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberListResponsePhoneNumberHealthStatus) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberListResponsePhoneNumberHealthStatus) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// **[BETA]** Current reputation for a phone line. Always present — lines start at
-// `HEALTHY` and may shift based on aggregate engagement and delivery signals
-// across all conversations on the line.
-//
-// Unlike chat health, line reputation does not include `opted_out` — opt-out
-// applies to individual recipients, not the whole line.
-//
-// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
-// what each status means and how to react.
 type PhoneNumberListResponsePhoneNumberReputation struct {
 	// Deep-link to the relevant section of the Phone Reputation guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current reputation of this phone line.
 	//
 	//   - `HEALTHY` — The line is in good standing. Send normally.
-	//   - `AT_RISK` — The line's overall engagement is trending down. Slow the line's
-	//     send pace and review your messaging patterns.
+	//   - `AT_RISK` — Warning signs on the line: engagement is low across many of its
+	//     conversations, or it's starting too many brand-new conversations in a single
+	//     day — and a spike in send volume can add to either. Slow the line's send pace,
+	//     avoid opening many new conversations at once, and review your messaging
+	//     patterns.
 	//   - `CRITICAL` — Strong signals that messages from this line aren't landing well.
 	//     Pause outbound on the line until it recovers.
 	//
