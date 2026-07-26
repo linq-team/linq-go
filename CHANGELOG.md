@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.28.0](https://github.com/linq-team/linq-go/compare/v0.27.0...v0.28.0) (2026-07-26)
+
+
+### Features
+
+* regenerate SDKs from updated API spec ([#54](https://github.com/linq-team/linq-go/issues/54)) ([665e91b](https://github.com/linq-team/linq-go/commit/665e91b975c68adb761730fb7bd2220880e1cf7a))
+
 ## [0.27.0](https://github.com/linq-team/linq-go/compare/v0.26.1...v0.27.0) (2026-07-26)
 
 
