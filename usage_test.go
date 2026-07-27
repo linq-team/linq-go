@@ -26,16 +26,9 @@ func TestUsage(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

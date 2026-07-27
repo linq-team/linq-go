@@ -843,6 +843,11 @@ type MessageNewParams struct {
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
 	// from/to).
+	//
+	// A message carries EITHER `parts` — text and attachments, which compose into one
+	// bubble — or a single `action`, which invokes an experience inside Linq's
+	// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
+	// cannot coexist with text), so copy and a card are two sends, not one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	// Recipient handles (E.164 phone numbers or email addresses). One handle is a
 	// direct chat; multiple handles a group chat. Order-independent — the set

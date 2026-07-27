@@ -30,6 +30,11 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 	_, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
+			Effect: linqgo.MessageEffectParam{
+				Name: linqgo.String("confetti"),
+				Type: linqgo.MessageEffectTypeScreen,
+			},
+			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
@@ -45,11 +50,6 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 					}},
 				},
 			}},
-			Effect: linqgo.MessageEffectParam{
-				Name: linqgo.String("confetti"),
-				Type: linqgo.MessageEffectTypeScreen,
-			},
-			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
 			PreferredService: shared.ServiceTypeIMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",

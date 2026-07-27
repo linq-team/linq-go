@@ -651,8 +651,16 @@ const (
 // separating the "what" (message content) from the "where" (routing fields like
 // from/to).
 //
-// The property Parts is required.
+// A message carries EITHER `parts` — text and attachments, which compose into one
+// bubble — or a single `action`, which invokes an experience inside Linq's
+// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
+// cannot coexist with text), so copy and a card are two sends, not one.
 type MessageContentParam struct {
+	// Optional idempotency key for this message. Use this to prevent duplicate sends
+	// of the same message.
+	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
+	// iMessage effect to apply to this message (screen or bubble effect)
+	Effect MessageEffectParam `json:"effect,omitzero"`
 	// Array of message parts. Each part can be text, media, or link. Parts are
 	// displayed in order. Text and media can be mixed freely, but a `link` part must
 	// be the only part in the message.
@@ -690,12 +698,7 @@ type MessageContentParam struct {
 	//     at **40**. Parts using `attachment_id` or presigned URLs are exempt from this
 	//     sub-limit. For bulk media sends exceeding 40 files, pre-upload via
 	//     `POST /v3/attachments` and reference by `attachment_id` or `download_url`.
-	Parts []MessageContentPartUnionParam `json:"parts,omitzero" api:"required"`
-	// Optional idempotency key for this message. Use this to prevent duplicate sends
-	// of the same message.
-	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
-	// iMessage effect to apply to this message (screen or bubble effect)
-	Effect MessageEffectParam `json:"effect,omitzero"`
+	Parts []MessageContentPartUnionParam `json:"parts,omitzero"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -1177,6 +1180,11 @@ type ChatNewParams struct {
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
 	// from/to).
+	//
+	// A message carries EITHER `parts` — text and attachments, which compose into one
+	// bubble — or a single `action`, which invokes an experience inside Linq's
+	// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
+	// cannot coexist with text), so copy and a card are two sends, not one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	// Array of recipient handles (phone numbers in E.164 format or email addresses).
 	// For individual chats, provide one recipient. For group chats, provide multiple.

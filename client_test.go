@@ -39,16 +39,9 @@ func TestUserAgentHeader(t *testing.T) {
 		}),
 	)
 	_, _ = client.Chats.New(context.Background(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if userAgent != fmt.Sprintf("LinqAPIV3/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -74,16 +67,9 @@ func TestRetryAfter(t *testing.T) {
 		}),
 	)
 	_, err := client.Chats.New(context.Background(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -120,16 +106,9 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
 	_, err := client.Chats.New(context.Background(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -161,16 +140,9 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
 	_, err := client.Chats.New(context.Background(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -201,16 +173,9 @@ func TestRetryAfterMs(t *testing.T) {
 		}),
 	)
 	_, err := client.Chats.New(context.Background(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -235,16 +200,9 @@ func TestContextCancel(t *testing.T) {
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	_, err := client.Chats.New(cancelCtx, linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
@@ -266,16 +224,9 @@ func TestContextCancelDelay(t *testing.T) {
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
 	_, err := client.Chats.New(cancelCtx, linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
@@ -303,16 +254,9 @@ func TestContextDeadline(t *testing.T) {
 			}),
 		)
 		_, err := client.Chats.New(deadlineCtx, linqgo.ChatNewParams{
-			From: "+12052535597",
-			Message: linqgo.MessageContentParam{
-				Parts: []linqgo.MessageContentPartUnionParam{{
-					OfText: &linqgo.TextPartParam{
-						Type:  linqgo.TextPartTypeText,
-						Value: "Hello! How can I help you today?",
-					},
-				}},
-			},
-			To: []string{"+12052532136"},
+			From:    "+12052535597",
+			Message: linqgo.MessageContentParam{},
+			To:      []string{"+12052532136"},
 		})
 		if err == nil {
 			t.Error("expected there to be a deadline error")

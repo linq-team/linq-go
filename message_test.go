@@ -29,6 +29,11 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.New(context.TODO(), linqgo.MessageNewParams{
 		Message: linqgo.MessageContentParam{
+			Effect: linqgo.MessageEffectParam{
+				Name: linqgo.String("confetti"),
+				Type: linqgo.MessageEffectTypeScreen,
+			},
+			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
@@ -44,11 +49,6 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 					}},
 				},
 			}},
-			Effect: linqgo.MessageEffectParam{
-				Name: linqgo.String("confetti"),
-				Type: linqgo.MessageEffectTypeScreen,
-			},
-			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
 			PreferredService: shared.ServiceTypeIMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
