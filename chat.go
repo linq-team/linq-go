@@ -665,7 +665,9 @@ const (
 // cannot coexist with text), so copy and a card are two sends, not one.
 type MessageContentParam struct {
 	// Optional idempotency key for this message. Use this to prevent duplicate sends
-	// of the same message.
+	// of the same message. Reusing a key whose message was deleted — or was an
+	// ephemeral message that has since expired — returns 404; the message is never
+	// resent.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
 	// Invokes an action on an experience — a third party that renders inside Linq's
 	// iMessage app. Linq resolves the recipient's connection, mints any session the

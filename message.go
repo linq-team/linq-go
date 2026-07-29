@@ -203,7 +203,9 @@ func (r *MessageService) Update(ctx context.Context, messageID string, body Mess
 }
 
 // Deletes a message from the Linq API only. This does NOT unsend or remove the
-// message from the actual chat — recipients will still see the message.
+// message from the actual chat — recipients will still see the message. Re-sending
+// with a deleted message's idempotency key returns 404 — a deleted message is
+// never resent.
 func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
