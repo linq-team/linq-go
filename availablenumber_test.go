@@ -27,7 +27,8 @@ func TestAvailableNumberGetWithOptionalParams(t *testing.T) {
 		option.WithAPIKey("My API Key"),
 	)
 	_, err := client.AvailableNumber.Get(context.TODO(), linqgo.AvailableNumberGetParams{
-		To: []string{"string"},
+		ExcludeFrom: []string{"string"},
+		To:          []string{"string"},
 	})
 	if err != nil {
 		var apierr *linqgo.Error

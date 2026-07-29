@@ -66,6 +66,7 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 		ContinuationMessage: linqgo.MessageNewParamsContinuationMessage{
 			Text: "Hi, it's Acme Support reaching you from a new number.",
 		},
+		ExcludeFrom:    []string{"+12052535597"},
 		IdempotencyKey: linqgo.String("send-abc123xyz"),
 	})
 	if err != nil {
