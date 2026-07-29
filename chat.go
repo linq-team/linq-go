@@ -538,6 +538,14 @@ type ChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
+	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
+	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
+	// Matching is exact and case-sensitive against the whole trimmed message. It
+	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// replying on the chat — sustained two-way conversation is treated as a sign the
+	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
+	// your responsibility — Linq surfaces the status but does not block the send.
+	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
 	// When this status last changed.
@@ -659,6 +667,13 @@ type MessageContentParam struct {
 	// Optional idempotency key for this message. Use this to prevent duplicate sends
 	// of the same message.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
+	// Invokes an action on an experience — a third party that renders inside Linq's
+	// iMessage app. Linq resolves the recipient's connection, mints any session the
+	// action needs, composes the card and sends it; none of that is visible to you.
+	//
+	// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
+	// fields each accepts.
+	Action MessageContentActionParam `json:"action,omitzero"`
 	// iMessage effect to apply to this message (screen or bubble effect)
 	Effect MessageEffectParam `json:"effect,omitzero"`
 	// Array of message parts. Each part can be text, media, or link. Parts are
@@ -713,6 +728,37 @@ func (r MessageContentParam) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Invokes an action on an experience — a third party that renders inside Linq's
+// iMessage app. Linq resolves the recipient's connection, mints any session the
+// action needs, composes the card and sends it; none of that is visible to you.
+//
+// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
+// fields each accepts.
+//
+// The properties Action, Experience are required.
+type MessageContentActionParam struct {
+	// Which of its actions, e.g. `attach_card`.
+	Action string `json:"action" api:"required"`
+	// The experience to invoke, e.g. `agentcard`.
+	Experience string `json:"experience" api:"required"`
+	// Values for the fields this action exposes. Keys are exactly the field names
+	// listed for the action — no mapping, no nesting.
+	//
+	// Display copy only. Params can never change where a button goes or what a secure
+	// field loads; those are fixed by the experience and validated before it is
+	// registered.
+	Params map[string]any `json:"params,omitzero"`
+	paramObj
+}
+
+func (r MessageContentActionParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentActionParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentActionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -996,6 +1042,14 @@ type ChatNewResponseChatHealthStatus struct {
 	// Current health bucket for the chat. See the
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
+	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
+	// Matching is exact and case-sensitive against the whole trimmed message. It
+	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// replying on the chat — sustained two-way conversation is treated as a sign the
+	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
+	// your responsibility — Linq surfaces the status but does not block the send.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`

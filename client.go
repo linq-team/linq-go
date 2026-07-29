@@ -371,7 +371,7 @@ type Client struct {
 	//
 	// ## Connected accounts (Stripe Standard, direct charges)
 	//
-	// Agent Pay runs on **Stripe Connect Standard accounts** using **direct charges**:
+	// Payments run on **Stripe Connect Standard accounts** using **direct charges**:
 	// the charge is created on _your_ connected account and **you are the merchant of
 	// record**. That means the money, the payout schedule, the customer relationship,
 	// and the compliance surface are all yours — Linq orchestrates the request and the
@@ -451,7 +451,7 @@ type Client struct {
 	// no-install checkout sheet. Everywhere else (Android, desktop, iPhones without
 	// the App Clip yet) the same URL opens the web checkout, so the link always works.
 	// The App Clip experience for your payment links is registered automatically by
-	// Linq and refreshed whenever you update your Agent Pay branding; a newly
+	// Linq and refreshed whenever you update your payments branding; a newly
 	// registered experience can take up to ~24 hours to activate on Apple's side,
 	// during which links open the web checkout.
 	//
@@ -462,6 +462,22 @@ type Client struct {
 	// event carries the payment request id, amount, currency, and your `metadata`. See
 	// [Webhooks](/guides/webhooks).
 	PaymentRequests PaymentRequestService
+	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
+	// a customer once, then create a payment — a virtual card is minted scoped to that
+	// purchase and the card details are handed back for checkout.
+	PaymentProviders PaymentProviderService
+	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
+	// a customer once, then create a payment — a virtual card is minted scoped to that
+	// purchase and the card details are handed back for checkout.
+	PaymentHandles PaymentHandleService
+	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
+	// a customer once, then create a payment — a virtual card is minted scoped to that
+	// purchase and the card details are handed back for checkout.
+	Payments PaymentService
+	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
+	// a customer once, then create a payment — a virtual card is minted scoped to that
+	// purchase and the card details are handed back for checkout.
+	Experiences ExperienceService
 	// Webhook Subscriptions allow you to receive real-time notifications when events
 	// occur on your account.
 	//
@@ -805,6 +821,10 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PhoneNumbers = NewPhoneNumberService(opts...)
 	r.AvailableNumber = NewAvailableNumberService(opts...)
 	r.PaymentRequests = NewPaymentRequestService(opts...)
+	r.PaymentProviders = NewPaymentProviderService(opts...)
+	r.PaymentHandles = NewPaymentHandleService(opts...)
+	r.Payments = NewPaymentService(opts...)
+	r.Experiences = NewExperienceService(opts...)
 	r.WebhookEvents = NewWebhookEventService(opts...)
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
 	r.Capability = NewCapabilityService(opts...)

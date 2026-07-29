@@ -176,6 +176,57 @@ Methods:
 - <code title="get /v3/payment_requests">client.PaymentRequests.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentRequestService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentRequestListParams">PaymentRequestListParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentRequestListResponse">PaymentRequestListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v3/payment_requests/{paymentRequestId}/cancel">client.PaymentRequests.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentRequestService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentRequestID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentRequest">PaymentRequest</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# PaymentProviders
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProvider">PaymentProvider</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProviderConnectResponse">PaymentProviderConnectResponse</a>
+
+Methods:
+
+- <code title="get /v3/payments/providers/{provider}">client.PaymentProviders.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProviderService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, provider <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProvider">PaymentProvider</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v3/payments/providers/{provider}/connect">client.PaymentProviders.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProviderService.Connect">Connect</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, provider <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProviderConnectParams">PaymentProviderConnectParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentProviderConnectResponse">PaymentProviderConnectResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# PaymentHandles
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleConnection">PaymentHandleConnection</a>
+
+Methods:
+
+- <code title="post /v3/payments/handles/{handle}/connect">client.PaymentHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleService.Connect">Connect</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, handle <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleConnection">PaymentHandleConnection</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/payments/handles/{handle}/connection">client.PaymentHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleService.Connection">Connection</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, handle <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleConnection">PaymentHandleConnection</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v3/payments/handles/{handle}/connection">client.PaymentHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleService.Revoke">Revoke</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, handle <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleConnection">PaymentHandleConnection</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v3/payments/handles/{handle}/verify">client.PaymentHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleService.Verify">Verify</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, handle <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleVerifyParams">PaymentHandleVerifyParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentHandleConnection">PaymentHandleConnection</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Payments
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentCredentialsResponse">PaymentCredentialsResponse</a>
+
+Methods:
+
+- <code title="post /v3/payments">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentNewParams">PaymentNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/payments/{paymentId}">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v3/payments/{paymentId}/cancel">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/payments/{paymentId}/credentials">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Credentials">Credentials</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentCredentialsResponse">PaymentCredentialsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# Experiences
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceGetResponse">ExperienceGetResponse</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceListResponse">ExperienceListResponse</a>
+
+Methods:
+
+- <code title="get /v3/experiences/{experience}">client.Experiences.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, experience <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceGetResponse">ExperienceGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/experiences">client.Experiences.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceListResponse">ExperienceListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # WebhookEvents
 
 Params Types:

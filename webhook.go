@@ -196,6 +196,14 @@ type MessageEventV2ChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
+	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
+	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
+	// Matching is exact and case-sensitive against the whole trimmed message. It
+	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// replying on the chat — sustained two-way conversation is treated as a sign the
+	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
+	// your responsibility — Linq surfaces the status but does not block the send.
+	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
 	// When this status last changed.
@@ -1214,6 +1222,14 @@ type MessageEditedWebhookEventDataChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
+	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
+	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
+	// Matching is exact and case-sensitive against the whole trimmed message. It
+	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// replying on the chat — sustained two-way conversation is treated as a sign the
+	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
+	// your responsibility — Linq surfaces the status but does not block the send.
+	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
 	// When this status last changed.
@@ -1677,6 +1693,14 @@ type ChatCreatedWebhookEventDataHealthStatus struct {
 	// Current health bucket for the chat. See the
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
+	//
+	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
+	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
+	// Matching is exact and case-sensitive against the whole trimmed message. It
+	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// replying on the chat — sustained two-way conversation is treated as a sign the
+	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
+	// your responsibility — Linq surfaces the status but does not block the send.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`

@@ -29,6 +29,13 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.New(context.TODO(), linqgo.MessageNewParams{
 		Message: linqgo.MessageContentParam{
+			Action: linqgo.MessageContentActionParam{
+				Action:     "attach_card",
+				Experience: "agentcard",
+				Params: map[string]any{
+					"foo": "bar",
+				},
+			},
 			Effect: linqgo.MessageEffectParam{
 				Name: linqgo.String("confetti"),
 				Type: linqgo.MessageEffectTypeScreen,
