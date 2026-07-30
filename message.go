@@ -363,6 +363,13 @@ type Message struct {
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
+	// Present only when this message was recovered by reconciliation rather than
+	// delivered live, and set to the time of that recovery. The field is omitted
+	// entirely for normally-delivered messages, which is the overwhelming majority.
+	// When present, expect `sent_at` to be substantially earlier — the message is
+	// genuine but was ingested late, so it may not have appeared in earlier reads of
+	// this conversation.
+	ReconciledAt time.Time `json:"reconciled_at" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent
@@ -388,6 +395,7 @@ type Message struct {
 		Parts            respjson.Field
 		PreferredService respjson.Field
 		ReadAt           respjson.Field
+		ReconciledAt     respjson.Field
 		ReplyTo          respjson.Field
 		SentAt           respjson.Field
 		Service          respjson.Field

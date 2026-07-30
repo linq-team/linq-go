@@ -111,6 +111,14 @@ type MessageEventV2 struct {
 	PreferredService MessageEventV2PreferredService `json:"preferred_service" api:"nullable"`
 	// When the message was read. Null if not yet read.
 	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
+	// Present only when this message was recovered by reconciliation rather than
+	// delivered live, and set to the time of that recovery. The field is omitted
+	// entirely for normally-delivered messages, which is the overwhelming majority.
+	// When present, expect `sent_at` to be substantially earlier than delivery of this
+	// event: the message is genuine but is arriving late and out of real-time order,
+	// so treat it as history rather than as a live inbound (for example, suppress
+	// auto-replies).
+	ReconciledAt time.Time `json:"reconciled_at" format:"date-time"`
 	// Reference to the message this is replying to (for threaded replies)
 	ReplyTo MessageEventV2ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent. Null if not yet sent.
@@ -128,6 +136,7 @@ type MessageEventV2 struct {
 		IdempotencyKey   respjson.Field
 		PreferredService respjson.Field
 		ReadAt           respjson.Field
+		ReconciledAt     respjson.Field
 		ReplyTo          respjson.Field
 		SentAt           respjson.Field
 		ExtraFields      map[string]respjson.Field
@@ -2534,6 +2543,8 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	ReadAt time.Time `json:"read_at"`
 	// This field is from variant [MessageEventV2].
+	ReconciledAt time.Time `json:"reconciled_at"`
+	// This field is from variant [MessageEventV2].
 	ReplyTo MessageEventV2ReplyTo `json:"reply_to"`
 	// This field is from variant [MessageEventV2].
 	SentAt time.Time `json:"sent_at"`
@@ -2611,6 +2622,7 @@ type UnwrapWebhookEventUnionData struct {
 		IdempotencyKey     respjson.Field
 		PreferredService   respjson.Field
 		ReadAt             respjson.Field
+		ReconciledAt       respjson.Field
 		ReplyTo            respjson.Field
 		SentAt             respjson.Field
 		Code               respjson.Field
