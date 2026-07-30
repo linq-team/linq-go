@@ -994,6 +994,9 @@ type MessageFailedWebhookEvent struct {
 	// Error details for message.failed webhook events. See
 	// [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 	// code reference.
+	//
+	// In rare cases the message can still be delivered after this event fires — a
+	// `message.delivered` webhook for the same message ID may follow.
 	Data MessageFailedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -1048,6 +1051,9 @@ func (r *MessageFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 // Error details for message.failed webhook events. See
 // [WebhookErrorCode](#/components/schemas/WebhookErrorCode) for the full error
 // code reference.
+//
+// In rare cases the message can still be delivered after this event fires — a
+// `message.delivered` webhook for the same message ID may follow.
 type MessageFailedWebhookEventData struct {
 	// Error codes in webhook failure events (3007, 4001, 4005).
 	Code int64 `json:"code" api:"required"`
