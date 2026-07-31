@@ -749,9 +749,8 @@ type MessageContentActionParam struct {
 	// Values for the fields this action exposes. Keys are exactly the field names
 	// listed for the action — no mapping, no nesting.
 	//
-	// Display copy only. Params can never change where a button goes or what a secure
-	// field loads; those are fixed by the experience and validated before it is
-	// registered.
+	// Display copy only, except a `url`-type field — that value sets the destination,
+	// and must be an absolute `https` URL.
 	Params map[string]any `json:"params,omitzero"`
 	paramObj
 }

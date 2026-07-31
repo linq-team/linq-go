@@ -108,7 +108,7 @@ type ExperienceGetResponseActionField struct {
 	// Maximum length, for strings.
 	Max      int64 `json:"max"`
 	Required bool  `json:"required"`
-	// Any of "string", "cents", "int".
+	// Any of "string", "cents", "int", "url".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -189,7 +189,7 @@ type ExperienceListResponseExperienceActionField struct {
 	// Maximum length, for strings.
 	Max      int64 `json:"max"`
 	Required bool  `json:"required"`
-	// Any of "string", "cents", "int".
+	// Any of "string", "cents", "int", "url".
 	Type string `json:"type"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
