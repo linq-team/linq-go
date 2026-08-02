@@ -207,8 +207,11 @@ type MessageEventV2ChatHealthStatus struct {
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
 	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// Matching is exact and case-sensitive against the whole trimmed message. It
-	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// The keyword must be the whole trimmed message, never part of a longer one:
+	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
+	// including case. `OPT OUT` is the exception — it matches in any casing, with or
+	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
+	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
 	// replying on the chat — sustained two-way conversation is treated as a sign the
 	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
 	// your responsibility — Linq surfaces the status but does not block the send.
@@ -1239,8 +1242,11 @@ type MessageEditedWebhookEventDataChatHealthStatus struct {
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
 	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// Matching is exact and case-sensitive against the whole trimmed message. It
-	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// The keyword must be the whole trimmed message, never part of a longer one:
+	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
+	// including case. `OPT OUT` is the exception — it matches in any casing, with or
+	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
+	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
 	// replying on the chat — sustained two-way conversation is treated as a sign the
 	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
 	// your responsibility — Linq surfaces the status but does not block the send.
@@ -1711,8 +1717,11 @@ type ChatCreatedWebhookEventDataHealthStatus struct {
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
 	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// Matching is exact and case-sensitive against the whole trimmed message. It
-	// clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
+	// The keyword must be the whole trimmed message, never part of a longer one:
+	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
+	// including case. `OPT OUT` is the exception — it matches in any casing, with or
+	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
+	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
 	// replying on the chat — sustained two-way conversation is treated as a sign the
 	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
 	// your responsibility — Linq surfaces the status but does not block the send.
