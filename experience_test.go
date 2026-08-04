@@ -13,7 +13,7 @@ import (
 	"github.com/linq-team/linq-go/option"
 )
 
-func TestAvailableNumberGetWithOptionalParams(t *testing.T) {
+func TestExperienceGet(t *testing.T) {
 	t.Skip("Mock server tests are disabled")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
@@ -26,10 +26,30 @@ func TestAvailableNumberGetWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.AvailableNumber.Get(context.TODO(), linqgo.AvailableNumberGetParams{
-		ExcludeFrom: []string{"string"},
-		To:          []string{"string"},
-	})
+	_, err := client.Experiences.Get(context.TODO(), "experience")
+	if err != nil {
+		var apierr *linqgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestExperienceList(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := linqgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Experiences.List(context.TODO())
 	if err != nil {
 		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {

@@ -29,6 +29,18 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.New(context.TODO(), linqgo.MessageNewParams{
 		Message: linqgo.MessageContentParam{
+			Action: linqgo.MessageContentActionParam{
+				Action:     "attach_card",
+				Experience: "agentcard",
+				Params: map[string]any{
+					"foo": "bar",
+				},
+			},
+			Effect: linqgo.MessageEffectParam{
+				Name: linqgo.String("confetti"),
+				Type: linqgo.MessageEffectTypeScreen,
+			},
+			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
 					Type:  linqgo.TextPartTypeText,
@@ -44,11 +56,6 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 					}},
 				},
 			}},
-			Effect: linqgo.MessageEffectParam{
-				Name: linqgo.String("confetti"),
-				Type: linqgo.MessageEffectTypeScreen,
-			},
-			IdempotencyKey:   linqgo.String("msg-abc123xyz"),
 			PreferredService: shared.ServiceTypeIMessage,
 			ReplyTo: linqgo.ReplyToParam{
 				MessageID: "550e8400-e29b-41d4-a716-446655440000",
@@ -59,6 +66,7 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 		ContinuationMessage: linqgo.MessageNewParamsContinuationMessage{
 			Text: "Hi, it's Acme Support reaching you from a new number.",
 		},
+		ExcludeFrom:    []string{"+12052535597"},
 		IdempotencyKey: linqgo.String("send-abc123xyz"),
 	})
 	if err != nil {

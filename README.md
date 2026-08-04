@@ -66,16 +66,9 @@ func main() {
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("LINQ_API_V3_API_KEY")
 	)
 	chat, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	})
 	if err != nil {
 		panic(err.Error())
@@ -343,16 +336,9 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
-	From: "+12052535597",
-	Message: linqgo.MessageContentParam{
-		Parts: []linqgo.MessageContentPartUnionParam{{
-			OfText: &linqgo.TextPartParam{
-				Type:  linqgo.TextPartTypeText,
-				Value: "Hello! How can I help you today?",
-			},
-		}},
-	},
-	To: []string{"+12052532136"},
+	From:    "+12052535597",
+	Message: linqgo.MessageContentParam{},
+	To:      []string{"+12052532136"},
 })
 if err != nil {
 	var apierr *linqgo.Error
@@ -381,16 +367,9 @@ defer cancel()
 client.Chats.New(
 	ctx,
 	linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -428,16 +407,9 @@ client := linqgo.NewClient(
 client.Chats.New(
 	context.TODO(),
 	linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	},
 	option.WithMaxRetries(5),
 )
@@ -454,16 +426,9 @@ var response *http.Response
 chat, err := client.Chats.New(
 	context.TODO(),
 	linqgo.ChatNewParams{
-		From: "+12052535597",
-		Message: linqgo.MessageContentParam{
-			Parts: []linqgo.MessageContentPartUnionParam{{
-				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
-				},
-			}},
-		},
-		To: []string{"+12052532136"},
+		From:    "+12052535597",
+		Message: linqgo.MessageContentParam{},
+		To:      []string{"+12052532136"},
 	},
 	option.WithResponseInto(&response),
 )

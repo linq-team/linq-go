@@ -150,6 +150,15 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 // Recipients (`to`) are an order-independent set: a single handle is a direct
 // chat, multiple handles a group chat.
 //
+// ## Excluding lines
+//
+// `exclude_from` keeps specific lines out of **this** send's line pick. It only
+// affects picking a line for a new chat — an existing chat is always reused on its
+// own line, preferring a chat on a non-excluded line when the recipients have more
+// than one. An exclusion never abandons a live chat or moves it to a new number,
+// so if the only chat these recipients have is on an excluded line, that chat is
+// still used. `from` tells you the line that was actually used.
+//
 // ## Differences from POST /v3/chats
 //
 //   - The first message **may contain a link** (including for a newly created chat).
@@ -203,7 +212,9 @@ func (r *MessageService) Update(ctx context.Context, messageID string, body Mess
 }
 
 // Deletes a message from the Linq API only. This does NOT unsend or remove the
-// message from the actual chat — recipients will still see the message.
+// message from the actual chat — recipients will still see the message. Re-sending
+// with a deleted message's idempotency key returns 404 — a deleted message is
+// never resent.
 func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
@@ -352,6 +363,13 @@ type Message struct {
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
+	// Present only when this message was recovered by reconciliation rather than
+	// delivered live, and set to the time of that recovery. The field is omitted
+	// entirely for normally-delivered messages, which is the overwhelming majority.
+	// When present, expect `sent_at` to be substantially earlier — the message is
+	// genuine but was ingested late, so it may not have appeared in earlier reads of
+	// this conversation.
+	ReconciledAt time.Time `json:"reconciled_at" format:"date-time"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent
@@ -377,6 +395,7 @@ type Message struct {
 		Parts            respjson.Field
 		PreferredService respjson.Field
 		ReadAt           respjson.Field
+		ReconciledAt     respjson.Field
 		ReplyTo          respjson.Field
 		SentAt           respjson.Field
 		Service          respjson.Field
@@ -843,6 +862,11 @@ type MessageNewParams struct {
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
 	// from/to).
+	//
+	// A message carries EITHER `parts` — text and attachments, which compose into one
+	// bubble — or a single `action`, which invokes an experience inside Linq's
+	// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
+	// cannot coexist with text), so copy and a card are two sends, not one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	// Recipient handles (E.164 phone numbers or email addresses). One handle is a
 	// direct chat; multiple handles a group chat. Order-independent — the set
@@ -857,6 +881,20 @@ type MessageNewParams struct {
 	// content). Ignored otherwise (a healthy reuse, or genuine first contact). Carries
 	// no parts, media, or effects — exactly one message is ever sent.
 	ContinuationMessage MessageNewParamsContinuationMessage `json:"continuation_message,omitzero"`
+	// Lines (E.164) not to pick for this send. Applies for this request only — nothing
+	// is remembered between calls.
+	//
+	// **Exclusion only affects picking a line for a new chat.** If `to` already has a
+	// chat, that chat is reused on its own line, and a chat on a non-excluded line is
+	// preferred when there is more than one. If the only chat these recipients have is
+	// on an excluded line, it is still reused — an exclusion never abandons a live
+	// chat or moves it to a new number. Check `from` in the response to see the line
+	// that was actually used.
+	//
+	// Numbers that are not your lines are ignored. Every entry must be E.164 — a value
+	// like `4155551234` is rejected rather than silently skipped. Excluding every one
+	// of your available lines returns 400 when a line has to be picked.
+	ExcludeFrom []string `json:"exclude_from,omitzero"`
 	paramObj
 }
 

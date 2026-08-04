@@ -62,6 +62,18 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 		"550e8400-e29b-41d4-a716-446655440000",
 		linqgo.ChatMessageSendParams{
 			Message: linqgo.MessageContentParam{
+				Action: linqgo.MessageContentActionParam{
+					Action:     "attach_card",
+					Experience: "agentcard",
+					Params: map[string]any{
+						"foo": "bar",
+					},
+				},
+				Effect: linqgo.MessageEffectParam{
+					Name: linqgo.String("confetti"),
+					Type: linqgo.MessageEffectTypeScreen,
+				},
+				IdempotencyKey: linqgo.String("msg-abc123xyz"),
 				Parts: []linqgo.MessageContentPartUnionParam{{
 					OfText: &linqgo.TextPartParam{
 						Type:  linqgo.TextPartTypeText,
@@ -77,11 +89,6 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 						}},
 					},
 				}},
-				Effect: linqgo.MessageEffectParam{
-					Name: linqgo.String("confetti"),
-					Type: linqgo.MessageEffectTypeScreen,
-				},
-				IdempotencyKey:   linqgo.String("msg-abc123xyz"),
 				PreferredService: shared.ServiceTypeIMessage,
 				ReplyTo: linqgo.ReplyToParam{
 					MessageID: "550e8400-e29b-41d4-a716-446655440000",
