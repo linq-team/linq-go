@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.29.1](https://github.com/linq-team/linq-go/compare/v0.29.0...v0.29.1) (2026-08-04)
+
+
+### Bug Fixes
+
+* flatten poll subresources to avoid go compile errors ([ddf0603](https://github.com/linq-team/linq-go/commit/ddf0603d2e5e1a2fa4d1ff62a9b86970fbeeefe3))
+
 ## [0.29.0](https://github.com/linq-team/linq-go/compare/v0.28.0...v0.29.0) (2026-08-04)
 
 
