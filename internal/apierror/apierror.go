@@ -15,8 +15,21 @@ import (
 // made and the API returns a response with a HTTP status code. Other errors are
 // not wrapped by this SDK.
 type Error struct {
+	// Linq API error code.
+	Code int64 `json:"code" api:"required"`
+	// Link to documentation for this error code
+	DocURL string `json:"doc_url" api:"required"`
+	// Human-readable error message
+	Message string `json:"message" api:"required"`
+	// Number of seconds to wait before retrying. Only present on 429 rate limit
+	// errors.
+	RetryAfter int64 `json:"retry_after"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		Code        respjson.Field
+		DocURL      respjson.Field
+		Message     respjson.Field
+		RetryAfter  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

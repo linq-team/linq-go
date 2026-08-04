@@ -76,8 +76,10 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 				IdempotencyKey: linqgo.String("msg-abc123xyz"),
 				Parts: []linqgo.MessageContentPartUnionParam{{
 					OfText: &linqgo.TextPartParam{
-						Type:  linqgo.TextPartTypeText,
-						Value: "Hello, world!",
+						Type:         linqgo.TextPartTypeText,
+						Value:        "Hello, world!",
+						Mention:      linqgo.String("+14155551234"),
+						MentionRange: []int64{4, 9},
 						TextDecorations: []shared.TextDecorationParam{{
 							Range:     []int64{0, 5},
 							Animation: shared.TextDecorationAnimationShake,
@@ -95,6 +97,7 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 					PartIndex: linqgo.Int(0),
 				},
 			},
+			OverrideOptout: linqgo.Bool(false),
 		},
 	)
 	if err != nil {
