@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.29.0](https://github.com/linq-team/linq-go/compare/v0.28.0...v0.29.0) (2026-08-04)
+
+
+### Features
+
+* add action field to message content for app experiences ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* add agentcard payment provider api ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* add exclude_from parameter to control line selection ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* add reconciled_at field to message objects ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* support url-type fields in message action parameters ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+
+
+### Bug Fixes
+
+* clarify contact card creation and update behavior ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* clarify idempotency key behavior with deleted messages ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* clarify message.failed webhook delivery behavior ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+* clarify opt-out keyword matching requirements for chat health ([10be1a9](https://github.com/linq-team/linq-go/commit/10be1a9b39c06e9eba65c49be83c652bd19ab947))
+
 ## [0.28.0](https://github.com/linq-team/linq-go/compare/v0.27.0...v0.28.0) (2026-07-26)
 
 
