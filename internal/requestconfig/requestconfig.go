@@ -22,6 +22,7 @@ import (
 	"github.com/linq-team/linq-go/internal/apierror"
 	"github.com/linq-team/linq-go/internal/apiform"
 	"github.com/linq-team/linq-go/internal/apiquery"
+	"github.com/tidwall/gjson"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -507,7 +508,8 @@ func (cfg *RequestConfig) Execute() (err error) {
 
 		// Load the contents into the error format if it is provided.
 		aerr := apierror.Error{Request: cfg.Request, Response: res, StatusCode: res.StatusCode}
-		err = aerr.UnmarshalJSON(contents)
+		unwrapped := gjson.GetBytes(contents, "error").Raw
+		err = aerr.UnmarshalJSON([]byte(unwrapped))
 		if err != nil {
 			return err
 		}

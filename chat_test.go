@@ -44,8 +44,10 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hello! How can I help you today?",
+					Type:         linqgo.TextPartTypeText,
+					Value:        "Hello! How can I help you today?",
+					Mention:      linqgo.String("+14155551234"),
+					MentionRange: []int64{4, 9},
 					TextDecorations: []shared.TextDecorationParam{{
 						Range:     []int64{0, 5},
 						Animation: shared.TextDecorationAnimationShake,
@@ -63,7 +65,8 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 				PartIndex: linqgo.Int(0),
 			},
 		},
-		To: []string{"+12052532136"},
+		To:             []string{"+12052532136"},
+		OverrideOptout: linqgo.Bool(false),
 	})
 	if err != nil {
 		var apierr *linqgo.Error
@@ -218,8 +221,9 @@ func TestChatSendVoicememoWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
 		linqgo.ChatSendVoicememoParams{
-			AttachmentID: linqgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			VoiceMemoURL: linqgo.String("https://example.com/voice-memo.m4a"),
+			AttachmentID:   linqgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			OverrideOptout: linqgo.Bool(false),
+			VoiceMemoURL:   linqgo.String("https://example.com/voice-memo.m4a"),
 		},
 	)
 	if err != nil {

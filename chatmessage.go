@@ -525,6 +525,11 @@ type ChatMessageSendParams struct {
 	// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
 	// cannot coexist with text), so copy and a card are two sends, not one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
+	// Send even though the recipient asked you to stop (`403`, error code `2024`).
+	// Applies to this request only: the opt-out stays in place, so the next send
+	// without this flag is rejected again. Every override is recorded against your API
+	// key.
+	OverrideOptout param.Opt[bool] `json:"override_optout,omitzero"`
 	paramObj
 }
 

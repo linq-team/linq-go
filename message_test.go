@@ -43,8 +43,10 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
-					Type:  linqgo.TextPartTypeText,
-					Value: "Hi! Thanks for reaching out — how can we help?",
+					Type:         linqgo.TextPartTypeText,
+					Value:        "Hi! Thanks for reaching out — how can we help?",
+					Mention:      linqgo.String("+14155551234"),
+					MentionRange: []int64{4, 9},
 					TextDecorations: []shared.TextDecorationParam{{
 						Range:     []int64{0, 5},
 						Animation: shared.TextDecorationAnimationShake,
@@ -67,6 +69,7 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 			Text: "Hi, it's Acme Support reaching you from a new number.",
 		},
 		ExcludeFrom:    []string{"+12052535597"},
+		OverrideOptout: linqgo.Bool(false),
 		IdempotencyKey: linqgo.String("send-abc123xyz"),
 	})
 	if err != nil {

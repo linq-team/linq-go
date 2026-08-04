@@ -206,15 +206,19 @@ type MessageEventV2ChatHealthStatus struct {
 	// to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// The keyword must be the whole trimmed message, never part of a longer one:
-	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
-	// including case. `OPT OUT` is the exception — it matches in any casing, with or
-	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
-	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
-	// replying on the chat — sustained two-way conversation is treated as a sign the
-	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
-	// your responsibility — Linq surfaces the status but does not block the send.
+	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
+	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
+	// match exactly, including case. `OPT OUT` is the exception — it matches in any
+	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
+	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
+	// or if they keep replying on the chat — sustained two-way conversation is treated
+	// as a sign the stop keyword was a false positive.
+	//
+	// Linq enforces this: while a recipient is opted out, every send to them is
+	// rejected with `403` (error code `2024`) before the message is queued, across
+	// every chat and every line on your account. Nothing is delivered, including a
+	// final courtesy message — to send one, set `override_optout: true` on that single
+	// request.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
@@ -720,6 +724,8 @@ type MessageSentWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -796,6 +802,8 @@ type MessageReceivedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -872,6 +880,8 @@ type MessageReadWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -948,6 +958,8 @@ type MessageDeliveredWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1011,6 +1023,8 @@ type MessageFailedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1107,6 +1121,8 @@ type MessageEditedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1241,15 +1257,19 @@ type MessageEditedWebhookEventDataChatHealthStatus struct {
 	// to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// The keyword must be the whole trimmed message, never part of a longer one:
-	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
-	// including case. `OPT OUT` is the exception — it matches in any casing, with or
-	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
-	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
-	// replying on the chat — sustained two-way conversation is treated as a sign the
-	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
-	// your responsibility — Linq surfaces the status but does not block the send.
+	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
+	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
+	// match exactly, including case. `OPT OUT` is the exception — it matches in any
+	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
+	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
+	// or if they keep replying on the chat — sustained two-way conversation is treated
+	// as a sign the stop keyword was a false positive.
+	//
+	// Linq enforces this: while a recipient is opted out, every send to them is
+	// rejected with `403` (error code `2024`) before the message is queued, across
+	// every chat and every line on your account. Nothing is delivered, including a
+	// final courtesy message — to send one, set `override_optout: true` on that single
+	// request.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
@@ -1310,6 +1330,8 @@ type ReactionAddedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1368,6 +1390,8 @@ type ReactionRemovedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1426,6 +1450,8 @@ type ParticipantAddedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1514,6 +1540,8 @@ type ParticipantRemovedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1603,6 +1631,8 @@ type ChatCreatedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1716,15 +1746,19 @@ type ChatCreatedWebhookEventDataHealthStatus struct {
 	// to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`, and you should send nothing further on this chat.
-	// The keyword must be the whole trimmed message, never part of a longer one:
-	// `STOP` counts, `please stop` does not. Most keywords must match exactly,
-	// including case. `OPT OUT` is the exception — it matches in any casing, with or
-	// without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all count.
-	// It clears if they later send `START`, `OPTIN`, or `UNSTOP`, or if they keep
-	// replying on the chat — sustained two-way conversation is treated as a sign the
-	// stop keyword was a false positive. Suppressing sends to opted-out recipients is
-	// your responsibility — Linq surfaces the status but does not block the send.
+	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
+	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
+	// match exactly, including case. `OPT OUT` is the exception — it matches in any
+	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
+	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
+	// or if they keep replying on the chat — sustained two-way conversation is treated
+	// as a sign the stop keyword was a false positive.
+	//
+	// Linq enforces this: while a recipient is opted out, every send to them is
+	// rejected with `403` (error code `2024`) before the message is queued, across
+	// every chat and every line on your account. Nothing is delivered, including a
+	// final courtesy message — to send one, set `override_optout: true` on that single
+	// request.
 	//
 	// Any of "HEALTHY", "AT_RISK", "CRITICAL", "OPTED_OUT".
 	Status string `json:"status" api:"required"`
@@ -1764,6 +1798,8 @@ type ChatGroupNameUpdatedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1852,6 +1888,8 @@ type ChatGroupIconUpdatedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -1942,6 +1980,8 @@ type ChatGroupNameUpdateFailedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -2028,6 +2068,8 @@ type ChatGroupIconUpdateFailedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -2112,6 +2154,8 @@ type ChatTypingIndicatorStartedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -2188,6 +2232,8 @@ type ChatTypingIndicatorStoppedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -2260,6 +2306,8 @@ type PhoneNumberStatusUpdatedWebhookEvent struct {
 	//
 	// Any of "message.sent", "message.received", "message.read", "message.delivered",
 	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
 	// "participant.added", "participant.removed", "chat.created",
 	// "chat.group_name_updated", "chat.group_icon_updated",
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
@@ -2353,6 +2401,15 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeMessageEdited              PhoneNumberStatusUpdatedWebhookEventEventType = "message.edited"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeReactionAdded              PhoneNumberStatusUpdatedWebhookEventEventType = "reaction.added"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeReactionRemoved            PhoneNumberStatusUpdatedWebhookEventEventType = "reaction.removed"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollReceived               PhoneNumberStatusUpdatedWebhookEventEventType = "poll.received"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollFailed                 PhoneNumberStatusUpdatedWebhookEventEventType = "poll.failed"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollSent                   PhoneNumberStatusUpdatedWebhookEventEventType = "poll.sent"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollDelivered              PhoneNumberStatusUpdatedWebhookEventEventType = "poll.delivered"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollRead                   PhoneNumberStatusUpdatedWebhookEventEventType = "poll.read"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollUpdated                PhoneNumberStatusUpdatedWebhookEventEventType = "poll.updated"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollVoteAdded              PhoneNumberStatusUpdatedWebhookEventEventType = "poll.vote.added"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollVoteRemoved            PhoneNumberStatusUpdatedWebhookEventEventType = "poll.vote.removed"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePollReactionAdded          PhoneNumberStatusUpdatedWebhookEventEventType = "poll.reaction.added"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeParticipantAdded           PhoneNumberStatusUpdatedWebhookEventEventType = "participant.added"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeParticipantRemoved         PhoneNumberStatusUpdatedWebhookEventEventType = "participant.removed"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatCreated                PhoneNumberStatusUpdatedWebhookEventEventType = "chat.created"
