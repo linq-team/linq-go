@@ -491,7 +491,8 @@ type AttachmentNewResponse struct {
 	RequiredHeaders map[string]string `json:"required_headers" api:"required"`
 	// Presigned URL for uploading the file. PUT the raw binary file content to this
 	// URL with the `required_headers`. Do not JSON-encode or multipart-wrap the body.
-	// Expires after 15 minutes.
+	// Expires after 15 minutes. Treat the URL as opaque — the hostname depends on
+	// partner configuration and is the same across sandbox and production.
 	UploadURL string `json:"upload_url" api:"required" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
