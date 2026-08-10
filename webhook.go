@@ -1073,7 +1073,10 @@ func (r *MessageFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 // In rare cases the message can still be delivered after this event fires — a
 // `message.delivered` webhook for the same message ID may follow.
 type MessageFailedWebhookEventData struct {
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -2031,7 +2034,10 @@ func (r *ChatGroupNameUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupNameUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -2119,7 +2125,10 @@ func (r *ChatGroupIconUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupIconUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
