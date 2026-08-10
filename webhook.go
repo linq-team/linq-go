@@ -1082,19 +1082,34 @@ type MessageFailedWebhookEventData struct {
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
 	// Chat identifier (UUID)
 	ChatID string `json:"chat_id"`
+	// Opaque diagnostic code identifying the specific failure class within `code`.
+	// Values are not enumerated and may change without notice — log it and include it
+	// in support requests, but do not branch on it.
+	DetailCode int64 `json:"detail_code" api:"nullable"`
 	// Message identifier (UUID)
 	MessageID string `json:"message_id"`
+	// Preferred messaging service type. Includes "auto" for default fallback behavior.
+	//
+	// Any of "iMessage", "SMS", "RCS", "auto".
+	PreferredService string `json:"preferred_service" api:"nullable"`
 	// Human-readable description of the failure
 	Reason string `json:"reason"`
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Code        respjson.Field
-		FailedAt    respjson.Field
-		ChatID      respjson.Field
-		MessageID   respjson.Field
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Code             respjson.Field
+		FailedAt         respjson.Field
+		ChatID           respjson.Field
+		DetailCode       respjson.Field
+		MessageID        respjson.Field
+		PreferredService respjson.Field
+		Reason           respjson.Field
+		Service          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -2621,9 +2636,8 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
-	IdempotencyKey string `json:"idempotency_key"`
-	// This field is from variant [MessageEventV2].
-	PreferredService MessageEventV2PreferredService `json:"preferred_service"`
+	IdempotencyKey   string `json:"idempotency_key"`
+	PreferredService string `json:"preferred_service"`
 	// This field is from variant [MessageEventV2].
 	ReadAt time.Time `json:"read_at"`
 	// This field is from variant [MessageEventV2].
@@ -2633,10 +2647,12 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	SentAt time.Time `json:"sent_at"`
 	// This field is from variant [MessageFailedWebhookEventData].
-	Code      int64     `json:"code"`
-	FailedAt  time.Time `json:"failed_at"`
-	ChatID    string    `json:"chat_id"`
-	MessageID string    `json:"message_id"`
+	Code     int64     `json:"code"`
+	FailedAt time.Time `json:"failed_at"`
+	ChatID   string    `json:"chat_id"`
+	// This field is from variant [MessageFailedWebhookEventData].
+	DetailCode int64  `json:"detail_code"`
+	MessageID  string `json:"message_id"`
 	// This field is from variant [MessageFailedWebhookEventData].
 	Reason string `json:"reason"`
 	// This field is from variant [MessageEditedWebhookEventData].
@@ -2712,6 +2728,7 @@ type UnwrapWebhookEventUnionData struct {
 		Code               respjson.Field
 		FailedAt           respjson.Field
 		ChatID             respjson.Field
+		DetailCode         respjson.Field
 		MessageID          respjson.Field
 		Reason             respjson.Field
 		EditedAt           respjson.Field
