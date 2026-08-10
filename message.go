@@ -1128,7 +1128,16 @@ type MessageUpdateAppCardParams struct {
 	// update.
 	Interactive param.Opt[bool] `json:"interactive,omitzero"`
 	// URL the recipient's app opens when they tap the updated card.
+	//
+	// Mutually exclusive with `action` and `raw_payload_data`.
 	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	// Invokes an action on an experience — a third party that renders inside Linq's
+	// iMessage app. Linq resolves the recipient's connection, mints any session the
+	// action needs, composes the card and sends it; none of that is visible to you.
+	//
+	// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
+	// fields each accepts.
+	Action MessageUpdateAppCardParamsAction `json:"action,omitzero"`
 	paramObj
 }
 
@@ -1183,5 +1192,35 @@ func (r MessageUpdateAppCardParamsLayout) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageUpdateAppCardParamsLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Invokes an action on an experience — a third party that renders inside Linq's
+// iMessage app. Linq resolves the recipient's connection, mints any session the
+// action needs, composes the card and sends it; none of that is visible to you.
+//
+// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
+// fields each accepts.
+//
+// The properties Action, Experience are required.
+type MessageUpdateAppCardParamsAction struct {
+	// Which of its actions, e.g. `attach_card`.
+	Action string `json:"action" api:"required"`
+	// The experience to invoke, e.g. `agentcard`.
+	Experience string `json:"experience" api:"required"`
+	// Values for the fields this action exposes. Keys are exactly the field names
+	// listed for the action — no mapping, no nesting.
+	//
+	// Display copy only, except a `url`-type field — that value sets the destination,
+	// and must be an absolute `https` URL.
+	Params map[string]any `json:"params,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParamsAction) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParamsAction
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParamsAction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

@@ -205,14 +205,14 @@ type MessageEventV2ChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
-	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
-	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
-	// match exactly, including case. `OPT OUT` is the exception — it matches in any
-	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
-	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
-	// or if they keep replying on the chat — sustained two-way conversation is treated
-	// as a sign the stop keyword was a false positive.
+	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
+	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
+	// longer one: `STOP` counts, `please stop` does not. Most keywords must match
+	// exactly, including case. `OPT OUT` is the exception — it matches in any casing,
+	// with or without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all
+	// count. It clears as soon as they reply again: any later message from them that
+	// is not itself an opt-out keyword opts them back in immediately — a reply in any
+	// conversation with you counts, the same way the block does.
 	//
 	// Linq enforces this: while a recipient is opted out, every send to them is
 	// rejected with `403` (error code `2024`) before the message is queued, across
@@ -1072,25 +1072,43 @@ func (r *MessageFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 // In rare cases the message can still be delivered after this event fires — a
 // `message.delivered` webhook for the same message ID may follow.
 type MessageFailedWebhookEventData struct {
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
 	// Chat identifier (UUID)
 	ChatID string `json:"chat_id"`
+	// Opaque diagnostic code identifying the specific failure class within `code`.
+	// Values are not enumerated and may change without notice — log it and include it
+	// in support requests, but do not branch on it.
+	DetailCode int64 `json:"detail_code" api:"nullable"`
 	// Message identifier (UUID)
 	MessageID string `json:"message_id"`
+	// Preferred messaging service type. Includes "auto" for default fallback behavior.
+	//
+	// Any of "iMessage", "SMS", "RCS", "auto".
+	PreferredService string `json:"preferred_service" api:"nullable"`
 	// Human-readable description of the failure
 	Reason string `json:"reason"`
+	// Messaging service type
+	//
+	// Any of "iMessage", "SMS", "RCS".
+	Service shared.ServiceType `json:"service" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Code        respjson.Field
-		FailedAt    respjson.Field
-		ChatID      respjson.Field
-		MessageID   respjson.Field
-		Reason      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Code             respjson.Field
+		FailedAt         respjson.Field
+		ChatID           respjson.Field
+		DetailCode       respjson.Field
+		MessageID        respjson.Field
+		PreferredService respjson.Field
+		Reason           respjson.Field
+		Service          respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
 	} `json:"-"`
 }
 
@@ -1256,14 +1274,14 @@ type MessageEditedWebhookEventDataChatHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
-	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
-	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
-	// match exactly, including case. `OPT OUT` is the exception — it matches in any
-	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
-	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
-	// or if they keep replying on the chat — sustained two-way conversation is treated
-	// as a sign the stop keyword was a false positive.
+	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
+	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
+	// longer one: `STOP` counts, `please stop` does not. Most keywords must match
+	// exactly, including case. `OPT OUT` is the exception — it matches in any casing,
+	// with or without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all
+	// count. It clears as soon as they reply again: any later message from them that
+	// is not itself an opt-out keyword opts them back in immediately — a reply in any
+	// conversation with you counts, the same way the block does.
 	//
 	// Linq enforces this: while a recipient is opted out, every send to them is
 	// rejected with `403` (error code `2024`) before the message is queued, across
@@ -1745,14 +1763,14 @@ type ChatCreatedWebhookEventDataHealthStatus struct {
 	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
 	// to react. `doc_url` deep-links to the relevant section.
 	//
-	// `OPTED_OUT` is terminal — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`,
-	// `CANCEL`, `END`, or `QUIT`. The keyword must be the whole trimmed message, never
-	// part of a longer one: `STOP` counts, `please stop` does not. Most keywords must
-	// match exactly, including case. `OPT OUT` is the exception — it matches in any
-	// casing, with or without the space or a hyphen, so `opt out`, `Opt-Out` and
-	// `optout` all count. It clears if they later send `START`, `OPTIN`, or `UNSTOP`,
-	// or if they keep replying on the chat — sustained two-way conversation is treated
-	// as a sign the stop keyword was a false positive.
+	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
+	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
+	// longer one: `STOP` counts, `please stop` does not. Most keywords must match
+	// exactly, including case. `OPT OUT` is the exception — it matches in any casing,
+	// with or without the space or a hyphen, so `opt out`, `Opt-Out` and `optout` all
+	// count. It clears as soon as they reply again: any later message from them that
+	// is not itself an opt-out keyword opts them back in immediately — a reply in any
+	// conversation with you counts, the same way the block does.
 	//
 	// Linq enforces this: while a recipient is opted out, every send to them is
 	// rejected with `403` (error code `2024`) before the message is queued, across
@@ -2028,7 +2046,10 @@ func (r *ChatGroupNameUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupNameUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -2116,7 +2137,10 @@ func (r *ChatGroupIconUpdateFailedWebhookEvent) UnmarshalJSON(data []byte) error
 type ChatGroupIconUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
-	// Error codes in webhook failure events (3007, 4001, 4005).
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
+	// update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
 	FailedAt time.Time `json:"failed_at" api:"required" format:"date-time"`
@@ -2609,9 +2633,8 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
-	IdempotencyKey string `json:"idempotency_key"`
-	// This field is from variant [MessageEventV2].
-	PreferredService MessageEventV2PreferredService `json:"preferred_service"`
+	IdempotencyKey   string `json:"idempotency_key"`
+	PreferredService string `json:"preferred_service"`
 	// This field is from variant [MessageEventV2].
 	ReadAt time.Time `json:"read_at"`
 	// This field is from variant [MessageEventV2].
@@ -2621,10 +2644,12 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	SentAt time.Time `json:"sent_at"`
 	// This field is from variant [MessageFailedWebhookEventData].
-	Code      int64     `json:"code"`
-	FailedAt  time.Time `json:"failed_at"`
-	ChatID    string    `json:"chat_id"`
-	MessageID string    `json:"message_id"`
+	Code     int64     `json:"code"`
+	FailedAt time.Time `json:"failed_at"`
+	ChatID   string    `json:"chat_id"`
+	// This field is from variant [MessageFailedWebhookEventData].
+	DetailCode int64  `json:"detail_code"`
+	MessageID  string `json:"message_id"`
 	// This field is from variant [MessageFailedWebhookEventData].
 	Reason string `json:"reason"`
 	// This field is from variant [MessageEditedWebhookEventData].
@@ -2700,6 +2725,7 @@ type UnwrapWebhookEventUnionData struct {
 		Code               respjson.Field
 		FailedAt           respjson.Field
 		ChatID             respjson.Field
+		DetailCode         respjson.Field
 		MessageID          respjson.Field
 		Reason             respjson.Field
 		EditedAt           respjson.Field

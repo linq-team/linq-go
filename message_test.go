@@ -246,6 +246,13 @@ func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
 				TrailingCaption:    linqgo.String("2 min"),
 				TrailingSubcaption: linqgo.String("expires"),
 			},
+			Action: linqgo.MessageUpdateAppCardParamsAction{
+				Action:     "attach_card",
+				Experience: "agentcard",
+				Params: map[string]any{
+					"foo": "bar",
+				},
+			},
 			FallbackText: linqgo.String("Score update"),
 			Interactive:  linqgo.Bool(true),
 			URL:          linqgo.String("https://app.example.com/card?game=7f3a&move=2"),

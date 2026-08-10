@@ -234,6 +234,20 @@ Methods:
 - <code title="post /v3/payments/{paymentId}/cancel">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v3/payments/{paymentId}/credentials">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Credentials">Credentials</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentCredentialsResponse">PaymentCredentialsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# BlockedHandles
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleEntry">BlockedHandleEntry</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleListResponse">BlockedHandleListResponse</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleBlockResponse">BlockedHandleBlockResponse</a>
+
+Methods:
+
+- <code title="get /v3/blocked_handles">client.BlockedHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleListResponse">BlockedHandleListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v3/blocked_handles">client.BlockedHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleService.Block">Block</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleBlockParams">BlockedHandleBlockParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleBlockResponse">BlockedHandleBlockResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v3/blocked_handles">client.BlockedHandles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleService.Unblock">Unblock</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#BlockedHandleUnblockParams">BlockedHandleUnblockParams</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+
 # Experiences
 
 Response Types:
