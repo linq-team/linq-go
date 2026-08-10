@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.30.0](https://github.com/linq-team/linq-go/compare/v0.29.1...v0.30.0) (2026-08-10)
+
+
+### Features
+
+* add blocked handles api for managing inbound message filtering ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+* add diagnostic fields to message failure webhook events ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+* regenerate SDKs from updated API spec ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+
+
+### Bug Fixes
+
+* clarify opted-out status clearing behavior in chat health ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+* clarify stop keyword behavior and matching rules ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+* clarify stop keyword behavior for multi-chat replies ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+* expand webhook error code documentation for failure events ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+
+
+### Documentation
+
+* clarify presigned url behavior and configuration ([c554139](https://github.com/linq-team/linq-go/commit/c554139366c7cfd7257a65fe410b54e97aabcf5b))
+
 ## [0.29.1](https://github.com/linq-team/linq-go/compare/v0.29.0...v0.29.1) (2026-08-04)
 
 
