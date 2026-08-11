@@ -749,7 +749,7 @@ const (
 // from/to).
 //
 // A message carries EITHER `parts` — text and attachments, which compose into one
-// bubble — or a single `agentkit` invocation, which renders an experience inside
+// bubble — or a single `experience` invocation, which renders an experience inside
 // Linq's iMessage app. Never both: an app card is the whole message (Apple's
 // `MSMessage` cannot coexist with text), so copy and a card are two sends, not
 // one.
@@ -759,15 +759,15 @@ type MessageContentParam struct {
 	// ephemeral message that has since expired — returns 404; the message is never
 	// resent.
 	IdempotencyKey param.Opt[string] `json:"idempotency_key,omitzero"`
+	// iMessage effect to apply to this message (screen or bubble effect)
+	Effect MessageEffectParam `json:"effect,omitzero"`
 	// Invokes an action on an experience — a third party that renders inside Linq's
 	// iMessage app. Linq resolves the recipient's connection, mints any session the
 	// action needs, composes the card and sends it; none of that is visible to you.
 	//
 	// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
 	// fields each accepts.
-	Agentkit MessageContentAgentkitParam `json:"agentkit,omitzero"`
-	// iMessage effect to apply to this message (screen or bubble effect)
-	Effect MessageEffectParam `json:"effect,omitzero"`
+	Experience MessageContentExperienceParam `json:"experience,omitzero"`
 	// Array of message parts. Each part can be text, media, or link. Parts are
 	// displayed in order. Text and media can be mixed freely, but a `link` part must
 	// be the only part in the message.
@@ -830,12 +830,12 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 // Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
 // fields each accepts.
 //
-// The properties Action, Experience are required.
-type MessageContentAgentkitParam struct {
+// The properties Action, Name are required.
+type MessageContentExperienceParam struct {
 	// Which of its actions, e.g. `attach_card`.
 	Action string `json:"action" api:"required"`
 	// The experience to invoke, e.g. `agentcard` or `agentpay`.
-	Experience string `json:"experience" api:"required"`
+	Name string `json:"name" api:"required"`
 	// Values for the fields this action exposes. Keys are exactly the field names
 	// listed for the action — no mapping, no nesting.
 	//
@@ -849,11 +849,11 @@ type MessageContentAgentkitParam struct {
 	paramObj
 }
 
-func (r MessageContentAgentkitParam) MarshalJSON() (data []byte, err error) {
-	type shadow MessageContentAgentkitParam
+func (r MessageContentExperienceParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentExperienceParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MessageContentAgentkitParam) UnmarshalJSON(data []byte) error {
+func (r *MessageContentExperienceParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1352,7 +1352,7 @@ type ChatNewParams struct {
 	// from/to).
 	//
 	// A message carries EITHER `parts` — text and attachments, which compose into one
-	// bubble — or a single `agentkit` invocation, which renders an experience inside
+	// bubble — or a single `experience` invocation, which renders an experience inside
 	// Linq's iMessage app. Never both: an app card is the whole message (Apple's
 	// `MSMessage` cannot coexist with text), so copy and a card are two sends, not
 	// one.

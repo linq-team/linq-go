@@ -946,7 +946,7 @@ type MessageNewParams struct {
 	// from/to).
 	//
 	// A message carries EITHER `parts` — text and attachments, which compose into one
-	// bubble — or a single `agentkit` invocation, which renders an experience inside
+	// bubble — or a single `experience` invocation, which renders an experience inside
 	// Linq's iMessage app. Never both: an app card is the whole message (Apple's
 	// `MSMessage` cannot coexist with text), so copy and a card are two sends, not
 	// one.
@@ -1130,7 +1130,7 @@ type MessageUpdateAppCardParams struct {
 	Interactive param.Opt[bool] `json:"interactive,omitzero"`
 	// URL the recipient's app opens when they tap the updated card.
 	//
-	// Mutually exclusive with `agentkit` and `raw_payload_data`.
+	// Mutually exclusive with `experience` and `raw_payload_data`.
 	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
 	// Invokes an action on an experience — a third party that renders inside Linq's
 	// iMessage app. Linq resolves the recipient's connection, mints any session the
@@ -1138,7 +1138,7 @@ type MessageUpdateAppCardParams struct {
 	//
 	// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
 	// fields each accepts.
-	Agentkit MessageUpdateAppCardParamsAgentkit `json:"agentkit,omitzero"`
+	Experience MessageUpdateAppCardParamsExperience `json:"experience,omitzero"`
 	paramObj
 }
 
@@ -1203,12 +1203,12 @@ func (r *MessageUpdateAppCardParamsLayout) UnmarshalJSON(data []byte) error {
 // Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
 // fields each accepts.
 //
-// The properties Action, Experience are required.
-type MessageUpdateAppCardParamsAgentkit struct {
+// The properties Action, Name are required.
+type MessageUpdateAppCardParamsExperience struct {
 	// Which of its actions, e.g. `attach_card`.
 	Action string `json:"action" api:"required"`
 	// The experience to invoke, e.g. `agentcard` or `agentpay`.
-	Experience string `json:"experience" api:"required"`
+	Name string `json:"name" api:"required"`
 	// Values for the fields this action exposes. Keys are exactly the field names
 	// listed for the action — no mapping, no nesting.
 	//
@@ -1222,10 +1222,10 @@ type MessageUpdateAppCardParamsAgentkit struct {
 	paramObj
 }
 
-func (r MessageUpdateAppCardParamsAgentkit) MarshalJSON() (data []byte, err error) {
-	type shadow MessageUpdateAppCardParamsAgentkit
+func (r MessageUpdateAppCardParamsExperience) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParamsExperience
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MessageUpdateAppCardParamsAgentkit) UnmarshalJSON(data []byte) error {
+func (r *MessageUpdateAppCardParamsExperience) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

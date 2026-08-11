@@ -30,16 +30,16 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 	_, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
-			Agentkit: linqgo.MessageContentAgentkitParam{
-				Action:     "attach_card",
-				Experience: "agentcard",
-				Params: map[string]any{
-					"foo": "bar",
-				},
-			},
 			Effect: linqgo.MessageEffectParam{
 				Name: linqgo.String("confetti"),
 				Type: linqgo.MessageEffectTypeScreen,
+			},
+			Experience: linqgo.MessageContentExperienceParam{
+				Action: "attach_card",
+				Name:   "agentcard",
+				Params: map[string]any{
+					"foo": "bar",
+				},
 			},
 			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{

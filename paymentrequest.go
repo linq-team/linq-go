@@ -133,8 +133,8 @@ import (
 //
 //	{
 //	  "message": {
-//	    "agentkit": {
-//	      "experience": "agentpay",
+//	    "experience": {
+//	      "name": "agentpay",
 //	      "action": "request_payment",
 //	      "params": { "checkout_url": "https://zero.linqapp.com/pay/acme?session=tok_..." }
 //	    }
