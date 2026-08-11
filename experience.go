@@ -20,15 +20,18 @@ import (
 // of as text or a link. You invoke one by name; Linq resolves the recipient, mints
 // any session it needs, composes the card and sends it.
 //
+// Send it to `POST /v3/chats/{chatId}/messages`:
+//
 // ```json
-// POST /v3/chats/{chatId}/messages
 //
 //	{
 //	  "message": {
 //	    "experience": {
 //	      "name": "agentpay",
 //	      "action": "request_payment",
-//	      "params": { "checkout_url": "https://zero.linqapp.com/pay/acme?session=tok_..." }
+//	      "params": {
+//	        "checkout_url": "https://zero.linqapp.com/pay/acme?session=tok_..."
+//	      }
 //	    }
 //	  }
 //	}
