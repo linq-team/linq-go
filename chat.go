@@ -749,9 +749,10 @@ const (
 // from/to).
 //
 // A message carries EITHER `parts` — text and attachments, which compose into one
-// bubble — or a single `action`, which invokes an experience inside Linq's
-// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
-// cannot coexist with text), so copy and a card are two sends, not one.
+// bubble — or a single `agentkit` invocation, which renders an experience inside
+// Linq's iMessage app. Never both: an app card is the whole message (Apple's
+// `MSMessage` cannot coexist with text), so copy and a card are two sends, not
+// one.
 type MessageContentParam struct {
 	// Optional idempotency key for this message. Use this to prevent duplicate sends
 	// of the same message. Reusing a key whose message was deleted — or was an
@@ -764,7 +765,7 @@ type MessageContentParam struct {
 	//
 	// Call `GET /v3/experiences/{experience}` for the actions you may invoke and the
 	// fields each accepts.
-	Action MessageContentActionParam `json:"action,omitzero"`
+	Agentkit MessageContentAgentkitParam `json:"agentkit,omitzero"`
 	// iMessage effect to apply to this message (screen or bubble effect)
 	Effect MessageEffectParam `json:"effect,omitzero"`
 	// Array of message parts. Each part can be text, media, or link. Parts are
@@ -830,25 +831,29 @@ func (r *MessageContentParam) UnmarshalJSON(data []byte) error {
 // fields each accepts.
 //
 // The properties Action, Experience are required.
-type MessageContentActionParam struct {
+type MessageContentAgentkitParam struct {
 	// Which of its actions, e.g. `attach_card`.
 	Action string `json:"action" api:"required"`
-	// The experience to invoke, e.g. `agentcard`.
+	// The experience to invoke, e.g. `agentcard` or `agentpay`.
 	Experience string `json:"experience" api:"required"`
 	// Values for the fields this action exposes. Keys are exactly the field names
 	// listed for the action — no mapping, no nesting.
 	//
 	// Display copy only, except a `url`-type field — that value sets the destination,
 	// and must be an absolute `https` URL.
+	//
+	// Some fields are read rather than sent: `agentpay`'s `request_payment` takes only
+	// a `checkout_url` and resolves the amount and reason from that payment request
+	// itself, so the card cannot state a figure the checkout will not charge.
 	Params map[string]any `json:"params,omitzero"`
 	paramObj
 }
 
-func (r MessageContentActionParam) MarshalJSON() (data []byte, err error) {
-	type shadow MessageContentActionParam
+func (r MessageContentAgentkitParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentAgentkitParam
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *MessageContentActionParam) UnmarshalJSON(data []byte) error {
+func (r *MessageContentAgentkitParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1347,9 +1352,10 @@ type ChatNewParams struct {
 	// from/to).
 	//
 	// A message carries EITHER `parts` — text and attachments, which compose into one
-	// bubble — or a single `action`, which invokes an experience inside Linq's
-	// iMessage app. Never both: an app card is the whole message (Apple's `MSMessage`
-	// cannot coexist with text), so copy and a card are two sends, not one.
+	// bubble — or a single `agentkit` invocation, which renders an experience inside
+	// Linq's iMessage app. Never both: an app card is the whole message (Apple's
+	// `MSMessage` cannot coexist with text), so copy and a card are two sends, not
+	// one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
 	// Array of recipient handles (phone numbers in E.164 format or email addresses).
 	// For individual chats, provide one recipient. For group chats, provide multiple.

@@ -29,7 +29,7 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.New(context.TODO(), linqgo.MessageNewParams{
 		Message: linqgo.MessageContentParam{
-			Action: linqgo.MessageContentActionParam{
+			Agentkit: linqgo.MessageContentAgentkitParam{
 				Action:     "attach_card",
 				Experience: "agentcard",
 				Params: map[string]any{
@@ -246,7 +246,7 @@ func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
 				TrailingCaption:    linqgo.String("2 min"),
 				TrailingSubcaption: linqgo.String("expires"),
 			},
-			Action: linqgo.MessageUpdateAppCardParamsAction{
+			Agentkit: linqgo.MessageUpdateAppCardParamsAgentkit{
 				Action:     "attach_card",
 				Experience: "agentcard",
 				Params: map[string]any{

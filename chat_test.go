@@ -30,7 +30,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 	_, err := client.Chats.New(context.TODO(), linqgo.ChatNewParams{
 		From: "+12052535597",
 		Message: linqgo.MessageContentParam{
-			Action: linqgo.MessageContentActionParam{
+			Agentkit: linqgo.MessageContentAgentkitParam{
 				Action:     "attach_card",
 				Experience: "agentcard",
 				Params: map[string]any{
