@@ -26,7 +26,7 @@ func TestExperienceGet(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	_, err := client.Experiences.Get(context.TODO(), "experience")
+	_, err := client.Experiences.Get(context.TODO(), "agentpay")
 	if err != nil {
 		var apierr *linqgo.Error
 		if errors.As(err, &apierr) {
