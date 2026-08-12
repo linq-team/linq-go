@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.31.1](https://github.com/linq-team/linq-go/compare/v0.31.0...v0.31.1) (2026-08-12)
+
+
+### Chores
+
+* add auto-merge workflow for release prs ([173ceff](https://github.com/linq-team/linq-go/commit/173ceff52b075889c86c5ea0fd827153343b4b1d))
+
+
+### Documentation
+
+* add parameter descriptions for phone number audit endpoints ([173ceff](https://github.com/linq-team/linq-go/commit/173ceff52b075889c86c5ea0fd827153343b4b1d))
+
 ## [0.31.0](https://github.com/linq-team/linq-go/compare/v0.30.0...v0.31.0) (2026-08-12)
 
 
