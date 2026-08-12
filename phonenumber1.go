@@ -94,7 +94,7 @@ func (r *PhoneNumberService) GetReputationAudit(ctx context.Context, auditID str
 // returns `409` while the first is still in progress), and a new audit can't be
 // started for the same line until a cooldown elapses (`429`, with `Retry-After`
 // carrying the wait).
-func (r *PhoneNumberService) StartReputationAudit(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *PhoneNumberStartReputationAuditResponse, err error) {
+func (r *PhoneNumberService) StartReputationAudit(ctx context.Context, phoneNumber string, opts ...option.RequestOption) (res *ReputationAuditStarted, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phoneNumber parameter")
@@ -104,6 +104,38 @@ func (r *PhoneNumberService) StartReputationAudit(ctx context.Context, phoneNumb
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
+
+type ReputationActionItem struct {
+	Detail string `json:"detail"`
+	// Any of "high", "medium", "low".
+	ExpectedImpact ReputationActionItemExpectedImpact `json:"expected_impact"`
+	// 1 = do first
+	Priority int64  `json:"priority"`
+	Title    string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Detail         respjson.Field
+		ExpectedImpact respjson.Field
+		Priority       respjson.Field
+		Title          respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationActionItem) RawJSON() string { return r.JSON.raw }
+func (r *ReputationActionItem) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ReputationActionItemExpectedImpact string
+
+const (
+	ReputationActionItemExpectedImpactHigh   ReputationActionItemExpectedImpact = "high"
+	ReputationActionItemExpectedImpactMedium ReputationActionItemExpectedImpact = "medium"
+	ReputationActionItemExpectedImpactLow    ReputationActionItemExpectedImpact = "low"
+)
 
 type ReputationAudit struct {
 	AuditID string `json:"audit_id" api:"required"`
@@ -145,6 +177,39 @@ const (
 	ReputationAuditStatusPending  ReputationAuditStatus = "pending"
 	ReputationAuditStatusComplete ReputationAuditStatus = "complete"
 	ReputationAuditStatusError    ReputationAuditStatus = "error"
+)
+
+type ReputationAuditStarted struct {
+	// Identifier for this audit. Poll
+	// `GET /v3/phone_numbers/{phoneNumber}/reputation_audit/{auditId}` until `status`
+	// is `complete` or `error`.
+	AuditID string `json:"audit_id" api:"required"`
+	// A newly started audit is `pending`.
+	//
+	// Any of "pending", "complete", "error".
+	Status ReputationAuditStartedStatus `json:"status" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AuditID     respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationAuditStarted) RawJSON() string { return r.JSON.raw }
+func (r *ReputationAuditStarted) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A newly started audit is `pending`.
+type ReputationAuditStartedStatus string
+
+const (
+	ReputationAuditStartedStatusPending  ReputationAuditStartedStatus = "pending"
+	ReputationAuditStartedStatusComplete ReputationAuditStartedStatus = "complete"
+	ReputationAuditStartedStatusError    ReputationAuditStartedStatus = "error"
 )
 
 type ReputationDriver struct {
@@ -240,9 +305,9 @@ const (
 type ReputationEvidence struct {
 	// Worst first — most messages sent after the stop request; honor these
 	// immediately.
-	OptOutChats []ReputationEvidenceOptOutChat `json:"opt_out_chats"`
+	OptOutChats []ReputationOptOutChat `json:"opt_out_chats"`
 	// Up to 15, worst first.
-	UnhealthyChats []ReputationEvidenceUnhealthyChat `json:"unhealthy_chats"`
+	UnhealthyChats []ReputationUnhealthyChat `json:"unhealthy_chats"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		OptOutChats    respjson.Field
@@ -258,7 +323,7 @@ func (r *ReputationEvidence) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReputationEvidenceOptOutChat struct {
+type ReputationOptOutChat struct {
 	ChatID string `json:"chat_id"`
 	// Outbound messages sent after the recipient asked to stop.
 	MessagesAfterStop int64 `json:"messages_after_stop"`
@@ -272,44 +337,14 @@ type ReputationEvidenceOptOutChat struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ReputationEvidenceOptOutChat) RawJSON() string { return r.JSON.raw }
-func (r *ReputationEvidenceOptOutChat) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type ReputationEvidenceUnhealthyChat struct {
-	ChatID string `json:"chat_id"`
-	// What is dragging this conversation down, in the same vocabulary as the report's
-	// drivers. Each key's meaning and the fix for it are documented on
-	// `ReputationDriverKey`.
-	//
-	// Any of "low_engagement", "overall_conversation_health", "volume_spike",
-	// "new_conversation_rate", "opt_out_handling", "flagged", "other".
-	DriverKeys []string `json:"driver_keys"`
-	// The conversation's current health — the same value `GET /v3/chats/{chatId}`
-	// reports for it.
-	//
-	// Any of "AT_RISK", "CRITICAL", "OPTED_OUT".
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ChatID      respjson.Field
-		DriverKeys  respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationEvidenceUnhealthyChat) RawJSON() string { return r.JSON.raw }
-func (r *ReputationEvidenceUnhealthyChat) UnmarshalJSON(data []byte) error {
+func (r ReputationOptOutChat) RawJSON() string { return r.JSON.raw }
+func (r *ReputationOptOutChat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 type ReputationReport struct {
 	// Ordered by `priority`; 1 = do first.
-	ActionItems []ReputationReportActionItem `json:"action_items"`
+	ActionItems []ReputationActionItem `json:"action_items"`
 	// Ranked, highest impact first.
 	Drivers []ReputationDriver `json:"drivers"`
 	// The specific conversations behind the drivers, so partners can verify every
@@ -359,30 +394,6 @@ func (r *ReputationReport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ReputationReportActionItem struct {
-	Detail string `json:"detail"`
-	// Any of "high", "medium", "low".
-	ExpectedImpact string `json:"expected_impact"`
-	// 1 = do first
-	Priority int64  `json:"priority"`
-	Title    string `json:"title"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail         respjson.Field
-		ExpectedImpact respjson.Field
-		Priority       respjson.Field
-		Title          respjson.Field
-		ExtraFields    map[string]respjson.Field
-		raw            string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ReputationReportActionItem) RawJSON() string { return r.JSON.raw }
-func (r *ReputationReportActionItem) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Current reputation of this phone line.
 //
 //   - `HEALTHY` — The line is in good standing. Send normally.
@@ -401,6 +412,43 @@ const (
 	ReputationReportSeverityHealthy  ReputationReportSeverity = "HEALTHY"
 	ReputationReportSeverityAtRisk   ReputationReportSeverity = "AT_RISK"
 	ReputationReportSeverityCritical ReputationReportSeverity = "CRITICAL"
+)
+
+type ReputationUnhealthyChat struct {
+	ChatID string `json:"chat_id"`
+	// What is dragging this conversation down, in the same vocabulary as the report's
+	// drivers. Each key's meaning and the fix for it are documented on
+	// `ReputationDriverKey`.
+	DriverKeys []ReputationDriverKey `json:"driver_keys"`
+	// The conversation's current health — the same value `GET /v3/chats/{chatId}`
+	// reports for it.
+	//
+	// Any of "AT_RISK", "CRITICAL", "OPTED_OUT".
+	Status ReputationUnhealthyChatStatus `json:"status"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChatID      respjson.Field
+		DriverKeys  respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ReputationUnhealthyChat) RawJSON() string { return r.JSON.raw }
+func (r *ReputationUnhealthyChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The conversation's current health — the same value `GET /v3/chats/{chatId}`
+// reports for it.
+type ReputationUnhealthyChatStatus string
+
+const (
+	ReputationUnhealthyChatStatusAtRisk   ReputationUnhealthyChatStatus = "AT_RISK"
+	ReputationUnhealthyChatStatusCritical ReputationUnhealthyChatStatus = "CRITICAL"
+	ReputationUnhealthyChatStatusOptedOut ReputationUnhealthyChatStatus = "OPTED_OUT"
 )
 
 type PhoneNumberUpdateResponse struct {
@@ -519,39 +567,6 @@ func (r PhoneNumberListResponsePhoneNumberReputation) RawJSON() string { return 
 func (r *PhoneNumberListResponsePhoneNumberReputation) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type PhoneNumberStartReputationAuditResponse struct {
-	// Identifier for this audit. Poll
-	// `GET /v3/phone_numbers/{phoneNumber}/reputation_audit/{auditId}` until `status`
-	// is `complete` or `error`.
-	AuditID string `json:"audit_id" api:"required"`
-	// A newly started audit is `pending`.
-	//
-	// Any of "pending", "complete", "error".
-	Status PhoneNumberStartReputationAuditResponseStatus `json:"status" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		AuditID     respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r PhoneNumberStartReputationAuditResponse) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberStartReputationAuditResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A newly started audit is `pending`.
-type PhoneNumberStartReputationAuditResponseStatus string
-
-const (
-	PhoneNumberStartReputationAuditResponseStatusPending  PhoneNumberStartReputationAuditResponseStatus = "pending"
-	PhoneNumberStartReputationAuditResponseStatusComplete PhoneNumberStartReputationAuditResponseStatus = "complete"
-	PhoneNumberStartReputationAuditResponseStatusError    PhoneNumberStartReputationAuditResponseStatus = "error"
-)
 
 type PhoneNumberUpdateParams struct {
 	// The forwarding number in E.164 format. Set to null or empty string to clear.
