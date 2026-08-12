@@ -29,16 +29,16 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Messages.New(context.TODO(), linqgo.MessageNewParams{
 		Message: linqgo.MessageContentParam{
-			Action: linqgo.MessageContentActionParam{
-				Action:     "attach_card",
-				Experience: "agentcard",
-				Params: map[string]any{
-					"foo": "bar",
-				},
-			},
 			Effect: linqgo.MessageEffectParam{
 				Name: linqgo.String("confetti"),
 				Type: linqgo.MessageEffectTypeScreen,
+			},
+			Experience: linqgo.MessageContentExperienceParam{
+				Action: "attach_card",
+				Name:   "agentcard",
+				Params: map[string]any{
+					"foo": "bar",
+				},
 			},
 			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
@@ -246,9 +246,9 @@ func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
 				TrailingCaption:    linqgo.String("2 min"),
 				TrailingSubcaption: linqgo.String("expires"),
 			},
-			Action: linqgo.MessageUpdateAppCardParamsAction{
-				Action:     "attach_card",
-				Experience: "agentcard",
+			Experience: linqgo.MessageUpdateAppCardParamsExperience{
+				Action: "attach_card",
+				Name:   "agentcard",
 				Params: map[string]any{
 					"foo": "bar",
 				},
