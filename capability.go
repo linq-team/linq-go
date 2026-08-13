@@ -47,6 +47,13 @@ func (r *CapabilityService) CheckIMessage(ctx context.Context, body CapabilityCh
 }
 
 // Check whether a recipient address (phone number) supports RCS messaging.
+//
+// A `200` means the check ran and the answer is about the **recipient**. A `503`
+// means the check could not produce an answer because of a fault on the **sender**
+// line — `4004` (RCS not turned on for the line), `4009` (line has no RCS
+// account), or `4010` (the check could not run). Treat all three as "unknown",
+// never as "the recipient does not support RCS", and do not cache them as a
+// negative result.
 func (r *CapabilityService) CheckRCS(ctx context.Context, body CapabilityCheckRCSParams, opts ...option.RequestOption) (res *HandleCheckResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_rcs"
@@ -77,12 +84,27 @@ type HandleCheckResponse struct {
 	Address string `json:"address" api:"required"`
 	// Whether the recipient supports the checked messaging service
 	Available bool `json:"available" api:"required"`
+	// Why `available` is `false`. Only present on a negative result.
+	//
+	// `not_supported` is the only value returned with a `200`, and it means the check
+	// completed and the recipient is genuinely not reachable over this service. On
+	// `check_rcs`, sender-side faults do not return `200` — they return `503` with a
+	// specific error code. `check_imessage` does not use this mapping.
+	//
+	// Any of "not_supported".
+	Reason HandleCheckResponseReason `json:"reason"`
+	// The service that would actually carry a message to this address right now, which
+	// is not always the service you checked — a recipient without RCS resolves to
+	// `SMS`. Absent when the check could not determine one.
+	SelectedService string `json:"selected_service"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Address     respjson.Field
-		Available   respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		Address         respjson.Field
+		Available       respjson.Field
+		Reason          respjson.Field
+		SelectedService respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -91,6 +113,18 @@ func (r HandleCheckResponse) RawJSON() string { return r.JSON.raw }
 func (r *HandleCheckResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Why `available` is `false`. Only present on a negative result.
+//
+// `not_supported` is the only value returned with a `200`, and it means the check
+// completed and the recipient is genuinely not reachable over this service. On
+// `check_rcs`, sender-side faults do not return `200` — they return `503` with a
+// specific error code. `check_imessage` does not use this mapping.
+type HandleCheckResponseReason string
+
+const (
+	HandleCheckResponseReasonNotSupported HandleCheckResponseReason = "not_supported"
+)
 
 type CapabilityCheckIMessageParams struct {
 	HandleCheck HandleCheckParam
