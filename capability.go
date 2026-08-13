@@ -48,6 +48,9 @@ func (r *CapabilityService) CheckIMessage(ctx context.Context, body CapabilityCh
 
 // Check whether a recipient address (phone number) supports RCS messaging.
 //
+// `address` must be an E.164 phone number. RCS has no email addressing, so an
+// email is rejected with a `400` rather than attempted.
+//
 // A `200` means the check ran and the answer is about the **recipient**. A `503`
 // means the check could not produce an answer because of a fault on the **sender**
 // line — `4004` (RCS not turned on for the line), `4009` (line has no RCS
@@ -63,7 +66,9 @@ func (r *CapabilityService) CheckRCS(ctx context.Context, body CapabilityCheckRC
 
 // The property Address is required.
 type HandleCheckParam struct {
-	// The recipient phone number or email address to check
+	// The recipient address to check. `check_imessage` accepts an E.164 phone number
+	// or an email address; `check_rcs` accepts an E.164 phone number only and rejects
+	// an email with a `400`, since RCS has no email addressing.
 	Address string `json:"address" api:"required"`
 	// Optional sender phone number. If omitted, an available phone from your pool is
 	// used automatically.
