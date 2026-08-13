@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.32.0](https://github.com/linq-team/linq-go/compare/v0.31.1...v0.32.0) (2026-08-13)
+
+
+### Features
+
+* add detailed 503 errors and response fields for capability checks ([1e1eeef](https://github.com/linq-team/linq-go/commit/1e1eeef2b4ec35bfefcea76b861436f577b06e6c))
+
 ## [0.31.1](https://github.com/linq-team/linq-go/compare/v0.31.0...v0.31.1) (2026-08-12)
 
 
