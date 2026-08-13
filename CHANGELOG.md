@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.32.1](https://github.com/linq-team/linq-go/compare/v0.32.0...v0.32.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* clarify address format requirements for messaging checks ([f8ba08d](https://github.com/linq-team/linq-go/commit/f8ba08d739abc5a97e595969e133e24c2bfccd7a))
+
 ## [0.32.0](https://github.com/linq-team/linq-go/compare/v0.31.1...v0.32.0) (2026-08-13)
 
 
