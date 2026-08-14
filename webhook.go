@@ -1080,8 +1080,8 @@ func (r *MessageFailedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `message.delivered` webhook for the same message ID may follow.
 type MessageFailedWebhookEventData struct {
 	// Error codes in webhook failure events. The possible set varies by event:
-	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
-	// update failure events (chat.group_name_update_failed,
+	// message.failed and poll.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or
+	// 4008; the group update failure events (chat.group_name_update_failed,
 	// chat.group_icon_update_failed) carry 3007 or 4001.
 	Code int64 `json:"code" api:"required"`
 	// When the failure was detected
@@ -1461,6 +1461,1393 @@ type ReactionRemovedWebhookEvent struct {
 // Returns the unmodified JSON received from the API
 func (r ReactionRemovedWebhookEvent) RawJSON() string { return r.JSON.raw }
 func (r *ReactionRemovedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.received events
+type PollReceivedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.received — a poll created by someone else and delivered to your
+	// line. Carries the full poll snapshot (options, no voters yet) at receipt time.
+	Data PollReceivedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.received — a poll created by someone else and delivered to your
+// line. Carries the full poll snapshot (options, no voters yet) at receipt time.
+type PollReceivedWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat      PollReceivedWebhookEventDataChat `json:"chat" api:"required"`
+	CreatedAt time.Time                        `json:"created_at" api:"required" format:"date-time"`
+	// Any of "inbound", "outbound".
+	Direction  string                           `json:"direction" api:"required"`
+	MessageID  string                           `json:"message_id" api:"required" format:"uuid"`
+	Poll       PollReceivedWebhookEventDataPoll `json:"poll" api:"required"`
+	ReceivedAt time.Time                        `json:"received_at" api:"required" format:"date-time"`
+	Service    string                           `json:"service" api:"required"`
+	UpdatedAt  time.Time                        `json:"updated_at" api:"required" format:"date-time"`
+	// The line that created the poll (is_me=false for an inbound poll).
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		CreatedAt    respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		Poll         respjson.Field
+		ReceivedAt   respjson.Field
+		Service      respjson.Field
+		UpdatedAt    respjson.Field
+		SenderHandle respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollReceivedWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReceivedWebhookEventDataPoll struct {
+	Options []PollReceivedWebhookEventDataPollOption `json:"options" api:"required"`
+	// Distinct participants across the whole poll.
+	TotalVoters int64 `json:"total_voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEventDataPoll) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEventDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReceivedWebhookEventDataPollOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                             `json:"creator_handle" api:"required"`
+	OptionID      string                                        `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                        `json:"text" api:"required"`
+	Voters        []PollReceivedWebhookEventDataPollOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEventDataPollOption) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEventDataPollOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReceivedWebhookEventDataPollOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReceivedWebhookEventDataPollOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollReceivedWebhookEventDataPollOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.sent events
+type PollSentWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+	// indicate state (null = not yet happened): sent → sent_at; delivered →
+	// +delivered_at; read → +read_at.
+	Data PollSentWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+// indicate state (null = not yet happened): sent → sent_at; delivered →
+// +delivered_at; read → +read_at.
+type PollSentWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat      PollSentWebhookEventDataChat `json:"chat" api:"required"`
+	CreatedAt time.Time                    `json:"created_at" api:"required" format:"date-time"`
+	// Any of "inbound", "outbound".
+	Direction   string                       `json:"direction" api:"required"`
+	MessageID   string                       `json:"message_id" api:"required" format:"uuid"`
+	Poll        PollSentWebhookEventDataPoll `json:"poll" api:"required"`
+	Service     string                       `json:"service" api:"required"`
+	UpdatedAt   time.Time                    `json:"updated_at" api:"required" format:"date-time"`
+	DeliveredAt time.Time                    `json:"delivered_at" api:"nullable" format:"date-time"`
+	ReadAt      time.Time                    `json:"read_at" api:"nullable" format:"date-time"`
+	// The handle that sent the poll.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		CreatedAt    respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		Poll         respjson.Field
+		Service      respjson.Field
+		UpdatedAt    respjson.Field
+		DeliveredAt  respjson.Field
+		ReadAt       respjson.Field
+		SenderHandle respjson.Field
+		SentAt       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollSentWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollSentWebhookEventDataPoll struct {
+	Options []PollSentWebhookEventDataPollOption `json:"options" api:"required"`
+	// Distinct participants across the whole poll.
+	TotalVoters int64 `json:"total_voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEventDataPoll) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEventDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollSentWebhookEventDataPollOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                         `json:"creator_handle" api:"required"`
+	OptionID      string                                    `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                    `json:"text" api:"required"`
+	Voters        []PollSentWebhookEventDataPollOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEventDataPollOption) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEventDataPollOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollSentWebhookEventDataPollOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollSentWebhookEventDataPollOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollSentWebhookEventDataPollOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.delivered events
+type PollDeliveredWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+	// indicate state (null = not yet happened): sent → sent_at; delivered →
+	// +delivered_at; read → +read_at.
+	Data PollDeliveredWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+// indicate state (null = not yet happened): sent → sent_at; delivered →
+// +delivered_at; read → +read_at.
+type PollDeliveredWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat      PollDeliveredWebhookEventDataChat `json:"chat" api:"required"`
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	// Any of "inbound", "outbound".
+	Direction   string                            `json:"direction" api:"required"`
+	MessageID   string                            `json:"message_id" api:"required" format:"uuid"`
+	Poll        PollDeliveredWebhookEventDataPoll `json:"poll" api:"required"`
+	Service     string                            `json:"service" api:"required"`
+	UpdatedAt   time.Time                         `json:"updated_at" api:"required" format:"date-time"`
+	DeliveredAt time.Time                         `json:"delivered_at" api:"nullable" format:"date-time"`
+	ReadAt      time.Time                         `json:"read_at" api:"nullable" format:"date-time"`
+	// The handle that sent the poll.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		CreatedAt    respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		Poll         respjson.Field
+		Service      respjson.Field
+		UpdatedAt    respjson.Field
+		DeliveredAt  respjson.Field
+		ReadAt       respjson.Field
+		SenderHandle respjson.Field
+		SentAt       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollDeliveredWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollDeliveredWebhookEventDataPoll struct {
+	Options []PollDeliveredWebhookEventDataPollOption `json:"options" api:"required"`
+	// Distinct participants across the whole poll.
+	TotalVoters int64 `json:"total_voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEventDataPoll) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEventDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollDeliveredWebhookEventDataPollOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                              `json:"creator_handle" api:"required"`
+	OptionID      string                                         `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                         `json:"text" api:"required"`
+	Voters        []PollDeliveredWebhookEventDataPollOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEventDataPollOption) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEventDataPollOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollDeliveredWebhookEventDataPollOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollDeliveredWebhookEventDataPollOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollDeliveredWebhookEventDataPollOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.read events
+type PollReadWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+	// indicate state (null = not yet happened): sent → sent_at; delivered →
+	// +delivered_at; read → +read_at.
+	Data PollReadWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.sent, poll.delivered, and poll.read webhook events. Timestamps
+// indicate state (null = not yet happened): sent → sent_at; delivered →
+// +delivered_at; read → +read_at.
+type PollReadWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat      PollReadWebhookEventDataChat `json:"chat" api:"required"`
+	CreatedAt time.Time                    `json:"created_at" api:"required" format:"date-time"`
+	// Any of "inbound", "outbound".
+	Direction   string                       `json:"direction" api:"required"`
+	MessageID   string                       `json:"message_id" api:"required" format:"uuid"`
+	Poll        PollReadWebhookEventDataPoll `json:"poll" api:"required"`
+	Service     string                       `json:"service" api:"required"`
+	UpdatedAt   time.Time                    `json:"updated_at" api:"required" format:"date-time"`
+	DeliveredAt time.Time                    `json:"delivered_at" api:"nullable" format:"date-time"`
+	ReadAt      time.Time                    `json:"read_at" api:"nullable" format:"date-time"`
+	// The handle that sent the poll.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		CreatedAt    respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		Poll         respjson.Field
+		Service      respjson.Field
+		UpdatedAt    respjson.Field
+		DeliveredAt  respjson.Field
+		ReadAt       respjson.Field
+		SenderHandle respjson.Field
+		SentAt       respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollReadWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReadWebhookEventDataPoll struct {
+	Options []PollReadWebhookEventDataPollOption `json:"options" api:"required"`
+	// Distinct participants across the whole poll.
+	TotalVoters int64 `json:"total_voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEventDataPoll) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEventDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReadWebhookEventDataPollOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                         `json:"creator_handle" api:"required"`
+	OptionID      string                                    `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                    `json:"text" api:"required"`
+	Voters        []PollReadWebhookEventDataPollOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEventDataPollOption) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEventDataPollOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollReadWebhookEventDataPollOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReadWebhookEventDataPollOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollReadWebhookEventDataPollOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.updated events
+type PollUpdatedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.updated (option(s) added — add-only).
+	Data PollUpdatedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollUpdatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.updated (option(s) added — add-only).
+type PollUpdatedWebhookEventData struct {
+	AddedOptions []PollUpdatedWebhookEventDataAddedOption `json:"added_options" api:"required"`
+	// Chat info for poll webhook events.
+	Chat PollUpdatedWebhookEventDataChat `json:"chat" api:"required"`
+	// Any of "inbound", "outbound".
+	Direction string `json:"direction" api:"required"`
+	MessageID string `json:"message_id" api:"required" format:"uuid"`
+	// The line that added the option(s) — always present.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
+	Service      string            `json:"service" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		AddedOptions respjson.Field
+		Chat         respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		SenderHandle respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollUpdatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollUpdatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollUpdatedWebhookEventDataAddedOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                             `json:"creator_handle" api:"required"`
+	OptionID      string                                        `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                        `json:"text" api:"required"`
+	Voters        []PollUpdatedWebhookEventDataAddedOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollUpdatedWebhookEventDataAddedOption) RawJSON() string { return r.JSON.raw }
+func (r *PollUpdatedWebhookEventDataAddedOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollUpdatedWebhookEventDataAddedOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollUpdatedWebhookEventDataAddedOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollUpdatedWebhookEventDataAddedOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollUpdatedWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollUpdatedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollUpdatedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.failed events
+type PollFailedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.failed — an outbound poll (or poll action) that failed to send.
+	// Carries the poll snapshot at failure time plus the error and when it failed.
+	Data PollFailedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.failed — an outbound poll (or poll action) that failed to send.
+// Carries the poll snapshot at failure time plus the error and when it failed.
+type PollFailedWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat PollFailedWebhookEventDataChat `json:"chat" api:"required"`
+	// Any of "inbound", "outbound".
+	Direction string                          `json:"direction" api:"required"`
+	Error     PollFailedWebhookEventDataError `json:"error" api:"required"`
+	FailedAt  time.Time                       `json:"failed_at" api:"required" format:"date-time"`
+	MessageID string                          `json:"message_id" api:"required" format:"uuid"`
+	Poll      PollFailedWebhookEventDataPoll  `json:"poll" api:"required"`
+	Service   string                          `json:"service" api:"required"`
+	// Null on failure (the send never landed).
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		Direction    respjson.Field
+		Error        respjson.Field
+		FailedAt     respjson.Field
+		MessageID    respjson.Field
+		Poll         respjson.Field
+		Service      respjson.Field
+		SenderHandle respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollFailedWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollFailedWebhookEventDataError struct {
+	// Error codes in webhook failure events. The possible set varies by event:
+	// message.failed and poll.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or
+	// 4008; the group update failure events (chat.group_name_update_failed,
+	// chat.group_icon_update_failed) carry 3007 or 4001.
+	Code    int64  `json:"code" api:"required"`
+	Message string `json:"message" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventDataError) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventDataError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollFailedWebhookEventDataPoll struct {
+	Options []PollFailedWebhookEventDataPollOption `json:"options" api:"required"`
+	// Distinct participants across the whole poll.
+	TotalVoters int64 `json:"total_voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventDataPoll) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollFailedWebhookEventDataPollOption struct {
+	CanBeEdited bool `json:"can_be_edited" api:"required"`
+	// The participant who added this option (poll creator for the initial options;
+	// whoever added later ones). Null when unknown.
+	CreatorHandle shared.ChatHandle                           `json:"creator_handle" api:"required"`
+	OptionID      string                                      `json:"option_id" api:"required" format:"uuid"`
+	Text          string                                      `json:"text" api:"required"`
+	Voters        []PollFailedWebhookEventDataPollOptionVoter `json:"voters" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CanBeEdited   respjson.Field
+		CreatorHandle respjson.Field
+		OptionID      respjson.Field
+		Text          respjson.Field
+		Voters        respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventDataPollOption) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventDataPollOption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PollFailedWebhookEventDataPollOptionVoter struct {
+	Handle  string    `json:"handle" api:"required"`
+	VotedAt time.Time `json:"voted_at" api:"required" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Handle      respjson.Field
+		VotedAt     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollFailedWebhookEventDataPollOptionVoter) RawJSON() string { return r.JSON.raw }
+func (r *PollFailedWebhookEventDataPollOptionVoter) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.vote.added events
+type PollVoteAddedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.vote.added and poll.vote.removed (one option toggled).
+	Data PollVoteAddedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteAddedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteAddedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.vote.added and poll.vote.removed (one option toggled).
+type PollVoteAddedWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat PollVoteAddedWebhookEventDataChat `json:"chat" api:"required"`
+	// Any of "inbound", "outbound".
+	Direction string `json:"direction" api:"required"`
+	MessageID string `json:"message_id" api:"required" format:"uuid"`
+	OptionID  string `json:"option_id" api:"required" format:"uuid"`
+	// The voter — always present.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
+	Service      string            `json:"service" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		OptionID     respjson.Field
+		SenderHandle respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteAddedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteAddedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollVoteAddedWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteAddedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteAddedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.vote.removed events
+type PollVoteRemovedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.vote.added and poll.vote.removed (one option toggled).
+	Data PollVoteRemovedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteRemovedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteRemovedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for poll.vote.added and poll.vote.removed (one option toggled).
+type PollVoteRemovedWebhookEventData struct {
+	// Chat info for poll webhook events.
+	Chat PollVoteRemovedWebhookEventDataChat `json:"chat" api:"required"`
+	// Any of "inbound", "outbound".
+	Direction string `json:"direction" api:"required"`
+	MessageID string `json:"message_id" api:"required" format:"uuid"`
+	OptionID  string `json:"option_id" api:"required" format:"uuid"`
+	// The voter — always present.
+	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
+	Service      string            `json:"service" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat         respjson.Field
+		Direction    respjson.Field
+		MessageID    respjson.Field
+		OptionID     respjson.Field
+		SenderHandle respjson.Field
+		Service      respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteRemovedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteRemovedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat info for poll webhook events.
+type PollVoteRemovedWebhookEventDataChat struct {
+	ID          string            `json:"id" api:"required" format:"uuid"`
+	IsGroup     bool              `json:"is_group" api:"nullable"`
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollVoteRemovedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *PollVoteRemovedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Complete webhook payload for poll.reaction.added events
+type PollReactionAddedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for poll.reaction.added — a reaction on a poll message. Same shape as
+	// reaction.added; `message_id` is the poll-definition message's ID. Poll reactions
+	// are stickers, which iMessage cannot remove, so there is no removal counterpart.
+	Data ReactionEventBase `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PollReactionAddedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PollReactionAddedWebhookEvent) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -2068,8 +3455,8 @@ type ChatGroupNameUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events. The possible set varies by event:
-	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
-	// update failure events (chat.group_name_update_failed,
+	// message.failed and poll.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or
+	// 4008; the group update failure events (chat.group_name_update_failed,
 	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
@@ -2159,8 +3546,8 @@ type ChatGroupIconUpdateFailedWebhookEventData struct {
 	// Chat identifier (UUID) of the group chat
 	ChatID string `json:"chat_id" api:"required"`
 	// Error codes in webhook failure events. The possible set varies by event:
-	// message.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or 4008; the group
-	// update failure events (chat.group_name_update_failed,
+	// message.failed and poll.failed can carry 3007, 4001, 4002, 4005, 4006, 4007, or
+	// 4008; the group update failure events (chat.group_name_update_failed,
 	// chat.group_icon_update_failed) carry 3007 or 4001.
 	ErrorCode int64 `json:"error_code" api:"required"`
 	// When the failure was detected
@@ -2337,6 +3724,149 @@ func (r *ChatTypingIndicatorStoppedWebhookEventData) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete webhook payload for chat.background_updated events
+type ChatBackgroundUpdatedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for chat.background_updated webhook events.
+	Data ChatBackgroundUpdatedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatBackgroundUpdatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ChatBackgroundUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for chat.background_updated webhook events.
+type ChatBackgroundUpdatedWebhookEventData struct {
+	// Chat information
+	Chat ChatBackgroundUpdatedWebhookEventDataChat `json:"chat" api:"required"`
+	// Who changed it. `is_me` is true when your own number set it.
+	ActorHandle shared.ChatHandle `json:"actor_handle" api:"nullable"`
+	// A chat transcript background. Fields are populated per `type`.
+	Background ChatBackgroundUpdatedWebhookEventDataBackground `json:"background" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Chat        respjson.Field
+		ActorHandle respjson.Field
+		Background  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatBackgroundUpdatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ChatBackgroundUpdatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Chat information
+type ChatBackgroundUpdatedWebhookEventDataChat struct {
+	// Chat identifier
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Whether this is a group chat
+	IsGroup bool `json:"is_group" api:"nullable"`
+	// Your phone number's handle. Always has is_me=true.
+	OwnerHandle shared.ChatHandle `json:"owner_handle" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		IsGroup     respjson.Field
+		OwnerHandle respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatBackgroundUpdatedWebhookEventDataChat) RawJSON() string { return r.JSON.raw }
+func (r *ChatBackgroundUpdatedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A chat transcript background. Fields are populated per `type`.
+type ChatBackgroundUpdatedWebhookEventDataBackground struct {
+	// The background family.
+	//
+	// Any of "color", "dynamic", "photo".
+	Type string `json:"type" api:"required"`
+	// Photo: the image URL.
+	ImageURL string `json:"image_url" api:"nullable"`
+	// Color: the two gradient stops as hex, top then bottom.
+	Shades []string `json:"shades" api:"nullable"`
+	// Dynamic: the animated style.
+	//
+	// Any of "sky", "water", "aurora", "glitter".
+	Style string `json:"style" api:"nullable"`
+	// Color: `custom` (the stored two colors) or a named swatch. Dynamic: the variant
+	// within the `style` (e.g. `sunrise`).
+	Variant string `json:"variant" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Type        respjson.Field
+		ImageURL    respjson.Field
+		Shades      respjson.Field
+		Style       respjson.Field
+		Variant     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ChatBackgroundUpdatedWebhookEventDataBackground) RawJSON() string { return r.JSON.raw }
+func (r *ChatBackgroundUpdatedWebhookEventDataBackground) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Complete webhook payload for phone_number.status_updated events
 type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// API version for the webhook payload format
@@ -2489,12 +4019,16 @@ const (
 // [MessageReadWebhookEvent], [MessageDeliveredWebhookEvent],
 // [MessageFailedWebhookEvent], [MessageEditedWebhookEvent],
 // [ReactionAddedWebhookEvent], [ReactionRemovedWebhookEvent],
-// [ParticipantAddedWebhookEvent], [ParticipantRemovedWebhookEvent],
-// [ChatCreatedWebhookEvent], [ChatGroupNameUpdatedWebhookEvent],
-// [ChatGroupIconUpdatedWebhookEvent], [ChatGroupNameUpdateFailedWebhookEvent],
+// [PollReceivedWebhookEvent], [PollSentWebhookEvent], [PollDeliveredWebhookEvent],
+// [PollReadWebhookEvent], [PollUpdatedWebhookEvent], [PollFailedWebhookEvent],
+// [PollVoteAddedWebhookEvent], [PollVoteRemovedWebhookEvent],
+// [PollReactionAddedWebhookEvent], [ParticipantAddedWebhookEvent],
+// [ParticipantRemovedWebhookEvent], [ChatCreatedWebhookEvent],
+// [ChatGroupNameUpdatedWebhookEvent], [ChatGroupIconUpdatedWebhookEvent],
+// [ChatGroupNameUpdateFailedWebhookEvent],
 // [ChatGroupIconUpdateFailedWebhookEvent],
 // [ChatTypingIndicatorStartedWebhookEvent],
-// [ChatTypingIndicatorStoppedWebhookEvent],
+// [ChatTypingIndicatorStoppedWebhookEvent], [ChatBackgroundUpdatedWebhookEvent],
 // [PhoneNumberStatusUpdatedWebhookEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
@@ -2505,6 +4039,10 @@ type UnwrapWebhookEventUnion struct {
 	CreatedAt  time.Time `json:"created_at"`
 	// This field is a union of [MessageEventV2], [MessageFailedWebhookEventData],
 	// [MessageEditedWebhookEventData], [ReactionEventBase],
+	// [PollReceivedWebhookEventData], [PollSentWebhookEventData],
+	// [PollDeliveredWebhookEventData], [PollReadWebhookEventData],
+	// [PollUpdatedWebhookEventData], [PollFailedWebhookEventData],
+	// [PollVoteAddedWebhookEventData], [PollVoteRemovedWebhookEventData],
 	// [ParticipantAddedWebhookEventData], [ParticipantRemovedWebhookEventData],
 	// [ChatCreatedWebhookEventData], [ChatGroupNameUpdatedWebhookEventData],
 	// [ChatGroupIconUpdatedWebhookEventData],
@@ -2512,11 +4050,12 @@ type UnwrapWebhookEventUnion struct {
 	// [ChatGroupIconUpdateFailedWebhookEventData],
 	// [ChatTypingIndicatorStartedWebhookEventData],
 	// [ChatTypingIndicatorStoppedWebhookEventData],
+	// [ChatBackgroundUpdatedWebhookEventData],
 	// [PhoneNumberStatusUpdatedWebhookEventData]
 	Data    UnwrapWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -2574,6 +4113,51 @@ func (u UnwrapWebhookEventUnion) AsReactionRemovedWebhookEvent() (v ReactionRemo
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsPollReceivedWebhookEvent() (v PollReceivedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollSentWebhookEvent() (v PollSentWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollDeliveredWebhookEvent() (v PollDeliveredWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollReadWebhookEvent() (v PollReadWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollUpdatedWebhookEvent() (v PollUpdatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollFailedWebhookEvent() (v PollFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollVoteAddedWebhookEvent() (v PollVoteAddedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollVoteRemovedWebhookEvent() (v PollVoteRemovedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPollReactionAddedWebhookEvent() (v PollReactionAddedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsParticipantAddedWebhookEvent() (v ParticipantAddedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -2619,6 +4203,11 @@ func (u UnwrapWebhookEventUnion) AsChatTypingIndicatorStoppedWebhookEvent() (v C
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsChatBackgroundUpdatedWebhookEvent() (v ChatBackgroundUpdatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v PhoneNumberStatusUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -2640,30 +4229,31 @@ func (r *UnwrapWebhookEventUnion) UnmarshalJSON(data []byte) error {
 type UnwrapWebhookEventUnionData struct {
 	ID string `json:"id"`
 	// This field is a union of [MessageEventV2Chat],
-	// [MessageEditedWebhookEventDataChat]
+	// [MessageEditedWebhookEventDataChat], [PollReceivedWebhookEventDataChat],
+	// [PollSentWebhookEventDataChat], [PollDeliveredWebhookEventDataChat],
+	// [PollReadWebhookEventDataChat], [PollUpdatedWebhookEventDataChat],
+	// [PollFailedWebhookEventDataChat], [PollVoteAddedWebhookEventDataChat],
+	// [PollVoteRemovedWebhookEventDataChat],
+	// [ChatBackgroundUpdatedWebhookEventDataChat]
 	Chat      UnwrapWebhookEventUnionDataChat `json:"chat"`
 	Direction string                          `json:"direction"`
 	// This field is from variant [MessageEventV2].
 	Parts []MessageEventV2PartUnion `json:"parts"`
 	// This field is from variant [MessageEventV2].
 	SenderHandle shared.ChatHandle `json:"sender_handle"`
-	// This field is from variant [MessageEventV2].
-	Service shared.ServiceType `json:"service"`
-	// This field is from variant [MessageEventV2].
-	DeliveredAt time.Time `json:"delivered_at"`
+	Service      string            `json:"service"`
+	DeliveredAt  time.Time         `json:"delivered_at"`
 	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
-	IdempotencyKey   string `json:"idempotency_key"`
-	PreferredService string `json:"preferred_service"`
-	// This field is from variant [MessageEventV2].
-	ReadAt time.Time `json:"read_at"`
+	IdempotencyKey   string    `json:"idempotency_key"`
+	PreferredService string    `json:"preferred_service"`
+	ReadAt           time.Time `json:"read_at"`
 	// This field is from variant [MessageEventV2].
 	ReconciledAt time.Time `json:"reconciled_at"`
 	// This field is from variant [MessageEventV2].
 	ReplyTo MessageEventV2ReplyTo `json:"reply_to"`
-	// This field is from variant [MessageEventV2].
-	SentAt time.Time `json:"sent_at"`
+	SentAt  time.Time             `json:"sent_at"`
 	// This field is from variant [MessageFailedWebhookEventData].
 	Code     int64     `json:"code"`
 	FailedAt time.Time `json:"failed_at"`
@@ -2692,8 +4282,21 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ReactionEventBase].
 	ReactedAt time.Time `json:"reacted_at"`
 	// This field is from variant [ReactionEventBase].
-	Sticker ReactionEventBaseSticker `json:"sticker"`
-	Handle  string                   `json:"handle"`
+	Sticker   ReactionEventBaseSticker `json:"sticker"`
+	CreatedAt time.Time                `json:"created_at"`
+	// This field is a union of [PollReceivedWebhookEventDataPoll],
+	// [PollSentWebhookEventDataPoll], [PollDeliveredWebhookEventDataPoll],
+	// [PollReadWebhookEventDataPoll], [PollFailedWebhookEventDataPoll]
+	Poll UnwrapWebhookEventUnionDataPoll `json:"poll"`
+	// This field is from variant [PollReceivedWebhookEventData].
+	ReceivedAt time.Time `json:"received_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+	// This field is from variant [PollUpdatedWebhookEventData].
+	AddedOptions []PollUpdatedWebhookEventDataAddedOption `json:"added_options"`
+	// This field is from variant [PollFailedWebhookEventData].
+	Error    PollFailedWebhookEventDataError `json:"error"`
+	OptionID string                          `json:"option_id"`
+	Handle   string                          `json:"handle"`
 	// This field is from variant [ParticipantAddedWebhookEventData].
 	AddedAt time.Time `json:"added_at"`
 	// This field is from variant [ParticipantAddedWebhookEventData].
@@ -2701,21 +4304,22 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ParticipantRemovedWebhookEventData].
 	RemovedAt time.Time `json:"removed_at"`
 	// This field is from variant [ChatCreatedWebhookEventData].
-	CreatedAt time.Time `json:"created_at"`
-	// This field is from variant [ChatCreatedWebhookEventData].
 	DisplayName string `json:"display_name"`
 	// This field is from variant [ChatCreatedWebhookEventData].
 	Handles []shared.ChatHandle `json:"handles"`
 	// This field is from variant [ChatCreatedWebhookEventData].
 	HealthStatus ChatCreatedWebhookEventDataHealthStatus `json:"health_status"`
 	// This field is from variant [ChatCreatedWebhookEventData].
-	IsGroup   bool      `json:"is_group"`
-	UpdatedAt time.Time `json:"updated_at"`
+	IsGroup bool `json:"is_group"`
 	// This field is from variant [ChatGroupNameUpdatedWebhookEventData].
 	ChangedByHandle shared.ChatHandle `json:"changed_by_handle"`
 	NewValue        string            `json:"new_value"`
 	OldValue        string            `json:"old_value"`
 	ErrorCode       int64             `json:"error_code"`
+	// This field is from variant [ChatBackgroundUpdatedWebhookEventData].
+	ActorHandle shared.ChatHandle `json:"actor_handle"`
+	// This field is from variant [ChatBackgroundUpdatedWebhookEventData].
+	Background ChatBackgroundUpdatedWebhookEventDataBackground `json:"background"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	ChangedAt time.Time `json:"changed_at"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
@@ -2759,20 +4363,27 @@ type UnwrapWebhookEventUnionData struct {
 		PartIndex          respjson.Field
 		ReactedAt          respjson.Field
 		Sticker            respjson.Field
+		CreatedAt          respjson.Field
+		Poll               respjson.Field
+		ReceivedAt         respjson.Field
+		UpdatedAt          respjson.Field
+		AddedOptions       respjson.Field
+		Error              respjson.Field
+		OptionID           respjson.Field
 		Handle             respjson.Field
 		AddedAt            respjson.Field
 		Participant        respjson.Field
 		RemovedAt          respjson.Field
-		CreatedAt          respjson.Field
 		DisplayName        respjson.Field
 		Handles            respjson.Field
 		HealthStatus       respjson.Field
 		IsGroup            respjson.Field
-		UpdatedAt          respjson.Field
 		ChangedByHandle    respjson.Field
 		NewValue           respjson.Field
 		OldValue           respjson.Field
 		ErrorCode          respjson.Field
+		ActorHandle        respjson.Field
+		Background         respjson.Field
 		ChangedAt          respjson.Field
 		NewReputation      respjson.Field
 		NewStatus          respjson.Field
@@ -2833,5 +4444,70 @@ type UnwrapWebhookEventUnionDataChatHealthStatus struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataChatHealthStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPoll is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPoll provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataPoll struct {
+	// This field is a union of [[]PollReceivedWebhookEventDataPollOption],
+	// [[]PollSentWebhookEventDataPollOption],
+	// [[]PollDeliveredWebhookEventDataPollOption],
+	// [[]PollReadWebhookEventDataPollOption], [[]PollFailedWebhookEventDataPollOption]
+	Options     UnwrapWebhookEventUnionDataPollOptions `json:"options"`
+	TotalVoters int64                                  `json:"total_voters"`
+	JSON        struct {
+		Options     respjson.Field
+		TotalVoters respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPoll) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataPollOptions is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataPollOptions provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfPollReceivedWebhookEventDataPollOptions
+// OfPollSentWebhookEventDataPollOptions OfPollDeliveredWebhookEventDataPollOptions
+// OfPollReadWebhookEventDataPollOptions OfPollFailedWebhookEventDataPollOptions]
+type UnwrapWebhookEventUnionDataPollOptions struct {
+	// This field will be present if the value is a
+	// [[]PollReceivedWebhookEventDataPollOption] instead of an object.
+	OfPollReceivedWebhookEventDataPollOptions []PollReceivedWebhookEventDataPollOption `json:",inline"`
+	// This field will be present if the value is a
+	// [[]PollSentWebhookEventDataPollOption] instead of an object.
+	OfPollSentWebhookEventDataPollOptions []PollSentWebhookEventDataPollOption `json:",inline"`
+	// This field will be present if the value is a
+	// [[]PollDeliveredWebhookEventDataPollOption] instead of an object.
+	OfPollDeliveredWebhookEventDataPollOptions []PollDeliveredWebhookEventDataPollOption `json:",inline"`
+	// This field will be present if the value is a
+	// [[]PollReadWebhookEventDataPollOption] instead of an object.
+	OfPollReadWebhookEventDataPollOptions []PollReadWebhookEventDataPollOption `json:",inline"`
+	// This field will be present if the value is a
+	// [[]PollFailedWebhookEventDataPollOption] instead of an object.
+	OfPollFailedWebhookEventDataPollOptions []PollFailedWebhookEventDataPollOption `json:",inline"`
+	JSON                                    struct {
+		OfPollReceivedWebhookEventDataPollOptions  respjson.Field
+		OfPollSentWebhookEventDataPollOptions      respjson.Field
+		OfPollDeliveredWebhookEventDataPollOptions respjson.Field
+		OfPollReadWebhookEventDataPollOptions      respjson.Field
+		OfPollFailedWebhookEventDataPollOptions    respjson.Field
+		raw                                        string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataPollOptions) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
