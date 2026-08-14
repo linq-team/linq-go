@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.33.0](https://github.com/linq-team/linq-go/compare/v0.32.1...v0.33.0) (2026-08-14)
+
+
+### Features
+
+* add 403 error responses for ineligible phone numbers ([18968b0](https://github.com/linq-team/linq-go/commit/18968b076e832e276b83f4d2d16f8a5d60b9ab3d))
+
 ## [0.32.1](https://github.com/linq-team/linq-go/compare/v0.32.0...v0.32.1) (2026-08-13)
 
 
