@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.33.1](https://github.com/linq-team/linq-go/compare/v0.33.0...v0.33.1) (2026-08-14)
+
+
+### Bug Fixes
+
+* clarify chat health status guidance and opt-out behavior ([b7bb8f1](https://github.com/linq-team/linq-go/commit/b7bb8f1043d715bdafc637c70b715860aff06607))
+
 ## [0.33.0](https://github.com/linq-team/linq-go/compare/v0.32.1...v0.33.0) (2026-08-14)
 
 
