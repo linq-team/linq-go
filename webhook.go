@@ -2272,6 +2272,8 @@ func (r *PollUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
 
 // Payload for poll.updated (option(s) added — add-only).
 type PollUpdatedWebhookEventData struct {
+	// Only the options this update added — never the ones the poll already had. Fetch
+	// the poll to read its full option set.
 	AddedOptions []PollUpdatedWebhookEventDataAddedOption `json:"added_options" api:"required"`
 	// Chat info for poll webhook events.
 	Chat PollUpdatedWebhookEventDataChat `json:"chat" api:"required"`
