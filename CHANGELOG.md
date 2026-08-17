@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.2](https://github.com/linq-team/linq-go/compare/v0.34.1...v0.34.2) (2026-08-17)
+
+
+### Bug Fixes
+
+* clarify health check guidance for conversations and volume ([94018df](https://github.com/linq-team/linq-go/commit/94018df8f0d0f4aac7e659b748ab642a1559cfa0))
+
 ## [0.34.1](https://github.com/linq-team/linq-go/compare/v0.34.0...v0.34.1) (2026-08-17)
 
 
