@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.34.1](https://github.com/linq-team/linq-go/compare/v0.34.0...v0.34.1) (2026-08-17)
+
+
+### Bug Fixes
+
+* clarify poll webhook added_options field behavior ([0c9cf58](https://github.com/linq-team/linq-go/commit/0c9cf580a488c613de5614e350e886ad8cf11b10))
+
 ## [0.34.0](https://github.com/linq-team/linq-go/compare/v0.33.1...v0.34.0) (2026-08-14)
 
 
