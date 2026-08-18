@@ -71,7 +71,7 @@ func (r *ChatBackgroundService) Remove(ctx context.Context, chatID string, opts 
 // Provide one of: a **color** (a named preset or a custom 2-stop gradient), a
 // **dynamic** animated style, or a **photo** (by URL). The request is accepted
 // asynchronously; the terminal result arrives via the `chat.background_updated`
-// webhook.
+// webhook on success, or `chat.background_update_failed` on failure.
 //
 // **Group chats are supported.** Requests for RCS or SMS chats are accepted
 // (`202`) but no background is applied and no `chat.background_updated` webhook
@@ -93,8 +93,12 @@ type ChatBackgroundSetParams struct {
 	//
 	// Any of "color", "dynamic", "photo".
 	Type ChatBackgroundSetParamsType `json:"type,omitzero" api:"required"`
-	// Photo: the image URL to embed in the background.
-	ImageURL param.Opt[string] `json:"image_url,omitzero"`
+	// Photo: the image URL to embed in the background. Must be an absolute `https` URL
+	// pointing at an image (`.jpg`, `.png`, `.heic`, `.webp`), and the image is
+	// fetched and re-hosted on our CDN before the request is accepted — the same way
+	// `group_chat_icon` works. A URL we cannot fetch, or one that isn't an image, is
+	// rejected with a `400` (`5007`/`5006`) rather than failing later on the device.
+	ImageURL param.Opt[string] `json:"image_url,omitzero" format:"uri"`
 	// Color: a named swatch — `mango`, `ice`, `plum`, `deep_sea`, `green_apple`,
 	// `cherry`, `bubblegum`, `tangerine`, `magenta`, `lime`, `silver`, `carbon`,
 	// `stone` — or `custom` (supply `shades`). Dynamic: the variant within the `style`

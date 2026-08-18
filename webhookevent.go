@@ -218,6 +218,7 @@ const (
 	WebhookEventTypeChatGroupNameUpdateFailed  WebhookEventType = "chat.group_name_update_failed"
 	WebhookEventTypeChatGroupIconUpdateFailed  WebhookEventType = "chat.group_icon_update_failed"
 	WebhookEventTypeChatBackgroundUpdated      WebhookEventType = "chat.background_updated"
+	WebhookEventTypeChatBackgroundUpdateFailed WebhookEventType = "chat.background_update_failed"
 	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
 	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
 	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
