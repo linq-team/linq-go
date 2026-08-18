@@ -326,43 +326,6 @@ Methods:
 
 # Webhooks
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageEventV2">MessageEventV2</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ReactionEventBase">ReactionEventBase</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SchemasMediaPartResponse">SchemasMediaPartResponse</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SchemasMessageEffect">SchemasMessageEffect</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SchemasTextPartResponse">SchemasTextPartResponse</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageSentWebhookEvent">MessageSentWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageReceivedWebhookEvent">MessageReceivedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageReadWebhookEvent">MessageReadWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageDeliveredWebhookEvent">MessageDeliveredWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageFailedWebhookEvent">MessageFailedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#MessageEditedWebhookEvent">MessageEditedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ReactionAddedWebhookEvent">ReactionAddedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ReactionRemovedWebhookEvent">ReactionRemovedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollReceivedWebhookEvent">PollReceivedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollSentWebhookEvent">PollSentWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollDeliveredWebhookEvent">PollDeliveredWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollReadWebhookEvent">PollReadWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollUpdatedWebhookEvent">PollUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollFailedWebhookEvent">PollFailedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollVoteAddedWebhookEvent">PollVoteAddedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollVoteRemovedWebhookEvent">PollVoteRemovedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PollReactionAddedWebhookEvent">PollReactionAddedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ParticipantAddedWebhookEvent">ParticipantAddedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ParticipantRemovedWebhookEvent">ParticipantRemovedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatCreatedWebhookEvent">ChatCreatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatGroupNameUpdatedWebhookEvent">ChatGroupNameUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatGroupIconUpdatedWebhookEvent">ChatGroupIconUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatGroupNameUpdateFailedWebhookEvent">ChatGroupNameUpdateFailedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatGroupIconUpdateFailedWebhookEvent">ChatGroupIconUpdateFailedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatTypingIndicatorStartedWebhookEvent">ChatTypingIndicatorStartedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatTypingIndicatorStoppedWebhookEvent">ChatTypingIndicatorStoppedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatBackgroundUpdatedWebhookEvent">ChatBackgroundUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberStatusUpdatedWebhookEvent">PhoneNumberStatusUpdatedWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
-
 # ContactCard
 
 Response Types:
