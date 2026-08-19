@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.36.0](https://github.com/linq-team/linq-go/compare/v0.35.0...v0.36.0) (2026-08-19)
+
+
+### Features
+
+* add apple pay app clip payment card support ([48e14c2](https://github.com/linq-team/linq-go/commit/48e14c2ef9cf48bc45d4e723062771e7b833f2f6))
+
 ## [0.35.0](https://github.com/linq-team/linq-go/compare/v0.34.2...v0.35.0) (2026-08-18)
 
 
