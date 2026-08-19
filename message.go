@@ -507,7 +507,8 @@ const (
 
 // MessagePartUnion contains all possible properties and values from
 // [shared.TextPartResponse], [shared.MediaPartResponse],
-// [shared.LinkPartResponse], [MessagePartIMessageAppPartResponse].
+// [shared.LinkPartResponse], [MessagePartIMessageAppPartResponse],
+// [MessagePartAppClipPartResponse].
 //
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type MessagePartUnion struct {
@@ -531,7 +532,13 @@ type MessagePartUnion struct {
 	Layout MessagePartIMessageAppPartResponseLayout `json:"layout"`
 	// This field is from variant [MessagePartIMessageAppPartResponse].
 	FallbackText string `json:"fallback_text"`
-	JSON         struct {
+	// This field is from variant [MessagePartAppClipPartResponse].
+	Description string `json:"description"`
+	// This field is from variant [MessagePartAppClipPartResponse].
+	ImageURL string `json:"image_url"`
+	// This field is from variant [MessagePartAppClipPartResponse].
+	Title string `json:"title"`
+	JSON  struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
@@ -544,6 +551,9 @@ type MessagePartUnion struct {
 		App             respjson.Field
 		Layout          respjson.Field
 		FallbackText    respjson.Field
+		Description     respjson.Field
+		ImageURL        respjson.Field
+		Title           respjson.Field
 		raw             string
 	} `json:"-"`
 }
@@ -564,6 +574,11 @@ func (u MessagePartUnion) AsLinkPartResponse() (v shared.LinkPartResponse) {
 }
 
 func (u MessagePartUnion) AsMessagePartIMessageAppPartResponse() (v MessagePartIMessageAppPartResponse) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u MessagePartUnion) AsMessagePartAppClipPartResponse() (v MessagePartAppClipPartResponse) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -703,6 +718,41 @@ type MessagePartIMessageAppPartResponseLayout struct {
 // Returns the unmodified JSON received from the API
 func (r MessagePartIMessageAppPartResponseLayout) RawJSON() string { return r.JSON.raw }
 func (r *MessagePartIMessageAppPartResponseLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// An Apple Pay App Clip payment card part
+type MessagePartAppClipPartResponse struct {
+	// Reactions on this message part
+	Reactions []shared.Reaction `json:"reactions" api:"required"`
+	// Indicates this is an App Clip payment card part
+	//
+	// Any of "app_clip".
+	Type string `json:"type" api:"required"`
+	// The checkout link the card opens
+	Value string `json:"value" api:"required"`
+	// The card's summary line, composed by Linq from the checkout session
+	Description string `json:"description"`
+	// The card's preview image
+	ImageURL string `json:"image_url"`
+	// The card's headline, composed by Linq from the checkout session
+	Title string `json:"title"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Reactions   respjson.Field
+		Type        respjson.Field
+		Value       respjson.Field
+		Description respjson.Field
+		ImageURL    respjson.Field
+		Title       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessagePartAppClipPartResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessagePartAppClipPartResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

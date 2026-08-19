@@ -805,6 +805,14 @@ type MessageContentParam struct {
 	// - A `link` part must be the **only** part in the message
 	// - To send a URL as plain text (no preview), use a `text` part instead
 	//
+	// **App Clip Payment Cards:**
+	//
+	//   - Use an `app_clip` part to send a Linq checkout link as an Apple Pay App Clip
+	//     card (the payment preview with the Open button)
+	//   - An `app_clip` part must be the **only** part in the message
+	//   - iMessage-only: unlike `link`, it never downgrades to SMS/RCS — the send fails
+	//     instead of delivering a bare URL
+	//
 	// **Supported Media:**
 	//
 	//   - Images: .jpg, .jpeg, .png, .gif, .heic, .heif, .tif, .tiff, .bmp
@@ -825,6 +833,9 @@ type MessageContentParam struct {
 	//
 	//   - A `link` part must be the **only** part in the message. It cannot be combined
 	//     with text or media parts.
+	//   - An `app_clip` part must be the **only** part in the message. Its `value` must
+	//     be a Linq checkout link (e.g. from `POST /v3/payment_requests`); any other URL
+	//     is rejected.
 	//   - Consecutive text parts are not allowed. Text parts must be separated by media
 	//     parts. For example, [text, text] is invalid, but [text, media, text] is valid.
 	//   - Maximum of **100 parts** total.
@@ -892,11 +903,16 @@ type MessageContentPartUnionParam struct {
 	OfMedia       *MediaPartParam                     `json:",omitzero,inline"`
 	OfLink        *LinkPartParam                      `json:",omitzero,inline"`
 	OfIMessageApp *MessageContentPartIMessageAppParam `json:",omitzero,inline"`
+	OfAppClip     *MessageContentPartAppClipParam     `json:",omitzero,inline"`
 	paramUnion
 }
 
 func (u MessageContentPartUnionParam) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfText, u.OfMedia, u.OfLink, u.OfIMessageApp)
+	return param.MarshalUnion(u, u.OfText,
+		u.OfMedia,
+		u.OfLink,
+		u.OfIMessageApp,
+		u.OfAppClip)
 }
 func (u *MessageContentPartUnionParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, u)
@@ -909,6 +925,7 @@ func init() {
 		apijson.Discriminator[MediaPartParam]("media"),
 		apijson.Discriminator[LinkPartParam]("link"),
 		apijson.Discriminator[MessageContentPartIMessageAppParam]("imessage_app"),
+		apijson.Discriminator[MessageContentPartAppClipParam]("app_clip"),
 	)
 }
 
@@ -1032,6 +1049,39 @@ func (r MessageContentPartIMessageAppLayoutParam) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageContentPartIMessageAppLayoutParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Sends a Linq checkout link as an Apple Pay App Clip card — the payment preview
+// with the **Open** button, rather than a plain link preview.
+//
+// Everything on the card — merchant name, amount, description, image — is composed
+// by Linq from the checkout session itself, the same content the checkout page
+// already shows. You supply only the link.
+//
+// An `app_clip` part must be the **only** part in the message.
+//
+// **iMessage only**, and it never downgrades. A `service_preference` of `sms` or
+// `rcs` is rejected (`AppClipServiceUnsupported`, 2028). A recipient who can't
+// receive it fails the send rather than being sent a plain link in its place.
+//
+// The properties Type, Value are required.
+type MessageContentPartAppClipParam struct {
+	// A Linq checkout link, e.g. one returned as `checkout_url` from
+	// `POST /v3/payment_requests`. Any other URL is rejected.
+	Value string `json:"value" api:"required" format:"uri"`
+	// Indicates this is an App Clip payment card
+	//
+	// This field can be elided, and will marshal its zero value as "app_clip".
+	Type constant.AppClip `json:"type" default:"app_clip"`
+	paramObj
+}
+
+func (r MessageContentPartAppClipParam) MarshalJSON() (data []byte, err error) {
+	type shadow MessageContentPartAppClipParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageContentPartAppClipParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
