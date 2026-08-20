@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.3](https://github.com/linq-team/linq-go/compare/v0.38.2...v0.38.3) (2026-08-20)
+
+
+### Documentation
+
+* clarify transcript background field requirements and examples ([199da09](https://github.com/linq-team/linq-go/commit/199da0962549f2ba2b838d42d8d5f76a45021b9c))
+
 ## [0.38.2](https://github.com/linq-team/linq-go/compare/v0.38.1...v0.38.2) (2026-08-20)
 
 
