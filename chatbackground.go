@@ -101,18 +101,21 @@ type ChatBackgroundSetParams struct {
 	ImageURL param.Opt[string] `json:"image_url,omitzero" format:"uri"`
 	// Color: a named swatch — `mango`, `ice`, `plum`, `deep_sea`, `green_apple`,
 	// `cherry`, `bubblegum`, `tangerine`, `magenta`, `lime`, `silver`, `carbon`,
-	// `stone` — or `custom` (supply `shades`). Dynamic: the variant within the `style`
-	// (e.g. `sunrise`).
+	// `stone` — or `custom` (supply `shades`). Omitting `variant` is equivalent to
+	// `custom`, so it still requires `shades`.
 	//
-	// An unrecognized value still returns `202`, but no background is applied and no
-	// `chat.background_updated` webhook fires. Send one of the values above.
+	// Dynamic: required — the variant within the `style`. `sky`: `dusk`, `haze`,
+	// `sunset`, `clear`, `sunrise`, `dawn`. `water`: `light`, `dark`. `aurora`:
+	// `green`, `purple`, `pink`.
+	//
+	// An unrecognized value is rejected with `400`.
 	Variant param.Opt[string] `json:"variant,omitzero"`
 	// Color with `variant: custom`: the two gradient stops as hex, top then bottom.
 	// Ignored for named color variants (they carry their own two colors).
 	Shades []string `json:"shades,omitzero"`
 	// Dynamic: the animated style.
 	//
-	// Any of "sky", "water", "aurora", "glitter".
+	// Any of "sky", "water", "aurora".
 	Style ChatBackgroundSetParamsStyle `json:"style,omitzero"`
 	paramObj
 }
@@ -138,8 +141,7 @@ const (
 type ChatBackgroundSetParamsStyle string
 
 const (
-	ChatBackgroundSetParamsStyleSky     ChatBackgroundSetParamsStyle = "sky"
-	ChatBackgroundSetParamsStyleWater   ChatBackgroundSetParamsStyle = "water"
-	ChatBackgroundSetParamsStyleAurora  ChatBackgroundSetParamsStyle = "aurora"
-	ChatBackgroundSetParamsStyleGlitter ChatBackgroundSetParamsStyle = "glitter"
+	ChatBackgroundSetParamsStyleSky    ChatBackgroundSetParamsStyle = "sky"
+	ChatBackgroundSetParamsStyleWater  ChatBackgroundSetParamsStyle = "water"
+	ChatBackgroundSetParamsStyleAurora ChatBackgroundSetParamsStyle = "aurora"
 )
