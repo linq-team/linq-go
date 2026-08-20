@@ -290,6 +290,10 @@ type SentMessagePartUnion struct {
 	Type      string            `json:"type"`
 	Value     string            `json:"value"`
 	// This field is from variant [shared.TextPartResponse].
+	Mention string `json:"mention"`
+	// This field is from variant [shared.TextPartResponse].
+	MentionRange []int64 `json:"mention_range"`
+	// This field is from variant [shared.TextPartResponse].
 	TextDecorations []shared.TextDecoration `json:"text_decorations"`
 	// This field is from variant [shared.MediaPartResponse].
 	ID string `json:"id"`
@@ -316,6 +320,8 @@ type SentMessagePartUnion struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
+		Mention         respjson.Field
+		MentionRange    respjson.Field
 		TextDecorations respjson.Field
 		ID              respjson.Field
 		Filename        respjson.Field
