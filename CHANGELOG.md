@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.2](https://github.com/linq-team/linq-go/compare/v0.38.1...v0.38.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* clarify background color variant requirements and valid styles ([b88a6be](https://github.com/linq-team/linq-go/commit/b88a6be53e846036da2dd094cdde08d1324deffd))
+
 ## [0.38.1](https://github.com/linq-team/linq-go/compare/v0.38.0...v0.38.1) (2026-08-20)
 
 
