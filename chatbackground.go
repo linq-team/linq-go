@@ -98,6 +98,8 @@ type ChatBackgroundSetParams struct {
 	// fetched and re-hosted on our CDN before the request is accepted — the same way
 	// `group_chat_icon` works. A URL we cannot fetch, or one that isn't an image, is
 	// rejected with a `400` (`5007`/`5006`) rather than failing later on the device.
+	//
+	// Example: `https://cdn.linqapp.com/u/bg.jpg`.
 	ImageURL param.Opt[string] `json:"image_url,omitzero" format:"uri"`
 	// Color: a named swatch — `mango`, `ice`, `plum`, `deep_sea`, `green_apple`,
 	// `cherry`, `bubblegum`, `tangerine`, `magenta`, `lime`, `silver`, `carbon`,
@@ -110,10 +112,11 @@ type ChatBackgroundSetParams struct {
 	//
 	// An unrecognized value is rejected with `400`.
 	Variant param.Opt[string] `json:"variant,omitzero"`
-	// Color with `variant: custom`: the two gradient stops as hex, top then bottom.
-	// Ignored for named color variants (they carry their own two colors).
+	// Color with `variant: custom`: the two gradient stops as hex, top then bottom —
+	// e.g. `["#F2C4E1", "#F5A623"]`. Ignored for named color variants (they carry
+	// their own two colors).
 	Shades []string `json:"shades,omitzero"`
-	// Dynamic: the animated style.
+	// Dynamic: the animated style — `sky`, `water`, or `aurora`.
 	//
 	// Any of "sky", "water", "aurora".
 	Style ChatBackgroundSetParamsStyle `json:"style,omitzero"`
@@ -137,7 +140,7 @@ const (
 	ChatBackgroundSetParamsTypePhoto   ChatBackgroundSetParamsType = "photo"
 )
 
-// Dynamic: the animated style.
+// Dynamic: the animated style — `sky`, `water`, or `aurora`.
 type ChatBackgroundSetParamsStyle string
 
 const (

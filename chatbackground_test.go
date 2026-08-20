@@ -54,8 +54,8 @@ func TestChatBackgroundSetWithOptionalParams(t *testing.T) {
 		"550e8400-e29b-41d4-a716-446655440000",
 		linqgo.ChatBackgroundSetParams{
 			Type:     linqgo.ChatBackgroundSetParamsTypeColor,
-			ImageURL: linqgo.String("https://cdn.linqapp.com/u/bg.jpg"),
-			Shades:   []string{"#F2C4E1", "#F5A623"},
+			ImageURL: linqgo.String("https://example.com"),
+			Shades:   []string{"string", "string"},
 			Style:    linqgo.ChatBackgroundSetParamsStyleSky,
 			Variant:  linqgo.String("mango"),
 		},
