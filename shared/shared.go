@@ -332,6 +332,14 @@ type TextPartResponse struct {
 	Type TextPartResponseType `json:"type" api:"required"`
 	// The text content
 	Value string `json:"value" api:"required"`
+	// Handle (E.164 phone number or Apple ID email) of the @mentioned chat
+	// participant, as sent. `null` when the part carries no mention.
+	Mention string `json:"mention" api:"nullable"`
+	// Character range `[start, end)` in `value` highlighted as the mention, as sent.
+	// `null` when the send omitted it (the whole `value` is highlighted) or the part
+	// carries no mention. _Characters are measured as UTF-16 code units. Most
+	// characters count as 1; some emoji count as 2._
+	MentionRange []int64 `json:"mention_range" api:"nullable"`
 	// Text decorations applied to character ranges in the value
 	TextDecorations []TextDecoration `json:"text_decorations" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -339,6 +347,8 @@ type TextPartResponse struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
+		Mention         respjson.Field
+		MentionRange    respjson.Field
 		TextDecorations respjson.Field
 		ExtraFields     map[string]respjson.Field
 		raw             string
