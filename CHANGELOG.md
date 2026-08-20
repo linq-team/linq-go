@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.38.1](https://github.com/linq-team/linq-go/compare/v0.38.0...v0.38.1) (2026-08-20)
+
+
+### Documentation
+
+* clarify experiences endpoint as authoritative api reference ([32bd0ef](https://github.com/linq-team/linq-go/commit/32bd0ef0085af92f2e8b1f477aba726027feaa3e))
+
 ## [0.38.0](https://github.com/linq-team/linq-go/compare/v0.37.0...v0.38.0) (2026-08-20)
 
 
