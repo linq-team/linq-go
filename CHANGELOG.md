@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.0](https://github.com/linq-team/linq-go/compare/v0.36.0...v0.37.0) (2026-08-20)
+
+
+### Features
+
+* clarify text decoration and mention behavior across recipient types ([1800852](https://github.com/linq-team/linq-go/commit/1800852976d8f2daa416155bf5d2152ae48de370))
+
 ## [0.36.0](https://github.com/linq-team/linq-go/compare/v0.35.0...v0.36.0) (2026-08-19)
 
 
