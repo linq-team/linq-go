@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.39.0](https://github.com/linq-team/linq-go/compare/v0.38.3...v0.39.0) (2026-08-24)
+
+
+### Features
+
+* add location sharing webhook metadata and request validation ([9d7cfd4](https://github.com/linq-team/linq-go/commit/9d7cfd48da5c49de19c603bcdb4b7d089f19a36c))
+
 ## [0.38.3](https://github.com/linq-team/linq-go/compare/v0.38.2...v0.38.3) (2026-08-20)
 
 
