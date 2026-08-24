@@ -154,8 +154,7 @@ type ChatService struct {
 	//
 	// **Coordinates** are returned in
 	// [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) format:
-	// `[longitude, latitude]` or `[longitude, latitude, altitude]` if altitude is
-	// available.
+	// `[longitude, latitude]`.
 	//
 	// ### Reading location is poll-based
 	//

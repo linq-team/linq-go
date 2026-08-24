@@ -21,8 +21,7 @@ import (
 //
 // **Coordinates** are returned in
 // [GeoJSON](https://datatracker.ietf.org/doc/html/rfc7946) format:
-// `[longitude, latitude]` or `[longitude, latitude, altitude]` if altitude is
-// available.
+// `[longitude, latitude]`.
 //
 // ### Reading location is poll-based
 //
@@ -86,6 +85,9 @@ func NewChatLocationService(opts ...option.RequestOption) (r ChatLocationService
 // separate feature for each participant who is sharing. Each feature's
 // `properties.handle` identifies the user.
 //
+// A participant appears as soon as their first position arrives, typically within
+// a second or two of sharing starting.
+//
 // Returns an empty `data.features` array if no one is sharing or no location data
 // is available yet. If sharing started but this stays empty, see the **Location
 // Sharing** overview.
@@ -112,6 +114,12 @@ func (r *ChatLocationService) Get(ctx context.Context, chatID string, opts ...op
 // The request is delivered asynchronously. The endpoint returns immediately with
 // `{ "success": true, "message": "Location request sent" }` and does not return
 // coordinates.
+//
+// Rejected with `409` if the recipient is already sharing — read their location
+// with `GET /v3/chats/{chatId}/location` instead of re-requesting.
+//
+// Rate limited per chat, since each request prompts the recipient's device.
+// Exceeding it returns `429` with a `Retry-After` header.
 //
 // Location requests only work in **1:1 iMessage chats** (Apple limitation):
 //
@@ -189,7 +197,7 @@ func (r *GetChatLocationResponseDataFeature) UnmarshalJSON(data []byte) error {
 }
 
 type GetChatLocationResponseDataFeatureGeometry struct {
-	// [longitude, latitude] or [longitude, latitude, altitude]
+	// [longitude, latitude]
 	Coordinates []float64 `json:"coordinates" api:"required"`
 	// Any of "Point".
 	Type string `json:"type" api:"required"`
