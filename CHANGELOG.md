@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.40.0](https://github.com/linq-team/linq-go/compare/v0.39.0...v0.40.0) (2026-08-25)
+
+
+### Features
+
+* add contact_card.received webhook event ([34188c8](https://github.com/linq-team/linq-go/commit/34188c84aa25db44a0028de325cf5ac84fdf60b9))
+
 ## [0.39.0](https://github.com/linq-team/linq-go/compare/v0.38.3...v0.39.0) (2026-08-24)
 
 
