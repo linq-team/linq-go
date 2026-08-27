@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.0](https://github.com/linq-team/linq-go/compare/v0.41.0...v0.42.0) (2026-08-27)
+
+
+### Features
+
+* add Link wallet payment support ([d84ccd4](https://github.com/linq-team/linq-go/commit/d84ccd4a09ace7f921930f4ec4f588ec0d1e5f64))
+
 ## [0.41.0](https://github.com/linq-team/linq-go/compare/v0.40.0...v0.41.0) (2026-08-26)
 
 
