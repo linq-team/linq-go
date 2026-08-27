@@ -252,6 +252,10 @@ Methods:
 - <code title="post /v3/payments/{paymentId}/cancel">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#Payment">Payment</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v3/payments/{paymentId}/credentials">client.Payments.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentService.Credentials">Credentials</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, paymentID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentCredentialsResponse">PaymentCredentialsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# LinkConnections
+
+# LinkPayments
+
 # BlockedHandles
 
 Response Types:
