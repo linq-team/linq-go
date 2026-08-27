@@ -541,7 +541,9 @@ type Client struct {
 	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
 	// a customer once, then create a payment — a virtual card is minted scoped to that
 	// purchase and the card details are handed back for checkout.
-	Payments PaymentService
+	Payments        PaymentService
+	LinkConnections LinkConnectionService
+	LinkPayments    LinkPaymentService
 	// Block handles — phone numbers, email addresses, SMS short codes, or sender IDs.
 	// Inbound messages from a blocked handle are dropped before they reach your
 	// webhooks, and direct sends to a blocked handle are rejected with `403` (error
@@ -945,6 +947,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.PaymentProviders = NewPaymentProviderService(opts...)
 	r.PaymentHandles = NewPaymentHandleService(opts...)
 	r.Payments = NewPaymentService(opts...)
+	r.LinkConnections = NewLinkConnectionService(opts...)
+	r.LinkPayments = NewLinkPaymentService(opts...)
 	r.BlockedHandles = NewBlockedHandleService(opts...)
 	r.Experiences = NewExperienceService(opts...)
 	r.WebhookEvents = NewWebhookEventService(opts...)
