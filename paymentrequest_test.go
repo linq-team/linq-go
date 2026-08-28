@@ -32,7 +32,12 @@ func TestPaymentRequestNewWithOptionalParams(t *testing.T) {
 		Currency:    linqgo.String("usd"),
 		CustomerID:  linqgo.String("cus_QAbCdEfGhIjKlMn"),
 		Description: linqgo.String("Coffee with Ava"),
-		From:        linqgo.String("+12025550123"),
+		Discount: linqgo.PaymentRequestNewParamsDiscount{
+			Coupon:        linqgo.String("7fKCMvBh"),
+			Label:         linqgo.String("15% OFF FIRST 3 MONTHS"),
+			PromotionCode: linqgo.String("promo_1QAbCdEfGhIjKlMn"),
+		},
+		From: linqgo.String("+12025550123"),
 		Metadata: map[string]string{
 			"order_id": "order_8675309",
 		},

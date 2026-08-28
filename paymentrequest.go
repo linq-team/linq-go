@@ -79,6 +79,45 @@ import (
 // correlating in either direction is trivial. There are no renewal webhooks from
 // Linq by design.
 //
+// ### Discounts
+//
+// Pass a `discount` with a **coupon** or **promotion code** from your connected
+// Stripe account to apply it to the subscription. Create either in your Stripe
+// Dashboard under Product catalog → Coupons; Linq only forwards the id.
+//
+// ```json
+//
+//	{
+//	  "mode": "subscription",
+//	  "price_id": "price_1QAbCdEfGhIjKlMn",
+//	  "discount": {
+//	    "coupon": "7fKCMvBh",
+//	    "label": "50% OFF FIRST MONTH"
+//	  }
+//	}
+//
+// ```
+//
+// Stripe applies the coupon and prices the first invoice; the `amount` we return
+// is that invoice's amount due, so a `$50.00/month` price with a
+// 50%-off-first-month coupon comes back as `2500` and the recipient is charged
+// **$25.00** at checkout. A coupon that covers the whole first invoice returns
+// `amount: 0`; checkout shows $0.00 and collects the card for the renewal rather
+// than charging now. Renewals bill at the full price automatically — how long a
+// discount lasts is the coupon's `duration`, enforced by Stripe on your account,
+// and Linq never re-prices anything.
+//
+// Use `promotion_code` instead of `coupon` to apply a promotion code by id
+// (`promo_...`, not the customer-facing code string); pass one or the other, never
+// both.
+//
+// `label` is the customer-facing promotion name displayed at checkout instead of
+// the coupon or promotion code ID. The label is displayed exactly as provided, so
+// include important terms such as "FIRST MONTH" or "FIRST 3 MONTHS" when
+// applicable. These terms are not displayed elsewhere on the checkout screen.
+//
+// If omitted, Stripe uses the coupon's name as the promotion label.
+//
 // ### Free trials
 //
 // Add `trial_period_days` (or a fixed `trial_end` timestamp) to start the
@@ -248,9 +287,10 @@ func (r *PaymentRequestService) Cancel(ctx context.Context, paymentRequestID str
 type PaymentRequest struct {
 	// Unique identifier of the payment request.
 	ID string `json:"id" api:"required" format:"uuid"`
-	// Amount in the currency's minor units. In `subscription` mode this is the
-	// recurring amount (price × quantity) the recipient pays per interval, starting at
-	// checkout.
+	// What the recipient is charged at checkout, in the currency's minor units. In
+	// `subscription` mode this is the first invoice's amount due — all items after any
+	// discounts are applied — so a discount that covers the whole invoice returns `0`
+	// and checkout shows $0.00.
 	Amount int64 `json:"amount" api:"required"`
 	// URL the recipient opens to pay:
 	// `https://zero.linqapp.com/pay/{slug}?session=...`, where `{slug}` is your
@@ -268,6 +308,8 @@ type PaymentRequest struct {
 	// Any of "requested", "succeeded", "canceled", "expired".
 	Status      PaymentRequestStatus `json:"status" api:"required"`
 	Description string               `json:"description"`
+	// Subscription mode — the discount applied, as Stripe applied it.
+	Discount PaymentRequestDiscount `json:"discount"`
 	// When an unpaid request auto-expires.
 	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
 	// Subscription mode — how often the subscription renews.
@@ -310,6 +352,7 @@ type PaymentRequest struct {
 		Object        respjson.Field
 		Status        respjson.Field
 		Description   respjson.Field
+		Discount      respjson.Field
 		ExpiresAt     respjson.Field
 		Interval      respjson.Field
 		IntervalCount respjson.Field
@@ -350,6 +393,30 @@ const (
 	PaymentRequestStatusCanceled  PaymentRequestStatus = "canceled"
 	PaymentRequestStatusExpired   PaymentRequestStatus = "expired"
 )
+
+// Subscription mode — the discount applied, as Stripe applied it.
+type PaymentRequestDiscount struct {
+	// The ID of the coupon applied.
+	Coupon string `json:"coupon"`
+	// The customer-facing discount description shown at checkout.
+	Label string `json:"label"`
+	// The ID of the promotion code applied, if you passed one.
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentRequestDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentRequestDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Subscription mode — how often the subscription renews.
 type PaymentRequestInterval string
@@ -485,6 +552,9 @@ type PaymentRequestNewParams struct {
 	// `trial_end`.
 	TrialPeriodDays param.Opt[int64]  `json:"trial_period_days,omitzero"`
 	IdempotencyKey  param.Opt[string] `header:"Idempotency-Key,omitzero" json:"-"`
+	// Subscription mode only. The coupon or promotion code to apply to this
+	// subscription payment. Currently, only accept one coupon or one promo code.
+	Discount PaymentRequestNewParamsDiscount `json:"discount,omitzero"`
 	// Optional key/value metadata (up to 49 keys) echoed back on retrieval and on
 	// `payment.*` webhooks, and stamped on the Stripe objects we create on your
 	// connected account (the PaymentIntent, and in subscription mode the Subscription
@@ -514,6 +584,26 @@ func (r PaymentRequestNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *PaymentRequestNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode only. The coupon or promotion code to apply to this
+// subscription payment. Currently, only accept one coupon or one promo code.
+type PaymentRequestNewParamsDiscount struct {
+	// The ID of the coupon to apply to this subscription.
+	Coupon param.Opt[string] `json:"coupon,omitzero"`
+	// Name of the coupon/promo code displayed to customers.
+	Label param.Opt[string] `json:"label,omitzero"`
+	// The ID of a promotion code to apply to this subscription.
+	PromotionCode param.Opt[string] `json:"promotion_code,omitzero"`
+	paramObj
+}
+
+func (r PaymentRequestNewParamsDiscount) MarshalJSON() (data []byte, err error) {
+	type shadow PaymentRequestNewParamsDiscount
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PaymentRequestNewParamsDiscount) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
