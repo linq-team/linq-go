@@ -1096,7 +1096,7 @@ type TextPartParam struct {
 	// transformation — Markdown syntax will be delivered as plain text. Use
 	// `text_decorations` to apply inline formatting and animations (iMessage only).
 	Value string `json:"value" api:"required"`
-	// Mention a chat participant. Group chats only — sending a mention to a direct
+	// @mention a chat participant. Group chats only — sending a mention to a direct
 	// chat is rejected with `409` / `2023`. The chat's service is not a constraint: a
 	// mention is accepted in any group, including one with SMS/RCS participants.
 	//
