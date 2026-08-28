@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.0](https://github.com/linq-team/linq-go/compare/v0.43.1...v0.44.0) (2026-08-28)
+
+
+### Features
+
+* add discount support with coupons and promotion codes ([b0a5e7a](https://github.com/linq-team/linq-go/commit/b0a5e7a1f1de511d07d30e40ec0a0a61d21def46))
+
 ## [0.43.1](https://github.com/linq-team/linq-go/compare/v0.43.0...v0.43.1) (2026-08-28)
 
 
