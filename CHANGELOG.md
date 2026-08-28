@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.43.1](https://github.com/linq-team/linq-go/compare/v0.43.0...v0.43.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* simplify mention fields in text parts, remove mentions array ([889fab7](https://github.com/linq-team/linq-go/commit/889fab776f8130a198ad5b52708749881bd22bb3))
+
 ## [0.43.0](https://github.com/linq-team/linq-go/compare/v0.42.0...v0.43.0) (2026-08-28)
 
 
