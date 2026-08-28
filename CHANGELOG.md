@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.43.0](https://github.com/linq-team/linq-go/compare/v0.42.0...v0.43.0) (2026-08-28)
+
+
+### Features
+
+* support multiple mentions per message part ([d0425d5](https://github.com/linq-team/linq-go/commit/d0425d5f9db4b5d40e84cd728cf27741c55fd7e4))
+
+
+### Bug Fixes
+
+* clarify reputation audit rate limiting and response behavior ([305b2e8](https://github.com/linq-team/linq-go/commit/305b2e80ace5332a872e16ee25364fd7805e0541))
+
 ## [0.42.0](https://github.com/linq-team/linq-go/compare/v0.41.0...v0.42.0) (2026-08-27)
 
 
