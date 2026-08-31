@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.44.1](https://github.com/linq-team/linq-go/compare/v0.44.0...v0.44.1) (2026-08-31)
+
+
+### Documentation
+
+* clarify backstop behavior for ephemeral message storage ([07b7ad4](https://github.com/linq-team/linq-go/commit/07b7ad47ee6cff1d23c01573a0108bf7a1b4cf91))
+
 ## [0.44.0](https://github.com/linq-team/linq-go/compare/v0.43.1...v0.44.0) (2026-08-28)
 
 
