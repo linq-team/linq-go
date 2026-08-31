@@ -84,6 +84,10 @@ import (
 //     yourself.
 //   - **No deletion webhook is sent.** There is no `message.deleted` event — a
 //     message simply stops being retrievable once its window passes.
+//   - **The backstop governs Linq storage.** API retrievability (the `404` behavior
+//     above) and CDN media expire at the 24-hour mark. Removal of the corresponding
+//     entries from the sending device happens asynchronously and can complete after
+//     the backstop.
 //   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
 //     usual `message.sent` / `message.received` and status webhooks exactly like
 //     standard messages. Only retention changes.
@@ -173,6 +177,10 @@ type MessageService struct {
 	//     yourself.
 	//   - **No deletion webhook is sent.** There is no `message.deleted` event — a
 	//     message simply stops being retrievable once its window passes.
+	//   - **The backstop governs Linq storage.** API retrievability (the `404` behavior
+	//     above) and CDN media expire at the 24-hour mark. Removal of the corresponding
+	//     entries from the sending device happens asynchronously and can complete after
+	//     the backstop.
 	//   - **Delivery is unaffected.** Ephemeral messages send, deliver, and fire the
 	//     usual `message.sent` / `message.received` and status webhooks exactly like
 	//     standard messages. Only retention changes.
