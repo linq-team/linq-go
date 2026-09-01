@@ -92,13 +92,21 @@ func (r *PaymentService) Credentials(ctx context.Context, paymentID string, opts
 type Payment struct {
 	ID          string `json:"id"`
 	AmountCents int64  `json:"amount_cents"`
-	// Present when the customer must approve with a passkey.
+	// Present on `awaiting_user_action` once a card is on file and the charge needs
+	// the customer's passkey. Re-send the create request with the same
+	// `Idempotency-Key` to collect the payment after they approve.
 	ApprovalURL string `json:"approval_url"`
-	// Present when the customer must attach a card.
+	// Present on `awaiting_user_action` when the customer has no card on file yet. A
+	// hosted page — open it for them; it stays valid for about 48 hours. Not returned
+	// on `needs_connection`: connect the handle first.
 	AttachURL   string `json:"attach_url"`
 	Currency    string `json:"currency"`
 	Description string `json:"description"`
 	Handle      string `json:"handle"`
+	// The merchant the card is minted against, echoed from the request.
+	Merchant PaymentMerchant `json:"merchant"`
+	// Your own key/values, echoed back from the request.
+	Metadata map[string]string `json:"metadata"`
 	// Any of "needs_connection", "connecting", "awaiting_user_action", "ready",
 	// "authorized", "succeeded", "declined", "canceled", "expired".
 	Status PaymentStatus `json:"status"`
@@ -111,6 +119,8 @@ type Payment struct {
 		Currency    respjson.Field
 		Description respjson.Field
 		Handle      respjson.Field
+		Merchant    respjson.Field
+		Metadata    respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -120,6 +130,25 @@ type Payment struct {
 // Returns the unmodified JSON received from the API
 func (r Payment) RawJSON() string { return r.JSON.raw }
 func (r *Payment) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The merchant the card is minted against, echoed from the request.
+type PaymentMerchant struct {
+	Name string `json:"name"`
+	URL  string `json:"url"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Name        respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentMerchant) RawJSON() string { return r.JSON.raw }
+func (r *PaymentMerchant) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
