@@ -18,20 +18,20 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
-type AppClip string                                 // Always "app_clip"
-type HTTPSDocsLinqappComGuidesWebhooksEvents string // Always "https://docs.linqapp.com/guides/webhooks/events"
-type IMessageApp string                             // Always "imessage_app"
-type Link string                                    // Always "link"
+type AppClip string                                                // Always "app_clip"
+type HTTPSDocsLinqappComChannelIMessageGuidesWebhooksEvents string // Always "https://docs.linqapp.com/channel/imessage/guides/webhooks/events"
+type IMessageApp string                                            // Always "imessage_app"
+type Link string                                                   // Always "link"
 
 func (c AppClip) Default() AppClip { return "app_clip" }
-func (c HTTPSDocsLinqappComGuidesWebhooksEvents) Default() HTTPSDocsLinqappComGuidesWebhooksEvents {
-	return "https://docs.linqapp.com/guides/webhooks/events"
+func (c HTTPSDocsLinqappComChannelIMessageGuidesWebhooksEvents) Default() HTTPSDocsLinqappComChannelIMessageGuidesWebhooksEvents {
+	return "https://docs.linqapp.com/channel/imessage/guides/webhooks/events"
 }
 func (c IMessageApp) Default() IMessageApp { return "imessage_app" }
 func (c Link) Default() Link               { return "link" }
 
 func (c AppClip) MarshalJSON() ([]byte, error) { return marshalString(c) }
-func (c HTTPSDocsLinqappComGuidesWebhooksEvents) MarshalJSON() ([]byte, error) {
+func (c HTTPSDocsLinqappComChannelIMessageGuidesWebhooksEvents) MarshalJSON() ([]byte, error) {
 	return marshalString(c)
 }
 func (c IMessageApp) MarshalJSON() ([]byte, error) { return marshalString(c) }

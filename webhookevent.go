@@ -243,7 +243,7 @@ const (
 
 type WebhookEventListResponse struct {
 	// URL to the webhook events documentation
-	DocURL constant.HTTPSDocsLinqappComGuidesWebhooksEvents `json:"doc_url" default:"https://docs.linqapp.com/guides/webhooks/events"`
+	DocURL constant.HTTPSDocsLinqappComChannelIMessageGuidesWebhooksEvents `json:"doc_url" default:"https://docs.linqapp.com/channel/imessage/guides/webhooks/events"`
 	// List of all available webhook event types
 	Events []WebhookEventType `json:"events" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

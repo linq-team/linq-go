@@ -518,7 +518,7 @@ type Client struct {
 	// `POST /v3/chats/{chatId}/messages` — it renders as a rich card with your
 	// branding (title, amount, image) instead of a bare URL, which converts far
 	// better. A `link` part must be the only part in the message. See
-	// [Rich Link Previews](/guides/messaging/sending-messages).
+	// [Rich Link Previews](/channel/imessage/guides/messaging/sending-messages).
 	//
 	// On a supported iPhone the link opens an **Apple Pay App Clip** — a native,
 	// no-install checkout sheet. Everywhere else (Android, desktop, iPhones without
@@ -571,7 +571,7 @@ type Client struct {
 	// Subscribe to payment lifecycle events to reconcile server-side rather than
 	// polling: `payment.succeeded`, `payment.canceled`, and `payment.expired`. Each
 	// event carries the payment request id, amount, currency, and your `metadata`. See
-	// [Webhooks](/guides/webhooks).
+	// [Webhooks](/channel/imessage/guides/webhooks).
 	PaymentRequests PaymentRequestService
 	// Let an agent pay on a customer's behalf with a single-use virtual card. Connect
 	// a customer once, then create a payment — a virtual card is minted scoped to that

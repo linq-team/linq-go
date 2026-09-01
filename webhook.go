@@ -164,8 +164,8 @@ type MessageEventV2Chat struct {
 	// relevant section of the Chat Health guide. To gate a send, act on the response
 	// rather than the status: a `403` is the authoritative answer.
 	//
-	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-	// means and how to react.
+	// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+	// each status means and how to react.
 	HealthStatus MessageEventV2ChatHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"nullable"`
@@ -198,14 +198,14 @@ func (r *MessageEventV2Chat) UnmarshalJSON(data []byte) error {
 // relevant section of the Chat Health guide. To gate a send, act on the response
 // rather than the status: a `403` is the authoritative answer.
 //
-// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-// means and how to react.
+// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+// each status means and how to react.
 type MessageEventV2ChatHealthStatus struct {
 	// Deep-link to the relevant section of the Chat Health guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current health bucket for the chat. See the
-	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
-	// to react. `doc_url` deep-links to the relevant section.
+	// [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what each
+	// value means and how to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
 	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
@@ -1355,8 +1355,8 @@ type MessageEditedWebhookEventDataChat struct {
 	// relevant section of the Chat Health guide. To gate a send, act on the response
 	// rather than the status: a `403` is the authoritative answer.
 	//
-	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-	// means and how to react.
+	// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+	// each status means and how to react.
 	HealthStatus MessageEditedWebhookEventDataChatHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
@@ -1389,14 +1389,14 @@ func (r *MessageEditedWebhookEventDataChat) UnmarshalJSON(data []byte) error {
 // relevant section of the Chat Health guide. To gate a send, act on the response
 // rather than the status: a `403` is the authoritative answer.
 //
-// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-// means and how to react.
+// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+// each status means and how to react.
 type MessageEditedWebhookEventDataChatHealthStatus struct {
 	// Deep-link to the relevant section of the Chat Health guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current health bucket for the chat. See the
-	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
-	// to react. `doc_url` deep-links to the relevant section.
+	// [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what each
+	// value means and how to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
 	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
@@ -3247,8 +3247,8 @@ type ChatCreatedWebhookEventData struct {
 	// relevant section of the Chat Health guide. To gate a send, act on the response
 	// rather than the status: a `403` is the authoritative answer.
 	//
-	// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-	// means and how to react.
+	// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+	// each status means and how to react.
 	HealthStatus ChatCreatedWebhookEventDataHealthStatus `json:"health_status" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
@@ -3289,14 +3289,14 @@ func (r *ChatCreatedWebhookEventData) UnmarshalJSON(data []byte) error {
 // relevant section of the Chat Health guide. To gate a send, act on the response
 // rather than the status: a `403` is the authoritative answer.
 //
-// See the [Chat Health guide](/guides/chats/chat-health) for what each status
-// means and how to react.
+// See the [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what
+// each status means and how to react.
 type ChatCreatedWebhookEventDataHealthStatus struct {
 	// Deep-link to the relevant section of the Chat Health guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// Current health bucket for the chat. See the
-	// [Chat Health guide](/guides/chats/chat-health) for what each value means and how
-	// to react. `doc_url` deep-links to the relevant section.
+	// [Chat Health guide](/channel/imessage/guides/chats/chat-health) for what each
+	// value means and how to react. `doc_url` deep-links to the relevant section.
 	//
 	// `OPTED_OUT` — the recipient sent `STOP`, `UNSUBSCRIBE`, `OPTOUT`, `CANCEL`,
 	// `END`, or `QUIT`. The keyword must be the whole trimmed message, never part of a
