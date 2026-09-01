@@ -178,3 +178,10 @@ type TextPartResponseType = shared.TextPartResponseType
 
 // Equals "text"
 const TextPartResponseTypeText = shared.TextPartResponseTypeText
+
+// One mention on a text part — who was mentioned, and which characters of `value`
+// are the mention. A part carries one of these per mention, in the order they
+// appear in the text, so a message naming two people has two entries.
+//
+// This is an alias to an internal type.
+type TextPartResponseMention = shared.TextPartResponseMention
