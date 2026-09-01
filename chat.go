@@ -1079,6 +1079,10 @@ type MessageContentPartAppClipParam struct {
 	// A Linq checkout link, e.g. one returned as `checkout_url` from
 	// `POST /v3/payment_requests`. Any other URL is rejected.
 	Value string `json:"value" api:"required" format:"uri"`
+	// Optional caption for the card's **Open** button row. Omit it and the card uses
+	// the App Clip's own default (`Tap open`). Set it to override that with your own
+	// short call to action.
+	Caption param.Opt[string] `json:"caption,omitzero"`
 	// Indicates this is an App Clip payment card
 	//
 	// This field can be elided, and will marshal its zero value as "app_clip".
