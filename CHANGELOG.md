@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.0](https://github.com/linq-team/linq-go/compare/v0.47.0...v0.48.0) (2026-09-01)
+
+
+### Features
+
+* add metadata and merchant fields to payment handle response ([95d2199](https://github.com/linq-team/linq-go/commit/95d219997ca906bc6c0dcf368f7c9160b6dfa973))
+
 ## [0.47.0](https://github.com/linq-team/linq-go/compare/v0.46.1...v0.47.0) (2026-09-01)
 
 
