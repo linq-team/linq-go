@@ -522,8 +522,9 @@ type PhoneNumberListResponsePhoneNumber struct {
 	// Unlike chat health, line reputation does not include `opted_out` — opt-out
 	// applies to individual recipients, not the whole line.
 	//
-	// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
-	// what each status means and how to react.
+	// See the
+	// [Phone Reputation guide](/channel/imessage/guides/phone-numbers/phone-reputation)
+	// for what each status means and how to react.
 	Reputation PhoneNumberListResponsePhoneNumberReputation `json:"reputation" api:"required"`
 	// The forwarding number associated with this phone number, in E.164 format. Null
 	// when no forwarding number is configured.
@@ -552,8 +553,9 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 // Unlike chat health, line reputation does not include `opted_out` — opt-out
 // applies to individual recipients, not the whole line.
 //
-// See the [Phone Reputation guide](/guides/phone-numbers/phone-reputation) for
-// what each status means and how to react.
+// See the
+// [Phone Reputation guide](/channel/imessage/guides/phone-numbers/phone-reputation)
+// for what each status means and how to react.
 type PhoneNumberListResponsePhoneNumberReputation struct {
 	// Deep-link to the relevant section of the Phone Reputation guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
