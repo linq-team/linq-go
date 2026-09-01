@@ -4096,6 +4096,114 @@ func (r *ChatBackgroundUpdateFailedWebhookEventData) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Complete webhook payload for contact_card.received events
+type ContactCardReceivedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for contact_card.received webhook events.
+	//
+	// A contact belongs to a line, not to an individual chat. You receive one event
+	// per person who shares their contact, regardless of how many chats they have in
+	// common with your line.
+	//
+	// The event fires again whenever the shared contact's name or media changes.
+	Data ContactCardReceivedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Valid webhook event types that can be subscribed to.
+	//
+	// **Note:** `message.edited` is only delivered to subscriptions using
+	// `webhook_version: "2026-02-03"`. Subscribing to this event on a v2025
+	// subscription will not produce any deliveries.
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
+	EventType WebhookEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardReceivedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardReceivedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for contact_card.received webhook events.
+//
+// A contact belongs to a line, not to an individual chat. You receive one event
+// per person who shares their contact, regardless of how many chats they have in
+// common with your line.
+//
+// The event fires again whenever the shared contact's name or media changes.
+type ContactCardReceivedWebhookEventData struct {
+	// First name from the shared contact card
+	FirstName string `json:"first_name" api:"required"`
+	// Last name from the shared contact card (may be empty)
+	LastName string `json:"last_name" api:"required"`
+	// Which of your lines they shared it with.
+	OwnerHandle string `json:"owner_handle" api:"required"`
+	// The person who shared their card — a phone number or email address.
+	SenderHandle string `json:"sender_handle" api:"required"`
+	// URL of the contact's media, served from `cdn.linqapp.com`. `null` when the
+	// contact shared no media, and also when media was shared but could not be
+	// retrieved — this field does not distinguish the two.
+	//
+	// Download the media and store it yourself. The URL may be signed and expire, in
+	// as little as 45 minutes, and altering its query string invalidates it
+	// immediately.
+	MediaURL string `json:"media_url" api:"nullable"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		FirstName    respjson.Field
+		LastName     respjson.Field
+		OwnerHandle  respjson.Field
+		SenderHandle respjson.Field
+		MediaURL     respjson.Field
+		ExtraFields  map[string]respjson.Field
+		raw          string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardReceivedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardReceivedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Complete webhook payload for phone_number.status_updated events
 type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// API version for the webhook payload format
@@ -4260,7 +4368,7 @@ const (
 // [ChatGroupIconUpdateFailedWebhookEvent],
 // [ChatTypingIndicatorStartedWebhookEvent],
 // [ChatTypingIndicatorStoppedWebhookEvent], [ChatBackgroundUpdatedWebhookEvent],
-// [ChatBackgroundUpdateFailedWebhookEvent],
+// [ChatBackgroundUpdateFailedWebhookEvent], [ContactCardReceivedWebhookEvent],
 // [PhoneNumberStatusUpdatedWebhookEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
@@ -4284,11 +4392,12 @@ type UnwrapWebhookEventUnion struct {
 	// [ChatTypingIndicatorStoppedWebhookEventData],
 	// [ChatBackgroundUpdatedWebhookEventData],
 	// [ChatBackgroundUpdateFailedWebhookEventData],
+	// [ContactCardReceivedWebhookEventData],
 	// [PhoneNumberStatusUpdatedWebhookEventData]
 	Data    UnwrapWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -4446,6 +4555,11 @@ func (u UnwrapWebhookEventUnion) AsChatBackgroundUpdateFailedWebhookEvent() (v C
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsContactCardReceivedWebhookEvent() (v ContactCardReceivedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v PhoneNumberStatusUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -4477,10 +4591,10 @@ type UnwrapWebhookEventUnionData struct {
 	Direction string                          `json:"direction"`
 	// This field is from variant [MessageEventV2].
 	Parts []MessageEventV2PartUnion `json:"parts"`
-	// This field is from variant [MessageEventV2].
-	SenderHandle shared.ChatHandle `json:"sender_handle"`
-	Service      string            `json:"service"`
-	DeliveredAt  time.Time         `json:"delivered_at"`
+	// This field is a union of [shared.ChatHandle], [string]
+	SenderHandle UnwrapWebhookEventUnionDataSenderHandle `json:"sender_handle"`
+	Service      string                                  `json:"service"`
+	DeliveredAt  time.Time                               `json:"delivered_at"`
 	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
@@ -4558,6 +4672,14 @@ type UnwrapWebhookEventUnionData struct {
 	ActorHandle shared.ChatHandle `json:"actor_handle"`
 	// This field is from variant [ChatBackgroundUpdatedWebhookEventData].
 	Background ChatBackgroundUpdatedWebhookEventDataBackground `json:"background"`
+	// This field is from variant [ContactCardReceivedWebhookEventData].
+	FirstName string `json:"first_name"`
+	// This field is from variant [ContactCardReceivedWebhookEventData].
+	LastName string `json:"last_name"`
+	// This field is from variant [ContactCardReceivedWebhookEventData].
+	OwnerHandle string `json:"owner_handle"`
+	// This field is from variant [ContactCardReceivedWebhookEventData].
+	MediaURL string `json:"media_url"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	ChangedAt time.Time `json:"changed_at"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
@@ -4622,6 +4744,10 @@ type UnwrapWebhookEventUnionData struct {
 		ErrorCode          respjson.Field
 		ActorHandle        respjson.Field
 		Background         respjson.Field
+		FirstName          respjson.Field
+		LastName           respjson.Field
+		OwnerHandle        respjson.Field
+		MediaURL           respjson.Field
 		ChangedAt          respjson.Field
 		NewReputation      respjson.Field
 		NewStatus          respjson.Field
@@ -4682,6 +4808,49 @@ type UnwrapWebhookEventUnionDataChatHealthStatus struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataChatHealthStatus) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataSenderHandle is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataSenderHandle provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+//
+// If the underlying value is not a json object, one of the following properties
+// will be valid: OfString]
+type UnwrapWebhookEventUnionDataSenderHandle struct {
+	// This field will be present if the value is a [string] instead of an object.
+	OfString string `json:",inline"`
+	// This field is from variant [shared.ChatHandle].
+	ID string `json:"id"`
+	// This field is from variant [shared.ChatHandle].
+	Handle string `json:"handle"`
+	// This field is from variant [shared.ChatHandle].
+	JoinedAt time.Time `json:"joined_at"`
+	// This field is from variant [shared.ChatHandle].
+	Service shared.ServiceType `json:"service"`
+	// This field is from variant [shared.ChatHandle].
+	IsMe bool `json:"is_me"`
+	// This field is from variant [shared.ChatHandle].
+	LeftAt time.Time `json:"left_at"`
+	// This field is from variant [shared.ChatHandle].
+	Status shared.ChatHandleStatus `json:"status"`
+	JSON   struct {
+		OfString respjson.Field
+		ID       respjson.Field
+		Handle   respjson.Field
+		JoinedAt respjson.Field
+		Service  respjson.Field
+		IsMe     respjson.Field
+		LeftAt   respjson.Field
+		Status   respjson.Field
+		raw      string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataSenderHandle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
