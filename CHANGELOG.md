@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.0](https://github.com/linq-team/linq-go/compare/v0.45.0...v0.46.0) (2026-09-01)
+
+
+### Features
+
+* add optional caption field to app clip card button ([bb8a6d9](https://github.com/linq-team/linq-go/commit/bb8a6d92823a45d24bedc846ad86f0e3ac2e9527))
+
 ## [0.45.0](https://github.com/linq-team/linq-go/compare/v0.44.1...v0.45.0) (2026-09-01)
 
 
