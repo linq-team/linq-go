@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.46.1](https://github.com/linq-team/linq-go/compare/v0.46.0...v0.46.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* update documentation links to include imessage channel path ([19928de](https://github.com/linq-team/linq-go/commit/19928de194855dff0d753e081dd9fbf4fd49f972))
+
 ## [0.46.0](https://github.com/linq-team/linq-go/compare/v0.45.0...v0.46.0) (2026-09-01)
 
 
