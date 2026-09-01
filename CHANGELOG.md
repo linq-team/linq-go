@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.1](https://github.com/linq-team/linq-go/compare/v0.48.0...v0.48.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* clarify ephemeral message and attachment retention windows ([cc83cfe](https://github.com/linq-team/linq-go/commit/cc83cfe9de03162a9f637741982671a78ed9d22f))
+
 ## [0.48.0](https://github.com/linq-team/linq-go/compare/v0.47.0...v0.48.0) (2026-09-01)
 
 
