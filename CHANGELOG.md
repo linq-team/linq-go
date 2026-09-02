@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.48.2](https://github.com/linq-team/linq-go/compare/v0.48.1...v0.48.2) (2026-09-02)
+
+
+### Bug Fixes
+
+* clarify ephemeral message retention behavior and metadata handling ([979b7e4](https://github.com/linq-team/linq-go/commit/979b7e4c0d907a05d8d41089c1223f736b32f0f9))
+
 ## [0.48.1](https://github.com/linq-team/linq-go/compare/v0.48.0...v0.48.1) (2026-09-01)
 
 
