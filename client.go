@@ -965,10 +965,10 @@ type Client struct {
 	//     manager)
 	//   - Return a 2xx status code quickly, then process the webhook asynchronously
 	WebhookSubscriptions WebhookSubscriptionService
+	Webhooks             WebhookService
 	// Check whether a recipient address supports iMessage or RCS before sending a
 	// message.
 	Capability CapabilityService
-	Webhooks   WebhookService
 	// Contact Card lets you set and share your contact information (name and profile
 	// photo) with chat participants via iMessage Name and Photo Sharing.
 	//
@@ -1033,8 +1033,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.Experiences = NewExperienceService(opts...)
 	r.WebhookEvents = NewWebhookEventService(opts...)
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
-	r.Capability = NewCapabilityService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
+	r.Capability = NewCapabilityService(opts...)
 	r.ContactCard = NewContactCardService(opts...)
 
 	return
