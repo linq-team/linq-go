@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.49.0](https://github.com/linq-team/linq-go/compare/v0.48.2...v0.49.0) (2026-09-02)
+
+
+### Features
+
+* add webhook events for connections, location sharing, and payments ([3782540](https://github.com/linq-team/linq-go/commit/3782540b1801ad5e3e70c6c2ec59d76858072d5c))
+
 ## [0.48.2](https://github.com/linq-team/linq-go/compare/v0.48.1...v0.48.2) (2026-09-02)
 
 
