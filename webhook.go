@@ -4353,6 +4353,2115 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeConnectionRevoked          PhoneNumberStatusUpdatedWebhookEventEventType = "connection.revoked"
 )
 
+type ConnectionCreatedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data ConnectionCreatedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType ConnectionCreatedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionCreatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type ConnectionCreatedWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount ConnectionCreatedWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural ConnectionCreatedWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe ConnectionCreatedWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionCreatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionCreatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type ConnectionCreatedWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionCreatedWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionCreatedWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type ConnectionCreatedWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionCreatedWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionCreatedWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type ConnectionCreatedWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionCreatedWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionCreatedWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionCreatedWebhookEventEventType string
+
+const (
+	ConnectionCreatedWebhookEventEventTypePaymentSucceeded           ConnectionCreatedWebhookEventEventType = "payment.succeeded"
+	ConnectionCreatedWebhookEventEventTypePaymentCanceled            ConnectionCreatedWebhookEventEventType = "payment.canceled"
+	ConnectionCreatedWebhookEventEventTypePaymentExpired             ConnectionCreatedWebhookEventEventType = "payment.expired"
+	ConnectionCreatedWebhookEventEventTypeMessageSent                ConnectionCreatedWebhookEventEventType = "message.sent"
+	ConnectionCreatedWebhookEventEventTypeMessageReceived            ConnectionCreatedWebhookEventEventType = "message.received"
+	ConnectionCreatedWebhookEventEventTypeMessageRead                ConnectionCreatedWebhookEventEventType = "message.read"
+	ConnectionCreatedWebhookEventEventTypeMessageDelivered           ConnectionCreatedWebhookEventEventType = "message.delivered"
+	ConnectionCreatedWebhookEventEventTypeMessageFailed              ConnectionCreatedWebhookEventEventType = "message.failed"
+	ConnectionCreatedWebhookEventEventTypeMessageEdited              ConnectionCreatedWebhookEventEventType = "message.edited"
+	ConnectionCreatedWebhookEventEventTypeReactionAdded              ConnectionCreatedWebhookEventEventType = "reaction.added"
+	ConnectionCreatedWebhookEventEventTypeReactionRemoved            ConnectionCreatedWebhookEventEventType = "reaction.removed"
+	ConnectionCreatedWebhookEventEventTypePollReceived               ConnectionCreatedWebhookEventEventType = "poll.received"
+	ConnectionCreatedWebhookEventEventTypePollFailed                 ConnectionCreatedWebhookEventEventType = "poll.failed"
+	ConnectionCreatedWebhookEventEventTypePollSent                   ConnectionCreatedWebhookEventEventType = "poll.sent"
+	ConnectionCreatedWebhookEventEventTypePollDelivered              ConnectionCreatedWebhookEventEventType = "poll.delivered"
+	ConnectionCreatedWebhookEventEventTypePollRead                   ConnectionCreatedWebhookEventEventType = "poll.read"
+	ConnectionCreatedWebhookEventEventTypePollUpdated                ConnectionCreatedWebhookEventEventType = "poll.updated"
+	ConnectionCreatedWebhookEventEventTypePollVoteAdded              ConnectionCreatedWebhookEventEventType = "poll.vote.added"
+	ConnectionCreatedWebhookEventEventTypePollVoteRemoved            ConnectionCreatedWebhookEventEventType = "poll.vote.removed"
+	ConnectionCreatedWebhookEventEventTypePollReactionAdded          ConnectionCreatedWebhookEventEventType = "poll.reaction.added"
+	ConnectionCreatedWebhookEventEventTypeParticipantAdded           ConnectionCreatedWebhookEventEventType = "participant.added"
+	ConnectionCreatedWebhookEventEventTypeParticipantRemoved         ConnectionCreatedWebhookEventEventType = "participant.removed"
+	ConnectionCreatedWebhookEventEventTypeChatCreated                ConnectionCreatedWebhookEventEventType = "chat.created"
+	ConnectionCreatedWebhookEventEventTypeChatGroupNameUpdated       ConnectionCreatedWebhookEventEventType = "chat.group_name_updated"
+	ConnectionCreatedWebhookEventEventTypeChatGroupIconUpdated       ConnectionCreatedWebhookEventEventType = "chat.group_icon_updated"
+	ConnectionCreatedWebhookEventEventTypeChatGroupNameUpdateFailed  ConnectionCreatedWebhookEventEventType = "chat.group_name_update_failed"
+	ConnectionCreatedWebhookEventEventTypeChatGroupIconUpdateFailed  ConnectionCreatedWebhookEventEventType = "chat.group_icon_update_failed"
+	ConnectionCreatedWebhookEventEventTypeChatBackgroundUpdated      ConnectionCreatedWebhookEventEventType = "chat.background_updated"
+	ConnectionCreatedWebhookEventEventTypeChatBackgroundUpdateFailed ConnectionCreatedWebhookEventEventType = "chat.background_update_failed"
+	ConnectionCreatedWebhookEventEventTypeChatTypingIndicatorStarted ConnectionCreatedWebhookEventEventType = "chat.typing_indicator.started"
+	ConnectionCreatedWebhookEventEventTypeChatTypingIndicatorStopped ConnectionCreatedWebhookEventEventType = "chat.typing_indicator.stopped"
+	ConnectionCreatedWebhookEventEventTypePhoneNumberStatusUpdated   ConnectionCreatedWebhookEventEventType = "phone_number.status_updated"
+	ConnectionCreatedWebhookEventEventTypeContactCardReceived        ConnectionCreatedWebhookEventEventType = "contact_card.received"
+	ConnectionCreatedWebhookEventEventTypeCallInitiated              ConnectionCreatedWebhookEventEventType = "call.initiated"
+	ConnectionCreatedWebhookEventEventTypeCallRinging                ConnectionCreatedWebhookEventEventType = "call.ringing"
+	ConnectionCreatedWebhookEventEventTypeCallAnswered               ConnectionCreatedWebhookEventEventType = "call.answered"
+	ConnectionCreatedWebhookEventEventTypeCallEnded                  ConnectionCreatedWebhookEventEventType = "call.ended"
+	ConnectionCreatedWebhookEventEventTypeCallFailed                 ConnectionCreatedWebhookEventEventType = "call.failed"
+	ConnectionCreatedWebhookEventEventTypeCallDeclined               ConnectionCreatedWebhookEventEventType = "call.declined"
+	ConnectionCreatedWebhookEventEventTypeCallNoAnswer               ConnectionCreatedWebhookEventEventType = "call.no_answer"
+	ConnectionCreatedWebhookEventEventTypeLocationSharingStarted     ConnectionCreatedWebhookEventEventType = "location.sharing.started"
+	ConnectionCreatedWebhookEventEventTypeLocationSharingStopped     ConnectionCreatedWebhookEventEventType = "location.sharing.stopped"
+	ConnectionCreatedWebhookEventEventTypePaymentDeclined            ConnectionCreatedWebhookEventEventType = "payment.declined"
+	ConnectionCreatedWebhookEventEventTypePaymentAuthorized          ConnectionCreatedWebhookEventEventType = "payment.authorized"
+	ConnectionCreatedWebhookEventEventTypeConnectionCreated          ConnectionCreatedWebhookEventEventType = "connection.created"
+	ConnectionCreatedWebhookEventEventTypeConnectionRevoked          ConnectionCreatedWebhookEventEventType = "connection.revoked"
+)
+
+type ConnectionRevokedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data ConnectionRevokedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType ConnectionRevokedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionRevokedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionRevokedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type ConnectionRevokedWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount ConnectionRevokedWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural ConnectionRevokedWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe ConnectionRevokedWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionRevokedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionRevokedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type ConnectionRevokedWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionRevokedWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionRevokedWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type ConnectionRevokedWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionRevokedWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionRevokedWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type ConnectionRevokedWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ConnectionRevokedWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *ConnectionRevokedWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ConnectionRevokedWebhookEventEventType string
+
+const (
+	ConnectionRevokedWebhookEventEventTypePaymentSucceeded           ConnectionRevokedWebhookEventEventType = "payment.succeeded"
+	ConnectionRevokedWebhookEventEventTypePaymentCanceled            ConnectionRevokedWebhookEventEventType = "payment.canceled"
+	ConnectionRevokedWebhookEventEventTypePaymentExpired             ConnectionRevokedWebhookEventEventType = "payment.expired"
+	ConnectionRevokedWebhookEventEventTypeMessageSent                ConnectionRevokedWebhookEventEventType = "message.sent"
+	ConnectionRevokedWebhookEventEventTypeMessageReceived            ConnectionRevokedWebhookEventEventType = "message.received"
+	ConnectionRevokedWebhookEventEventTypeMessageRead                ConnectionRevokedWebhookEventEventType = "message.read"
+	ConnectionRevokedWebhookEventEventTypeMessageDelivered           ConnectionRevokedWebhookEventEventType = "message.delivered"
+	ConnectionRevokedWebhookEventEventTypeMessageFailed              ConnectionRevokedWebhookEventEventType = "message.failed"
+	ConnectionRevokedWebhookEventEventTypeMessageEdited              ConnectionRevokedWebhookEventEventType = "message.edited"
+	ConnectionRevokedWebhookEventEventTypeReactionAdded              ConnectionRevokedWebhookEventEventType = "reaction.added"
+	ConnectionRevokedWebhookEventEventTypeReactionRemoved            ConnectionRevokedWebhookEventEventType = "reaction.removed"
+	ConnectionRevokedWebhookEventEventTypePollReceived               ConnectionRevokedWebhookEventEventType = "poll.received"
+	ConnectionRevokedWebhookEventEventTypePollFailed                 ConnectionRevokedWebhookEventEventType = "poll.failed"
+	ConnectionRevokedWebhookEventEventTypePollSent                   ConnectionRevokedWebhookEventEventType = "poll.sent"
+	ConnectionRevokedWebhookEventEventTypePollDelivered              ConnectionRevokedWebhookEventEventType = "poll.delivered"
+	ConnectionRevokedWebhookEventEventTypePollRead                   ConnectionRevokedWebhookEventEventType = "poll.read"
+	ConnectionRevokedWebhookEventEventTypePollUpdated                ConnectionRevokedWebhookEventEventType = "poll.updated"
+	ConnectionRevokedWebhookEventEventTypePollVoteAdded              ConnectionRevokedWebhookEventEventType = "poll.vote.added"
+	ConnectionRevokedWebhookEventEventTypePollVoteRemoved            ConnectionRevokedWebhookEventEventType = "poll.vote.removed"
+	ConnectionRevokedWebhookEventEventTypePollReactionAdded          ConnectionRevokedWebhookEventEventType = "poll.reaction.added"
+	ConnectionRevokedWebhookEventEventTypeParticipantAdded           ConnectionRevokedWebhookEventEventType = "participant.added"
+	ConnectionRevokedWebhookEventEventTypeParticipantRemoved         ConnectionRevokedWebhookEventEventType = "participant.removed"
+	ConnectionRevokedWebhookEventEventTypeChatCreated                ConnectionRevokedWebhookEventEventType = "chat.created"
+	ConnectionRevokedWebhookEventEventTypeChatGroupNameUpdated       ConnectionRevokedWebhookEventEventType = "chat.group_name_updated"
+	ConnectionRevokedWebhookEventEventTypeChatGroupIconUpdated       ConnectionRevokedWebhookEventEventType = "chat.group_icon_updated"
+	ConnectionRevokedWebhookEventEventTypeChatGroupNameUpdateFailed  ConnectionRevokedWebhookEventEventType = "chat.group_name_update_failed"
+	ConnectionRevokedWebhookEventEventTypeChatGroupIconUpdateFailed  ConnectionRevokedWebhookEventEventType = "chat.group_icon_update_failed"
+	ConnectionRevokedWebhookEventEventTypeChatBackgroundUpdated      ConnectionRevokedWebhookEventEventType = "chat.background_updated"
+	ConnectionRevokedWebhookEventEventTypeChatBackgroundUpdateFailed ConnectionRevokedWebhookEventEventType = "chat.background_update_failed"
+	ConnectionRevokedWebhookEventEventTypeChatTypingIndicatorStarted ConnectionRevokedWebhookEventEventType = "chat.typing_indicator.started"
+	ConnectionRevokedWebhookEventEventTypeChatTypingIndicatorStopped ConnectionRevokedWebhookEventEventType = "chat.typing_indicator.stopped"
+	ConnectionRevokedWebhookEventEventTypePhoneNumberStatusUpdated   ConnectionRevokedWebhookEventEventType = "phone_number.status_updated"
+	ConnectionRevokedWebhookEventEventTypeContactCardReceived        ConnectionRevokedWebhookEventEventType = "contact_card.received"
+	ConnectionRevokedWebhookEventEventTypeCallInitiated              ConnectionRevokedWebhookEventEventType = "call.initiated"
+	ConnectionRevokedWebhookEventEventTypeCallRinging                ConnectionRevokedWebhookEventEventType = "call.ringing"
+	ConnectionRevokedWebhookEventEventTypeCallAnswered               ConnectionRevokedWebhookEventEventType = "call.answered"
+	ConnectionRevokedWebhookEventEventTypeCallEnded                  ConnectionRevokedWebhookEventEventType = "call.ended"
+	ConnectionRevokedWebhookEventEventTypeCallFailed                 ConnectionRevokedWebhookEventEventType = "call.failed"
+	ConnectionRevokedWebhookEventEventTypeCallDeclined               ConnectionRevokedWebhookEventEventType = "call.declined"
+	ConnectionRevokedWebhookEventEventTypeCallNoAnswer               ConnectionRevokedWebhookEventEventType = "call.no_answer"
+	ConnectionRevokedWebhookEventEventTypeLocationSharingStarted     ConnectionRevokedWebhookEventEventType = "location.sharing.started"
+	ConnectionRevokedWebhookEventEventTypeLocationSharingStopped     ConnectionRevokedWebhookEventEventType = "location.sharing.stopped"
+	ConnectionRevokedWebhookEventEventTypePaymentDeclined            ConnectionRevokedWebhookEventEventType = "payment.declined"
+	ConnectionRevokedWebhookEventEventTypePaymentAuthorized          ConnectionRevokedWebhookEventEventType = "payment.authorized"
+	ConnectionRevokedWebhookEventEventTypeConnectionCreated          ConnectionRevokedWebhookEventEventType = "connection.created"
+	ConnectionRevokedWebhookEventEventTypeConnectionRevoked          ConnectionRevokedWebhookEventEventType = "connection.revoked"
+)
+
+type LocationSharingStartedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Data      LocationSharingStartedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "location.sharing.started", "message.sent", "message.received",
+	// "message.read", "message.delivered", "message.failed", "message.edited",
+	// "reaction.added", "reaction.removed", "poll.received", "poll.failed",
+	// "poll.sent", "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType LocationSharingStartedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationSharingStartedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *LocationSharingStartedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LocationSharingStartedWebhookEventData struct {
+	// When location sharing started. Always present: falls back to when the share was
+	// first observed if the device reported no start time.
+	BeganAt time.Time `json:"began_at" api:"required" format:"date-time"`
+	// The chat this share was first sent to. Location sharing is per-contact rather
+	// than per-chat, so the location may also be visible in other chats with the same
+	// handle; this identifies where the share originated and does not change if the
+	// contact later shares into another chat. Null when the originating chat could not
+	// be determined.
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// When location sharing will expire. Null when sharing indefinitely.
+	EndsAt time.Time `json:"ends_at" api:"required" format:"date-time"`
+	// Phone number of the person sharing their location
+	SharedBy string `json:"shared_by" api:"required"`
+	// Your phone number receiving the location
+	SharedWith string `json:"shared_with" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BeganAt     respjson.Field
+		ChatID      respjson.Field
+		EndsAt      respjson.Field
+		SharedBy    respjson.Field
+		SharedWith  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationSharingStartedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *LocationSharingStartedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LocationSharingStartedWebhookEventEventType string
+
+const (
+	LocationSharingStartedWebhookEventEventTypeLocationSharingStarted     LocationSharingStartedWebhookEventEventType = "location.sharing.started"
+	LocationSharingStartedWebhookEventEventTypeMessageSent                LocationSharingStartedWebhookEventEventType = "message.sent"
+	LocationSharingStartedWebhookEventEventTypeMessageReceived            LocationSharingStartedWebhookEventEventType = "message.received"
+	LocationSharingStartedWebhookEventEventTypeMessageRead                LocationSharingStartedWebhookEventEventType = "message.read"
+	LocationSharingStartedWebhookEventEventTypeMessageDelivered           LocationSharingStartedWebhookEventEventType = "message.delivered"
+	LocationSharingStartedWebhookEventEventTypeMessageFailed              LocationSharingStartedWebhookEventEventType = "message.failed"
+	LocationSharingStartedWebhookEventEventTypeMessageEdited              LocationSharingStartedWebhookEventEventType = "message.edited"
+	LocationSharingStartedWebhookEventEventTypeReactionAdded              LocationSharingStartedWebhookEventEventType = "reaction.added"
+	LocationSharingStartedWebhookEventEventTypeReactionRemoved            LocationSharingStartedWebhookEventEventType = "reaction.removed"
+	LocationSharingStartedWebhookEventEventTypePollReceived               LocationSharingStartedWebhookEventEventType = "poll.received"
+	LocationSharingStartedWebhookEventEventTypePollFailed                 LocationSharingStartedWebhookEventEventType = "poll.failed"
+	LocationSharingStartedWebhookEventEventTypePollSent                   LocationSharingStartedWebhookEventEventType = "poll.sent"
+	LocationSharingStartedWebhookEventEventTypePollDelivered              LocationSharingStartedWebhookEventEventType = "poll.delivered"
+	LocationSharingStartedWebhookEventEventTypePollRead                   LocationSharingStartedWebhookEventEventType = "poll.read"
+	LocationSharingStartedWebhookEventEventTypePollUpdated                LocationSharingStartedWebhookEventEventType = "poll.updated"
+	LocationSharingStartedWebhookEventEventTypePollVoteAdded              LocationSharingStartedWebhookEventEventType = "poll.vote.added"
+	LocationSharingStartedWebhookEventEventTypePollVoteRemoved            LocationSharingStartedWebhookEventEventType = "poll.vote.removed"
+	LocationSharingStartedWebhookEventEventTypePollReactionAdded          LocationSharingStartedWebhookEventEventType = "poll.reaction.added"
+	LocationSharingStartedWebhookEventEventTypeParticipantAdded           LocationSharingStartedWebhookEventEventType = "participant.added"
+	LocationSharingStartedWebhookEventEventTypeParticipantRemoved         LocationSharingStartedWebhookEventEventType = "participant.removed"
+	LocationSharingStartedWebhookEventEventTypeChatCreated                LocationSharingStartedWebhookEventEventType = "chat.created"
+	LocationSharingStartedWebhookEventEventTypeChatGroupNameUpdated       LocationSharingStartedWebhookEventEventType = "chat.group_name_updated"
+	LocationSharingStartedWebhookEventEventTypeChatGroupIconUpdated       LocationSharingStartedWebhookEventEventType = "chat.group_icon_updated"
+	LocationSharingStartedWebhookEventEventTypeChatGroupNameUpdateFailed  LocationSharingStartedWebhookEventEventType = "chat.group_name_update_failed"
+	LocationSharingStartedWebhookEventEventTypeChatGroupIconUpdateFailed  LocationSharingStartedWebhookEventEventType = "chat.group_icon_update_failed"
+	LocationSharingStartedWebhookEventEventTypeChatBackgroundUpdated      LocationSharingStartedWebhookEventEventType = "chat.background_updated"
+	LocationSharingStartedWebhookEventEventTypeChatBackgroundUpdateFailed LocationSharingStartedWebhookEventEventType = "chat.background_update_failed"
+	LocationSharingStartedWebhookEventEventTypeChatTypingIndicatorStarted LocationSharingStartedWebhookEventEventType = "chat.typing_indicator.started"
+	LocationSharingStartedWebhookEventEventTypeChatTypingIndicatorStopped LocationSharingStartedWebhookEventEventType = "chat.typing_indicator.stopped"
+	LocationSharingStartedWebhookEventEventTypePhoneNumberStatusUpdated   LocationSharingStartedWebhookEventEventType = "phone_number.status_updated"
+	LocationSharingStartedWebhookEventEventTypeContactCardReceived        LocationSharingStartedWebhookEventEventType = "contact_card.received"
+	LocationSharingStartedWebhookEventEventTypeCallInitiated              LocationSharingStartedWebhookEventEventType = "call.initiated"
+	LocationSharingStartedWebhookEventEventTypeCallRinging                LocationSharingStartedWebhookEventEventType = "call.ringing"
+	LocationSharingStartedWebhookEventEventTypeCallAnswered               LocationSharingStartedWebhookEventEventType = "call.answered"
+	LocationSharingStartedWebhookEventEventTypeCallEnded                  LocationSharingStartedWebhookEventEventType = "call.ended"
+	LocationSharingStartedWebhookEventEventTypeCallFailed                 LocationSharingStartedWebhookEventEventType = "call.failed"
+	LocationSharingStartedWebhookEventEventTypeCallDeclined               LocationSharingStartedWebhookEventEventType = "call.declined"
+	LocationSharingStartedWebhookEventEventTypeCallNoAnswer               LocationSharingStartedWebhookEventEventType = "call.no_answer"
+	LocationSharingStartedWebhookEventEventTypeLocationSharingStopped     LocationSharingStartedWebhookEventEventType = "location.sharing.stopped"
+	LocationSharingStartedWebhookEventEventTypePaymentSucceeded           LocationSharingStartedWebhookEventEventType = "payment.succeeded"
+	LocationSharingStartedWebhookEventEventTypePaymentCanceled            LocationSharingStartedWebhookEventEventType = "payment.canceled"
+	LocationSharingStartedWebhookEventEventTypePaymentExpired             LocationSharingStartedWebhookEventEventType = "payment.expired"
+	LocationSharingStartedWebhookEventEventTypePaymentDeclined            LocationSharingStartedWebhookEventEventType = "payment.declined"
+	LocationSharingStartedWebhookEventEventTypePaymentAuthorized          LocationSharingStartedWebhookEventEventType = "payment.authorized"
+	LocationSharingStartedWebhookEventEventTypeConnectionCreated          LocationSharingStartedWebhookEventEventType = "connection.created"
+	LocationSharingStartedWebhookEventEventTypeConnectionRevoked          LocationSharingStartedWebhookEventEventType = "connection.revoked"
+)
+
+type LocationSharingStoppedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                              `json:"created_at" api:"required" format:"date-time"`
+	Data      LocationSharingStoppedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "location.sharing.stopped", "message.sent", "message.received",
+	// "message.read", "message.delivered", "message.failed", "message.edited",
+	// "reaction.added", "reaction.removed", "poll.received", "poll.failed",
+	// "poll.sent", "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType LocationSharingStoppedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationSharingStoppedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *LocationSharingStoppedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LocationSharingStoppedWebhookEventData struct {
+	// When the sharing session started, matching began_at on its started event. Always
+	// present.
+	BeganAt time.Time `json:"began_at" api:"required" format:"date-time"`
+	// The chat the ended share was first sent to, matching the chat_id on its started
+	// event. Sharing always stops for the contact as a whole, never for a single chat,
+	// so this is the session's origin rather than the chat it stopped in. Null when
+	// the originating chat could not be determined.
+	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// When the sharing session was observed to stop.
+	EndedAt time.Time `json:"ended_at" api:"required" format:"date-time"`
+	// Phone number of the person who stopped sharing
+	SharedBy string `json:"shared_by" api:"required"`
+	// Your phone number that was receiving the location
+	SharedWith string `json:"shared_with" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		BeganAt     respjson.Field
+		ChatID      respjson.Field
+		EndedAt     respjson.Field
+		SharedBy    respjson.Field
+		SharedWith  respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r LocationSharingStoppedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *LocationSharingStoppedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type LocationSharingStoppedWebhookEventEventType string
+
+const (
+	LocationSharingStoppedWebhookEventEventTypeLocationSharingStopped     LocationSharingStoppedWebhookEventEventType = "location.sharing.stopped"
+	LocationSharingStoppedWebhookEventEventTypeMessageSent                LocationSharingStoppedWebhookEventEventType = "message.sent"
+	LocationSharingStoppedWebhookEventEventTypeMessageReceived            LocationSharingStoppedWebhookEventEventType = "message.received"
+	LocationSharingStoppedWebhookEventEventTypeMessageRead                LocationSharingStoppedWebhookEventEventType = "message.read"
+	LocationSharingStoppedWebhookEventEventTypeMessageDelivered           LocationSharingStoppedWebhookEventEventType = "message.delivered"
+	LocationSharingStoppedWebhookEventEventTypeMessageFailed              LocationSharingStoppedWebhookEventEventType = "message.failed"
+	LocationSharingStoppedWebhookEventEventTypeMessageEdited              LocationSharingStoppedWebhookEventEventType = "message.edited"
+	LocationSharingStoppedWebhookEventEventTypeReactionAdded              LocationSharingStoppedWebhookEventEventType = "reaction.added"
+	LocationSharingStoppedWebhookEventEventTypeReactionRemoved            LocationSharingStoppedWebhookEventEventType = "reaction.removed"
+	LocationSharingStoppedWebhookEventEventTypePollReceived               LocationSharingStoppedWebhookEventEventType = "poll.received"
+	LocationSharingStoppedWebhookEventEventTypePollFailed                 LocationSharingStoppedWebhookEventEventType = "poll.failed"
+	LocationSharingStoppedWebhookEventEventTypePollSent                   LocationSharingStoppedWebhookEventEventType = "poll.sent"
+	LocationSharingStoppedWebhookEventEventTypePollDelivered              LocationSharingStoppedWebhookEventEventType = "poll.delivered"
+	LocationSharingStoppedWebhookEventEventTypePollRead                   LocationSharingStoppedWebhookEventEventType = "poll.read"
+	LocationSharingStoppedWebhookEventEventTypePollUpdated                LocationSharingStoppedWebhookEventEventType = "poll.updated"
+	LocationSharingStoppedWebhookEventEventTypePollVoteAdded              LocationSharingStoppedWebhookEventEventType = "poll.vote.added"
+	LocationSharingStoppedWebhookEventEventTypePollVoteRemoved            LocationSharingStoppedWebhookEventEventType = "poll.vote.removed"
+	LocationSharingStoppedWebhookEventEventTypePollReactionAdded          LocationSharingStoppedWebhookEventEventType = "poll.reaction.added"
+	LocationSharingStoppedWebhookEventEventTypeParticipantAdded           LocationSharingStoppedWebhookEventEventType = "participant.added"
+	LocationSharingStoppedWebhookEventEventTypeParticipantRemoved         LocationSharingStoppedWebhookEventEventType = "participant.removed"
+	LocationSharingStoppedWebhookEventEventTypeChatCreated                LocationSharingStoppedWebhookEventEventType = "chat.created"
+	LocationSharingStoppedWebhookEventEventTypeChatGroupNameUpdated       LocationSharingStoppedWebhookEventEventType = "chat.group_name_updated"
+	LocationSharingStoppedWebhookEventEventTypeChatGroupIconUpdated       LocationSharingStoppedWebhookEventEventType = "chat.group_icon_updated"
+	LocationSharingStoppedWebhookEventEventTypeChatGroupNameUpdateFailed  LocationSharingStoppedWebhookEventEventType = "chat.group_name_update_failed"
+	LocationSharingStoppedWebhookEventEventTypeChatGroupIconUpdateFailed  LocationSharingStoppedWebhookEventEventType = "chat.group_icon_update_failed"
+	LocationSharingStoppedWebhookEventEventTypeChatBackgroundUpdated      LocationSharingStoppedWebhookEventEventType = "chat.background_updated"
+	LocationSharingStoppedWebhookEventEventTypeChatBackgroundUpdateFailed LocationSharingStoppedWebhookEventEventType = "chat.background_update_failed"
+	LocationSharingStoppedWebhookEventEventTypeChatTypingIndicatorStarted LocationSharingStoppedWebhookEventEventType = "chat.typing_indicator.started"
+	LocationSharingStoppedWebhookEventEventTypeChatTypingIndicatorStopped LocationSharingStoppedWebhookEventEventType = "chat.typing_indicator.stopped"
+	LocationSharingStoppedWebhookEventEventTypePhoneNumberStatusUpdated   LocationSharingStoppedWebhookEventEventType = "phone_number.status_updated"
+	LocationSharingStoppedWebhookEventEventTypeContactCardReceived        LocationSharingStoppedWebhookEventEventType = "contact_card.received"
+	LocationSharingStoppedWebhookEventEventTypeCallInitiated              LocationSharingStoppedWebhookEventEventType = "call.initiated"
+	LocationSharingStoppedWebhookEventEventTypeCallRinging                LocationSharingStoppedWebhookEventEventType = "call.ringing"
+	LocationSharingStoppedWebhookEventEventTypeCallAnswered               LocationSharingStoppedWebhookEventEventType = "call.answered"
+	LocationSharingStoppedWebhookEventEventTypeCallEnded                  LocationSharingStoppedWebhookEventEventType = "call.ended"
+	LocationSharingStoppedWebhookEventEventTypeCallFailed                 LocationSharingStoppedWebhookEventEventType = "call.failed"
+	LocationSharingStoppedWebhookEventEventTypeCallDeclined               LocationSharingStoppedWebhookEventEventType = "call.declined"
+	LocationSharingStoppedWebhookEventEventTypeCallNoAnswer               LocationSharingStoppedWebhookEventEventType = "call.no_answer"
+	LocationSharingStoppedWebhookEventEventTypeLocationSharingStarted     LocationSharingStoppedWebhookEventEventType = "location.sharing.started"
+	LocationSharingStoppedWebhookEventEventTypePaymentSucceeded           LocationSharingStoppedWebhookEventEventType = "payment.succeeded"
+	LocationSharingStoppedWebhookEventEventTypePaymentCanceled            LocationSharingStoppedWebhookEventEventType = "payment.canceled"
+	LocationSharingStoppedWebhookEventEventTypePaymentExpired             LocationSharingStoppedWebhookEventEventType = "payment.expired"
+	LocationSharingStoppedWebhookEventEventTypePaymentDeclined            LocationSharingStoppedWebhookEventEventType = "payment.declined"
+	LocationSharingStoppedWebhookEventEventTypePaymentAuthorized          LocationSharingStoppedWebhookEventEventType = "payment.authorized"
+	LocationSharingStoppedWebhookEventEventTypeConnectionCreated          LocationSharingStoppedWebhookEventEventType = "connection.created"
+	LocationSharingStoppedWebhookEventEventTypeConnectionRevoked          LocationSharingStoppedWebhookEventEventType = "connection.revoked"
+)
+
+type PaymentAuthorizedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data PaymentAuthorizedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType PaymentAuthorizedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentAuthorizedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAuthorizedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type PaymentAuthorizedWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount PaymentAuthorizedWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural PaymentAuthorizedWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe PaymentAuthorizedWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentAuthorizedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAuthorizedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type PaymentAuthorizedWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentAuthorizedWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAuthorizedWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type PaymentAuthorizedWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentAuthorizedWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAuthorizedWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type PaymentAuthorizedWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentAuthorizedWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentAuthorizedWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentAuthorizedWebhookEventEventType string
+
+const (
+	PaymentAuthorizedWebhookEventEventTypePaymentSucceeded           PaymentAuthorizedWebhookEventEventType = "payment.succeeded"
+	PaymentAuthorizedWebhookEventEventTypePaymentCanceled            PaymentAuthorizedWebhookEventEventType = "payment.canceled"
+	PaymentAuthorizedWebhookEventEventTypePaymentExpired             PaymentAuthorizedWebhookEventEventType = "payment.expired"
+	PaymentAuthorizedWebhookEventEventTypeMessageSent                PaymentAuthorizedWebhookEventEventType = "message.sent"
+	PaymentAuthorizedWebhookEventEventTypeMessageReceived            PaymentAuthorizedWebhookEventEventType = "message.received"
+	PaymentAuthorizedWebhookEventEventTypeMessageRead                PaymentAuthorizedWebhookEventEventType = "message.read"
+	PaymentAuthorizedWebhookEventEventTypeMessageDelivered           PaymentAuthorizedWebhookEventEventType = "message.delivered"
+	PaymentAuthorizedWebhookEventEventTypeMessageFailed              PaymentAuthorizedWebhookEventEventType = "message.failed"
+	PaymentAuthorizedWebhookEventEventTypeMessageEdited              PaymentAuthorizedWebhookEventEventType = "message.edited"
+	PaymentAuthorizedWebhookEventEventTypeReactionAdded              PaymentAuthorizedWebhookEventEventType = "reaction.added"
+	PaymentAuthorizedWebhookEventEventTypeReactionRemoved            PaymentAuthorizedWebhookEventEventType = "reaction.removed"
+	PaymentAuthorizedWebhookEventEventTypePollReceived               PaymentAuthorizedWebhookEventEventType = "poll.received"
+	PaymentAuthorizedWebhookEventEventTypePollFailed                 PaymentAuthorizedWebhookEventEventType = "poll.failed"
+	PaymentAuthorizedWebhookEventEventTypePollSent                   PaymentAuthorizedWebhookEventEventType = "poll.sent"
+	PaymentAuthorizedWebhookEventEventTypePollDelivered              PaymentAuthorizedWebhookEventEventType = "poll.delivered"
+	PaymentAuthorizedWebhookEventEventTypePollRead                   PaymentAuthorizedWebhookEventEventType = "poll.read"
+	PaymentAuthorizedWebhookEventEventTypePollUpdated                PaymentAuthorizedWebhookEventEventType = "poll.updated"
+	PaymentAuthorizedWebhookEventEventTypePollVoteAdded              PaymentAuthorizedWebhookEventEventType = "poll.vote.added"
+	PaymentAuthorizedWebhookEventEventTypePollVoteRemoved            PaymentAuthorizedWebhookEventEventType = "poll.vote.removed"
+	PaymentAuthorizedWebhookEventEventTypePollReactionAdded          PaymentAuthorizedWebhookEventEventType = "poll.reaction.added"
+	PaymentAuthorizedWebhookEventEventTypeParticipantAdded           PaymentAuthorizedWebhookEventEventType = "participant.added"
+	PaymentAuthorizedWebhookEventEventTypeParticipantRemoved         PaymentAuthorizedWebhookEventEventType = "participant.removed"
+	PaymentAuthorizedWebhookEventEventTypeChatCreated                PaymentAuthorizedWebhookEventEventType = "chat.created"
+	PaymentAuthorizedWebhookEventEventTypeChatGroupNameUpdated       PaymentAuthorizedWebhookEventEventType = "chat.group_name_updated"
+	PaymentAuthorizedWebhookEventEventTypeChatGroupIconUpdated       PaymentAuthorizedWebhookEventEventType = "chat.group_icon_updated"
+	PaymentAuthorizedWebhookEventEventTypeChatGroupNameUpdateFailed  PaymentAuthorizedWebhookEventEventType = "chat.group_name_update_failed"
+	PaymentAuthorizedWebhookEventEventTypeChatGroupIconUpdateFailed  PaymentAuthorizedWebhookEventEventType = "chat.group_icon_update_failed"
+	PaymentAuthorizedWebhookEventEventTypeChatBackgroundUpdated      PaymentAuthorizedWebhookEventEventType = "chat.background_updated"
+	PaymentAuthorizedWebhookEventEventTypeChatBackgroundUpdateFailed PaymentAuthorizedWebhookEventEventType = "chat.background_update_failed"
+	PaymentAuthorizedWebhookEventEventTypeChatTypingIndicatorStarted PaymentAuthorizedWebhookEventEventType = "chat.typing_indicator.started"
+	PaymentAuthorizedWebhookEventEventTypeChatTypingIndicatorStopped PaymentAuthorizedWebhookEventEventType = "chat.typing_indicator.stopped"
+	PaymentAuthorizedWebhookEventEventTypePhoneNumberStatusUpdated   PaymentAuthorizedWebhookEventEventType = "phone_number.status_updated"
+	PaymentAuthorizedWebhookEventEventTypeContactCardReceived        PaymentAuthorizedWebhookEventEventType = "contact_card.received"
+	PaymentAuthorizedWebhookEventEventTypeCallInitiated              PaymentAuthorizedWebhookEventEventType = "call.initiated"
+	PaymentAuthorizedWebhookEventEventTypeCallRinging                PaymentAuthorizedWebhookEventEventType = "call.ringing"
+	PaymentAuthorizedWebhookEventEventTypeCallAnswered               PaymentAuthorizedWebhookEventEventType = "call.answered"
+	PaymentAuthorizedWebhookEventEventTypeCallEnded                  PaymentAuthorizedWebhookEventEventType = "call.ended"
+	PaymentAuthorizedWebhookEventEventTypeCallFailed                 PaymentAuthorizedWebhookEventEventType = "call.failed"
+	PaymentAuthorizedWebhookEventEventTypeCallDeclined               PaymentAuthorizedWebhookEventEventType = "call.declined"
+	PaymentAuthorizedWebhookEventEventTypeCallNoAnswer               PaymentAuthorizedWebhookEventEventType = "call.no_answer"
+	PaymentAuthorizedWebhookEventEventTypeLocationSharingStarted     PaymentAuthorizedWebhookEventEventType = "location.sharing.started"
+	PaymentAuthorizedWebhookEventEventTypeLocationSharingStopped     PaymentAuthorizedWebhookEventEventType = "location.sharing.stopped"
+	PaymentAuthorizedWebhookEventEventTypePaymentDeclined            PaymentAuthorizedWebhookEventEventType = "payment.declined"
+	PaymentAuthorizedWebhookEventEventTypePaymentAuthorized          PaymentAuthorizedWebhookEventEventType = "payment.authorized"
+	PaymentAuthorizedWebhookEventEventTypeConnectionCreated          PaymentAuthorizedWebhookEventEventType = "connection.created"
+	PaymentAuthorizedWebhookEventEventTypeConnectionRevoked          PaymentAuthorizedWebhookEventEventType = "connection.revoked"
+)
+
+type PaymentCanceledWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data PaymentCanceledWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType PaymentCanceledWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentCanceledWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PaymentCanceledWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type PaymentCanceledWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount PaymentCanceledWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural PaymentCanceledWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe PaymentCanceledWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentCanceledWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentCanceledWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type PaymentCanceledWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentCanceledWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentCanceledWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type PaymentCanceledWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentCanceledWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *PaymentCanceledWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type PaymentCanceledWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentCanceledWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentCanceledWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentCanceledWebhookEventEventType string
+
+const (
+	PaymentCanceledWebhookEventEventTypePaymentSucceeded           PaymentCanceledWebhookEventEventType = "payment.succeeded"
+	PaymentCanceledWebhookEventEventTypePaymentCanceled            PaymentCanceledWebhookEventEventType = "payment.canceled"
+	PaymentCanceledWebhookEventEventTypePaymentExpired             PaymentCanceledWebhookEventEventType = "payment.expired"
+	PaymentCanceledWebhookEventEventTypeMessageSent                PaymentCanceledWebhookEventEventType = "message.sent"
+	PaymentCanceledWebhookEventEventTypeMessageReceived            PaymentCanceledWebhookEventEventType = "message.received"
+	PaymentCanceledWebhookEventEventTypeMessageRead                PaymentCanceledWebhookEventEventType = "message.read"
+	PaymentCanceledWebhookEventEventTypeMessageDelivered           PaymentCanceledWebhookEventEventType = "message.delivered"
+	PaymentCanceledWebhookEventEventTypeMessageFailed              PaymentCanceledWebhookEventEventType = "message.failed"
+	PaymentCanceledWebhookEventEventTypeMessageEdited              PaymentCanceledWebhookEventEventType = "message.edited"
+	PaymentCanceledWebhookEventEventTypeReactionAdded              PaymentCanceledWebhookEventEventType = "reaction.added"
+	PaymentCanceledWebhookEventEventTypeReactionRemoved            PaymentCanceledWebhookEventEventType = "reaction.removed"
+	PaymentCanceledWebhookEventEventTypePollReceived               PaymentCanceledWebhookEventEventType = "poll.received"
+	PaymentCanceledWebhookEventEventTypePollFailed                 PaymentCanceledWebhookEventEventType = "poll.failed"
+	PaymentCanceledWebhookEventEventTypePollSent                   PaymentCanceledWebhookEventEventType = "poll.sent"
+	PaymentCanceledWebhookEventEventTypePollDelivered              PaymentCanceledWebhookEventEventType = "poll.delivered"
+	PaymentCanceledWebhookEventEventTypePollRead                   PaymentCanceledWebhookEventEventType = "poll.read"
+	PaymentCanceledWebhookEventEventTypePollUpdated                PaymentCanceledWebhookEventEventType = "poll.updated"
+	PaymentCanceledWebhookEventEventTypePollVoteAdded              PaymentCanceledWebhookEventEventType = "poll.vote.added"
+	PaymentCanceledWebhookEventEventTypePollVoteRemoved            PaymentCanceledWebhookEventEventType = "poll.vote.removed"
+	PaymentCanceledWebhookEventEventTypePollReactionAdded          PaymentCanceledWebhookEventEventType = "poll.reaction.added"
+	PaymentCanceledWebhookEventEventTypeParticipantAdded           PaymentCanceledWebhookEventEventType = "participant.added"
+	PaymentCanceledWebhookEventEventTypeParticipantRemoved         PaymentCanceledWebhookEventEventType = "participant.removed"
+	PaymentCanceledWebhookEventEventTypeChatCreated                PaymentCanceledWebhookEventEventType = "chat.created"
+	PaymentCanceledWebhookEventEventTypeChatGroupNameUpdated       PaymentCanceledWebhookEventEventType = "chat.group_name_updated"
+	PaymentCanceledWebhookEventEventTypeChatGroupIconUpdated       PaymentCanceledWebhookEventEventType = "chat.group_icon_updated"
+	PaymentCanceledWebhookEventEventTypeChatGroupNameUpdateFailed  PaymentCanceledWebhookEventEventType = "chat.group_name_update_failed"
+	PaymentCanceledWebhookEventEventTypeChatGroupIconUpdateFailed  PaymentCanceledWebhookEventEventType = "chat.group_icon_update_failed"
+	PaymentCanceledWebhookEventEventTypeChatBackgroundUpdated      PaymentCanceledWebhookEventEventType = "chat.background_updated"
+	PaymentCanceledWebhookEventEventTypeChatBackgroundUpdateFailed PaymentCanceledWebhookEventEventType = "chat.background_update_failed"
+	PaymentCanceledWebhookEventEventTypeChatTypingIndicatorStarted PaymentCanceledWebhookEventEventType = "chat.typing_indicator.started"
+	PaymentCanceledWebhookEventEventTypeChatTypingIndicatorStopped PaymentCanceledWebhookEventEventType = "chat.typing_indicator.stopped"
+	PaymentCanceledWebhookEventEventTypePhoneNumberStatusUpdated   PaymentCanceledWebhookEventEventType = "phone_number.status_updated"
+	PaymentCanceledWebhookEventEventTypeContactCardReceived        PaymentCanceledWebhookEventEventType = "contact_card.received"
+	PaymentCanceledWebhookEventEventTypeCallInitiated              PaymentCanceledWebhookEventEventType = "call.initiated"
+	PaymentCanceledWebhookEventEventTypeCallRinging                PaymentCanceledWebhookEventEventType = "call.ringing"
+	PaymentCanceledWebhookEventEventTypeCallAnswered               PaymentCanceledWebhookEventEventType = "call.answered"
+	PaymentCanceledWebhookEventEventTypeCallEnded                  PaymentCanceledWebhookEventEventType = "call.ended"
+	PaymentCanceledWebhookEventEventTypeCallFailed                 PaymentCanceledWebhookEventEventType = "call.failed"
+	PaymentCanceledWebhookEventEventTypeCallDeclined               PaymentCanceledWebhookEventEventType = "call.declined"
+	PaymentCanceledWebhookEventEventTypeCallNoAnswer               PaymentCanceledWebhookEventEventType = "call.no_answer"
+	PaymentCanceledWebhookEventEventTypeLocationSharingStarted     PaymentCanceledWebhookEventEventType = "location.sharing.started"
+	PaymentCanceledWebhookEventEventTypeLocationSharingStopped     PaymentCanceledWebhookEventEventType = "location.sharing.stopped"
+	PaymentCanceledWebhookEventEventTypePaymentDeclined            PaymentCanceledWebhookEventEventType = "payment.declined"
+	PaymentCanceledWebhookEventEventTypePaymentAuthorized          PaymentCanceledWebhookEventEventType = "payment.authorized"
+	PaymentCanceledWebhookEventEventTypeConnectionCreated          PaymentCanceledWebhookEventEventType = "connection.created"
+	PaymentCanceledWebhookEventEventTypeConnectionRevoked          PaymentCanceledWebhookEventEventType = "connection.revoked"
+)
+
+type PaymentDeclinedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data PaymentDeclinedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType PaymentDeclinedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentDeclinedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PaymentDeclinedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type PaymentDeclinedWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount PaymentDeclinedWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural PaymentDeclinedWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe PaymentDeclinedWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentDeclinedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentDeclinedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type PaymentDeclinedWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentDeclinedWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentDeclinedWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type PaymentDeclinedWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentDeclinedWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *PaymentDeclinedWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type PaymentDeclinedWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentDeclinedWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentDeclinedWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentDeclinedWebhookEventEventType string
+
+const (
+	PaymentDeclinedWebhookEventEventTypePaymentSucceeded           PaymentDeclinedWebhookEventEventType = "payment.succeeded"
+	PaymentDeclinedWebhookEventEventTypePaymentCanceled            PaymentDeclinedWebhookEventEventType = "payment.canceled"
+	PaymentDeclinedWebhookEventEventTypePaymentExpired             PaymentDeclinedWebhookEventEventType = "payment.expired"
+	PaymentDeclinedWebhookEventEventTypeMessageSent                PaymentDeclinedWebhookEventEventType = "message.sent"
+	PaymentDeclinedWebhookEventEventTypeMessageReceived            PaymentDeclinedWebhookEventEventType = "message.received"
+	PaymentDeclinedWebhookEventEventTypeMessageRead                PaymentDeclinedWebhookEventEventType = "message.read"
+	PaymentDeclinedWebhookEventEventTypeMessageDelivered           PaymentDeclinedWebhookEventEventType = "message.delivered"
+	PaymentDeclinedWebhookEventEventTypeMessageFailed              PaymentDeclinedWebhookEventEventType = "message.failed"
+	PaymentDeclinedWebhookEventEventTypeMessageEdited              PaymentDeclinedWebhookEventEventType = "message.edited"
+	PaymentDeclinedWebhookEventEventTypeReactionAdded              PaymentDeclinedWebhookEventEventType = "reaction.added"
+	PaymentDeclinedWebhookEventEventTypeReactionRemoved            PaymentDeclinedWebhookEventEventType = "reaction.removed"
+	PaymentDeclinedWebhookEventEventTypePollReceived               PaymentDeclinedWebhookEventEventType = "poll.received"
+	PaymentDeclinedWebhookEventEventTypePollFailed                 PaymentDeclinedWebhookEventEventType = "poll.failed"
+	PaymentDeclinedWebhookEventEventTypePollSent                   PaymentDeclinedWebhookEventEventType = "poll.sent"
+	PaymentDeclinedWebhookEventEventTypePollDelivered              PaymentDeclinedWebhookEventEventType = "poll.delivered"
+	PaymentDeclinedWebhookEventEventTypePollRead                   PaymentDeclinedWebhookEventEventType = "poll.read"
+	PaymentDeclinedWebhookEventEventTypePollUpdated                PaymentDeclinedWebhookEventEventType = "poll.updated"
+	PaymentDeclinedWebhookEventEventTypePollVoteAdded              PaymentDeclinedWebhookEventEventType = "poll.vote.added"
+	PaymentDeclinedWebhookEventEventTypePollVoteRemoved            PaymentDeclinedWebhookEventEventType = "poll.vote.removed"
+	PaymentDeclinedWebhookEventEventTypePollReactionAdded          PaymentDeclinedWebhookEventEventType = "poll.reaction.added"
+	PaymentDeclinedWebhookEventEventTypeParticipantAdded           PaymentDeclinedWebhookEventEventType = "participant.added"
+	PaymentDeclinedWebhookEventEventTypeParticipantRemoved         PaymentDeclinedWebhookEventEventType = "participant.removed"
+	PaymentDeclinedWebhookEventEventTypeChatCreated                PaymentDeclinedWebhookEventEventType = "chat.created"
+	PaymentDeclinedWebhookEventEventTypeChatGroupNameUpdated       PaymentDeclinedWebhookEventEventType = "chat.group_name_updated"
+	PaymentDeclinedWebhookEventEventTypeChatGroupIconUpdated       PaymentDeclinedWebhookEventEventType = "chat.group_icon_updated"
+	PaymentDeclinedWebhookEventEventTypeChatGroupNameUpdateFailed  PaymentDeclinedWebhookEventEventType = "chat.group_name_update_failed"
+	PaymentDeclinedWebhookEventEventTypeChatGroupIconUpdateFailed  PaymentDeclinedWebhookEventEventType = "chat.group_icon_update_failed"
+	PaymentDeclinedWebhookEventEventTypeChatBackgroundUpdated      PaymentDeclinedWebhookEventEventType = "chat.background_updated"
+	PaymentDeclinedWebhookEventEventTypeChatBackgroundUpdateFailed PaymentDeclinedWebhookEventEventType = "chat.background_update_failed"
+	PaymentDeclinedWebhookEventEventTypeChatTypingIndicatorStarted PaymentDeclinedWebhookEventEventType = "chat.typing_indicator.started"
+	PaymentDeclinedWebhookEventEventTypeChatTypingIndicatorStopped PaymentDeclinedWebhookEventEventType = "chat.typing_indicator.stopped"
+	PaymentDeclinedWebhookEventEventTypePhoneNumberStatusUpdated   PaymentDeclinedWebhookEventEventType = "phone_number.status_updated"
+	PaymentDeclinedWebhookEventEventTypeContactCardReceived        PaymentDeclinedWebhookEventEventType = "contact_card.received"
+	PaymentDeclinedWebhookEventEventTypeCallInitiated              PaymentDeclinedWebhookEventEventType = "call.initiated"
+	PaymentDeclinedWebhookEventEventTypeCallRinging                PaymentDeclinedWebhookEventEventType = "call.ringing"
+	PaymentDeclinedWebhookEventEventTypeCallAnswered               PaymentDeclinedWebhookEventEventType = "call.answered"
+	PaymentDeclinedWebhookEventEventTypeCallEnded                  PaymentDeclinedWebhookEventEventType = "call.ended"
+	PaymentDeclinedWebhookEventEventTypeCallFailed                 PaymentDeclinedWebhookEventEventType = "call.failed"
+	PaymentDeclinedWebhookEventEventTypeCallDeclined               PaymentDeclinedWebhookEventEventType = "call.declined"
+	PaymentDeclinedWebhookEventEventTypeCallNoAnswer               PaymentDeclinedWebhookEventEventType = "call.no_answer"
+	PaymentDeclinedWebhookEventEventTypeLocationSharingStarted     PaymentDeclinedWebhookEventEventType = "location.sharing.started"
+	PaymentDeclinedWebhookEventEventTypeLocationSharingStopped     PaymentDeclinedWebhookEventEventType = "location.sharing.stopped"
+	PaymentDeclinedWebhookEventEventTypePaymentDeclined            PaymentDeclinedWebhookEventEventType = "payment.declined"
+	PaymentDeclinedWebhookEventEventTypePaymentAuthorized          PaymentDeclinedWebhookEventEventType = "payment.authorized"
+	PaymentDeclinedWebhookEventEventTypeConnectionCreated          PaymentDeclinedWebhookEventEventType = "connection.created"
+	PaymentDeclinedWebhookEventEventTypeConnectionRevoked          PaymentDeclinedWebhookEventEventType = "connection.revoked"
+)
+
+type PaymentExpiredWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data PaymentExpiredWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType PaymentExpiredWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentExpiredWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PaymentExpiredWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type PaymentExpiredWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount PaymentExpiredWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural PaymentExpiredWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe PaymentExpiredWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentExpiredWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentExpiredWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type PaymentExpiredWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentExpiredWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentExpiredWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type PaymentExpiredWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentExpiredWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *PaymentExpiredWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type PaymentExpiredWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentExpiredWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentExpiredWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentExpiredWebhookEventEventType string
+
+const (
+	PaymentExpiredWebhookEventEventTypePaymentSucceeded           PaymentExpiredWebhookEventEventType = "payment.succeeded"
+	PaymentExpiredWebhookEventEventTypePaymentCanceled            PaymentExpiredWebhookEventEventType = "payment.canceled"
+	PaymentExpiredWebhookEventEventTypePaymentExpired             PaymentExpiredWebhookEventEventType = "payment.expired"
+	PaymentExpiredWebhookEventEventTypeMessageSent                PaymentExpiredWebhookEventEventType = "message.sent"
+	PaymentExpiredWebhookEventEventTypeMessageReceived            PaymentExpiredWebhookEventEventType = "message.received"
+	PaymentExpiredWebhookEventEventTypeMessageRead                PaymentExpiredWebhookEventEventType = "message.read"
+	PaymentExpiredWebhookEventEventTypeMessageDelivered           PaymentExpiredWebhookEventEventType = "message.delivered"
+	PaymentExpiredWebhookEventEventTypeMessageFailed              PaymentExpiredWebhookEventEventType = "message.failed"
+	PaymentExpiredWebhookEventEventTypeMessageEdited              PaymentExpiredWebhookEventEventType = "message.edited"
+	PaymentExpiredWebhookEventEventTypeReactionAdded              PaymentExpiredWebhookEventEventType = "reaction.added"
+	PaymentExpiredWebhookEventEventTypeReactionRemoved            PaymentExpiredWebhookEventEventType = "reaction.removed"
+	PaymentExpiredWebhookEventEventTypePollReceived               PaymentExpiredWebhookEventEventType = "poll.received"
+	PaymentExpiredWebhookEventEventTypePollFailed                 PaymentExpiredWebhookEventEventType = "poll.failed"
+	PaymentExpiredWebhookEventEventTypePollSent                   PaymentExpiredWebhookEventEventType = "poll.sent"
+	PaymentExpiredWebhookEventEventTypePollDelivered              PaymentExpiredWebhookEventEventType = "poll.delivered"
+	PaymentExpiredWebhookEventEventTypePollRead                   PaymentExpiredWebhookEventEventType = "poll.read"
+	PaymentExpiredWebhookEventEventTypePollUpdated                PaymentExpiredWebhookEventEventType = "poll.updated"
+	PaymentExpiredWebhookEventEventTypePollVoteAdded              PaymentExpiredWebhookEventEventType = "poll.vote.added"
+	PaymentExpiredWebhookEventEventTypePollVoteRemoved            PaymentExpiredWebhookEventEventType = "poll.vote.removed"
+	PaymentExpiredWebhookEventEventTypePollReactionAdded          PaymentExpiredWebhookEventEventType = "poll.reaction.added"
+	PaymentExpiredWebhookEventEventTypeParticipantAdded           PaymentExpiredWebhookEventEventType = "participant.added"
+	PaymentExpiredWebhookEventEventTypeParticipantRemoved         PaymentExpiredWebhookEventEventType = "participant.removed"
+	PaymentExpiredWebhookEventEventTypeChatCreated                PaymentExpiredWebhookEventEventType = "chat.created"
+	PaymentExpiredWebhookEventEventTypeChatGroupNameUpdated       PaymentExpiredWebhookEventEventType = "chat.group_name_updated"
+	PaymentExpiredWebhookEventEventTypeChatGroupIconUpdated       PaymentExpiredWebhookEventEventType = "chat.group_icon_updated"
+	PaymentExpiredWebhookEventEventTypeChatGroupNameUpdateFailed  PaymentExpiredWebhookEventEventType = "chat.group_name_update_failed"
+	PaymentExpiredWebhookEventEventTypeChatGroupIconUpdateFailed  PaymentExpiredWebhookEventEventType = "chat.group_icon_update_failed"
+	PaymentExpiredWebhookEventEventTypeChatBackgroundUpdated      PaymentExpiredWebhookEventEventType = "chat.background_updated"
+	PaymentExpiredWebhookEventEventTypeChatBackgroundUpdateFailed PaymentExpiredWebhookEventEventType = "chat.background_update_failed"
+	PaymentExpiredWebhookEventEventTypeChatTypingIndicatorStarted PaymentExpiredWebhookEventEventType = "chat.typing_indicator.started"
+	PaymentExpiredWebhookEventEventTypeChatTypingIndicatorStopped PaymentExpiredWebhookEventEventType = "chat.typing_indicator.stopped"
+	PaymentExpiredWebhookEventEventTypePhoneNumberStatusUpdated   PaymentExpiredWebhookEventEventType = "phone_number.status_updated"
+	PaymentExpiredWebhookEventEventTypeContactCardReceived        PaymentExpiredWebhookEventEventType = "contact_card.received"
+	PaymentExpiredWebhookEventEventTypeCallInitiated              PaymentExpiredWebhookEventEventType = "call.initiated"
+	PaymentExpiredWebhookEventEventTypeCallRinging                PaymentExpiredWebhookEventEventType = "call.ringing"
+	PaymentExpiredWebhookEventEventTypeCallAnswered               PaymentExpiredWebhookEventEventType = "call.answered"
+	PaymentExpiredWebhookEventEventTypeCallEnded                  PaymentExpiredWebhookEventEventType = "call.ended"
+	PaymentExpiredWebhookEventEventTypeCallFailed                 PaymentExpiredWebhookEventEventType = "call.failed"
+	PaymentExpiredWebhookEventEventTypeCallDeclined               PaymentExpiredWebhookEventEventType = "call.declined"
+	PaymentExpiredWebhookEventEventTypeCallNoAnswer               PaymentExpiredWebhookEventEventType = "call.no_answer"
+	PaymentExpiredWebhookEventEventTypeLocationSharingStarted     PaymentExpiredWebhookEventEventType = "location.sharing.started"
+	PaymentExpiredWebhookEventEventTypeLocationSharingStopped     PaymentExpiredWebhookEventEventType = "location.sharing.stopped"
+	PaymentExpiredWebhookEventEventTypePaymentDeclined            PaymentExpiredWebhookEventEventType = "payment.declined"
+	PaymentExpiredWebhookEventEventTypePaymentAuthorized          PaymentExpiredWebhookEventEventType = "payment.authorized"
+	PaymentExpiredWebhookEventEventTypeConnectionCreated          PaymentExpiredWebhookEventEventType = "connection.created"
+	PaymentExpiredWebhookEventEventTypeConnectionRevoked          PaymentExpiredWebhookEventEventType = "connection.revoked"
+)
+
+type PaymentSucceededWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The payment request, as returned by
+	// `GET /v3/payment_requests/{paymentRequestId}`.
+	Data PaymentSucceededWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "payment.succeeded", "payment.canceled", "payment.expired",
+	// "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "contact_card.received", "call.initiated",
+	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
+	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
+	// "payment.declined", "payment.authorized", "connection.created",
+	// "connection.revoked".
+	EventType PaymentSucceededWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentSucceededWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PaymentSucceededWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The payment request, as returned by
+// `GET /v3/payment_requests/{paymentRequestId}`.
+type PaymentSucceededWebhookEventData struct {
+	// The payment request id.
+	ID string `json:"id" api:"required" format:"uuid"`
+	// What was charged at checkout, in the currency's minor units. In `subscription`
+	// mode this is the first invoice's total — all items after any discounts are
+	// applied.
+	Amount int64 `json:"amount" api:"required"`
+	// URL the recipient opens to pay
+	// (`https://zero.linqapp.com/pay/{slug}?session=...`).
+	CheckoutURL string    `json:"checkout_url" api:"required"`
+	CreatedAt   time.Time `json:"created_at" api:"required" format:"date-time"`
+	Currency    string    `json:"currency" api:"required"`
+	Object      string    `json:"object" api:"required"`
+	// Any of "succeeded", "failed", "canceled", "expired".
+	Status      string `json:"status" api:"required"`
+	Description string `json:"description"`
+	// Subscription mode — the discount Stripe applied, read back from the coupon.
+	// Absent when none was applied.
+	Discount PaymentSucceededWebhookEventDataDiscount `json:"discount"`
+	// Subscription mode — how often the subscription renews.
+	//
+	// Any of "day", "week", "month", "year".
+	Interval string `json:"interval"`
+	// Subscription mode — intervals per renewal.
+	IntervalCount int64             `json:"interval_count"`
+	Metadata      map[string]string `json:"metadata"`
+	// Whether the request collected a one-time charge or started a subscription.
+	//
+	// Any of "payment", "subscription".
+	Mode string `json:"mode"`
+	// Natural-rail join keys, present when `rail: natural`.
+	Natural PaymentSucceededWebhookEventDataNatural `json:"natural"`
+	// Subscription mode — the recurring price subscribed to.
+	PriceID string `json:"price_id"`
+	// Subscription mode — units of the price subscribed to.
+	Quantity int64 `json:"quantity"`
+	// The rail this request settled on.
+	//
+	// Any of "stripe", "natural".
+	Rail string `json:"rail"`
+	// Ids of the Stripe objects on your connected account — join keys into your own
+	// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+	// `subscription_id`.
+	Stripe PaymentSucceededWebhookEventDataStripe `json:"stripe"`
+	// Subscription mode — when the free trial ends and the first charge happens. On a
+	// trial request, `payment.succeeded` means the payment method was collected ($0
+	// moved).
+	TrialEnd  time.Time `json:"trial_end" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID            respjson.Field
+		Amount        respjson.Field
+		CheckoutURL   respjson.Field
+		CreatedAt     respjson.Field
+		Currency      respjson.Field
+		Object        respjson.Field
+		Status        respjson.Field
+		Description   respjson.Field
+		Discount      respjson.Field
+		Interval      respjson.Field
+		IntervalCount respjson.Field
+		Metadata      respjson.Field
+		Mode          respjson.Field
+		Natural       respjson.Field
+		PriceID       respjson.Field
+		Quantity      respjson.Field
+		Rail          respjson.Field
+		Stripe        respjson.Field
+		TrialEnd      respjson.Field
+		UpdatedAt     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentSucceededWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PaymentSucceededWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Subscription mode — the discount Stripe applied, read back from the coupon.
+// Absent when none was applied.
+type PaymentSucceededWebhookEventDataDiscount struct {
+	Coupon string `json:"coupon"`
+	// Name of the coupon/promo code displayed to customers.
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentSucceededWebhookEventDataDiscount) RawJSON() string { return r.JSON.raw }
+func (r *PaymentSucceededWebhookEventDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Natural-rail join keys, present when `rail: natural`.
+type PaymentSucceededWebhookEventDataNatural struct {
+	// The Natural payment request (`prq_...`).
+	PaymentRequestID string `json:"payment_request_id"`
+	// The settled transaction (`txn_...`).
+	TransactionID string `json:"transaction_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentSucceededWebhookEventDataNatural) RawJSON() string { return r.JSON.raw }
+func (r *PaymentSucceededWebhookEventDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Ids of the Stripe objects on your connected account — join keys into your own
+// Stripe Dashboard/API. Manage a subscription's post-checkout lifecycle with
+// `subscription_id`.
+type PaymentSucceededWebhookEventDataStripe struct {
+	// The Customer the request is attached to (`cus_...`). Always set in subscription
+	// mode; set in payment mode only when the request was created with a
+	// `customer_id`.
+	CustomerID string `json:"customer_id"`
+	// The PaymentIntent collected at checkout (`pi_...`).
+	PaymentIntentID string `json:"payment_intent_id"`
+	// Subscription mode — the Subscription (`sub_...`).
+	SubscriptionID string `json:"subscription_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PaymentSucceededWebhookEventDataStripe) RawJSON() string { return r.JSON.raw }
+func (r *PaymentSucceededWebhookEventDataStripe) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PaymentSucceededWebhookEventEventType string
+
+const (
+	PaymentSucceededWebhookEventEventTypePaymentSucceeded           PaymentSucceededWebhookEventEventType = "payment.succeeded"
+	PaymentSucceededWebhookEventEventTypePaymentCanceled            PaymentSucceededWebhookEventEventType = "payment.canceled"
+	PaymentSucceededWebhookEventEventTypePaymentExpired             PaymentSucceededWebhookEventEventType = "payment.expired"
+	PaymentSucceededWebhookEventEventTypeMessageSent                PaymentSucceededWebhookEventEventType = "message.sent"
+	PaymentSucceededWebhookEventEventTypeMessageReceived            PaymentSucceededWebhookEventEventType = "message.received"
+	PaymentSucceededWebhookEventEventTypeMessageRead                PaymentSucceededWebhookEventEventType = "message.read"
+	PaymentSucceededWebhookEventEventTypeMessageDelivered           PaymentSucceededWebhookEventEventType = "message.delivered"
+	PaymentSucceededWebhookEventEventTypeMessageFailed              PaymentSucceededWebhookEventEventType = "message.failed"
+	PaymentSucceededWebhookEventEventTypeMessageEdited              PaymentSucceededWebhookEventEventType = "message.edited"
+	PaymentSucceededWebhookEventEventTypeReactionAdded              PaymentSucceededWebhookEventEventType = "reaction.added"
+	PaymentSucceededWebhookEventEventTypeReactionRemoved            PaymentSucceededWebhookEventEventType = "reaction.removed"
+	PaymentSucceededWebhookEventEventTypePollReceived               PaymentSucceededWebhookEventEventType = "poll.received"
+	PaymentSucceededWebhookEventEventTypePollFailed                 PaymentSucceededWebhookEventEventType = "poll.failed"
+	PaymentSucceededWebhookEventEventTypePollSent                   PaymentSucceededWebhookEventEventType = "poll.sent"
+	PaymentSucceededWebhookEventEventTypePollDelivered              PaymentSucceededWebhookEventEventType = "poll.delivered"
+	PaymentSucceededWebhookEventEventTypePollRead                   PaymentSucceededWebhookEventEventType = "poll.read"
+	PaymentSucceededWebhookEventEventTypePollUpdated                PaymentSucceededWebhookEventEventType = "poll.updated"
+	PaymentSucceededWebhookEventEventTypePollVoteAdded              PaymentSucceededWebhookEventEventType = "poll.vote.added"
+	PaymentSucceededWebhookEventEventTypePollVoteRemoved            PaymentSucceededWebhookEventEventType = "poll.vote.removed"
+	PaymentSucceededWebhookEventEventTypePollReactionAdded          PaymentSucceededWebhookEventEventType = "poll.reaction.added"
+	PaymentSucceededWebhookEventEventTypeParticipantAdded           PaymentSucceededWebhookEventEventType = "participant.added"
+	PaymentSucceededWebhookEventEventTypeParticipantRemoved         PaymentSucceededWebhookEventEventType = "participant.removed"
+	PaymentSucceededWebhookEventEventTypeChatCreated                PaymentSucceededWebhookEventEventType = "chat.created"
+	PaymentSucceededWebhookEventEventTypeChatGroupNameUpdated       PaymentSucceededWebhookEventEventType = "chat.group_name_updated"
+	PaymentSucceededWebhookEventEventTypeChatGroupIconUpdated       PaymentSucceededWebhookEventEventType = "chat.group_icon_updated"
+	PaymentSucceededWebhookEventEventTypeChatGroupNameUpdateFailed  PaymentSucceededWebhookEventEventType = "chat.group_name_update_failed"
+	PaymentSucceededWebhookEventEventTypeChatGroupIconUpdateFailed  PaymentSucceededWebhookEventEventType = "chat.group_icon_update_failed"
+	PaymentSucceededWebhookEventEventTypeChatBackgroundUpdated      PaymentSucceededWebhookEventEventType = "chat.background_updated"
+	PaymentSucceededWebhookEventEventTypeChatBackgroundUpdateFailed PaymentSucceededWebhookEventEventType = "chat.background_update_failed"
+	PaymentSucceededWebhookEventEventTypeChatTypingIndicatorStarted PaymentSucceededWebhookEventEventType = "chat.typing_indicator.started"
+	PaymentSucceededWebhookEventEventTypeChatTypingIndicatorStopped PaymentSucceededWebhookEventEventType = "chat.typing_indicator.stopped"
+	PaymentSucceededWebhookEventEventTypePhoneNumberStatusUpdated   PaymentSucceededWebhookEventEventType = "phone_number.status_updated"
+	PaymentSucceededWebhookEventEventTypeContactCardReceived        PaymentSucceededWebhookEventEventType = "contact_card.received"
+	PaymentSucceededWebhookEventEventTypeCallInitiated              PaymentSucceededWebhookEventEventType = "call.initiated"
+	PaymentSucceededWebhookEventEventTypeCallRinging                PaymentSucceededWebhookEventEventType = "call.ringing"
+	PaymentSucceededWebhookEventEventTypeCallAnswered               PaymentSucceededWebhookEventEventType = "call.answered"
+	PaymentSucceededWebhookEventEventTypeCallEnded                  PaymentSucceededWebhookEventEventType = "call.ended"
+	PaymentSucceededWebhookEventEventTypeCallFailed                 PaymentSucceededWebhookEventEventType = "call.failed"
+	PaymentSucceededWebhookEventEventTypeCallDeclined               PaymentSucceededWebhookEventEventType = "call.declined"
+	PaymentSucceededWebhookEventEventTypeCallNoAnswer               PaymentSucceededWebhookEventEventType = "call.no_answer"
+	PaymentSucceededWebhookEventEventTypeLocationSharingStarted     PaymentSucceededWebhookEventEventType = "location.sharing.started"
+	PaymentSucceededWebhookEventEventTypeLocationSharingStopped     PaymentSucceededWebhookEventEventType = "location.sharing.stopped"
+	PaymentSucceededWebhookEventEventTypePaymentDeclined            PaymentSucceededWebhookEventEventType = "payment.declined"
+	PaymentSucceededWebhookEventEventTypePaymentAuthorized          PaymentSucceededWebhookEventEventType = "payment.authorized"
+	PaymentSucceededWebhookEventEventTypeConnectionCreated          PaymentSucceededWebhookEventEventType = "connection.created"
+	PaymentSucceededWebhookEventEventTypeConnectionRevoked          PaymentSucceededWebhookEventEventType = "connection.revoked"
+)
+
 // UnwrapWebhookEventUnion contains all possible properties and values from
 // [MessageSentWebhookEvent], [MessageReceivedWebhookEvent],
 // [MessageReadWebhookEvent], [MessageDeliveredWebhookEvent],
@@ -4369,7 +6478,11 @@ const (
 // [ChatTypingIndicatorStartedWebhookEvent],
 // [ChatTypingIndicatorStoppedWebhookEvent], [ChatBackgroundUpdatedWebhookEvent],
 // [ChatBackgroundUpdateFailedWebhookEvent], [ContactCardReceivedWebhookEvent],
-// [PhoneNumberStatusUpdatedWebhookEvent].
+// [PhoneNumberStatusUpdatedWebhookEvent], [ConnectionCreatedWebhookEvent],
+// [ConnectionRevokedWebhookEvent], [LocationSharingStartedWebhookEvent],
+// [LocationSharingStoppedWebhookEvent], [PaymentAuthorizedWebhookEvent],
+// [PaymentCanceledWebhookEvent], [PaymentDeclinedWebhookEvent],
+// [PaymentExpiredWebhookEvent], [PaymentSucceededWebhookEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -4393,11 +6506,16 @@ type UnwrapWebhookEventUnion struct {
 	// [ChatBackgroundUpdatedWebhookEventData],
 	// [ChatBackgroundUpdateFailedWebhookEventData],
 	// [ContactCardReceivedWebhookEventData],
-	// [PhoneNumberStatusUpdatedWebhookEventData]
+	// [PhoneNumberStatusUpdatedWebhookEventData], [ConnectionCreatedWebhookEventData],
+	// [ConnectionRevokedWebhookEventData], [LocationSharingStartedWebhookEventData],
+	// [LocationSharingStoppedWebhookEventData], [PaymentAuthorizedWebhookEventData],
+	// [PaymentCanceledWebhookEventData], [PaymentDeclinedWebhookEventData],
+	// [PaymentExpiredWebhookEventData], [PaymentSucceededWebhookEventData]
 	Data    UnwrapWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -4565,6 +6683,51 @@ func (u UnwrapWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v Pho
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsConnectionCreatedWebhookEvent() (v ConnectionCreatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsConnectionRevokedWebhookEvent() (v ConnectionRevokedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsLocationSharingStartedWebhookEvent() (v LocationSharingStartedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsLocationSharingStoppedWebhookEvent() (v LocationSharingStoppedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPaymentAuthorizedWebhookEvent() (v PaymentAuthorizedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPaymentCanceledWebhookEvent() (v PaymentCanceledWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPaymentDeclinedWebhookEvent() (v PaymentDeclinedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPaymentExpiredWebhookEvent() (v PaymentExpiredWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPaymentSucceededWebhookEvent() (v PaymentSucceededWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -4692,7 +6855,51 @@ type UnwrapWebhookEventUnionData struct {
 	PreviousReputation string `json:"previous_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
-	JSON           struct {
+	Amount         int64  `json:"amount"`
+	CheckoutURL    string `json:"checkout_url"`
+	Currency       string `json:"currency"`
+	Object         string `json:"object"`
+	Status         string `json:"status"`
+	Description    string `json:"description"`
+	// This field is a union of [ConnectionCreatedWebhookEventDataDiscount],
+	// [ConnectionRevokedWebhookEventDataDiscount],
+	// [PaymentAuthorizedWebhookEventDataDiscount],
+	// [PaymentCanceledWebhookEventDataDiscount],
+	// [PaymentDeclinedWebhookEventDataDiscount],
+	// [PaymentExpiredWebhookEventDataDiscount],
+	// [PaymentSucceededWebhookEventDataDiscount]
+	Discount      UnwrapWebhookEventUnionDataDiscount `json:"discount"`
+	Interval      string                              `json:"interval"`
+	IntervalCount int64                               `json:"interval_count"`
+	Metadata      string                              `json:"metadata"`
+	Mode          string                              `json:"mode"`
+	// This field is a union of [ConnectionCreatedWebhookEventDataNatural],
+	// [ConnectionRevokedWebhookEventDataNatural],
+	// [PaymentAuthorizedWebhookEventDataNatural],
+	// [PaymentCanceledWebhookEventDataNatural],
+	// [PaymentDeclinedWebhookEventDataNatural],
+	// [PaymentExpiredWebhookEventDataNatural],
+	// [PaymentSucceededWebhookEventDataNatural]
+	Natural  UnwrapWebhookEventUnionDataNatural `json:"natural"`
+	PriceID  string                             `json:"price_id"`
+	Quantity int64                              `json:"quantity"`
+	Rail     string                             `json:"rail"`
+	// This field is a union of [ConnectionCreatedWebhookEventDataStripe],
+	// [ConnectionRevokedWebhookEventDataStripe],
+	// [PaymentAuthorizedWebhookEventDataStripe],
+	// [PaymentCanceledWebhookEventDataStripe],
+	// [PaymentDeclinedWebhookEventDataStripe], [PaymentExpiredWebhookEventDataStripe],
+	// [PaymentSucceededWebhookEventDataStripe]
+	Stripe   UnwrapWebhookEventUnionDataStripe `json:"stripe"`
+	TrialEnd time.Time                         `json:"trial_end"`
+	BeganAt  time.Time                         `json:"began_at"`
+	// This field is from variant [LocationSharingStartedWebhookEventData].
+	EndsAt     time.Time `json:"ends_at"`
+	SharedBy   string    `json:"shared_by"`
+	SharedWith string    `json:"shared_with"`
+	// This field is from variant [LocationSharingStoppedWebhookEventData].
+	EndedAt time.Time `json:"ended_at"`
+	JSON    struct {
 		ID                 respjson.Field
 		Chat               respjson.Field
 		Direction          respjson.Field
@@ -4754,6 +6961,28 @@ type UnwrapWebhookEventUnionData struct {
 		PhoneNumber        respjson.Field
 		PreviousReputation respjson.Field
 		PreviousStatus     respjson.Field
+		Amount             respjson.Field
+		CheckoutURL        respjson.Field
+		Currency           respjson.Field
+		Object             respjson.Field
+		Status             respjson.Field
+		Description        respjson.Field
+		Discount           respjson.Field
+		Interval           respjson.Field
+		IntervalCount      respjson.Field
+		Metadata           respjson.Field
+		Mode               respjson.Field
+		Natural            respjson.Field
+		PriceID            respjson.Field
+		Quantity           respjson.Field
+		Rail               respjson.Field
+		Stripe             respjson.Field
+		TrialEnd           respjson.Field
+		BeganAt            respjson.Field
+		EndsAt             respjson.Field
+		SharedBy           respjson.Field
+		SharedWith         respjson.Field
+		EndedAt            respjson.Field
 		raw                string
 	} `json:"-"`
 }
@@ -4916,5 +7145,69 @@ type UnwrapWebhookEventUnionDataPollOptions struct {
 }
 
 func (r *UnwrapWebhookEventUnionDataPollOptions) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataDiscount is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataDiscount provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataDiscount struct {
+	Coupon        string `json:"coupon"`
+	Label         string `json:"label"`
+	PromotionCode string `json:"promotion_code"`
+	JSON          struct {
+		Coupon        respjson.Field
+		Label         respjson.Field
+		PromotionCode respjson.Field
+		raw           string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataDiscount) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataNatural is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataNatural provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataNatural struct {
+	PaymentRequestID string `json:"payment_request_id"`
+	TransactionID    string `json:"transaction_id"`
+	JSON             struct {
+		PaymentRequestID respjson.Field
+		TransactionID    respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataNatural) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataStripe is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataStripe provides convenient
+// access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataStripe struct {
+	CustomerID      string `json:"customer_id"`
+	PaymentIntentID string `json:"payment_intent_id"`
+	SubscriptionID  string `json:"subscription_id"`
+	JSON            struct {
+		CustomerID      respjson.Field
+		PaymentIntentID respjson.Field
+		SubscriptionID  respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataStripe) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
