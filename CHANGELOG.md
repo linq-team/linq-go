@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.50.0](https://github.com/linq-team/linq-go/compare/v0.49.0...v0.50.0) (2026-09-04)
+
+
+### Features
+
+* expand app_clip part to support any registered app clip ([d9079f8](https://github.com/linq-team/linq-go/commit/d9079f8813142a8584bac701ed1b09874d915c2e))
+
 ## [0.49.0](https://github.com/linq-team/linq-go/compare/v0.48.2...v0.49.0) (2026-09-02)
 
 
