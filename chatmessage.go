@@ -43,6 +43,14 @@ import (
 // - A `link` part cannot be combined with other parts in the same message.
 // - Maximum URL length: 2,048 characters.
 //
+// ## App Clips
+//
+// An `app_clip` part sends a **registered App Clip** — not only Linq's Apple Pay
+// checkout, but any partner's own App Clip. Like a `link` part it must be the
+// **only** part in the message, and it is **iMessage only** — it never downgrades
+// to SMS or RCS. The payment-checkout use of this part is covered in the
+// **Payments** section.
+//
 // ## Ephemeral Messages (Privacy Tier)
 //
 // For regulated or sensitive conversations, opt in to the **ephemeral messages**
@@ -529,21 +537,21 @@ func (r *SentMessagePartIMessageAppPartResponseLayout) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An Apple Pay App Clip payment card part
+// An App Clip card part
 type SentMessagePartAppClipPartResponse struct {
 	// Reactions on this message part
 	Reactions []shared.Reaction `json:"reactions" api:"required"`
-	// Indicates this is an App Clip payment card part
+	// Indicates this is an App Clip card part
 	//
 	// Any of "app_clip".
 	Type string `json:"type" api:"required"`
-	// The checkout link the card opens
+	// The App Clip link the card opens
 	Value string `json:"value" api:"required"`
-	// The card's summary line, composed by Linq from the checkout session
+	// The card's summary line, composed by Linq from the App Clip page
 	Description string `json:"description"`
 	// The card's preview image
 	ImageURL string `json:"image_url"`
-	// The card's headline, composed by Linq from the checkout session
+	// The card's headline, composed by Linq from the App Clip page
 	Title string `json:"title"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {

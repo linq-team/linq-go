@@ -39,6 +39,14 @@ import (
 // - A `link` part cannot be combined with other parts in the same message.
 // - Maximum URL length: 2,048 characters.
 //
+// ## App Clips
+//
+// An `app_clip` part sends a **registered App Clip** — not only Linq's Apple Pay
+// checkout, but any partner's own App Clip. Like a `link` part it must be the
+// **only** part in the message, and it is **iMessage only** — it never downgrades
+// to SMS or RCS. The payment-checkout use of this part is covered in the
+// **Payments** section.
+//
 // ## Ephemeral Messages (Privacy Tier)
 //
 // For regulated or sensitive conversations, opt in to the **ephemeral messages**
