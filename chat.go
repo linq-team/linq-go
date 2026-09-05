@@ -791,6 +791,22 @@ type MediaPartParam struct {
 	//
 	// Either `url` or `attachment_id` must be provided, but not both.
 	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
+	// Send this image as a **sticker** rather than a photo. The recipient can peel it
+	// off and place it on any message in the conversation, and it renders without a
+	// bubble.
+	//
+	// An opaque photo is cut out automatically — the subject is lifted from its
+	// background, the same way "Add Sticker" does on iOS. An image that already has
+	// transparency is sent as-is. If no subject can be found, the image sends as an
+	// ordinary photo.
+	//
+	// **iMessage only.** On SMS/RCS the flag is ignored and the image sends as a
+	// photo.
+	//
+	// Stickers can be combined with a `text` part in the same message; the text
+	// arrives as its own bubble. To place a sticker _onto_ an existing message
+	// instead, use `POST /v3/messages/{messageId}/reactions` with `type: "sticker"`.
+	Sticker param.Opt[bool] `json:"sticker,omitzero"`
 	// Any publicly accessible HTTPS URL to the media file. The server downloads and
 	// sends the file automatically — no pre-upload step required.
 	//

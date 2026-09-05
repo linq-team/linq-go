@@ -584,6 +584,11 @@ type ReactionEventBase struct {
 	PartIndex int64 `json:"part_index"`
 	// When the reaction was added or removed
 	ReactedAt time.Time `json:"reacted_at" format:"date-time"`
+	// Identifier for this reaction. Pass it to
+	// `PATCH /v3/messages/{messageId}/reactions/{reactionId}` to move a sticker.
+	// Stickers stack, so this is what distinguishes one sticker from another on the
+	// same message.
+	ReactionID string `json:"reaction_id" format:"uuid"`
 	// Messaging service type
 	//
 	// Any of "iMessage", "SMS", "RCS".
@@ -602,6 +607,7 @@ type ReactionEventBase struct {
 		MessageID    respjson.Field
 		PartIndex    respjson.Field
 		ReactedAt    respjson.Field
+		ReactionID   respjson.Field
 		Service      respjson.Field
 		Sticker      respjson.Field
 		ExtraFields  map[string]respjson.Field
@@ -6797,6 +6803,8 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ReactionEventBase].
 	ReactedAt time.Time `json:"reacted_at"`
 	// This field is from variant [ReactionEventBase].
+	ReactionID string `json:"reaction_id"`
+	// This field is from variant [ReactionEventBase].
 	Sticker   ReactionEventBaseSticker `json:"sticker"`
 	CreatedAt time.Time                `json:"created_at"`
 	// This field is a union of [PollReceivedWebhookEventDataPoll],
@@ -6929,6 +6937,7 @@ type UnwrapWebhookEventUnionData struct {
 		FromHandle         respjson.Field
 		PartIndex          respjson.Field
 		ReactedAt          respjson.Field
+		ReactionID         respjson.Field
 		Sticker            respjson.Field
 		CreatedAt          respjson.Field
 		Poll               respjson.Field
