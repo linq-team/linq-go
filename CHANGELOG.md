@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.52.0](https://github.com/linq-team/linq-go/compare/v0.51.0...v0.52.0) (2026-09-05)
+
+
+### Features
+
+* add zero_retention field to message responses ([8654b71](https://github.com/linq-team/linq-go/commit/8654b7199d1f8a91e45ba0edda35495e413e1e1f))
+
 ## [0.51.0](https://github.com/linq-team/linq-go/compare/v0.50.0...v0.51.0) (2026-09-05)
 
 
