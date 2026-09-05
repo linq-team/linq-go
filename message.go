@@ -387,6 +387,12 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...o
 // - emphasize ‼️
 // - question ❓
 // - custom - any emoji (use `custom_emoji` field to specify)
+// - sticker - an image peeled onto the message (use `url` or `attachment_id`)
+//
+// **Stickers** are iMessage-only and cannot be removed — iMessage has no unpeel
+// operation, so `operation: "remove"` with `type: "sticker"` is rejected.
+// Position, size and rotation are optional via `placement`, and can be changed
+// afterwards with `PATCH /v3/messages/{messageId}/reactions/{reactionId}`.
 func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
@@ -465,6 +471,35 @@ func (r *MessageService) UpdateAppCard(ctx context.Context, messageID string, bo
 	}
 	path := fmt.Sprintf("v3/messages/%s/update", messageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
+// Move, resize or rotate a sticker that has already been peeled onto a message.
+// The change is sent to every device in the conversation, exactly as dragging the
+// sticker by hand would.
+//
+// Only stickers can be repositioned — a tapback has no placement, so a non-sticker
+// `reactionId` is rejected. Any field omitted from `placement` keeps its current
+// value.
+//
+// `reactionId` is the `id` from the reaction on the message, or from the
+// `reaction.added` webhook. Stickers stack, so this id is what distinguishes one
+// sticker from another on the same message.
+//
+// Stickers peeled before this endpoint existed cannot be moved: addressing one
+// requires an identifier that was not recorded at the time, and it returns 404.
+func (r *MessageService) UpdateStickerPlacement(ctx context.Context, reactionID string, params MessageUpdateStickerPlacementParams, opts ...option.RequestOption) (res *MessageUpdateStickerPlacementResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if params.MessageID == "" {
+		err = errors.New("missing required messageId parameter")
+		return nil, err
+	}
+	if reactionID == "" {
+		err = errors.New("missing required reactionId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/messages/%s/reactions/%s", params.MessageID, reactionID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &res, opts...)
 	return res, err
 }
 
@@ -1065,6 +1100,26 @@ func (r *MessageUpdateAppCardResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+type MessageUpdateStickerPlacementResponse struct {
+	Status  string `json:"status"`
+	Success bool   `json:"success"`
+	TraceID string `json:"trace_id"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Status      respjson.Field
+		Success     respjson.Field
+		TraceID     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r MessageUpdateStickerPlacementResponse) RawJSON() string { return r.JSON.raw }
+func (r *MessageUpdateStickerPlacementResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type MessageNewParams struct {
 	// Message content container. Groups all message-related fields together,
 	// separating the "what" (message content) from the "where" (routing fields like
@@ -1171,11 +1226,33 @@ type MessageAddReactionParams struct {
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
 	Type shared.ReactionType `json:"type,omitzero" api:"required"`
+	// Reference to a sticker image pre-uploaded via `POST /v3/attachments`. Only valid
+	// when type is "sticker".
+	//
+	// Either `url` or `attachment_id` must be provided when type is "sticker", but not
+	// both.
+	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
 	// Custom emoji string. Required when type is "custom".
 	CustomEmoji param.Opt[string] `json:"custom_emoji,omitzero"`
 	// Optional index of the message part to react to. If not provided, reacts to the
 	// entire message (part 0).
 	PartIndex param.Opt[int64] `json:"part_index,omitzero"`
+	// Linq attachment URL of the sticker image — the `download_url` returned by
+	// `POST /v3/attachments`. Only valid when type is "sticker".
+	//
+	// Unlike a media part, this does **not** accept an arbitrary host: reactions have
+	// no download step, so the image must already be stored. To send a sticker from
+	// elsewhere, upload it with `POST /v3/attachments` first and pass `attachment_id`.
+	//
+	// Either `url` or `attachment_id` must be provided when type is "sticker", but not
+	// both.
+	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	// Optional position, size and rotation of a sticker on the target bubble. Only
+	// valid when type is "sticker".
+	//
+	// Every field is independent and optional — omit the object entirely, or any field
+	// within it, to keep the default (centred, default size, unrotated).
+	Placement MessageAddReactionParamsPlacement `json:"placement,omitzero"`
 	paramObj
 }
 
@@ -1194,6 +1271,40 @@ const (
 	MessageAddReactionParamsOperationAdd    MessageAddReactionParamsOperation = "add"
 	MessageAddReactionParamsOperationRemove MessageAddReactionParamsOperation = "remove"
 )
+
+// Optional position, size and rotation of a sticker on the target bubble. Only
+// valid when type is "sticker".
+//
+// Every field is independent and optional — omit the object entirely, or any field
+// within it, to keep the default (centred, default size, unrotated).
+type MessageAddReactionParamsPlacement struct {
+	// Clockwise rotation in degrees.
+	Rotation param.Opt[float64] `json:"rotation,omitzero"`
+	// Size relative to the default, where 1 matches the size a sticker gets natively.
+	//
+	// Values outside 0.5–1.5 are clamped rather than rejected. The upper bound keeps a
+	// sticker within the size range iMessage itself displays: its own limit is larger,
+	// but that allowance assumes the transparent padding Apple's stickers carry, which
+	// a full-bleed image does not have.
+	//
+	// Scale is linear, so 1.5 is a little over twice the area.
+	Scale param.Opt[float64] `json:"scale,omitzero"`
+	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
+	// is centred.
+	X param.Opt[float64] `json:"x,omitzero"`
+	// Vertical position on the target bubble, from -1 (top) to 1 (bottom). 0 is
+	// centred.
+	Y param.Opt[float64] `json:"y,omitzero"`
+	paramObj
+}
+
+func (r MessageAddReactionParamsPlacement) MarshalJSON() (data []byte, err error) {
+	type shadow MessageAddReactionParamsPlacement
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageAddReactionParamsPlacement) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type MessageListMessagesThreadParams struct {
 	// Pagination cursor from previous next_cursor response
@@ -1352,5 +1463,58 @@ func (r MessageUpdateAppCardParamsExperience) MarshalJSON() (data []byte, err er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageUpdateAppCardParamsExperience) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type MessageUpdateStickerPlacementParams struct {
+	MessageID string `path:"messageId" api:"required" format:"uuid" json:"-"`
+	// Optional position, size and rotation of a sticker on the target bubble. Only
+	// valid when type is "sticker".
+	//
+	// Every field is independent and optional — omit the object entirely, or any field
+	// within it, to keep the default (centred, default size, unrotated).
+	Placement MessageUpdateStickerPlacementParamsPlacement `json:"placement,omitzero" api:"required"`
+	paramObj
+}
+
+func (r MessageUpdateStickerPlacementParams) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateStickerPlacementParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateStickerPlacementParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional position, size and rotation of a sticker on the target bubble. Only
+// valid when type is "sticker".
+//
+// Every field is independent and optional — omit the object entirely, or any field
+// within it, to keep the default (centred, default size, unrotated).
+type MessageUpdateStickerPlacementParamsPlacement struct {
+	// Clockwise rotation in degrees.
+	Rotation param.Opt[float64] `json:"rotation,omitzero"`
+	// Size relative to the default, where 1 matches the size a sticker gets natively.
+	//
+	// Values outside 0.5–1.5 are clamped rather than rejected. The upper bound keeps a
+	// sticker within the size range iMessage itself displays: its own limit is larger,
+	// but that allowance assumes the transparent padding Apple's stickers carry, which
+	// a full-bleed image does not have.
+	//
+	// Scale is linear, so 1.5 is a little over twice the area.
+	Scale param.Opt[float64] `json:"scale,omitzero"`
+	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
+	// is centred.
+	X param.Opt[float64] `json:"x,omitzero"`
+	// Vertical position on the target bubble, from -1 (top) to 1 (bottom). 0 is
+	// centred.
+	Y param.Opt[float64] `json:"y,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateStickerPlacementParamsPlacement) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateStickerPlacementParamsPlacement
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateStickerPlacementParamsPlacement) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

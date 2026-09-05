@@ -155,6 +155,13 @@ type Reaction struct {
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
 	Type ReactionType `json:"type" api:"required"`
+	// Identifier for this reaction. Pass it to
+	// `PATCH /v3/messages/{messageId}/reactions/{reactionId}` to move a sticker.
+	//
+	// Stickers placed before this API shipped can be read but not moved: the
+	// device-side reference needed to reposition them was never recorded, so `PATCH`
+	// returns 404 for those.
+	ID string `json:"id" format:"uuid"`
 	// Custom emoji if type is "custom", null otherwise
 	CustomEmoji string `json:"custom_emoji" api:"nullable"`
 	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
@@ -165,6 +172,7 @@ type Reaction struct {
 		Handle      respjson.Field
 		IsMe        respjson.Field
 		Type        respjson.Field
+		ID          respjson.Field
 		CustomEmoji respjson.Field
 		Sticker     respjson.Field
 		ExtraFields map[string]respjson.Field

@@ -174,10 +174,18 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"69a37c7d-af4f-4b5e-af42-e28e98ce873a",
 		linqgo.MessageAddReactionParams{
-			Operation:   linqgo.MessageAddReactionParamsOperationAdd,
-			Type:        shared.ReactionTypeLove,
-			CustomEmoji: linqgo.String("custom_emoji"),
-			PartIndex:   linqgo.Int(1),
+			Operation:    linqgo.MessageAddReactionParamsOperationAdd,
+			Type:         shared.ReactionTypeLove,
+			AttachmentID: linqgo.String("550e8400-e29b-41d4-a716-446655440000"),
+			CustomEmoji:  linqgo.String("custom_emoji"),
+			PartIndex:    linqgo.Int(1),
+			Placement: linqgo.MessageAddReactionParamsPlacement{
+				Rotation: linqgo.Float(15),
+				Scale:    linqgo.Float(1.25),
+				X:        linqgo.Float(-0.25),
+				Y:        linqgo.Float(0.4),
+			},
+			URL: linqgo.String("https://cdn.linqapp.com/attachments/example/sticker.png"),
 		},
 	)
 	if err != nil {
@@ -256,6 +264,41 @@ func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
 			FallbackText: linqgo.String("Score update"),
 			Interactive:  linqgo.Bool(true),
 			URL:          linqgo.String("https://app.example.com/card?game=7f3a&move=2"),
+		},
+	)
+	if err != nil {
+		var apierr *linqgo.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestMessageUpdateStickerPlacementWithOptionalParams(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := linqgo.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIKey("My API Key"),
+	)
+	_, err := client.Messages.UpdateStickerPlacement(
+		context.TODO(),
+		"182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+		linqgo.MessageUpdateStickerPlacementParams{
+			MessageID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
+			Placement: linqgo.MessageUpdateStickerPlacementParamsPlacement{
+				Rotation: linqgo.Float(15),
+				Scale:    linqgo.Float(0.75),
+				X:        linqgo.Float(0.6),
+				Y:        linqgo.Float(0.5),
+			},
 		},
 	)
 	if err != nil {
