@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.51.0](https://github.com/linq-team/linq-go/compare/v0.50.0...v0.51.0) (2026-09-05)
+
+
+### Features
+
+* add sticker reactions and placement adjustment ([6c4ea0c](https://github.com/linq-team/linq-go/commit/6c4ea0cef2461c44d0ee02eed2ad0b606e6d28a6))
+
 ## [0.50.0](https://github.com/linq-team/linq-go/compare/v0.49.0...v0.50.0) (2026-09-04)
 
 
