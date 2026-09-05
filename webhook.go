@@ -123,6 +123,10 @@ type MessageEventV2 struct {
 	ReplyTo MessageEventV2ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent. Null if not yet sent.
 	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
+	// True when this message was sent on a zero-day-retention line. `parts` is always
+	// empty in that case — Linq never persists this message's content, so there is
+	// nothing to include here, not even a count or type of what was sent.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -139,6 +143,7 @@ type MessageEventV2 struct {
 		ReconciledAt     respjson.Field
 		ReplyTo          respjson.Field
 		SentAt           respjson.Field
+		ZeroRetention    respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -6775,6 +6780,8 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	ReplyTo MessageEventV2ReplyTo `json:"reply_to"`
 	SentAt  time.Time             `json:"sent_at"`
+	// This field is from variant [MessageEventV2].
+	ZeroRetention bool `json:"zero_retention"`
 	// This field is from variant [MessageFailedWebhookEventData].
 	Code     int64     `json:"code"`
 	FailedAt time.Time `json:"failed_at"`
@@ -6922,6 +6929,7 @@ type UnwrapWebhookEventUnionData struct {
 		ReconciledAt       respjson.Field
 		ReplyTo            respjson.Field
 		SentAt             respjson.Field
+		ZeroRetention      respjson.Field
 		Code               respjson.Field
 		FailedAt           respjson.Field
 		ChatID             respjson.Field
