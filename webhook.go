@@ -1333,16 +1333,23 @@ type MessageEditedWebhookEventData struct {
 	Part MessageEditedWebhookEventDataPart `json:"part" api:"required"`
 	// The handle that sent (and edited) this message
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
+	// True when the edited message is on a zero-day-retention line. Behavior differs
+	// by `direction`: on an outbound edit, `part.text` is empty — you already saw the
+	// real edited text once, synchronously, in the edit API response, and Linq never
+	// persists it. On an inbound edit, `part.text` is still the real text as received;
+	// zero-day-retention only means Linq never persists it.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Chat         respjson.Field
-		Direction    respjson.Field
-		EditedAt     respjson.Field
-		Part         respjson.Field
-		SenderHandle respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID            respjson.Field
+		Chat          respjson.Field
+		Direction     respjson.Field
+		EditedAt      respjson.Field
+		Part          respjson.Field
+		SenderHandle  respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
