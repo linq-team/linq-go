@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.54.0](https://github.com/linq-team/linq-go/compare/v0.53.0...v0.54.0) (2026-09-06)
+
+
+### Features
+
+* add zero_retention field to message edited webhook ([5e2d11d](https://github.com/linq-team/linq-go/commit/5e2d11d158d5abc87a15435186fcc5458cc7fb5e))
+
 ## [0.53.0](https://github.com/linq-team/linq-go/compare/v0.52.0...v0.53.0) (2026-09-06)
 
 
