@@ -1368,6 +1368,8 @@ type MessageUpdateAppCardParams struct {
 	//
 	// Mutually exclusive with `experience` and `raw_payload_data`.
 	URL param.Opt[string] `json:"url,omitzero" format:"uri"`
+	// Identifies the iMessage app (Messages app extension) that backs the card.
+	App MessageUpdateAppCardParamsApp `json:"app,omitzero"`
 	// Invokes an action on an experience — a third party that renders inside Linq's
 	// iMessage app. Linq resolves the recipient's connection, mints any session the
 	// action needs, composes the card and sends it; none of that is visible to you.
@@ -1429,6 +1431,30 @@ func (r MessageUpdateAppCardParamsLayout) MarshalJSON() (data []byte, err error)
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *MessageUpdateAppCardParamsLayout) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Identifies the iMessage app (Messages app extension) that backs the card.
+//
+// The properties BundleID, Name, TeamID are required.
+type MessageUpdateAppCardParamsApp struct {
+	// Bundle identifier of the Messages app extension. Must not contain `:`.
+	BundleID string `json:"bundle_id" api:"required"`
+	// Display name of the app, shown by Messages' fallback UI.
+	Name string `json:"name" api:"required"`
+	// The app's 10-character uppercase alphanumeric team identifier.
+	TeamID string `json:"team_id" api:"required"`
+	// The owning app's App Store id (optional). When set, recipients without the
+	// iMessage app installed see a "Get the app" affordance.
+	AppStoreID param.Opt[int64] `json:"app_store_id,omitzero"`
+	paramObj
+}
+
+func (r MessageUpdateAppCardParamsApp) MarshalJSON() (data []byte, err error) {
+	type shadow MessageUpdateAppCardParamsApp
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MessageUpdateAppCardParamsApp) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

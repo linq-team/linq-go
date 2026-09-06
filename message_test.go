@@ -254,6 +254,12 @@ func TestMessageUpdateAppCardWithOptionalParams(t *testing.T) {
 				TrailingCaption:    linqgo.String("2 min"),
 				TrailingSubcaption: linqgo.String("expires"),
 			},
+			App: linqgo.MessageUpdateAppCardParamsApp{
+				BundleID:   "com.example.app.MessageExtension",
+				Name:       "Example App",
+				TeamID:     "A1B2C3D4E5",
+				AppStoreID: linqgo.Int(1234567890),
+			},
 			Experience: linqgo.MessageUpdateAppCardParamsExperience{
 				Action: "attach_card",
 				Name:   "agentcard",
