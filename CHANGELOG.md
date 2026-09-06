@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.55.0](https://github.com/linq-team/linq-go/compare/v0.54.0...v0.55.0) (2026-09-06)
+
+
+### Features
+
+* add app identity override for card updates on zero-day-retention lines ([b241eb4](https://github.com/linq-team/linq-go/commit/b241eb4a3fbd613f45a099a116e5fbece37f3def))
+
 ## [0.54.0](https://github.com/linq-team/linq-go/compare/v0.53.0...v0.54.0) (2026-09-06)
 
 
