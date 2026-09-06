@@ -1666,19 +1666,25 @@ type PollReceivedWebhookEventData struct {
 	UpdatedAt  time.Time                        `json:"updated_at" api:"required" format:"date-time"`
 	// The line that created the poll (is_me=false for an inbound poll).
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	// True when your line has zero-day-retention enabled. Unlike other poll webhooks,
+	// option `text` here is still the real, unstripped text as received — Linq never
+	// persists it in the database, but this webhook fires from the live inbound event,
+	// not a database read, so this is the one place it's shown.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		CreatedAt    respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		Poll         respjson.Field
-		ReceivedAt   respjson.Field
-		Service      respjson.Field
-		UpdatedAt    respjson.Field
-		SenderHandle respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		CreatedAt     respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		Poll          respjson.Field
+		ReceivedAt    respjson.Field
+		Service       respjson.Field
+		UpdatedAt     respjson.Field
+		SenderHandle  respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -1854,21 +1860,27 @@ type PollSentWebhookEventData struct {
 	// The handle that sent the poll.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
 	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// True when this poll was sent on a zero-day-retention line. Every option's `text`
+	// is empty in that case — Linq never persists poll option text, so there is
+	// nothing to include here. The real text was only ever shown once, synchronously,
+	// in the API response when the poll was created or added to.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		CreatedAt    respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		Poll         respjson.Field
-		Service      respjson.Field
-		UpdatedAt    respjson.Field
-		DeliveredAt  respjson.Field
-		ReadAt       respjson.Field
-		SenderHandle respjson.Field
-		SentAt       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		CreatedAt     respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		Poll          respjson.Field
+		Service       respjson.Field
+		UpdatedAt     respjson.Field
+		DeliveredAt   respjson.Field
+		ReadAt        respjson.Field
+		SenderHandle  respjson.Field
+		SentAt        respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2044,21 +2056,27 @@ type PollDeliveredWebhookEventData struct {
 	// The handle that sent the poll.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
 	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// True when this poll was sent on a zero-day-retention line. Every option's `text`
+	// is empty in that case — Linq never persists poll option text, so there is
+	// nothing to include here. The real text was only ever shown once, synchronously,
+	// in the API response when the poll was created or added to.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		CreatedAt    respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		Poll         respjson.Field
-		Service      respjson.Field
-		UpdatedAt    respjson.Field
-		DeliveredAt  respjson.Field
-		ReadAt       respjson.Field
-		SenderHandle respjson.Field
-		SentAt       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		CreatedAt     respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		Poll          respjson.Field
+		Service       respjson.Field
+		UpdatedAt     respjson.Field
+		DeliveredAt   respjson.Field
+		ReadAt        respjson.Field
+		SenderHandle  respjson.Field
+		SentAt        respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2234,21 +2252,27 @@ type PollReadWebhookEventData struct {
 	// The handle that sent the poll.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
 	SentAt       time.Time         `json:"sent_at" api:"nullable" format:"date-time"`
+	// True when this poll was sent on a zero-day-retention line. Every option's `text`
+	// is empty in that case — Linq never persists poll option text, so there is
+	// nothing to include here. The real text was only ever shown once, synchronously,
+	// in the API response when the poll was created or added to.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		CreatedAt    respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		Poll         respjson.Field
-		Service      respjson.Field
-		UpdatedAt    respjson.Field
-		DeliveredAt  respjson.Field
-		ReadAt       respjson.Field
-		SenderHandle respjson.Field
-		SentAt       respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		CreatedAt     respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		Poll          respjson.Field
+		Service       respjson.Field
+		UpdatedAt     respjson.Field
+		DeliveredAt   respjson.Field
+		ReadAt        respjson.Field
+		SenderHandle  respjson.Field
+		SentAt        respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2419,16 +2443,23 @@ type PollUpdatedWebhookEventData struct {
 	// `added_options[].creator_handle` for that, which will be the remote participant.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
 	Service      string            `json:"service" api:"required"`
+	// True when zero-day-retention applies to this update. Behavior differs by
+	// `direction`: on an inbound update, `added_options[].text` is the real text a
+	// participant just added; on an outbound update, it is empty — you already saw the
+	// real text once, synchronously, in the API response when you made the add, and
+	// this webhook is built from a database read, which never stored it.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		AddedOptions respjson.Field
-		Chat         respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		SenderHandle respjson.Field
-		Service      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		AddedOptions  respjson.Field
+		Chat          respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		SenderHandle  respjson.Field
+		Service       respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2580,18 +2611,23 @@ type PollFailedWebhookEventData struct {
 	Service   string                          `json:"service" api:"required"`
 	// Null on failure (the send never landed).
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"nullable"`
+	// True when this poll was sent on a zero-day-retention line. `poll` is built from
+	// the same database read as poll.sent/delivered/read, so every option's `text` is
+	// empty.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		Direction    respjson.Field
-		Error        respjson.Field
-		FailedAt     respjson.Field
-		MessageID    respjson.Field
-		Poll         respjson.Field
-		Service      respjson.Field
-		SenderHandle respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		Direction     respjson.Field
+		Error         respjson.Field
+		FailedAt      respjson.Field
+		MessageID     respjson.Field
+		Poll          respjson.Field
+		Service       respjson.Field
+		SenderHandle  respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2781,16 +2817,22 @@ type PollVoteAddedWebhookEventData struct {
 	// The voter — always present.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
 	Service      string            `json:"service" api:"required"`
+	// True when this poll is on a zero-day-retention line. Votes are unaffected by
+	// zero-day-retention — a vote choice is always persisted and delivered regardless
+	// — this flag is informational only, telling you why this poll's other webhooks
+	// (poll.sent, poll.updated, etc.) may carry empty option text.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		OptionID     respjson.Field
-		SenderHandle respjson.Field
-		Service      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		OptionID      respjson.Field
+		SenderHandle  respjson.Field
+		Service       respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -2892,16 +2934,22 @@ type PollVoteRemovedWebhookEventData struct {
 	// The voter — always present.
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
 	Service      string            `json:"service" api:"required"`
+	// True when this poll is on a zero-day-retention line. Votes are unaffected by
+	// zero-day-retention — a vote choice is always persisted and delivered regardless
+	// — this flag is informational only, telling you why this poll's other webhooks
+	// (poll.sent, poll.updated, etc.) may carry empty option text.
+	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Chat         respjson.Field
-		Direction    respjson.Field
-		MessageID    respjson.Field
-		OptionID     respjson.Field
-		SenderHandle respjson.Field
-		Service      respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		Chat          respjson.Field
+		Direction     respjson.Field
+		MessageID     respjson.Field
+		OptionID      respjson.Field
+		SenderHandle  respjson.Field
+		Service       respjson.Field
+		ZeroRetention respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -6778,10 +6826,9 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [MessageEventV2].
 	ReconciledAt time.Time `json:"reconciled_at"`
 	// This field is from variant [MessageEventV2].
-	ReplyTo MessageEventV2ReplyTo `json:"reply_to"`
-	SentAt  time.Time             `json:"sent_at"`
-	// This field is from variant [MessageEventV2].
-	ZeroRetention bool `json:"zero_retention"`
+	ReplyTo       MessageEventV2ReplyTo `json:"reply_to"`
+	SentAt        time.Time             `json:"sent_at"`
+	ZeroRetention bool                  `json:"zero_retention"`
 	// This field is from variant [MessageFailedWebhookEventData].
 	Code     int64     `json:"code"`
 	FailedAt time.Time `json:"failed_at"`
