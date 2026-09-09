@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.1](https://github.com/linq-team/linq-go/compare/v0.56.0...v0.56.1) (2026-09-09)
+
+
+### Bug Fixes
+
+* add 503 rate limit error responses to contact card endpoints ([c9161f1](https://github.com/linq-team/linq-go/commit/c9161f1735cd16cbcb57e932a29244d579923343))
+
 ## [0.56.0](https://github.com/linq-team/linq-go/compare/v0.55.0...v0.56.0) (2026-09-09)
 
 
