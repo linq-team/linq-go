@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.0](https://github.com/linq-team/linq-go/compare/v0.55.0...v0.56.0) (2026-09-09)
+
+
+### Features
+
+* add stop location sharing endpoint for chats ([bdb60dd](https://github.com/linq-team/linq-go/commit/bdb60dd904a42ebc5f017831caee2152c15dd932))
+
 ## [0.55.0](https://github.com/linq-team/linq-go/compare/v0.54.0...v0.55.0) (2026-09-06)
 
 
