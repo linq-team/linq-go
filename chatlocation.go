@@ -13,6 +13,7 @@ import (
 	"github.com/linq-team/linq-go/internal/apijson"
 	"github.com/linq-team/linq-go/internal/requestconfig"
 	"github.com/linq-team/linq-go/option"
+	"github.com/linq-team/linq-go/packages/param"
 	"github.com/linq-team/linq-go/packages/respjson"
 )
 
@@ -138,6 +139,43 @@ func (r *ChatLocationService) Request(ctx context.Context, chatID string, opts .
 	return res, err
 }
 
+// End the location share a contact started with you, as though they had stopped it
+// themselves. Their device stops listing you as someone they share with, so they
+// can start a fresh share cleanly.
+//
+// Use this to recover when a share has gone stale — coordinates that stop
+// advancing, or a share you believe has ended but is still reported as active.
+// Without it the only remedy is asking the contact to stop and re-share, which is
+// confusing for them because their phone still shows everything as working.
+//
+// This is not reversible from the API. Sharing can only resume when the contact
+// starts a new share, so prompt them to re-share afterwards. Request a new one
+// with `POST /v3/chats/{chatId}/location/request`.
+//
+// Apple keeps one location-sharing relationship per person rather than per chat,
+// so this ends that contact's share everywhere, not only in this chat.
+//
+// `handle` names whose share to end, and is always required — a group chat can
+// have several people sharing, and this is not an operation to infer a target for.
+//
+// **This returns `202`, not `200`.** The removal happens on the device that holds
+// the sharing relationship, so a success here means the request was accepted, not
+// that sharing has ended. Wait for the `location.sharing.stopped` webhook to
+// confirm it — that webhook is what tells you the contact's device has actually
+// let go.
+//
+// Returns `404` if the contact is not currently sharing.
+func (r *ChatLocationService) Stop(ctx context.Context, chatID string, body ChatLocationStopParams, opts ...option.RequestOption) (res *StopChatLocationSharingResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	if chatID == "" {
+		err = errors.New("missing required chatId parameter")
+		return nil, err
+	}
+	path := fmt.Sprintf("v3/chats/%s/location", chatID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	return res, err
+}
+
 type GetChatLocationResponse struct {
 	Data    GetChatLocationResponseData `json:"data" api:"required"`
 	Success bool                        `json:"success" api:"required"`
@@ -257,5 +295,37 @@ type LocationRequestResponse struct {
 // Returns the unmodified JSON received from the API
 func (r LocationRequestResponse) RawJSON() string { return r.JSON.raw }
 func (r *LocationRequestResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type StopChatLocationSharingResponse struct {
+	Message string `json:"message" api:"required"`
+	Success bool   `json:"success" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Message     respjson.Field
+		Success     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StopChatLocationSharingResponse) RawJSON() string { return r.JSON.raw }
+func (r *StopChatLocationSharingResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type ChatLocationStopParams struct {
+	// Phone number (E.164 format) or email address of the contact whose share to end
+	Handle string `json:"handle" api:"required"`
+	paramObj
+}
+
+func (r ChatLocationStopParams) MarshalJSON() (data []byte, err error) {
+	type shadow ChatLocationStopParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ChatLocationStopParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
