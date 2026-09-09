@@ -80,11 +80,13 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#GetChatLocationResponse">GetChatLocationResponse</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#LocationRequestResponse">LocationRequestResponse</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#StopChatLocationSharingResponse">StopChatLocationSharingResponse</a>
 
 Methods:
 
 - <code title="get /v3/chats/{chatId}/location">client.Chats.Location.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatLocationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, chatID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#GetChatLocationResponse">GetChatLocationResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v3/chats/{chatId}/location/request">client.Chats.Location.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatLocationService.Request">Request</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, chatID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#LocationRequestResponse">LocationRequestResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v3/chats/{chatId}/location">client.Chats.Location.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatLocationService.Stop">Stop</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, chatID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ChatLocationStopParams">ChatLocationStopParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#StopChatLocationSharingResponse">StopChatLocationSharingResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Polls
 
