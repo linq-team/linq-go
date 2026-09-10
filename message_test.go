@@ -178,6 +178,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 			Type:         shared.ReactionTypeLove,
 			AttachmentID: linqgo.String("550e8400-e29b-41d4-a716-446655440000"),
 			CustomEmoji:  linqgo.String("custom_emoji"),
+			Emoji:        linqgo.String("🎉"),
 			PartIndex:    linqgo.Int(1),
 			Placement: linqgo.MessageAddReactionParamsPlacement{
 				Rotation: linqgo.Float(15),
