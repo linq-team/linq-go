@@ -663,7 +663,9 @@ type Chat struct {
 	// URL of the group chat icon. Only set for group chats that have an icon; `null`
 	// otherwise.
 	GroupChatIcon string `json:"group_chat_icon" api:"nullable" format:"uri"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
@@ -927,7 +929,9 @@ type MessageContentParam struct {
 	//     sub-limit. For bulk media sends exceeding 40 files, pre-upload via
 	//     `POST /v3/attachments` and reference by `attachment_id` or `download_url`.
 	Parts []MessageContentPartUnionParam `json:"parts,omitzero"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	PreferredService shared.ServiceType `json:"preferred_service,omitzero"`
@@ -1282,7 +1286,9 @@ type ChatNewResponseChat struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
 	Message SentMessage `json:"message" api:"required"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
@@ -1433,7 +1439,9 @@ type ChatSendVoicememoResponseVoiceMemo struct {
 	// Recipient handles (phone numbers or email addresses)
 	To        []string                                    `json:"to" api:"required"`
 	VoiceMemo ChatSendVoicememoResponseVoiceMemoVoiceMemo `json:"voice_memo" api:"required"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
@@ -1467,7 +1475,9 @@ type ChatSendVoicememoResponseVoiceMemoChat struct {
 	IsActive bool `json:"is_active" api:"required"`
 	// Whether this is a group chat
 	IsGroup bool `json:"is_group" api:"required"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`

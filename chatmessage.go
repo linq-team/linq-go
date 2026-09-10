@@ -264,13 +264,17 @@ type SentMessage struct {
 	Effect MessageEffect `json:"effect" api:"nullable"`
 	// The sender of this message as a full handle object
 	FromHandle shared.ChatHandle `json:"from_handle" api:"nullable"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`

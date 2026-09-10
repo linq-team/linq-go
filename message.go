@@ -540,7 +540,9 @@ type Message struct {
 	FromHandle shared.ChatHandle `json:"from_handle" api:"nullable"`
 	// Message parts in order (text, media, and link)
 	Parts []MessagePartUnion `json:"parts" api:"nullable"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
@@ -557,7 +559,9 @@ type Message struct {
 	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
 	// When the message was sent
 	SentAt time.Time `json:"sent_at" api:"nullable" format:"date-time"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
@@ -1004,7 +1008,9 @@ type MessageNewResponse struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// A message that was sent (used in CreateChat and SendMessage responses)
 	Message SentMessage `json:"message" api:"required"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`

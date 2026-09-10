@@ -24,7 +24,9 @@ type ChatHandle struct {
 	Handle string `json:"handle" api:"required"`
 	// When this participant joined the chat
 	JoinedAt time.Time `json:"joined_at" api:"required" format:"date-time"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service ServiceType `json:"service" api:"required"`
@@ -234,7 +236,9 @@ const (
 	ReactionTypeSticker   ReactionType = "sticker"
 )
 
-// Messaging service type
+// Messaging service type. Where this names the transport a message used, it is
+// per-message: a chat's own `service` can differ from a message in it, and Apple
+// can downgrade an individual message.
 type ServiceType string
 
 const (
