@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.56.2](https://github.com/linq-team/linq-go/compare/v0.56.1...v0.56.2) (2026-09-10)
+
+
+### Documentation
+
+* clarify message service transport semantics ([6801c8a](https://github.com/linq-team/linq-go/commit/6801c8a1bd6c8e08f1df1821f3bdcd17820eadc2))
+
 ## [0.56.1](https://github.com/linq-team/linq-go/compare/v0.56.0...v0.56.1) (2026-09-09)
 
 
