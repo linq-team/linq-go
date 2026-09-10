@@ -95,7 +95,9 @@ type MessageEventV2 struct {
 	Parts []MessageEventV2PartUnion `json:"parts" api:"required"`
 	// The handle that sent this message
 	SenderHandle shared.ChatHandle `json:"sender_handle" api:"required"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"required"`
@@ -594,7 +596,9 @@ type ReactionEventBase struct {
 	// Stickers stack, so this is what distinguishes one sticker from another on the
 	// same message.
 	ReactionID string `json:"reaction_id" format:"uuid"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service"`
@@ -1226,7 +1230,9 @@ type MessageFailedWebhookEventData struct {
 	PreferredService string `json:"preferred_service" api:"nullable"`
 	// Human-readable description of the failure
 	Reason string `json:"reason"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
@@ -3320,7 +3326,9 @@ type ChatCreatedWebhookEventData struct {
 	IsGroup bool `json:"is_group" api:"required"`
 	// When the chat was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Messaging service type
+	// Messaging service type. Where this names the transport a message used, it is
+	// per-message: a chat's own `service` can differ from a message in it, and Apple
+	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service" api:"nullable"`
