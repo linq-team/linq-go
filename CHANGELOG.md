@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.57.1](https://github.com/linq-team/linq-go/compare/v0.57.0...v0.57.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* adjust sticker scale parameter bounds and defaults ([2605980](https://github.com/linq-team/linq-go/commit/2605980fa8b5e694ffdd9081d2a4a6b3e94eac46))
+
 ## [0.57.0](https://github.com/linq-team/linq-go/compare/v0.56.2...v0.57.0) (2026-09-10)
 
 
