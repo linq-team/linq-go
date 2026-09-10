@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.57.0](https://github.com/linq-team/linq-go/compare/v0.56.2...v0.57.0) (2026-09-10)
+
+
+### Features
+
+* add emoji sticker support alongside url and attachment_id ([d64158d](https://github.com/linq-team/linq-go/commit/d64158dd997469a3ad041709f7c7c8ab2e6001bb))
+
 ## [0.56.2](https://github.com/linq-team/linq-go/compare/v0.56.1...v0.56.2) (2026-09-10)
 
 
