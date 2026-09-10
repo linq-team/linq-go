@@ -1305,14 +1305,12 @@ const (
 type MessageAddReactionParamsPlacement struct {
 	// Clockwise rotation in degrees.
 	Rotation param.Opt[float64] `json:"rotation,omitzero"`
-	// Size relative to the default, where 1 matches the size a sticker gets natively.
+	// How large the sticker is drawn. Omit it for the default size — equivalent to `1`
+	// for an image, or `0.5` for an emoji.
 	//
-	// Values outside 0.5–1.5 are clamped rather than rejected. The upper bound keeps a
-	// sticker within the size range iMessage itself displays: its own limit is larger,
-	// but that allowance assumes the transparent padding Apple's stickers carry, which
-	// a full-bleed image does not have.
+	// Values outside 0.05–2.5 are clamped rather than rejected.
 	//
-	// Scale is linear, so 1.5 is a little over twice the area.
+	// Scale is linear, so 2.5 is a little over six times the area.
 	Scale param.Opt[float64] `json:"scale,omitzero"`
 	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
 	// is centred.
@@ -1544,14 +1542,12 @@ func (r *MessageUpdateStickerPlacementParams) UnmarshalJSON(data []byte) error {
 type MessageUpdateStickerPlacementParamsPlacement struct {
 	// Clockwise rotation in degrees.
 	Rotation param.Opt[float64] `json:"rotation,omitzero"`
-	// Size relative to the default, where 1 matches the size a sticker gets natively.
+	// How large the sticker is drawn. Omit it for the default size — equivalent to `1`
+	// for an image, or `0.5` for an emoji.
 	//
-	// Values outside 0.5–1.5 are clamped rather than rejected. The upper bound keeps a
-	// sticker within the size range iMessage itself displays: its own limit is larger,
-	// but that allowance assumes the transparent padding Apple's stickers carry, which
-	// a full-bleed image does not have.
+	// Values outside 0.05–2.5 are clamped rather than rejected.
 	//
-	// Scale is linear, so 1.5 is a little over twice the area.
+	// Scale is linear, so 2.5 is a little over six times the area.
 	Scale param.Opt[float64] `json:"scale,omitzero"`
 	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
 	// is centred.
