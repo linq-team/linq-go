@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.58.0](https://github.com/linq-team/linq-go/compare/v0.57.2...v0.58.0) (2026-09-11)
+
+
+### Features
+
+* clarify sticker behavior for animated images and simplify docs ([71de955](https://github.com/linq-team/linq-go/commit/71de955984fe62615c886263462240a5b9726c36))
+
 ## [0.57.2](https://github.com/linq-team/linq-go/compare/v0.57.1...v0.57.2) (2026-09-11)
 
 
