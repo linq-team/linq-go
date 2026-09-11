@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.57.2](https://github.com/linq-team/linq-go/compare/v0.57.1...v0.57.2) (2026-09-11)
+
+
+### Bug Fixes
+
+* clarify location sharing stop endpoint behavior ([6f5776a](https://github.com/linq-team/linq-go/commit/6f5776a49e35d63a37df13a2cbccd6f6f696a524))
+
 ## [0.57.1](https://github.com/linq-team/linq-go/compare/v0.57.0...v0.57.1) (2026-09-10)
 
 
