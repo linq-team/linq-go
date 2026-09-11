@@ -395,10 +395,11 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...o
 // `sticker` is peeled onto the bubble itself, and can be dragged, resized and
 // rotated. Both accept an emoji; they do not look alike.
 //
-// **Stickers** are iMessage-only and cannot be removed — iMessage has no unpeel
-// operation, so `operation: "remove"` with `type: "sticker"` is rejected.
-// Position, size and rotation are optional via `placement`, and can be changed
-// afterwards with `PATCH /v3/messages/{messageId}/reactions/{reactionId}`.
+// **Stickers** are iMessage-only and cannot be removed, so `operation: "remove"`
+// with `type: "sticker"` is rejected. Position, size and rotation are optional via
+// `placement`, and can be changed afterwards with
+// `PATCH /v3/messages/{messageId}/reactions/{reactionId}`. An animated image peels
+// as an animated sticker, in whatever shape the file already has.
 func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
@@ -1251,8 +1252,7 @@ type MessageAddReactionParams struct {
 	// use type "sticker" with `emoji`.
 	CustomEmoji param.Opt[string] `json:"custom_emoji,omitzero"`
 	// A single emoji to peel onto the message as a sticker. Only valid when type is
-	// "sticker", and it is rendered on the device so it matches the glyph a person
-	// would peel by hand.
+	// "sticker".
 	//
 	// Exactly one of `emoji`, `url` or `attachment_id` is required when type is
 	// "sticker".
@@ -1265,9 +1265,8 @@ type MessageAddReactionParams struct {
 	// Linq attachment URL of the sticker image — the `download_url` returned by
 	// `POST /v3/attachments`. Only valid when type is "sticker".
 	//
-	// Unlike a media part, this does **not** accept an arbitrary host: reactions have
-	// no download step, so the image must already be stored. To send a sticker from
-	// elsewhere, upload it with `POST /v3/attachments` first and pass `attachment_id`.
+	// The image must already be stored with us. To send a sticker from elsewhere,
+	// upload it with `POST /v3/attachments` first and pass `attachment_id`.
 	//
 	// Exactly one of `emoji`, `url` or `attachment_id` is required when type is
 	// "sticker".
