@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.59.0](https://github.com/linq-team/linq-go/compare/v0.58.0...v0.59.0) (2026-09-14)
+
+
+### Features
+
+* add environment_id field to subscription objects ([1cb4bcb](https://github.com/linq-team/linq-go/commit/1cb4bcb46fabca369bd6efc38e8cd8a14b9e166f))
+
 ## [0.58.0](https://github.com/linq-team/linq-go/compare/v0.57.2...v0.58.0) (2026-09-11)
 
 
