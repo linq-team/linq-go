@@ -867,11 +867,12 @@ type MessageSentWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -945,11 +946,12 @@ type MessageReceivedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1023,11 +1025,12 @@ type MessageReadWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1101,11 +1104,12 @@ type MessageDeliveredWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1166,11 +1170,12 @@ type MessageFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1285,11 +1290,12 @@ type MessageEditedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1508,11 +1514,12 @@ type ReactionAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1568,11 +1575,12 @@ type ReactionRemovedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1629,11 +1637,12 @@ type PollReceivedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -1820,11 +1829,12 @@ type PollSentWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2016,11 +2026,12 @@ type PollDeliveredWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2212,11 +2223,12 @@ type PollReadWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2406,11 +2418,12 @@ type PollUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2575,11 +2588,12 @@ type PollFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2784,11 +2798,12 @@ type PollVoteAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -2901,11 +2916,12 @@ type PollVoteRemovedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3020,11 +3036,12 @@ type PollReactionAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3080,11 +3097,12 @@ type ParticipantAddedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3170,11 +3188,12 @@ type ParticipantRemovedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3261,11 +3280,12 @@ type ChatCreatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3437,11 +3457,12 @@ type ChatGroupNameUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3527,11 +3548,12 @@ type ChatGroupIconUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3619,11 +3641,12 @@ type ChatGroupNameUpdateFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3711,11 +3734,12 @@ type ChatGroupIconUpdateFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3801,11 +3825,12 @@ type ChatTypingIndicatorStartedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3879,11 +3904,12 @@ type ChatTypingIndicatorStoppedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -3957,11 +3983,12 @@ type ChatBackgroundUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4105,11 +4132,12 @@ type ChatBackgroundUpdateFailedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4201,11 +4229,12 @@ type ContactCardReceivedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType WebhookEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4299,11 +4328,12 @@ type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
 	EventType PhoneNumberStatusUpdatedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4408,6 +4438,8 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberStatusUpdatedWebhookEventEventType = "chat.typing_indicator.started"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberStatusUpdatedWebhookEventEventType = "chat.typing_indicator.stopped"
 	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberAssigned        PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.assigned"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberReleased        PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.released"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeContactCardReceived        PhoneNumberStatusUpdatedWebhookEventEventType = "contact_card.received"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallInitiated              PhoneNumberStatusUpdatedWebhookEventEventType = "call.initiated"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeCallRinging                PhoneNumberStatusUpdatedWebhookEventEventType = "call.ringing"
@@ -4425,6 +4457,270 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentAuthorized          PhoneNumberStatusUpdatedWebhookEventEventType = "payment.authorized"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeConnectionCreated          PhoneNumberStatusUpdatedWebhookEventEventType = "connection.created"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeConnectionRevoked          PhoneNumberStatusUpdatedWebhookEventEventType = "connection.revoked"
+)
+
+// Complete webhook payload for phone_number.assigned events
+type PhoneNumberAssignedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for phone_number.assigned and phone_number.released webhook events
+	Data PhoneNumberAssignedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// The type of event
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType PhoneNumberAssignedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberAssignedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberAssignedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for phone_number.assigned and phone_number.released webhook events
+type PhoneNumberAssignedWebhookEventData struct {
+	// When the ownership change occurred
+	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
+	// Phone number in E.164 format
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChangedAt   respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberAssignedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberAssignedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event
+type PhoneNumberAssignedWebhookEventEventType string
+
+const (
+	PhoneNumberAssignedWebhookEventEventTypeMessageSent                PhoneNumberAssignedWebhookEventEventType = "message.sent"
+	PhoneNumberAssignedWebhookEventEventTypeMessageReceived            PhoneNumberAssignedWebhookEventEventType = "message.received"
+	PhoneNumberAssignedWebhookEventEventTypeMessageRead                PhoneNumberAssignedWebhookEventEventType = "message.read"
+	PhoneNumberAssignedWebhookEventEventTypeMessageDelivered           PhoneNumberAssignedWebhookEventEventType = "message.delivered"
+	PhoneNumberAssignedWebhookEventEventTypeMessageFailed              PhoneNumberAssignedWebhookEventEventType = "message.failed"
+	PhoneNumberAssignedWebhookEventEventTypeMessageEdited              PhoneNumberAssignedWebhookEventEventType = "message.edited"
+	PhoneNumberAssignedWebhookEventEventTypeReactionAdded              PhoneNumberAssignedWebhookEventEventType = "reaction.added"
+	PhoneNumberAssignedWebhookEventEventTypeReactionRemoved            PhoneNumberAssignedWebhookEventEventType = "reaction.removed"
+	PhoneNumberAssignedWebhookEventEventTypePollReceived               PhoneNumberAssignedWebhookEventEventType = "poll.received"
+	PhoneNumberAssignedWebhookEventEventTypePollFailed                 PhoneNumberAssignedWebhookEventEventType = "poll.failed"
+	PhoneNumberAssignedWebhookEventEventTypePollSent                   PhoneNumberAssignedWebhookEventEventType = "poll.sent"
+	PhoneNumberAssignedWebhookEventEventTypePollDelivered              PhoneNumberAssignedWebhookEventEventType = "poll.delivered"
+	PhoneNumberAssignedWebhookEventEventTypePollRead                   PhoneNumberAssignedWebhookEventEventType = "poll.read"
+	PhoneNumberAssignedWebhookEventEventTypePollUpdated                PhoneNumberAssignedWebhookEventEventType = "poll.updated"
+	PhoneNumberAssignedWebhookEventEventTypePollVoteAdded              PhoneNumberAssignedWebhookEventEventType = "poll.vote.added"
+	PhoneNumberAssignedWebhookEventEventTypePollVoteRemoved            PhoneNumberAssignedWebhookEventEventType = "poll.vote.removed"
+	PhoneNumberAssignedWebhookEventEventTypePollReactionAdded          PhoneNumberAssignedWebhookEventEventType = "poll.reaction.added"
+	PhoneNumberAssignedWebhookEventEventTypeParticipantAdded           PhoneNumberAssignedWebhookEventEventType = "participant.added"
+	PhoneNumberAssignedWebhookEventEventTypeParticipantRemoved         PhoneNumberAssignedWebhookEventEventType = "participant.removed"
+	PhoneNumberAssignedWebhookEventEventTypeChatCreated                PhoneNumberAssignedWebhookEventEventType = "chat.created"
+	PhoneNumberAssignedWebhookEventEventTypeChatGroupNameUpdated       PhoneNumberAssignedWebhookEventEventType = "chat.group_name_updated"
+	PhoneNumberAssignedWebhookEventEventTypeChatGroupIconUpdated       PhoneNumberAssignedWebhookEventEventType = "chat.group_icon_updated"
+	PhoneNumberAssignedWebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberAssignedWebhookEventEventType = "chat.group_name_update_failed"
+	PhoneNumberAssignedWebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberAssignedWebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberAssignedWebhookEventEventTypeChatBackgroundUpdated      PhoneNumberAssignedWebhookEventEventType = "chat.background_updated"
+	PhoneNumberAssignedWebhookEventEventTypeChatBackgroundUpdateFailed PhoneNumberAssignedWebhookEventEventType = "chat.background_update_failed"
+	PhoneNumberAssignedWebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberAssignedWebhookEventEventType = "chat.typing_indicator.started"
+	PhoneNumberAssignedWebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberAssignedWebhookEventEventType = "chat.typing_indicator.stopped"
+	PhoneNumberAssignedWebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberAssignedWebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberAssignedWebhookEventEventTypePhoneNumberAssigned        PhoneNumberAssignedWebhookEventEventType = "phone_number.assigned"
+	PhoneNumberAssignedWebhookEventEventTypePhoneNumberReleased        PhoneNumberAssignedWebhookEventEventType = "phone_number.released"
+	PhoneNumberAssignedWebhookEventEventTypeContactCardReceived        PhoneNumberAssignedWebhookEventEventType = "contact_card.received"
+	PhoneNumberAssignedWebhookEventEventTypeCallInitiated              PhoneNumberAssignedWebhookEventEventType = "call.initiated"
+	PhoneNumberAssignedWebhookEventEventTypeCallRinging                PhoneNumberAssignedWebhookEventEventType = "call.ringing"
+	PhoneNumberAssignedWebhookEventEventTypeCallAnswered               PhoneNumberAssignedWebhookEventEventType = "call.answered"
+	PhoneNumberAssignedWebhookEventEventTypeCallEnded                  PhoneNumberAssignedWebhookEventEventType = "call.ended"
+	PhoneNumberAssignedWebhookEventEventTypeCallFailed                 PhoneNumberAssignedWebhookEventEventType = "call.failed"
+	PhoneNumberAssignedWebhookEventEventTypeCallDeclined               PhoneNumberAssignedWebhookEventEventType = "call.declined"
+	PhoneNumberAssignedWebhookEventEventTypeCallNoAnswer               PhoneNumberAssignedWebhookEventEventType = "call.no_answer"
+	PhoneNumberAssignedWebhookEventEventTypeLocationSharingStarted     PhoneNumberAssignedWebhookEventEventType = "location.sharing.started"
+	PhoneNumberAssignedWebhookEventEventTypeLocationSharingStopped     PhoneNumberAssignedWebhookEventEventType = "location.sharing.stopped"
+	PhoneNumberAssignedWebhookEventEventTypePaymentSucceeded           PhoneNumberAssignedWebhookEventEventType = "payment.succeeded"
+	PhoneNumberAssignedWebhookEventEventTypePaymentCanceled            PhoneNumberAssignedWebhookEventEventType = "payment.canceled"
+	PhoneNumberAssignedWebhookEventEventTypePaymentExpired             PhoneNumberAssignedWebhookEventEventType = "payment.expired"
+	PhoneNumberAssignedWebhookEventEventTypePaymentDeclined            PhoneNumberAssignedWebhookEventEventType = "payment.declined"
+	PhoneNumberAssignedWebhookEventEventTypePaymentAuthorized          PhoneNumberAssignedWebhookEventEventType = "payment.authorized"
+	PhoneNumberAssignedWebhookEventEventTypeConnectionCreated          PhoneNumberAssignedWebhookEventEventType = "connection.created"
+	PhoneNumberAssignedWebhookEventEventTypeConnectionRevoked          PhoneNumberAssignedWebhookEventEventType = "connection.revoked"
+)
+
+// Complete webhook payload for phone_number.released events
+type PhoneNumberReleasedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for phone_number.assigned and phone_number.released webhook events
+	Data PhoneNumberReleasedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// The type of event
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked".
+	EventType PhoneNumberReleasedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberReleasedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberReleasedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for phone_number.assigned and phone_number.released webhook events
+type PhoneNumberReleasedWebhookEventData struct {
+	// When the ownership change occurred
+	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
+	// Phone number in E.164 format
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChangedAt   respjson.Field
+		PhoneNumber respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberReleasedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberReleasedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event
+type PhoneNumberReleasedWebhookEventEventType string
+
+const (
+	PhoneNumberReleasedWebhookEventEventTypeMessageSent                PhoneNumberReleasedWebhookEventEventType = "message.sent"
+	PhoneNumberReleasedWebhookEventEventTypeMessageReceived            PhoneNumberReleasedWebhookEventEventType = "message.received"
+	PhoneNumberReleasedWebhookEventEventTypeMessageRead                PhoneNumberReleasedWebhookEventEventType = "message.read"
+	PhoneNumberReleasedWebhookEventEventTypeMessageDelivered           PhoneNumberReleasedWebhookEventEventType = "message.delivered"
+	PhoneNumberReleasedWebhookEventEventTypeMessageFailed              PhoneNumberReleasedWebhookEventEventType = "message.failed"
+	PhoneNumberReleasedWebhookEventEventTypeMessageEdited              PhoneNumberReleasedWebhookEventEventType = "message.edited"
+	PhoneNumberReleasedWebhookEventEventTypeReactionAdded              PhoneNumberReleasedWebhookEventEventType = "reaction.added"
+	PhoneNumberReleasedWebhookEventEventTypeReactionRemoved            PhoneNumberReleasedWebhookEventEventType = "reaction.removed"
+	PhoneNumberReleasedWebhookEventEventTypePollReceived               PhoneNumberReleasedWebhookEventEventType = "poll.received"
+	PhoneNumberReleasedWebhookEventEventTypePollFailed                 PhoneNumberReleasedWebhookEventEventType = "poll.failed"
+	PhoneNumberReleasedWebhookEventEventTypePollSent                   PhoneNumberReleasedWebhookEventEventType = "poll.sent"
+	PhoneNumberReleasedWebhookEventEventTypePollDelivered              PhoneNumberReleasedWebhookEventEventType = "poll.delivered"
+	PhoneNumberReleasedWebhookEventEventTypePollRead                   PhoneNumberReleasedWebhookEventEventType = "poll.read"
+	PhoneNumberReleasedWebhookEventEventTypePollUpdated                PhoneNumberReleasedWebhookEventEventType = "poll.updated"
+	PhoneNumberReleasedWebhookEventEventTypePollVoteAdded              PhoneNumberReleasedWebhookEventEventType = "poll.vote.added"
+	PhoneNumberReleasedWebhookEventEventTypePollVoteRemoved            PhoneNumberReleasedWebhookEventEventType = "poll.vote.removed"
+	PhoneNumberReleasedWebhookEventEventTypePollReactionAdded          PhoneNumberReleasedWebhookEventEventType = "poll.reaction.added"
+	PhoneNumberReleasedWebhookEventEventTypeParticipantAdded           PhoneNumberReleasedWebhookEventEventType = "participant.added"
+	PhoneNumberReleasedWebhookEventEventTypeParticipantRemoved         PhoneNumberReleasedWebhookEventEventType = "participant.removed"
+	PhoneNumberReleasedWebhookEventEventTypeChatCreated                PhoneNumberReleasedWebhookEventEventType = "chat.created"
+	PhoneNumberReleasedWebhookEventEventTypeChatGroupNameUpdated       PhoneNumberReleasedWebhookEventEventType = "chat.group_name_updated"
+	PhoneNumberReleasedWebhookEventEventTypeChatGroupIconUpdated       PhoneNumberReleasedWebhookEventEventType = "chat.group_icon_updated"
+	PhoneNumberReleasedWebhookEventEventTypeChatGroupNameUpdateFailed  PhoneNumberReleasedWebhookEventEventType = "chat.group_name_update_failed"
+	PhoneNumberReleasedWebhookEventEventTypeChatGroupIconUpdateFailed  PhoneNumberReleasedWebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberReleasedWebhookEventEventTypeChatBackgroundUpdated      PhoneNumberReleasedWebhookEventEventType = "chat.background_updated"
+	PhoneNumberReleasedWebhookEventEventTypeChatBackgroundUpdateFailed PhoneNumberReleasedWebhookEventEventType = "chat.background_update_failed"
+	PhoneNumberReleasedWebhookEventEventTypeChatTypingIndicatorStarted PhoneNumberReleasedWebhookEventEventType = "chat.typing_indicator.started"
+	PhoneNumberReleasedWebhookEventEventTypeChatTypingIndicatorStopped PhoneNumberReleasedWebhookEventEventType = "chat.typing_indicator.stopped"
+	PhoneNumberReleasedWebhookEventEventTypePhoneNumberStatusUpdated   PhoneNumberReleasedWebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberReleasedWebhookEventEventTypePhoneNumberAssigned        PhoneNumberReleasedWebhookEventEventType = "phone_number.assigned"
+	PhoneNumberReleasedWebhookEventEventTypePhoneNumberReleased        PhoneNumberReleasedWebhookEventEventType = "phone_number.released"
+	PhoneNumberReleasedWebhookEventEventTypeContactCardReceived        PhoneNumberReleasedWebhookEventEventType = "contact_card.received"
+	PhoneNumberReleasedWebhookEventEventTypeCallInitiated              PhoneNumberReleasedWebhookEventEventType = "call.initiated"
+	PhoneNumberReleasedWebhookEventEventTypeCallRinging                PhoneNumberReleasedWebhookEventEventType = "call.ringing"
+	PhoneNumberReleasedWebhookEventEventTypeCallAnswered               PhoneNumberReleasedWebhookEventEventType = "call.answered"
+	PhoneNumberReleasedWebhookEventEventTypeCallEnded                  PhoneNumberReleasedWebhookEventEventType = "call.ended"
+	PhoneNumberReleasedWebhookEventEventTypeCallFailed                 PhoneNumberReleasedWebhookEventEventType = "call.failed"
+	PhoneNumberReleasedWebhookEventEventTypeCallDeclined               PhoneNumberReleasedWebhookEventEventType = "call.declined"
+	PhoneNumberReleasedWebhookEventEventTypeCallNoAnswer               PhoneNumberReleasedWebhookEventEventType = "call.no_answer"
+	PhoneNumberReleasedWebhookEventEventTypeLocationSharingStarted     PhoneNumberReleasedWebhookEventEventType = "location.sharing.started"
+	PhoneNumberReleasedWebhookEventEventTypeLocationSharingStopped     PhoneNumberReleasedWebhookEventEventType = "location.sharing.stopped"
+	PhoneNumberReleasedWebhookEventEventTypePaymentSucceeded           PhoneNumberReleasedWebhookEventEventType = "payment.succeeded"
+	PhoneNumberReleasedWebhookEventEventTypePaymentCanceled            PhoneNumberReleasedWebhookEventEventType = "payment.canceled"
+	PhoneNumberReleasedWebhookEventEventTypePaymentExpired             PhoneNumberReleasedWebhookEventEventType = "payment.expired"
+	PhoneNumberReleasedWebhookEventEventTypePaymentDeclined            PhoneNumberReleasedWebhookEventEventType = "payment.declined"
+	PhoneNumberReleasedWebhookEventEventTypePaymentAuthorized          PhoneNumberReleasedWebhookEventEventType = "payment.authorized"
+	PhoneNumberReleasedWebhookEventEventTypeConnectionCreated          PhoneNumberReleasedWebhookEventEventType = "connection.created"
+	PhoneNumberReleasedWebhookEventEventTypeConnectionRevoked          PhoneNumberReleasedWebhookEventEventType = "connection.revoked"
 )
 
 type ConnectionCreatedWebhookEvent struct {
@@ -4447,11 +4743,11 @@ type ConnectionCreatedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType ConnectionCreatedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4673,6 +4969,8 @@ const (
 	ConnectionCreatedWebhookEventEventTypeChatTypingIndicatorStarted ConnectionCreatedWebhookEventEventType = "chat.typing_indicator.started"
 	ConnectionCreatedWebhookEventEventTypeChatTypingIndicatorStopped ConnectionCreatedWebhookEventEventType = "chat.typing_indicator.stopped"
 	ConnectionCreatedWebhookEventEventTypePhoneNumberStatusUpdated   ConnectionCreatedWebhookEventEventType = "phone_number.status_updated"
+	ConnectionCreatedWebhookEventEventTypePhoneNumberAssigned        ConnectionCreatedWebhookEventEventType = "phone_number.assigned"
+	ConnectionCreatedWebhookEventEventTypePhoneNumberReleased        ConnectionCreatedWebhookEventEventType = "phone_number.released"
 	ConnectionCreatedWebhookEventEventTypeContactCardReceived        ConnectionCreatedWebhookEventEventType = "contact_card.received"
 	ConnectionCreatedWebhookEventEventTypeCallInitiated              ConnectionCreatedWebhookEventEventType = "call.initiated"
 	ConnectionCreatedWebhookEventEventTypeCallRinging                ConnectionCreatedWebhookEventEventType = "call.ringing"
@@ -4709,11 +5007,11 @@ type ConnectionRevokedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType ConnectionRevokedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -4935,6 +5233,8 @@ const (
 	ConnectionRevokedWebhookEventEventTypeChatTypingIndicatorStarted ConnectionRevokedWebhookEventEventType = "chat.typing_indicator.started"
 	ConnectionRevokedWebhookEventEventTypeChatTypingIndicatorStopped ConnectionRevokedWebhookEventEventType = "chat.typing_indicator.stopped"
 	ConnectionRevokedWebhookEventEventTypePhoneNumberStatusUpdated   ConnectionRevokedWebhookEventEventType = "phone_number.status_updated"
+	ConnectionRevokedWebhookEventEventTypePhoneNumberAssigned        ConnectionRevokedWebhookEventEventType = "phone_number.assigned"
+	ConnectionRevokedWebhookEventEventTypePhoneNumberReleased        ConnectionRevokedWebhookEventEventType = "phone_number.released"
 	ConnectionRevokedWebhookEventEventTypeContactCardReceived        ConnectionRevokedWebhookEventEventType = "contact_card.received"
 	ConnectionRevokedWebhookEventEventTypeCallInitiated              ConnectionRevokedWebhookEventEventType = "call.initiated"
 	ConnectionRevokedWebhookEventEventTypeCallRinging                ConnectionRevokedWebhookEventEventType = "call.ringing"
@@ -4969,11 +5269,11 @@ type LocationSharingStartedWebhookEvent struct {
 	// "chat.group_icon_update_failed", "chat.background_updated",
 	// "chat.background_update_failed", "chat.typing_indicator.started",
 	// "chat.typing_indicator.stopped", "phone_number.status_updated",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
-	// "payment.expired", "payment.declined", "payment.authorized",
-	// "connection.created", "connection.revoked".
+	// "phone_number.assigned", "phone_number.released", "contact_card.received",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.stopped",
+	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType LocationSharingStartedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -5071,6 +5371,8 @@ const (
 	LocationSharingStartedWebhookEventEventTypeChatTypingIndicatorStarted LocationSharingStartedWebhookEventEventType = "chat.typing_indicator.started"
 	LocationSharingStartedWebhookEventEventTypeChatTypingIndicatorStopped LocationSharingStartedWebhookEventEventType = "chat.typing_indicator.stopped"
 	LocationSharingStartedWebhookEventEventTypePhoneNumberStatusUpdated   LocationSharingStartedWebhookEventEventType = "phone_number.status_updated"
+	LocationSharingStartedWebhookEventEventTypePhoneNumberAssigned        LocationSharingStartedWebhookEventEventType = "phone_number.assigned"
+	LocationSharingStartedWebhookEventEventTypePhoneNumberReleased        LocationSharingStartedWebhookEventEventType = "phone_number.released"
 	LocationSharingStartedWebhookEventEventTypeContactCardReceived        LocationSharingStartedWebhookEventEventType = "contact_card.received"
 	LocationSharingStartedWebhookEventEventTypeCallInitiated              LocationSharingStartedWebhookEventEventType = "call.initiated"
 	LocationSharingStartedWebhookEventEventTypeCallRinging                LocationSharingStartedWebhookEventEventType = "call.ringing"
@@ -5107,11 +5409,11 @@ type LocationSharingStoppedWebhookEvent struct {
 	// "chat.group_icon_update_failed", "chat.background_updated",
 	// "chat.background_update_failed", "chat.typing_indicator.started",
 	// "chat.typing_indicator.stopped", "phone_number.status_updated",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
-	// "location.sharing.started", "payment.succeeded", "payment.canceled",
-	// "payment.expired", "payment.declined", "payment.authorized",
-	// "connection.created", "connection.revoked".
+	// "phone_number.assigned", "phone_number.released", "contact_card.received",
+	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
+	// "call.declined", "call.no_answer", "location.sharing.started",
+	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType LocationSharingStoppedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -5208,6 +5510,8 @@ const (
 	LocationSharingStoppedWebhookEventEventTypeChatTypingIndicatorStarted LocationSharingStoppedWebhookEventEventType = "chat.typing_indicator.started"
 	LocationSharingStoppedWebhookEventEventTypeChatTypingIndicatorStopped LocationSharingStoppedWebhookEventEventType = "chat.typing_indicator.stopped"
 	LocationSharingStoppedWebhookEventEventTypePhoneNumberStatusUpdated   LocationSharingStoppedWebhookEventEventType = "phone_number.status_updated"
+	LocationSharingStoppedWebhookEventEventTypePhoneNumberAssigned        LocationSharingStoppedWebhookEventEventType = "phone_number.assigned"
+	LocationSharingStoppedWebhookEventEventTypePhoneNumberReleased        LocationSharingStoppedWebhookEventEventType = "phone_number.released"
 	LocationSharingStoppedWebhookEventEventTypeContactCardReceived        LocationSharingStoppedWebhookEventEventType = "contact_card.received"
 	LocationSharingStoppedWebhookEventEventTypeCallInitiated              LocationSharingStoppedWebhookEventEventType = "call.initiated"
 	LocationSharingStoppedWebhookEventEventTypeCallRinging                LocationSharingStoppedWebhookEventEventType = "call.ringing"
@@ -5246,11 +5550,11 @@ type PaymentAuthorizedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType PaymentAuthorizedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -5472,6 +5776,8 @@ const (
 	PaymentAuthorizedWebhookEventEventTypeChatTypingIndicatorStarted PaymentAuthorizedWebhookEventEventType = "chat.typing_indicator.started"
 	PaymentAuthorizedWebhookEventEventTypeChatTypingIndicatorStopped PaymentAuthorizedWebhookEventEventType = "chat.typing_indicator.stopped"
 	PaymentAuthorizedWebhookEventEventTypePhoneNumberStatusUpdated   PaymentAuthorizedWebhookEventEventType = "phone_number.status_updated"
+	PaymentAuthorizedWebhookEventEventTypePhoneNumberAssigned        PaymentAuthorizedWebhookEventEventType = "phone_number.assigned"
+	PaymentAuthorizedWebhookEventEventTypePhoneNumberReleased        PaymentAuthorizedWebhookEventEventType = "phone_number.released"
 	PaymentAuthorizedWebhookEventEventTypeContactCardReceived        PaymentAuthorizedWebhookEventEventType = "contact_card.received"
 	PaymentAuthorizedWebhookEventEventTypeCallInitiated              PaymentAuthorizedWebhookEventEventType = "call.initiated"
 	PaymentAuthorizedWebhookEventEventTypeCallRinging                PaymentAuthorizedWebhookEventEventType = "call.ringing"
@@ -5508,11 +5814,11 @@ type PaymentCanceledWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType PaymentCanceledWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -5734,6 +6040,8 @@ const (
 	PaymentCanceledWebhookEventEventTypeChatTypingIndicatorStarted PaymentCanceledWebhookEventEventType = "chat.typing_indicator.started"
 	PaymentCanceledWebhookEventEventTypeChatTypingIndicatorStopped PaymentCanceledWebhookEventEventType = "chat.typing_indicator.stopped"
 	PaymentCanceledWebhookEventEventTypePhoneNumberStatusUpdated   PaymentCanceledWebhookEventEventType = "phone_number.status_updated"
+	PaymentCanceledWebhookEventEventTypePhoneNumberAssigned        PaymentCanceledWebhookEventEventType = "phone_number.assigned"
+	PaymentCanceledWebhookEventEventTypePhoneNumberReleased        PaymentCanceledWebhookEventEventType = "phone_number.released"
 	PaymentCanceledWebhookEventEventTypeContactCardReceived        PaymentCanceledWebhookEventEventType = "contact_card.received"
 	PaymentCanceledWebhookEventEventTypeCallInitiated              PaymentCanceledWebhookEventEventType = "call.initiated"
 	PaymentCanceledWebhookEventEventTypeCallRinging                PaymentCanceledWebhookEventEventType = "call.ringing"
@@ -5770,11 +6078,11 @@ type PaymentDeclinedWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType PaymentDeclinedWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -5996,6 +6304,8 @@ const (
 	PaymentDeclinedWebhookEventEventTypeChatTypingIndicatorStarted PaymentDeclinedWebhookEventEventType = "chat.typing_indicator.started"
 	PaymentDeclinedWebhookEventEventTypeChatTypingIndicatorStopped PaymentDeclinedWebhookEventEventType = "chat.typing_indicator.stopped"
 	PaymentDeclinedWebhookEventEventTypePhoneNumberStatusUpdated   PaymentDeclinedWebhookEventEventType = "phone_number.status_updated"
+	PaymentDeclinedWebhookEventEventTypePhoneNumberAssigned        PaymentDeclinedWebhookEventEventType = "phone_number.assigned"
+	PaymentDeclinedWebhookEventEventTypePhoneNumberReleased        PaymentDeclinedWebhookEventEventType = "phone_number.released"
 	PaymentDeclinedWebhookEventEventTypeContactCardReceived        PaymentDeclinedWebhookEventEventType = "contact_card.received"
 	PaymentDeclinedWebhookEventEventTypeCallInitiated              PaymentDeclinedWebhookEventEventType = "call.initiated"
 	PaymentDeclinedWebhookEventEventTypeCallRinging                PaymentDeclinedWebhookEventEventType = "call.ringing"
@@ -6032,11 +6342,11 @@ type PaymentExpiredWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType PaymentExpiredWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -6258,6 +6568,8 @@ const (
 	PaymentExpiredWebhookEventEventTypeChatTypingIndicatorStarted PaymentExpiredWebhookEventEventType = "chat.typing_indicator.started"
 	PaymentExpiredWebhookEventEventTypeChatTypingIndicatorStopped PaymentExpiredWebhookEventEventType = "chat.typing_indicator.stopped"
 	PaymentExpiredWebhookEventEventTypePhoneNumberStatusUpdated   PaymentExpiredWebhookEventEventType = "phone_number.status_updated"
+	PaymentExpiredWebhookEventEventTypePhoneNumberAssigned        PaymentExpiredWebhookEventEventType = "phone_number.assigned"
+	PaymentExpiredWebhookEventEventTypePhoneNumberReleased        PaymentExpiredWebhookEventEventType = "phone_number.released"
 	PaymentExpiredWebhookEventEventTypeContactCardReceived        PaymentExpiredWebhookEventEventType = "contact_card.received"
 	PaymentExpiredWebhookEventEventTypeCallInitiated              PaymentExpiredWebhookEventEventType = "call.initiated"
 	PaymentExpiredWebhookEventEventTypeCallRinging                PaymentExpiredWebhookEventEventType = "call.ringing"
@@ -6294,11 +6606,11 @@ type PaymentSucceededWebhookEvent struct {
 	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
-	// "phone_number.status_updated", "contact_card.received", "call.initiated",
-	// "call.ringing", "call.answered", "call.ended", "call.failed", "call.declined",
-	// "call.no_answer", "location.sharing.started", "location.sharing.stopped",
-	// "payment.declined", "payment.authorized", "connection.created",
-	// "connection.revoked".
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
+	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
+	// "payment.authorized", "connection.created", "connection.revoked".
 	EventType PaymentSucceededWebhookEventEventType `json:"event_type" api:"required"`
 	// Partner identifier. Present on all webhooks for cross-referencing.
 	PartnerID string `json:"partner_id" api:"required"`
@@ -6520,6 +6832,8 @@ const (
 	PaymentSucceededWebhookEventEventTypeChatTypingIndicatorStarted PaymentSucceededWebhookEventEventType = "chat.typing_indicator.started"
 	PaymentSucceededWebhookEventEventTypeChatTypingIndicatorStopped PaymentSucceededWebhookEventEventType = "chat.typing_indicator.stopped"
 	PaymentSucceededWebhookEventEventTypePhoneNumberStatusUpdated   PaymentSucceededWebhookEventEventType = "phone_number.status_updated"
+	PaymentSucceededWebhookEventEventTypePhoneNumberAssigned        PaymentSucceededWebhookEventEventType = "phone_number.assigned"
+	PaymentSucceededWebhookEventEventTypePhoneNumberReleased        PaymentSucceededWebhookEventEventType = "phone_number.released"
 	PaymentSucceededWebhookEventEventTypeContactCardReceived        PaymentSucceededWebhookEventEventType = "contact_card.received"
 	PaymentSucceededWebhookEventEventTypeCallInitiated              PaymentSucceededWebhookEventEventType = "call.initiated"
 	PaymentSucceededWebhookEventEventTypeCallRinging                PaymentSucceededWebhookEventEventType = "call.ringing"
@@ -6552,7 +6866,8 @@ const (
 // [ChatTypingIndicatorStartedWebhookEvent],
 // [ChatTypingIndicatorStoppedWebhookEvent], [ChatBackgroundUpdatedWebhookEvent],
 // [ChatBackgroundUpdateFailedWebhookEvent], [ContactCardReceivedWebhookEvent],
-// [PhoneNumberStatusUpdatedWebhookEvent], [ConnectionCreatedWebhookEvent],
+// [PhoneNumberStatusUpdatedWebhookEvent], [PhoneNumberAssignedWebhookEvent],
+// [PhoneNumberReleasedWebhookEvent], [ConnectionCreatedWebhookEvent],
 // [ConnectionRevokedWebhookEvent], [LocationSharingStartedWebhookEvent],
 // [LocationSharingStoppedWebhookEvent], [PaymentAuthorizedWebhookEvent],
 // [PaymentCanceledWebhookEvent], [PaymentDeclinedWebhookEvent],
@@ -6580,8 +6895,10 @@ type UnwrapWebhookEventUnion struct {
 	// [ChatBackgroundUpdatedWebhookEventData],
 	// [ChatBackgroundUpdateFailedWebhookEventData],
 	// [ContactCardReceivedWebhookEventData],
-	// [PhoneNumberStatusUpdatedWebhookEventData], [ConnectionCreatedWebhookEventData],
-	// [ConnectionRevokedWebhookEventData], [LocationSharingStartedWebhookEventData],
+	// [PhoneNumberStatusUpdatedWebhookEventData],
+	// [PhoneNumberAssignedWebhookEventData], [PhoneNumberReleasedWebhookEventData],
+	// [ConnectionCreatedWebhookEventData], [ConnectionRevokedWebhookEventData],
+	// [LocationSharingStartedWebhookEventData],
 	// [LocationSharingStoppedWebhookEventData], [PaymentAuthorizedWebhookEventData],
 	// [PaymentCanceledWebhookEventData], [PaymentDeclinedWebhookEventData],
 	// [PaymentExpiredWebhookEventData], [PaymentSucceededWebhookEventData]
@@ -6589,7 +6906,7 @@ type UnwrapWebhookEventUnion struct {
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil, nil, nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -6757,6 +7074,16 @@ func (u UnwrapWebhookEventUnion) AsPhoneNumberStatusUpdatedWebhookEvent() (v Pho
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsPhoneNumberAssignedWebhookEvent() (v PhoneNumberAssignedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPhoneNumberReleasedWebhookEvent() (v PhoneNumberReleasedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 func (u UnwrapWebhookEventUnion) AsConnectionCreatedWebhookEvent() (v ConnectionCreatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
@@ -6919,14 +7246,12 @@ type UnwrapWebhookEventUnionData struct {
 	// This field is from variant [ContactCardReceivedWebhookEventData].
 	OwnerHandle string `json:"owner_handle"`
 	// This field is from variant [ContactCardReceivedWebhookEventData].
-	MediaURL string `json:"media_url"`
-	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	MediaURL  string    `json:"media_url"`
 	ChangedAt time.Time `json:"changed_at"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	NewReputation string `json:"new_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
-	NewStatus string `json:"new_status"`
-	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	NewStatus   string `json:"new_status"`
 	PhoneNumber string `json:"phone_number"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousReputation string `json:"previous_reputation"`

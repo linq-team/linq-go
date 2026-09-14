@@ -222,6 +222,8 @@ const (
 	WebhookEventTypeChatTypingIndicatorStarted WebhookEventType = "chat.typing_indicator.started"
 	WebhookEventTypeChatTypingIndicatorStopped WebhookEventType = "chat.typing_indicator.stopped"
 	WebhookEventTypePhoneNumberStatusUpdated   WebhookEventType = "phone_number.status_updated"
+	WebhookEventTypePhoneNumberAssigned        WebhookEventType = "phone_number.assigned"
+	WebhookEventTypePhoneNumberReleased        WebhookEventType = "phone_number.released"
 	WebhookEventTypeContactCardReceived        WebhookEventType = "contact_card.received"
 	WebhookEventTypeCallInitiated              WebhookEventType = "call.initiated"
 	WebhookEventTypeCallRinging                WebhookEventType = "call.ringing"
