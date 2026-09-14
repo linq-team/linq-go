@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.60.0](https://github.com/linq-team/linq-go/compare/v0.59.0...v0.60.0) (2026-09-14)
+
+
+### Features
+
+* add phone_number.assigned and phone_number.released webhooks ([c0d19c3](https://github.com/linq-team/linq-go/commit/c0d19c3439253af7e798723236f7265155b3fb48))
+
 ## [0.59.0](https://github.com/linq-team/linq-go/compare/v0.58.0...v0.59.0) (2026-09-14)
 
 
