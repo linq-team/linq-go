@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.61.0](https://github.com/linq-team/linq-go/compare/v0.60.0...v0.61.0) (2026-09-15)
+
+
+### Features
+
+* add inline stickers support for imessage text messages ([202f773](https://github.com/linq-team/linq-go/commit/202f77355e7ef00ab2607a2081130d584624d0c3))
+
 ## [0.60.0](https://github.com/linq-team/linq-go/compare/v0.59.0...v0.60.0) (2026-09-14)
 
 
