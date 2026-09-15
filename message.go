@@ -315,10 +315,11 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 //   - Voice memos are **not** supported here. To send an iMessage voice-memo bubble,
 //     use `POST /v3/chats/{chatId}/voicememo` with a known chat id.
 //
-// ## Service preference, effects, decorations
+// ## Service preference, effects, decorations, inline stickers
 //
 // Set `message.preferred_service` (`iMessage` | `RCS` | `SMS`), `message.effect`,
-// and per-part `text_decorations` exactly as on the other send endpoints.
+// and per-part `text_decorations` and `inline_stickers` exactly as on the other
+// send endpoints.
 //
 // Always responds `202 Accepted` — chat creation is incidental to the send.
 func (r *MessageService) New(ctx context.Context, params MessageNewParams, opts ...option.RequestOption) (res *MessageNewResponse, err error) {
@@ -628,6 +629,8 @@ type MessagePartUnion struct {
 	Type      string            `json:"type"`
 	Value     string            `json:"value"`
 	// This field is from variant [shared.TextPartResponse].
+	InlineStickers []shared.InlineStickerResponse `json:"inline_stickers"`
+	// This field is from variant [shared.TextPartResponse].
 	Mention string `json:"mention"`
 	// This field is from variant [shared.TextPartResponse].
 	MentionRange []int64 `json:"mention_range"`
@@ -660,6 +663,7 @@ type MessagePartUnion struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
+		InlineStickers  respjson.Field
 		Mention         respjson.Field
 		MentionRange    respjson.Field
 		Mentions        respjson.Field

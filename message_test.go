@@ -43,8 +43,17 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 			IdempotencyKey: linqgo.String("msg-abc123xyz"),
 			Parts: []linqgo.MessageContentPartUnionParam{{
 				OfText: &linqgo.TextPartParam{
-					Type:         linqgo.TextPartTypeText,
-					Value:        "Hi! Thanks for reaching out — how can we help?",
+					Type:  linqgo.TextPartTypeText,
+					Value: "Hi! Thanks for reaching out — how can we help?",
+					InlineStickers: []linqgo.InlineStickerParam{{
+						Range:        []int64{15, 17},
+						AttachmentID: linqgo.String("550e8400-e29b-41d4-a716-446655440000"),
+						URL:          linqgo.String("https://cdn.linqapp.com/attachments/partners/acme/550e8400-e29b-41d4-a716-446655440000/sticker.png"),
+					}, {
+						Range:        []int64{19, 21},
+						AttachmentID: linqgo.String("7c9e6679-7425-40de-944b-e07fc1f90ae7"),
+						URL:          linqgo.String("https://cdn.linqapp.com/attachments/partners/acme/550e8400-e29b-41d4-a716-446655440000/sticker.png"),
+					}},
 					Mention:      linqgo.String("+14155551234"),
 					MentionRange: []int64{4, 9},
 					TextDecorations: []shared.TextDecorationParam{{

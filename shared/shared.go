@@ -67,6 +67,41 @@ const (
 	ChatHandleStatusRemoved ChatHandleStatus = "removed"
 )
 
+// One sticker image placed inside the text of a part: `id`, `url` and the image
+// details.
+type InlineStickerResponse struct {
+	// Character range `[start, end)` in `value` that the sticker replaces. Those
+	// characters are hidden on iMessage and sent as written on SMS and RCS.
+	// _Characters are measured as UTF-16 code units. Most characters count as 1; some
+	// emoji count as 2._
+	Range []int64 `json:"range" api:"required"`
+	// Attachment ID of the sticker image.
+	ID string `json:"id" api:"nullable" format:"uuid"`
+	// Filename of the sticker
+	FileName string `json:"file_name" api:"nullable"`
+	// MIME type of the sticker image
+	MimeType string `json:"mime_type" api:"nullable"`
+	// URL for downloading the sticker image. Permanent for a normal upload; a
+	// time-limited signed URL when the image is an ephemeral attachment.
+	URL string `json:"url" api:"nullable" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Range       respjson.Field
+		ID          respjson.Field
+		FileName    respjson.Field
+		MimeType    respjson.Field
+		URL         respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r InlineStickerResponse) RawJSON() string { return r.JSON.raw }
+func (r *InlineStickerResponse) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A rich link preview part
 type LinkPartResponse struct {
 	// Reactions on this message part
@@ -344,6 +379,12 @@ type TextPartResponse struct {
 	Type TextPartResponseType `json:"type" api:"required"`
 	// The text content
 	Value string `json:"value" api:"required"`
+	// Stickers placed inside the text, in the order they appear in `value`. `null`
+	// when the part has none.
+	//
+	// Set on messages sent with `inline_stickers`. An inline sticker received over
+	// iMessage currently arrives as a separate media part.
+	InlineStickers []InlineStickerResponse `json:"inline_stickers" api:"nullable"`
 	// DEPRECATED: Use `mentions` instead. Handle (E.164 phone number or Apple ID
 	// email) of the **first** mention on this part. A part may carry several mentions;
 	// this field shows only the first in `value` order, so it cannot be used to
@@ -376,6 +417,7 @@ type TextPartResponse struct {
 		Reactions       respjson.Field
 		Type            respjson.Field
 		Value           respjson.Field
+		InlineStickers  respjson.Field
 		Mention         respjson.Field
 		MentionRange    respjson.Field
 		Mentions        respjson.Field

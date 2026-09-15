@@ -274,6 +274,8 @@ type MessageEventV2PartUnion struct {
 	Type  string `json:"type"`
 	Value string `json:"value"`
 	// This field is from variant [SchemasTextPartResponse].
+	InlineStickers []shared.InlineStickerResponse `json:"inline_stickers"`
+	// This field is from variant [SchemasTextPartResponse].
 	Mention string `json:"mention"`
 	// This field is from variant [SchemasTextPartResponse].
 	MentionRange []int64 `json:"mention_range"`
@@ -305,6 +307,7 @@ type MessageEventV2PartUnion struct {
 	JSON  struct {
 		Type            respjson.Field
 		Value           respjson.Field
+		InlineStickers  respjson.Field
 		Mention         respjson.Field
 		MentionRange    respjson.Field
 		Mentions        respjson.Field
@@ -742,6 +745,12 @@ type SchemasTextPartResponse struct {
 	Type SchemasTextPartResponseType `json:"type" api:"required"`
 	// The text content
 	Value string `json:"value" api:"required"`
+	// Stickers placed inside the text, in the order they appear in `value`. `null`
+	// when the part has none.
+	//
+	// Set on messages sent with `inline_stickers`. An inline sticker received over
+	// iMessage currently arrives as a separate media part.
+	InlineStickers []shared.InlineStickerResponse `json:"inline_stickers" api:"nullable"`
 	// DEPRECATED: Use `mentions` instead. Handle (E.164 phone number or Apple ID
 	// email) of the **first** mention on this part. A part may carry several mentions;
 	// this field shows only the first in `value` order, so it cannot be used to
@@ -773,6 +782,7 @@ type SchemasTextPartResponse struct {
 	JSON struct {
 		Type            respjson.Field
 		Value           respjson.Field
+		InlineStickers  respjson.Field
 		Mention         respjson.Field
 		MentionRange    respjson.Field
 		Mentions        respjson.Field
