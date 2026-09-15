@@ -33,6 +33,12 @@ const ChatHandleStatusLeft = shared.ChatHandleStatusLeft
 // Equals "removed"
 const ChatHandleStatusRemoved = shared.ChatHandleStatusRemoved
 
+// One sticker image placed inside the text of a part: `id`, `url` and the image
+// details.
+//
+// This is an alias to an internal type.
+type InlineStickerResponse = shared.InlineStickerResponse
+
 // A rich link preview part
 //
 // This is an alias to an internal type.
