@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.61.1](https://github.com/linq-team/linq-go/compare/v0.61.0...v0.61.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* remove environment_id field from subscription objects ([3190ea3](https://github.com/linq-team/linq-go/commit/3190ea3b67437a33ab0e589fd1e8b6b52b501b9a))
+
 ## [0.61.0](https://github.com/linq-team/linq-go/compare/v0.60.0...v0.61.0) (2026-09-15)
 
 
