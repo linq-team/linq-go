@@ -278,9 +278,6 @@ type WebhookSubscription struct {
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Environment this subscription belongs to. Null means production. Only events
-	// from lines in the same environment are delivered.
-	EnvironmentID string `json:"environment_id" api:"nullable"`
 	// Phone numbers this subscription filters for. If null or empty, events from all
 	// phone numbers are delivered.
 	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
@@ -292,7 +289,6 @@ type WebhookSubscription struct {
 		SubscribedEvents respjson.Field
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
-		EnvironmentID    respjson.Field
 		PhoneNumbers     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
@@ -323,9 +319,6 @@ type WebhookSubscriptionNewResponse struct {
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
 	// When the subscription was last updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Environment this subscription belongs to. Null means production. Only events
-	// from lines in the same environment are delivered.
-	EnvironmentID string `json:"environment_id" api:"nullable"`
 	// Phone numbers this subscription filters for. If null or empty, events from all
 	// phone numbers are delivered.
 	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
@@ -338,7 +331,6 @@ type WebhookSubscriptionNewResponse struct {
 		SubscribedEvents respjson.Field
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
-		EnvironmentID    respjson.Field
 		PhoneNumbers     respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
