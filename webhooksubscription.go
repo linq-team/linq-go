@@ -281,6 +281,10 @@ type WebhookSubscription struct {
 	// Phone numbers this subscription filters for. If null or empty, events from all
 	// phone numbers are delivered.
 	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
+	// Header carrying the chat id. Defaults to `Linq-Chat-Id` when affinity is on.
+	RoutingIDHeader string `json:"routing_id_header" api:"nullable"`
+	// Header carrying the routing token. Null disables delivery affinity.
+	RoutingKeyHeader string `json:"routing_key_header" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -290,6 +294,8 @@ type WebhookSubscription struct {
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
 		PhoneNumbers     respjson.Field
+		RoutingIDHeader  respjson.Field
+		RoutingKeyHeader respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -322,6 +328,10 @@ type WebhookSubscriptionNewResponse struct {
 	// Phone numbers this subscription filters for. If null or empty, events from all
 	// phone numbers are delivered.
 	PhoneNumbers []string `json:"phone_numbers" api:"nullable"`
+	// Header carrying the chat id. Defaults to `Linq-Chat-Id` when affinity is on.
+	RoutingIDHeader string `json:"routing_id_header" api:"nullable"`
+	// Header carrying the routing token. Null disables delivery affinity.
+	RoutingKeyHeader string `json:"routing_key_header" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
@@ -332,6 +342,8 @@ type WebhookSubscriptionNewResponse struct {
 		TargetURL        respjson.Field
 		UpdatedAt        respjson.Field
 		PhoneNumbers     respjson.Field
+		RoutingIDHeader  respjson.Field
+		RoutingKeyHeader respjson.Field
 		ExtraFields      map[string]respjson.Field
 		raw              string
 	} `json:"-"`
@@ -365,6 +377,13 @@ type WebhookSubscriptionNewParams struct {
 	SubscribedEvents []WebhookEventType `json:"subscribed_events,omitzero" api:"required"`
 	// URL where webhook events will be sent. Must be HTTPS.
 	TargetURL string `json:"target_url" api:"required" format:"uri"`
+	// Name of the header carrying the chat id, used to hash-route before a token is
+	// learned. Defaults to `Linq-Chat-Id`. Ignored without `routing_key_header`.
+	RoutingIDHeader param.Opt[string] `json:"routing_id_header,omitzero"`
+	// Enables delivery affinity. Name of the header carrying an opaque routing token:
+	// we send it on each webhook for a chat and read it back from your 2xx response,
+	// so your edge can route to the cluster holding that chat. Omit to disable.
+	RoutingKeyHeader param.Opt[string] `json:"routing_key_header,omitzero"`
 	// Optional list of phone numbers to filter events for. Only events originating
 	// from these phone numbers will be delivered to this subscription. If omitted or
 	// empty, events from all phone numbers are delivered. Phone numbers must be in
@@ -382,6 +401,12 @@ func (r *WebhookSubscriptionNewParams) UnmarshalJSON(data []byte) error {
 }
 
 type WebhookSubscriptionUpdateParams struct {
+	// Updated header name for the chat id. Set to null or an empty string to fall back
+	// to `Linq-Chat-Id`.
+	RoutingIDHeader param.Opt[string] `json:"routing_id_header,omitzero"`
+	// Updated header name for the routing token. Set to null or an empty string to
+	// disable delivery affinity and drop the stored tokens.
+	RoutingKeyHeader param.Opt[string] `json:"routing_key_header,omitzero"`
 	// Activate or deactivate the subscription
 	IsActive param.Opt[bool] `json:"is_active,omitzero"`
 	// New target URL for webhook events

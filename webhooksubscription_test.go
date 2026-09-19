@@ -30,6 +30,8 @@ func TestWebhookSubscriptionNewWithOptionalParams(t *testing.T) {
 		SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered, linqgo.WebhookEventTypeMessageRead},
 		TargetURL:        "https://webhooks.example.com/linq/events",
 		PhoneNumbers:     []string{"+12025551234", "+12025559876"},
+		RoutingIDHeader:  linqgo.String("x-openai-chat-id"),
+		RoutingKeyHeader: linqgo.String("x-openai-thread-route"),
 	})
 	if err != nil {
 		var apierr *linqgo.Error
@@ -82,6 +84,8 @@ func TestWebhookSubscriptionUpdateWithOptionalParams(t *testing.T) {
 		linqgo.WebhookSubscriptionUpdateParams{
 			IsActive:         linqgo.Bool(true),
 			PhoneNumbers:     []string{"+12025551234"},
+			RoutingIDHeader:  linqgo.String("x-openai-chat-id"),
+			RoutingKeyHeader: linqgo.String("x-openai-thread-route"),
 			SubscribedEvents: []linqgo.WebhookEventType{linqgo.WebhookEventTypeMessageSent, linqgo.WebhookEventTypeMessageDelivered},
 			TargetURL:        linqgo.String("https://webhooks.example.com/linq/events"),
 		},
