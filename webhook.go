@@ -3875,9 +3875,12 @@ func (r *ChatTypingIndicatorStartedWebhookEvent) UnmarshalJSON(data []byte) erro
 type ChatTypingIndicatorStartedWebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// Who is typing.
+	ActorHandle shared.ChatHandle `json:"actor_handle" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChatID      respjson.Field
+		ActorHandle respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -3954,9 +3957,12 @@ func (r *ChatTypingIndicatorStoppedWebhookEvent) UnmarshalJSON(data []byte) erro
 type ChatTypingIndicatorStoppedWebhookEventData struct {
 	// Chat identifier
 	ChatID string `json:"chat_id" api:"required" format:"uuid"`
+	// Who stopped typing.
+	ActorHandle shared.ChatHandle `json:"actor_handle" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChatID      respjson.Field
+		ActorHandle respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -7245,7 +7251,7 @@ type UnwrapWebhookEventUnionData struct {
 	NewValue        string            `json:"new_value"`
 	OldValue        string            `json:"old_value"`
 	ErrorCode       int64             `json:"error_code"`
-	// This field is from variant [ChatBackgroundUpdatedWebhookEventData].
+	// This field is from variant [ChatTypingIndicatorStartedWebhookEventData].
 	ActorHandle shared.ChatHandle `json:"actor_handle"`
 	// This field is from variant [ChatBackgroundUpdatedWebhookEventData].
 	Background ChatBackgroundUpdatedWebhookEventDataBackground `json:"background"`
