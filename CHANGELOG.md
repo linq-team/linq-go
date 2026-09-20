@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.63.0](https://github.com/linq-team/linq-go/compare/v0.62.1...v0.63.0) (2026-09-20)
+
+
+### Features
+
+* add actor_handle to chat typing indicator events ([47fd3f2](https://github.com/linq-team/linq-go/commit/47fd3f2157e53d57444996d8ff8395bd03b81add))
+
 ## [0.62.1](https://github.com/linq-team/linq-go/compare/v0.62.0...v0.62.1) (2026-09-19)
 
 
