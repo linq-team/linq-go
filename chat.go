@@ -652,7 +652,9 @@ func (r *ChatService) SendVoicememo(ctx context.Context, chatID string, body Cha
 //
 // **Note:** A contact card must be configured before sharing. You can set up your
 // contact card via the [Contact Card API](#tag/Contact-Card) or on the
-// [Linq dashboard](https://dashboard.linqapp.com/contact-cards).
+// [Linq dashboard](https://dashboard.linqapp.com/contact-cards). If the sending
+// line has no active contact card, the request is rejected with `404` (error code
+// `2012`, "Contact card not found").
 func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
