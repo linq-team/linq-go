@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.63.1](https://github.com/linq-team/linq-go/compare/v0.63.0...v0.63.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* clarify contact card requirement for sharing contact info ([a366616](https://github.com/linq-team/linq-go/commit/a3666161feea9b757db079b55b8d9c222631699f))
+
 ## [0.63.0](https://github.com/linq-team/linq-go/compare/v0.62.1...v0.63.0) (2026-09-20)
 
 
