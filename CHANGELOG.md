@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.65.0](https://github.com/linq-team/linq-go/compare/v0.64.1...v0.65.0) (2026-09-26)
+
+
+### Features
+
+* split contact card name into first and last name fields ([371a0de](https://github.com/linq-team/linq-go/commit/371a0de9f8a3fd997e2a9a6c5e92827d39de8940))
+
 ## [0.64.1](https://github.com/linq-team/linq-go/compare/v0.64.0...v0.64.1) (2026-09-26)
 
 
