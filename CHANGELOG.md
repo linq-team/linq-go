@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.63.2](https://github.com/linq-team/linq-go/compare/v0.63.1...v0.63.2) (2026-09-26)
+
+
+### Bug Fixes
+
+* update webhook retry behavior to 30-minute window with adjusted timing ([6e0b675](https://github.com/linq-team/linq-go/commit/6e0b67567d9623da988ef53ee03ac73471e27747))
+
 ## [0.63.1](https://github.com/linq-team/linq-go/compare/v0.63.0...v0.63.1) (2026-09-22)
 
 
