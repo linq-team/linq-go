@@ -369,6 +369,33 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentDeclinedWebhookEvent">PaymentDeclinedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentExpiredWebhookEvent">PaymentExpiredWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PaymentSucceededWebhookEvent">PaymentSucceededWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ZeroDayRetentionUpdatedWebhookEvent">ZeroDayRetentionUpdatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberForwardingUpdatedWebhookEvent">PhoneNumberForwardingUpdatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#EnvironmentLineMovedWebhookEvent">EnvironmentLineMovedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ContactCardCreatedWebhookEvent">ContactCardCreatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ContactCardUpdatedWebhookEvent">ContactCardUpdatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ContactCardDeletedWebhookEvent">ContactCardDeletedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenCreatedWebhookEvent">APITokenCreatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenRenamedWebhookEvent">APITokenRenamedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenExpiryScheduledWebhookEvent">APITokenExpiryScheduledWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenExpiredWebhookEvent">APITokenExpiredWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenActivatedWebhookEvent">APITokenActivatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#APITokenDeletedWebhookEvent">APITokenDeletedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#EnvironmentCreatedWebhookEvent">EnvironmentCreatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#EnvironmentRenamedWebhookEvent">EnvironmentRenamedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#EnvironmentDeletedWebhookEvent">EnvironmentDeletedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionCreatedWebhookEvent">WebhookSubscriptionCreatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionDeletedWebhookEvent">WebhookSubscriptionDeletedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionTargetURLChangedWebhookEvent">WebhookSubscriptionTargetURLChangedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionEnabledWebhookEvent">WebhookSubscriptionEnabledWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionDisabledWebhookEvent">WebhookSubscriptionDisabledWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionEventsUpdatedWebhookEvent">WebhookSubscriptionEventsUpdatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionPhoneNumbersUpdatedWebhookEvent">WebhookSubscriptionPhoneNumbersUpdatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionRoutingHeadersSetWebhookEvent">WebhookSubscriptionRoutingHeadersSetWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#WebhookSubscriptionRoutingHeadersClearedWebhookEvent">WebhookSubscriptionRoutingHeadersClearedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberAddedWebhookEvent">TeamMemberAddedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberSignedInWebhookEvent">TeamMemberSignedInWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberSignedOutWebhookEvent">TeamMemberSignedOutWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
 
 # Capability
