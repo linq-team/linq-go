@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.67.0](https://github.com/linq-team/linq-go/compare/v0.66.0...v0.67.0) (2026-09-26)
+
+
+### Features
+
+* add token_prefix to api_token webhook events ([fbbe600](https://github.com/linq-team/linq-go/commit/fbbe60023bc61ce625c2e594a47237b3041651f4))
+
 ## [0.66.0](https://github.com/linq-team/linq-go/compare/v0.65.0...v0.66.0) (2026-09-26)
 
 
