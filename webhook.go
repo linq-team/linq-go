@@ -7803,8 +7803,9 @@ type ZeroDayRetentionUpdatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change ZeroDayRetentionUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ZeroDayRetentionUpdatedWebhookEventDataContactCard `json:"contact_card"`
@@ -7917,20 +7918,29 @@ func (r *ZeroDayRetentionUpdatedWebhookEventDataAPIToken) UnmarshalJSON(data []b
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type ZeroDayRetentionUpdatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName ZeroDayRetentionUpdatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name ZeroDayRetentionUpdatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL ZeroDayRetentionUpdatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName ZeroDayRetentionUpdatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -7943,12 +7953,12 @@ func (r *ZeroDayRetentionUpdatedWebhookEventDataChange) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type ZeroDayRetentionUpdatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ZeroDayRetentionUpdatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -7960,25 +7970,71 @@ type ZeroDayRetentionUpdatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ZeroDayRetentionUpdatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *ZeroDayRetentionUpdatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r ZeroDayRetentionUpdatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *ZeroDayRetentionUpdatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ZeroDayRetentionUpdatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ZeroDayRetentionUpdatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *ZeroDayRetentionUpdatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ZeroDayRetentionUpdatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ZeroDayRetentionUpdatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *ZeroDayRetentionUpdatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type ZeroDayRetentionUpdatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -8253,8 +8309,9 @@ type PhoneNumberForwardingUpdatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change PhoneNumberForwardingUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard PhoneNumberForwardingUpdatedWebhookEventDataContactCard `json:"contact_card"`
@@ -8367,20 +8424,29 @@ func (r *PhoneNumberForwardingUpdatedWebhookEventDataAPIToken) UnmarshalJSON(dat
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type PhoneNumberForwardingUpdatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName PhoneNumberForwardingUpdatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name PhoneNumberForwardingUpdatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL PhoneNumberForwardingUpdatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName PhoneNumberForwardingUpdatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8393,12 +8459,12 @@ func (r *PhoneNumberForwardingUpdatedWebhookEventDataChange) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type PhoneNumberForwardingUpdatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type PhoneNumberForwardingUpdatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8410,25 +8476,77 @@ type PhoneNumberForwardingUpdatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r PhoneNumberForwardingUpdatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *PhoneNumberForwardingUpdatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r PhoneNumberForwardingUpdatedWebhookEventDataChangeFirstName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PhoneNumberForwardingUpdatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type PhoneNumberForwardingUpdatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberForwardingUpdatedWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PhoneNumberForwardingUpdatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type PhoneNumberForwardingUpdatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberForwardingUpdatedWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *PhoneNumberForwardingUpdatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type PhoneNumberForwardingUpdatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -8703,8 +8821,9 @@ type EnvironmentLineMovedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change EnvironmentLineMovedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentLineMovedWebhookEventDataContactCard `json:"contact_card"`
@@ -8817,20 +8936,29 @@ func (r *EnvironmentLineMovedWebhookEventDataAPIToken) UnmarshalJSON(data []byte
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type EnvironmentLineMovedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName EnvironmentLineMovedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name EnvironmentLineMovedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL EnvironmentLineMovedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName EnvironmentLineMovedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -8843,12 +8971,12 @@ func (r *EnvironmentLineMovedWebhookEventDataChange) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type EnvironmentLineMovedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentLineMovedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -8860,25 +8988,71 @@ type EnvironmentLineMovedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnvironmentLineMovedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *EnvironmentLineMovedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r EnvironmentLineMovedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentLineMovedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentLineMovedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentLineMovedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentLineMovedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentLineMovedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentLineMovedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentLineMovedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type EnvironmentLineMovedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -9151,8 +9325,9 @@ type ContactCardCreatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change ContactCardCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardCreatedWebhookEventDataContactCard `json:"contact_card"`
@@ -9265,20 +9440,29 @@ func (r *ContactCardCreatedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type ContactCardCreatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName ContactCardCreatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name ContactCardCreatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL ContactCardCreatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName ContactCardCreatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -9291,12 +9475,12 @@ func (r *ContactCardCreatedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type ContactCardCreatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardCreatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -9308,25 +9492,71 @@ type ContactCardCreatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ContactCardCreatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *ContactCardCreatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r ContactCardCreatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardCreatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardCreatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardCreatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardCreatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardCreatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardCreatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardCreatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type ContactCardCreatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -9599,8 +9829,9 @@ type ContactCardUpdatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change ContactCardUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardUpdatedWebhookEventDataContactCard `json:"contact_card"`
@@ -9713,20 +9944,29 @@ func (r *ContactCardUpdatedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type ContactCardUpdatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName ContactCardUpdatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name ContactCardUpdatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL ContactCardUpdatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName ContactCardUpdatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -9739,12 +9979,12 @@ func (r *ContactCardUpdatedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type ContactCardUpdatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardUpdatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -9756,25 +9996,71 @@ type ContactCardUpdatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ContactCardUpdatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *ContactCardUpdatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r ContactCardUpdatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardUpdatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardUpdatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardUpdatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardUpdatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardUpdatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardUpdatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardUpdatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type ContactCardUpdatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -10047,8 +10333,9 @@ type ContactCardDeletedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change ContactCardDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardDeletedWebhookEventDataContactCard `json:"contact_card"`
@@ -10161,20 +10448,29 @@ func (r *ContactCardDeletedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type ContactCardDeletedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName ContactCardDeletedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name ContactCardDeletedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL ContactCardDeletedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName ContactCardDeletedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10187,12 +10483,12 @@ func (r *ContactCardDeletedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type ContactCardDeletedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardDeletedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10204,25 +10500,71 @@ type ContactCardDeletedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r ContactCardDeletedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *ContactCardDeletedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r ContactCardDeletedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardDeletedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardDeletedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardDeletedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardDeletedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type ContactCardDeletedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ContactCardDeletedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *ContactCardDeletedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type ContactCardDeletedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -10495,8 +10837,9 @@ type APITokenCreatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenCreatedWebhookEventDataContactCard `json:"contact_card"`
@@ -10609,20 +10952,29 @@ func (r *APITokenCreatedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) err
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenCreatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenCreatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenCreatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenCreatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenCreatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -10635,12 +10987,12 @@ func (r *APITokenCreatedWebhookEventDataChange) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenCreatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenCreatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -10652,25 +11004,71 @@ type APITokenCreatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenCreatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenCreatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenCreatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenCreatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenCreatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenCreatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenCreatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenCreatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenCreatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -10943,8 +11341,9 @@ type APITokenRenamedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenRenamedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenRenamedWebhookEventDataContactCard `json:"contact_card"`
@@ -11057,20 +11456,29 @@ func (r *APITokenRenamedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) err
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenRenamedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenRenamedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenRenamedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenRenamedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenRenamedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -11083,12 +11491,12 @@ func (r *APITokenRenamedWebhookEventDataChange) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenRenamedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenRenamedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -11100,25 +11508,71 @@ type APITokenRenamedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenRenamedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenRenamedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenRenamedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenRenamedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenRenamedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenRenamedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenRenamedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenRenamedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenRenamedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenRenamedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenRenamedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -11391,8 +11845,9 @@ type APITokenExpiryScheduledWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenExpiryScheduledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenExpiryScheduledWebhookEventDataContactCard `json:"contact_card"`
@@ -11505,20 +11960,29 @@ func (r *APITokenExpiryScheduledWebhookEventDataAPIToken) UnmarshalJSON(data []b
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenExpiryScheduledWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenExpiryScheduledWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenExpiryScheduledWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenExpiryScheduledWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenExpiryScheduledWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -11531,12 +11995,12 @@ func (r *APITokenExpiryScheduledWebhookEventDataChange) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenExpiryScheduledWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiryScheduledWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -11548,25 +12012,71 @@ type APITokenExpiryScheduledWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenExpiryScheduledWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenExpiryScheduledWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenExpiryScheduledWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiryScheduledWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiryScheduledWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenExpiryScheduledWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiryScheduledWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiryScheduledWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenExpiryScheduledWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiryScheduledWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenExpiryScheduledWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -11841,8 +12351,9 @@ type APITokenExpiredWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenExpiredWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenExpiredWebhookEventDataContactCard `json:"contact_card"`
@@ -11955,20 +12466,29 @@ func (r *APITokenExpiredWebhookEventDataAPIToken) UnmarshalJSON(data []byte) err
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenExpiredWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenExpiredWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenExpiredWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenExpiredWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenExpiredWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -11981,12 +12501,12 @@ func (r *APITokenExpiredWebhookEventDataChange) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenExpiredWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiredWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -11998,25 +12518,71 @@ type APITokenExpiredWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenExpiredWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenExpiredWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenExpiredWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiredWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiredWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenExpiredWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiredWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenExpiredWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenExpiredWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenExpiredWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenExpiredWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -12289,8 +12855,9 @@ type APITokenActivatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenActivatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenActivatedWebhookEventDataContactCard `json:"contact_card"`
@@ -12403,20 +12970,29 @@ func (r *APITokenActivatedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) e
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenActivatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenActivatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenActivatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenActivatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenActivatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12429,12 +13005,12 @@ func (r *APITokenActivatedWebhookEventDataChange) UnmarshalJSON(data []byte) err
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenActivatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenActivatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -12446,25 +13022,71 @@ type APITokenActivatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenActivatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenActivatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenActivatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenActivatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenActivatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenActivatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenActivatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenActivatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenActivatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenActivatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenActivatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -12737,8 +13359,9 @@ type APITokenDeletedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change APITokenDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenDeletedWebhookEventDataContactCard `json:"contact_card"`
@@ -12851,20 +13474,29 @@ func (r *APITokenDeletedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) err
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type APITokenDeletedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName APITokenDeletedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name APITokenDeletedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL APITokenDeletedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName APITokenDeletedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -12877,12 +13509,12 @@ func (r *APITokenDeletedWebhookEventDataChange) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type APITokenDeletedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenDeletedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -12894,25 +13526,71 @@ type APITokenDeletedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APITokenDeletedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *APITokenDeletedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r APITokenDeletedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenDeletedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenDeletedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenDeletedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *APITokenDeletedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type APITokenDeletedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APITokenDeletedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *APITokenDeletedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type APITokenDeletedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -13185,8 +13863,9 @@ type EnvironmentCreatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change EnvironmentCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentCreatedWebhookEventDataContactCard `json:"contact_card"`
@@ -13299,20 +13978,29 @@ func (r *EnvironmentCreatedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type EnvironmentCreatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName EnvironmentCreatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name EnvironmentCreatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL EnvironmentCreatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName EnvironmentCreatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13325,12 +14013,12 @@ func (r *EnvironmentCreatedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type EnvironmentCreatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentCreatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13342,25 +14030,71 @@ type EnvironmentCreatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnvironmentCreatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *EnvironmentCreatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r EnvironmentCreatedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentCreatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentCreatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentCreatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentCreatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentCreatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentCreatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentCreatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type EnvironmentCreatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -13633,8 +14367,9 @@ type EnvironmentRenamedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change EnvironmentRenamedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentRenamedWebhookEventDataContactCard `json:"contact_card"`
@@ -13747,20 +14482,29 @@ func (r *EnvironmentRenamedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type EnvironmentRenamedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName EnvironmentRenamedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name EnvironmentRenamedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL EnvironmentRenamedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName EnvironmentRenamedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -13773,12 +14517,12 @@ func (r *EnvironmentRenamedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type EnvironmentRenamedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentRenamedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -13790,25 +14534,71 @@ type EnvironmentRenamedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnvironmentRenamedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *EnvironmentRenamedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r EnvironmentRenamedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentRenamedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentRenamedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentRenamedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentRenamedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentRenamedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentRenamedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentRenamedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type EnvironmentRenamedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -14081,8 +14871,9 @@ type EnvironmentDeletedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change EnvironmentDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentDeletedWebhookEventDataContactCard `json:"contact_card"`
@@ -14195,20 +14986,29 @@ func (r *EnvironmentDeletedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type EnvironmentDeletedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName EnvironmentDeletedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name EnvironmentDeletedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL EnvironmentDeletedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName EnvironmentDeletedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14221,12 +15021,12 @@ func (r *EnvironmentDeletedWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type EnvironmentDeletedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentDeletedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14238,25 +15038,71 @@ type EnvironmentDeletedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r EnvironmentDeletedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *EnvironmentDeletedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r EnvironmentDeletedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentDeletedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentDeletedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentDeletedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentDeletedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type EnvironmentDeletedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r EnvironmentDeletedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *EnvironmentDeletedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type EnvironmentDeletedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -14529,8 +15375,9 @@ type WebhookSubscriptionCreatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionCreatedWebhookEventDataContactCard `json:"contact_card"`
@@ -14643,20 +15490,29 @@ func (r *WebhookSubscriptionCreatedWebhookEventDataAPIToken) UnmarshalJSON(data 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionCreatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionCreatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionCreatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionCreatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionCreatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -14669,12 +15525,12 @@ func (r *WebhookSubscriptionCreatedWebhookEventDataChange) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionCreatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionCreatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -14686,25 +15542,73 @@ type WebhookSubscriptionCreatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionCreatedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *WebhookSubscriptionCreatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r WebhookSubscriptionCreatedWebhookEventDataChangeFirstName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionCreatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionCreatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionCreatedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionCreatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionCreatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionCreatedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionCreatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionCreatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -14979,8 +15883,9 @@ type WebhookSubscriptionDeletedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionDeletedWebhookEventDataContactCard `json:"contact_card"`
@@ -15093,20 +15998,29 @@ func (r *WebhookSubscriptionDeletedWebhookEventDataAPIToken) UnmarshalJSON(data 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionDeletedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionDeletedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionDeletedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionDeletedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionDeletedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -15119,12 +16033,12 @@ func (r *WebhookSubscriptionDeletedWebhookEventDataChange) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionDeletedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDeletedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -15136,25 +16050,73 @@ type WebhookSubscriptionDeletedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionDeletedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *WebhookSubscriptionDeletedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r WebhookSubscriptionDeletedWebhookEventDataChangeFirstName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionDeletedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDeletedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionDeletedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionDeletedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDeletedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionDeletedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionDeletedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionDeletedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -15429,8 +16391,9 @@ type WebhookSubscriptionTargetURLChangedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionTargetURLChangedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionTargetURLChangedWebhookEventDataContactCard `json:"contact_card"`
@@ -15545,20 +16508,29 @@ func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataAPIToken) UnmarshalJ
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionTargetURLChangedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionTargetURLChangedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionTargetURLChangedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionTargetURLChangedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -15573,12 +16545,12 @@ func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataChange) UnmarshalJSO
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionTargetURLChangedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -15590,27 +16562,77 @@ type WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName) RawJSON() string {
+func (r WebhookSubscriptionTargetURLChangedWebhookEventDataChangeFirstName) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionTargetURLChangedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionTargetURLChangedWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionTargetURLChangedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionTargetURLChangedWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionTargetURLChangedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -15891,8 +16913,9 @@ type WebhookSubscriptionEnabledWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionEnabledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionEnabledWebhookEventDataContactCard `json:"contact_card"`
@@ -16005,20 +17028,29 @@ func (r *WebhookSubscriptionEnabledWebhookEventDataAPIToken) UnmarshalJSON(data 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionEnabledWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionEnabledWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionEnabledWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionEnabledWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionEnabledWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16031,12 +17063,12 @@ func (r *WebhookSubscriptionEnabledWebhookEventDataChange) UnmarshalJSON(data []
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionEnabledWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEnabledWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -16048,25 +17080,73 @@ type WebhookSubscriptionEnabledWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionEnabledWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *WebhookSubscriptionEnabledWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r WebhookSubscriptionEnabledWebhookEventDataChangeFirstName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionEnabledWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEnabledWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionEnabledWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionEnabledWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEnabledWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionEnabledWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *WebhookSubscriptionEnabledWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionEnabledWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -16341,8 +17421,9 @@ type WebhookSubscriptionDisabledWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionDisabledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionDisabledWebhookEventDataContactCard `json:"contact_card"`
@@ -16455,20 +17536,29 @@ func (r *WebhookSubscriptionDisabledWebhookEventDataAPIToken) UnmarshalJSON(data
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionDisabledWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionDisabledWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionDisabledWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionDisabledWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionDisabledWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16481,12 +17571,12 @@ func (r *WebhookSubscriptionDisabledWebhookEventDataChange) UnmarshalJSON(data [
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionDisabledWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDisabledWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -16498,25 +17588,77 @@ type WebhookSubscriptionDisabledWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionDisabledWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *WebhookSubscriptionDisabledWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r WebhookSubscriptionDisabledWebhookEventDataChangeFirstName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionDisabledWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDisabledWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionDisabledWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionDisabledWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionDisabledWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionDisabledWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionDisabledWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionDisabledWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -16791,8 +17933,9 @@ type WebhookSubscriptionEventsUpdatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionEventsUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionEventsUpdatedWebhookEventDataContactCard `json:"contact_card"`
@@ -16905,20 +18048,29 @@ func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataAPIToken) UnmarshalJSON
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionEventsUpdatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionEventsUpdatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionEventsUpdatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionEventsUpdatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -16931,12 +18083,12 @@ func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataChange) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEventsUpdatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -16948,27 +18100,77 @@ type WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName) RawJSON() string {
+func (r WebhookSubscriptionEventsUpdatedWebhookEventDataChangeFirstName) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEventsUpdatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionEventsUpdatedWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionEventsUpdatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionEventsUpdatedWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionEventsUpdatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -17249,8 +18451,9 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataContactCard `json:"contact_card"`
@@ -17367,20 +18570,29 @@ func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataAPIToken) Unmarsh
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17395,12 +18607,12 @@ func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChange) Unmarshal
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -17412,27 +18624,77 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName) RawJSON() string {
+func (r WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeFirstName) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -17713,8 +18975,9 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionRoutingHeadersSetWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionRoutingHeadersSetWebhookEventDataContactCard `json:"contact_card"`
@@ -17831,20 +19094,29 @@ func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataAPIToken) Unmarshal
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -17859,12 +19131,12 @@ func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataChange) UnmarshalJS
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -17876,27 +19148,77 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName) RawJSON() string {
+func (r WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeFirstName) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionRoutingHeadersSetWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -18177,8 +19499,9 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionRoutingHeadersClearedWebhookEventDataContactCard `json:"contact_card"`
@@ -18295,20 +19618,29 @@ func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataAPIToken) Unmar
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18323,12 +19655,12 @@ func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChange) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -18340,27 +19672,77 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName) RawJSON() string {
+func (r WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeFirstName) RawJSON() string {
 	return r.JSON.raw
 }
-func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeImageURL) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeLastName) RawJSON() string {
+	return r.JSON.raw
+}
+func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -18641,8 +20023,9 @@ type TeamMemberAddedWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change TeamMemberAddedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberAddedWebhookEventDataContactCard `json:"contact_card"`
@@ -18755,20 +20138,29 @@ func (r *TeamMemberAddedWebhookEventDataAPIToken) UnmarshalJSON(data []byte) err
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type TeamMemberAddedWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName TeamMemberAddedWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name TeamMemberAddedWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL TeamMemberAddedWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName TeamMemberAddedWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -18781,12 +20173,12 @@ func (r *TeamMemberAddedWebhookEventDataChange) UnmarshalJSON(data []byte) error
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type TeamMemberAddedWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberAddedWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -18798,25 +20190,71 @@ type TeamMemberAddedWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TeamMemberAddedWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *TeamMemberAddedWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r TeamMemberAddedWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberAddedWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberAddedWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberAddedWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberAddedWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberAddedWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberAddedWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberAddedWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type TeamMemberAddedWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -19089,8 +20527,9 @@ type TeamMemberSignedInWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change TeamMemberSignedInWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberSignedInWebhookEventDataContactCard `json:"contact_card"`
@@ -19203,20 +20642,29 @@ func (r *TeamMemberSignedInWebhookEventDataAPIToken) UnmarshalJSON(data []byte) 
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type TeamMemberSignedInWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName TeamMemberSignedInWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name TeamMemberSignedInWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL TeamMemberSignedInWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName TeamMemberSignedInWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -19229,12 +20677,12 @@ func (r *TeamMemberSignedInWebhookEventDataChange) UnmarshalJSON(data []byte) er
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type TeamMemberSignedInWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedInWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -19246,25 +20694,71 @@ type TeamMemberSignedInWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TeamMemberSignedInWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *TeamMemberSignedInWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r TeamMemberSignedInWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedInWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedInWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberSignedInWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedInWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedInWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberSignedInWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedInWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type TeamMemberSignedInWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -19537,8 +21031,9 @@ type TeamMemberSignedOutWebhookEventData struct {
 	// `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 	// expired and activated events never carry it. `null` means none: `to: null` means
 	// cleared and `from: null` means first set. The value type depends on the event
-	// and is given in each event's description. `contact_card.updated` uses `name`
-	// instead of `from` and `to`.
+	// and is given in each event's description. `contact_card.updated` uses
+	// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+	// present only when that field changed.
 	Change TeamMemberSignedOutWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberSignedOutWebhookEventDataContactCard `json:"contact_card"`
@@ -19651,20 +21146,29 @@ func (r *TeamMemberSignedOutWebhookEventDataAPIToken) UnmarshalJSON(data []byte)
 // `webhook_subscription.routing_headers_*`); created, deleted, enabled, disabled,
 // expired and activated events never carry it. `null` means none: `to: null` means
 // cleared and `from: null` means first set. The value type depends on the event
-// and is given in each event's description. `contact_card.updated` uses `name`
-// instead of `from` and `to`.
+// and is given in each event's description. `contact_card.updated` uses
+// `first_name`, `last_name` and `image_url` instead of `from` and `to`, each
+// present only when that field changed.
 type TeamMemberSignedOutWebhookEventDataChange struct {
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	FirstName TeamMemberSignedOutWebhookEventDataChangeFirstName `json:"first_name"`
 	// The value before the change; null when there was none.
 	From any `json:"from"`
-	// A contact card name change. Only on `contact_card.updated`, when the name
-	// changed.
-	Name TeamMemberSignedOutWebhookEventDataChangeName `json:"name"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	ImageURL TeamMemberSignedOutWebhookEventDataChangeImageURL `json:"image_url"`
+	// A single field's change, on `contact_card.updated`. Present only for the field
+	// that changed.
+	LastName TeamMemberSignedOutWebhookEventDataChangeLastName `json:"last_name"`
 	// The value after the change; null when it was cleared.
 	To any `json:"to"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
+		FirstName   respjson.Field
 		From        respjson.Field
-		Name        respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
 		To          respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -19677,12 +21181,12 @@ func (r *TeamMemberSignedOutWebhookEventDataChange) UnmarshalJSON(data []byte) e
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// A contact card name change. Only on `contact_card.updated`, when the name
-// changed.
-type TeamMemberSignedOutWebhookEventDataChangeName struct {
-	// The name before the change; null when the card had no name.
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedOutWebhookEventDataChangeFirstName struct {
+	// The value before the change; null when the card had none.
 	From string `json:"from" api:"required"`
-	// The name after the change; null when it was removed.
+	// The value after the change; null when it was removed.
 	To string `json:"to" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -19694,25 +21198,71 @@ type TeamMemberSignedOutWebhookEventDataChangeName struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r TeamMemberSignedOutWebhookEventDataChangeName) RawJSON() string { return r.JSON.raw }
-func (r *TeamMemberSignedOutWebhookEventDataChangeName) UnmarshalJSON(data []byte) error {
+func (r TeamMemberSignedOutWebhookEventDataChangeFirstName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedOutWebhookEventDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedOutWebhookEventDataChangeImageURL struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberSignedOutWebhookEventDataChangeImageURL) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedOutWebhookEventDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A single field's change, on `contact_card.updated`. Present only for the field
+// that changed.
+type TeamMemberSignedOutWebhookEventDataChangeLastName struct {
+	// The value before the change; null when the card had none.
+	From string `json:"from" api:"required"`
+	// The value after the change; null when it was removed.
+	To string `json:"to" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		From        respjson.Field
+		To          respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TeamMemberSignedOutWebhookEventDataChangeLastName) RawJSON() string { return r.JSON.raw }
+func (r *TeamMemberSignedOutWebhookEventDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // The contact card that changed.
 type TeamMemberSignedOutWebhookEventDataContactCard struct {
-	ID string `json:"id" api:"required"`
-	// Display name. Absent when the card has no name.
-	Name string `json:"name"`
-	// True when the photo changed. Only on `contact_card.updated`.
-	PhotoUpdated bool `json:"photo_updated"`
+	ID        string `json:"id" api:"required"`
+	FirstName string `json:"first_name" api:"required"`
+	// Null when the card has no photo.
+	ImageURL string `json:"image_url" api:"required"`
+	// Null when the card has no last name.
+	LastName string `json:"last_name" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
+		ID          respjson.Field
+		FirstName   respjson.Field
+		ImageURL    respjson.Field
+		LastName    respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
 	} `json:"-"`
 }
 
@@ -21085,41 +22635,102 @@ func (r *UnwrapWebhookEventUnionDataAPIToken) UnmarshalJSON(data []byte) error {
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionDataChange struct {
-	From any `json:"from"`
-	// This field is a union of [ZeroDayRetentionUpdatedWebhookEventDataChangeName],
-	// [PhoneNumberForwardingUpdatedWebhookEventDataChangeName],
-	// [EnvironmentLineMovedWebhookEventDataChangeName],
-	// [ContactCardCreatedWebhookEventDataChangeName],
-	// [ContactCardUpdatedWebhookEventDataChangeName],
-	// [ContactCardDeletedWebhookEventDataChangeName],
-	// [APITokenCreatedWebhookEventDataChangeName],
-	// [APITokenRenamedWebhookEventDataChangeName],
-	// [APITokenExpiryScheduledWebhookEventDataChangeName],
-	// [APITokenExpiredWebhookEventDataChangeName],
-	// [APITokenActivatedWebhookEventDataChangeName],
-	// [APITokenDeletedWebhookEventDataChangeName],
-	// [EnvironmentCreatedWebhookEventDataChangeName],
-	// [EnvironmentRenamedWebhookEventDataChangeName],
-	// [EnvironmentDeletedWebhookEventDataChangeName],
-	// [WebhookSubscriptionCreatedWebhookEventDataChangeName],
-	// [WebhookSubscriptionDeletedWebhookEventDataChangeName],
-	// [WebhookSubscriptionTargetURLChangedWebhookEventDataChangeName],
-	// [WebhookSubscriptionEnabledWebhookEventDataChangeName],
-	// [WebhookSubscriptionDisabledWebhookEventDataChangeName],
-	// [WebhookSubscriptionEventsUpdatedWebhookEventDataChangeName],
-	// [WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeName],
-	// [WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeName],
-	// [WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeName],
-	// [TeamMemberAddedWebhookEventDataChangeName],
-	// [TeamMemberSignedInWebhookEventDataChangeName],
-	// [TeamMemberSignedOutWebhookEventDataChangeName]
-	Name UnwrapWebhookEventUnionDataChangeName `json:"name"`
-	To   any                                   `json:"to"`
-	JSON struct {
-		From respjson.Field
-		Name respjson.Field
-		To   respjson.Field
-		raw  string
+	// This field is a union of
+	// [ZeroDayRetentionUpdatedWebhookEventDataChangeFirstName],
+	// [PhoneNumberForwardingUpdatedWebhookEventDataChangeFirstName],
+	// [EnvironmentLineMovedWebhookEventDataChangeFirstName],
+	// [ContactCardCreatedWebhookEventDataChangeFirstName],
+	// [ContactCardUpdatedWebhookEventDataChangeFirstName],
+	// [ContactCardDeletedWebhookEventDataChangeFirstName],
+	// [APITokenCreatedWebhookEventDataChangeFirstName],
+	// [APITokenRenamedWebhookEventDataChangeFirstName],
+	// [APITokenExpiryScheduledWebhookEventDataChangeFirstName],
+	// [APITokenExpiredWebhookEventDataChangeFirstName],
+	// [APITokenActivatedWebhookEventDataChangeFirstName],
+	// [APITokenDeletedWebhookEventDataChangeFirstName],
+	// [EnvironmentCreatedWebhookEventDataChangeFirstName],
+	// [EnvironmentRenamedWebhookEventDataChangeFirstName],
+	// [EnvironmentDeletedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionCreatedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionDeletedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionTargetURLChangedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionEnabledWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionDisabledWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionEventsUpdatedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeFirstName],
+	// [WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeFirstName],
+	// [TeamMemberAddedWebhookEventDataChangeFirstName],
+	// [TeamMemberSignedInWebhookEventDataChangeFirstName],
+	// [TeamMemberSignedOutWebhookEventDataChangeFirstName]
+	FirstName UnwrapWebhookEventUnionDataChangeFirstName `json:"first_name"`
+	From      any                                        `json:"from"`
+	// This field is a union of
+	// [ZeroDayRetentionUpdatedWebhookEventDataChangeImageURL],
+	// [PhoneNumberForwardingUpdatedWebhookEventDataChangeImageURL],
+	// [EnvironmentLineMovedWebhookEventDataChangeImageURL],
+	// [ContactCardCreatedWebhookEventDataChangeImageURL],
+	// [ContactCardUpdatedWebhookEventDataChangeImageURL],
+	// [ContactCardDeletedWebhookEventDataChangeImageURL],
+	// [APITokenCreatedWebhookEventDataChangeImageURL],
+	// [APITokenRenamedWebhookEventDataChangeImageURL],
+	// [APITokenExpiryScheduledWebhookEventDataChangeImageURL],
+	// [APITokenExpiredWebhookEventDataChangeImageURL],
+	// [APITokenActivatedWebhookEventDataChangeImageURL],
+	// [APITokenDeletedWebhookEventDataChangeImageURL],
+	// [EnvironmentCreatedWebhookEventDataChangeImageURL],
+	// [EnvironmentRenamedWebhookEventDataChangeImageURL],
+	// [EnvironmentDeletedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionCreatedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionDeletedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionTargetURLChangedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionEnabledWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionDisabledWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionEventsUpdatedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeImageURL],
+	// [WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeImageURL],
+	// [TeamMemberAddedWebhookEventDataChangeImageURL],
+	// [TeamMemberSignedInWebhookEventDataChangeImageURL],
+	// [TeamMemberSignedOutWebhookEventDataChangeImageURL]
+	ImageURL UnwrapWebhookEventUnionDataChangeImageURL `json:"image_url"`
+	// This field is a union of
+	// [ZeroDayRetentionUpdatedWebhookEventDataChangeLastName],
+	// [PhoneNumberForwardingUpdatedWebhookEventDataChangeLastName],
+	// [EnvironmentLineMovedWebhookEventDataChangeLastName],
+	// [ContactCardCreatedWebhookEventDataChangeLastName],
+	// [ContactCardUpdatedWebhookEventDataChangeLastName],
+	// [ContactCardDeletedWebhookEventDataChangeLastName],
+	// [APITokenCreatedWebhookEventDataChangeLastName],
+	// [APITokenRenamedWebhookEventDataChangeLastName],
+	// [APITokenExpiryScheduledWebhookEventDataChangeLastName],
+	// [APITokenExpiredWebhookEventDataChangeLastName],
+	// [APITokenActivatedWebhookEventDataChangeLastName],
+	// [APITokenDeletedWebhookEventDataChangeLastName],
+	// [EnvironmentCreatedWebhookEventDataChangeLastName],
+	// [EnvironmentRenamedWebhookEventDataChangeLastName],
+	// [EnvironmentDeletedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionCreatedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionDeletedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionTargetURLChangedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionEnabledWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionDisabledWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionEventsUpdatedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionRoutingHeadersSetWebhookEventDataChangeLastName],
+	// [WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChangeLastName],
+	// [TeamMemberAddedWebhookEventDataChangeLastName],
+	// [TeamMemberSignedInWebhookEventDataChangeLastName],
+	// [TeamMemberSignedOutWebhookEventDataChangeLastName]
+	LastName UnwrapWebhookEventUnionDataChangeLastName `json:"last_name"`
+	To       any                                       `json:"to"`
+	JSON     struct {
+		FirstName respjson.Field
+		From      respjson.Field
+		ImageURL  respjson.Field
+		LastName  respjson.Field
+		To        respjson.Field
+		raw       string
 	} `json:"-"`
 }
 
@@ -21127,13 +22738,13 @@ func (r *UnwrapWebhookEventUnionDataChange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// UnwrapWebhookEventUnionDataChangeName is an implicit subunion of
-// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChangeName provides
+// UnwrapWebhookEventUnionDataChangeFirstName is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChangeFirstName provides
 // convenient access to the sub-properties of the union.
 //
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
-type UnwrapWebhookEventUnionDataChangeName struct {
+type UnwrapWebhookEventUnionDataChangeFirstName struct {
 	From string `json:"from"`
 	To   string `json:"to"`
 	JSON struct {
@@ -21143,7 +22754,47 @@ type UnwrapWebhookEventUnionDataChangeName struct {
 	} `json:"-"`
 }
 
-func (r *UnwrapWebhookEventUnionDataChangeName) UnmarshalJSON(data []byte) error {
+func (r *UnwrapWebhookEventUnionDataChangeFirstName) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataChangeImageURL is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChangeImageURL provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataChangeImageURL struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+	JSON struct {
+		From respjson.Field
+		To   respjson.Field
+		raw  string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataChangeImageURL) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// UnwrapWebhookEventUnionDataChangeLastName is an implicit subunion of
+// [UnwrapWebhookEventUnion]. UnwrapWebhookEventUnionDataChangeLastName provides
+// convenient access to the sub-properties of the union.
+//
+// For type safety it is recommended to directly use a variant of the
+// [UnwrapWebhookEventUnion].
+type UnwrapWebhookEventUnionDataChangeLastName struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+	JSON struct {
+		From respjson.Field
+		To   respjson.Field
+		raw  string
+	} `json:"-"`
+}
+
+func (r *UnwrapWebhookEventUnionDataChangeLastName) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -21154,14 +22805,16 @@ func (r *UnwrapWebhookEventUnionDataChangeName) UnmarshalJSON(data []byte) error
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionDataContactCard struct {
-	ID           string `json:"id"`
-	Name         string `json:"name"`
-	PhotoUpdated bool   `json:"photo_updated"`
-	JSON         struct {
-		ID           respjson.Field
-		Name         respjson.Field
-		PhotoUpdated respjson.Field
-		raw          string
+	ID        string `json:"id"`
+	FirstName string `json:"first_name"`
+	ImageURL  string `json:"image_url"`
+	LastName  string `json:"last_name"`
+	JSON      struct {
+		ID        respjson.Field
+		FirstName respjson.Field
+		ImageURL  respjson.Field
+		LastName  respjson.Field
+		raw       string
 	} `json:"-"`
 }
 
