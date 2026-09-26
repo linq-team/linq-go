@@ -7711,7 +7711,7 @@ type ZeroDayRetentionUpdatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data ZeroDayRetentionUpdatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -7779,7 +7779,7 @@ func (r *ZeroDayRetentionUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type ZeroDayRetentionUpdatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -7808,9 +7808,9 @@ type ZeroDayRetentionUpdatedWebhookEventData struct {
 	Change ZeroDayRetentionUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ZeroDayRetentionUpdatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment ZeroDayRetentionUpdatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -7988,20 +7988,17 @@ func (r *ZeroDayRetentionUpdatedWebhookEventDataContactCard) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type ZeroDayRetentionUpdatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8164,7 +8161,7 @@ type PhoneNumberForwardingUpdatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data PhoneNumberForwardingUpdatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -8232,7 +8229,7 @@ func (r *PhoneNumberForwardingUpdatedWebhookEvent) UnmarshalJSON(data []byte) er
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type PhoneNumberForwardingUpdatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -8261,9 +8258,9 @@ type PhoneNumberForwardingUpdatedWebhookEventData struct {
 	Change PhoneNumberForwardingUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard PhoneNumberForwardingUpdatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment PhoneNumberForwardingUpdatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -8441,20 +8438,17 @@ func (r *PhoneNumberForwardingUpdatedWebhookEventDataContactCard) UnmarshalJSON(
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type PhoneNumberForwardingUpdatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8617,7 +8611,7 @@ type EnvironmentLineMovedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data EnvironmentLineMovedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -8685,7 +8679,7 @@ func (r *EnvironmentLineMovedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type EnvironmentLineMovedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -8714,9 +8708,9 @@ type EnvironmentLineMovedWebhookEventData struct {
 	Change EnvironmentLineMovedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentLineMovedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment EnvironmentLineMovedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -8894,20 +8888,17 @@ func (r *EnvironmentLineMovedWebhookEventDataContactCard) UnmarshalJSON(data []b
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type EnvironmentLineMovedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9068,7 +9059,7 @@ type ContactCardCreatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data ContactCardCreatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -9136,7 +9127,7 @@ func (r *ContactCardCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type ContactCardCreatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -9165,9 +9156,9 @@ type ContactCardCreatedWebhookEventData struct {
 	Change ContactCardCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardCreatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment ContactCardCreatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -9345,20 +9336,17 @@ func (r *ContactCardCreatedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type ContactCardCreatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9519,7 +9507,7 @@ type ContactCardUpdatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data ContactCardUpdatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -9587,7 +9575,7 @@ func (r *ContactCardUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type ContactCardUpdatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -9616,9 +9604,9 @@ type ContactCardUpdatedWebhookEventData struct {
 	Change ContactCardUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardUpdatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment ContactCardUpdatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -9796,20 +9784,17 @@ func (r *ContactCardUpdatedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type ContactCardUpdatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9970,7 +9955,7 @@ type ContactCardDeletedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data ContactCardDeletedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -10038,7 +10023,7 @@ func (r *ContactCardDeletedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type ContactCardDeletedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -10067,9 +10052,9 @@ type ContactCardDeletedWebhookEventData struct {
 	Change ContactCardDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard ContactCardDeletedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment ContactCardDeletedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -10247,20 +10232,17 @@ func (r *ContactCardDeletedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type ContactCardDeletedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10421,7 +10403,7 @@ type APITokenCreatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenCreatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -10489,7 +10471,7 @@ func (r *APITokenCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenCreatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -10518,9 +10500,9 @@ type APITokenCreatedWebhookEventData struct {
 	Change APITokenCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenCreatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenCreatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -10698,20 +10680,17 @@ func (r *APITokenCreatedWebhookEventDataContactCard) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenCreatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10872,7 +10851,7 @@ type APITokenRenamedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenRenamedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -10940,7 +10919,7 @@ func (r *APITokenRenamedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenRenamedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -10969,9 +10948,9 @@ type APITokenRenamedWebhookEventData struct {
 	Change APITokenRenamedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenRenamedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenRenamedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -11149,20 +11128,17 @@ func (r *APITokenRenamedWebhookEventDataContactCard) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenRenamedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -11323,7 +11299,7 @@ type APITokenExpiryScheduledWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenExpiryScheduledWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -11391,7 +11367,7 @@ func (r *APITokenExpiryScheduledWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenExpiryScheduledWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -11420,9 +11396,9 @@ type APITokenExpiryScheduledWebhookEventData struct {
 	Change APITokenExpiryScheduledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenExpiryScheduledWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenExpiryScheduledWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -11600,20 +11576,17 @@ func (r *APITokenExpiryScheduledWebhookEventDataContactCard) UnmarshalJSON(data 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenExpiryScheduledWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -11776,7 +11749,7 @@ type APITokenExpiredWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenExpiredWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -11844,7 +11817,7 @@ func (r *APITokenExpiredWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenExpiredWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -11873,9 +11846,9 @@ type APITokenExpiredWebhookEventData struct {
 	Change APITokenExpiredWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenExpiredWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenExpiredWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -12053,20 +12026,17 @@ func (r *APITokenExpiredWebhookEventDataContactCard) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenExpiredWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -12227,7 +12197,7 @@ type APITokenActivatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenActivatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -12295,7 +12265,7 @@ func (r *APITokenActivatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenActivatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -12324,9 +12294,9 @@ type APITokenActivatedWebhookEventData struct {
 	Change APITokenActivatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenActivatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenActivatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -12504,20 +12474,17 @@ func (r *APITokenActivatedWebhookEventDataContactCard) UnmarshalJSON(data []byte
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenActivatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -12678,7 +12645,7 @@ type APITokenDeletedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data APITokenDeletedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -12746,7 +12713,7 @@ func (r *APITokenDeletedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type APITokenDeletedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -12775,9 +12742,9 @@ type APITokenDeletedWebhookEventData struct {
 	Change APITokenDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard APITokenDeletedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment APITokenDeletedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -12955,20 +12922,17 @@ func (r *APITokenDeletedWebhookEventDataContactCard) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type APITokenDeletedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13129,7 +13093,7 @@ type EnvironmentCreatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data EnvironmentCreatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -13197,7 +13161,7 @@ func (r *EnvironmentCreatedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type EnvironmentCreatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -13226,9 +13190,9 @@ type EnvironmentCreatedWebhookEventData struct {
 	Change EnvironmentCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentCreatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment EnvironmentCreatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -13406,20 +13370,17 @@ func (r *EnvironmentCreatedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type EnvironmentCreatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13580,7 +13541,7 @@ type EnvironmentRenamedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data EnvironmentRenamedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -13648,7 +13609,7 @@ func (r *EnvironmentRenamedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type EnvironmentRenamedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -13677,9 +13638,9 @@ type EnvironmentRenamedWebhookEventData struct {
 	Change EnvironmentRenamedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentRenamedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment EnvironmentRenamedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -13857,20 +13818,17 @@ func (r *EnvironmentRenamedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type EnvironmentRenamedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14031,7 +13989,7 @@ type EnvironmentDeletedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data EnvironmentDeletedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -14099,7 +14057,7 @@ func (r *EnvironmentDeletedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type EnvironmentDeletedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -14128,9 +14086,9 @@ type EnvironmentDeletedWebhookEventData struct {
 	Change EnvironmentDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard EnvironmentDeletedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment EnvironmentDeletedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -14308,20 +14266,17 @@ func (r *EnvironmentDeletedWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type EnvironmentDeletedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14482,7 +14437,7 @@ type WebhookSubscriptionCreatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionCreatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -14550,7 +14505,7 @@ func (r *WebhookSubscriptionCreatedWebhookEvent) UnmarshalJSON(data []byte) erro
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionCreatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -14579,9 +14534,9 @@ type WebhookSubscriptionCreatedWebhookEventData struct {
 	Change WebhookSubscriptionCreatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionCreatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionCreatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -14759,20 +14714,17 @@ func (r *WebhookSubscriptionCreatedWebhookEventDataContactCard) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionCreatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14935,7 +14887,7 @@ type WebhookSubscriptionDeletedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionDeletedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -15003,7 +14955,7 @@ func (r *WebhookSubscriptionDeletedWebhookEvent) UnmarshalJSON(data []byte) erro
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionDeletedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -15032,9 +14984,9 @@ type WebhookSubscriptionDeletedWebhookEventData struct {
 	Change WebhookSubscriptionDeletedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionDeletedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionDeletedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -15212,20 +15164,17 @@ func (r *WebhookSubscriptionDeletedWebhookEventDataContactCard) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionDeletedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -15388,7 +15337,7 @@ type WebhookSubscriptionTargetURLChangedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionTargetURLChangedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -15456,7 +15405,7 @@ func (r *WebhookSubscriptionTargetURLChangedWebhookEvent) UnmarshalJSON(data []b
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionTargetURLChangedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -15485,9 +15434,9 @@ type WebhookSubscriptionTargetURLChangedWebhookEventData struct {
 	Change WebhookSubscriptionTargetURLChangedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionTargetURLChangedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionTargetURLChangedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -15673,20 +15622,17 @@ func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataContactCard) Unmarsh
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionTargetURLChangedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -15853,7 +15799,7 @@ type WebhookSubscriptionEnabledWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionEnabledWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -15921,7 +15867,7 @@ func (r *WebhookSubscriptionEnabledWebhookEvent) UnmarshalJSON(data []byte) erro
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionEnabledWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -15950,9 +15896,9 @@ type WebhookSubscriptionEnabledWebhookEventData struct {
 	Change WebhookSubscriptionEnabledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionEnabledWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionEnabledWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -16130,20 +16076,17 @@ func (r *WebhookSubscriptionEnabledWebhookEventDataContactCard) UnmarshalJSON(da
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionEnabledWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -16306,7 +16249,7 @@ type WebhookSubscriptionDisabledWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionDisabledWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -16374,7 +16317,7 @@ func (r *WebhookSubscriptionDisabledWebhookEvent) UnmarshalJSON(data []byte) err
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionDisabledWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -16403,9 +16346,9 @@ type WebhookSubscriptionDisabledWebhookEventData struct {
 	Change WebhookSubscriptionDisabledWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionDisabledWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionDisabledWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -16583,20 +16526,17 @@ func (r *WebhookSubscriptionDisabledWebhookEventDataContactCard) UnmarshalJSON(d
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionDisabledWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -16759,7 +16699,7 @@ type WebhookSubscriptionEventsUpdatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionEventsUpdatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -16827,7 +16767,7 @@ func (r *WebhookSubscriptionEventsUpdatedWebhookEvent) UnmarshalJSON(data []byte
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionEventsUpdatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -16856,9 +16796,9 @@ type WebhookSubscriptionEventsUpdatedWebhookEventData struct {
 	Change WebhookSubscriptionEventsUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionEventsUpdatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionEventsUpdatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -17040,20 +16980,17 @@ func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataContactCard) UnmarshalJ
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionEventsUpdatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -17220,7 +17157,7 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionPhoneNumbersUpdatedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -17288,7 +17225,7 @@ func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEvent) UnmarshalJSON(data 
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -17317,9 +17254,9 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventData struct {
 	Change WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -17507,20 +17444,17 @@ func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataContactCard) Unma
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -17687,7 +17621,7 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionRoutingHeadersSetWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -17755,7 +17689,7 @@ func (r *WebhookSubscriptionRoutingHeadersSetWebhookEvent) UnmarshalJSON(data []
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionRoutingHeadersSetWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -17784,9 +17718,9 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEventData struct {
 	Change WebhookSubscriptionRoutingHeadersSetWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionRoutingHeadersSetWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionRoutingHeadersSetWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -17974,20 +17908,17 @@ func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataContactCard) Unmars
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionRoutingHeadersSetWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18154,7 +18085,7 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data WebhookSubscriptionRoutingHeadersClearedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -18222,7 +18153,7 @@ func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEvent) UnmarshalJSON(dat
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type WebhookSubscriptionRoutingHeadersClearedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -18251,9 +18182,9 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEventData struct {
 	Change WebhookSubscriptionRoutingHeadersClearedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard WebhookSubscriptionRoutingHeadersClearedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment WebhookSubscriptionRoutingHeadersClearedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -18441,20 +18372,17 @@ func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataContactCard) Un
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18621,7 +18549,7 @@ type TeamMemberAddedWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data TeamMemberAddedWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -18689,7 +18617,7 @@ func (r *TeamMemberAddedWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type TeamMemberAddedWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -18718,9 +18646,9 @@ type TeamMemberAddedWebhookEventData struct {
 	Change TeamMemberAddedWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberAddedWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment TeamMemberAddedWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -18898,20 +18826,17 @@ func (r *TeamMemberAddedWebhookEventDataContactCard) UnmarshalJSON(data []byte) 
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type TeamMemberAddedWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19072,7 +18997,7 @@ type TeamMemberSignedInWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data TeamMemberSignedInWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -19140,7 +19065,7 @@ func (r *TeamMemberSignedInWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type TeamMemberSignedInWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -19169,9 +19094,9 @@ type TeamMemberSignedInWebhookEventData struct {
 	Change TeamMemberSignedInWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberSignedInWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment TeamMemberSignedInWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -19349,20 +19274,17 @@ func (r *TeamMemberSignedInWebhookEventDataContactCard) UnmarshalJSON(data []byt
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type TeamMemberSignedInWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19523,7 +19445,7 @@ type TeamMemberSignedOutWebhookEvent struct {
 	// `phone_number`, `team_member`) identify what changed; on update events `change`
 	// describes the transition. Created and deleted events carry only the object that
 	// was created or deleted. Fields are absent when they don't apply; `null` appears
-	// only inside `change` and as Production's environment `id`.
+	// only inside `change`.
 	Data TeamMemberSignedOutWebhookEventData `json:"data" api:"required"`
 	// Unique identifier for this event (for deduplication)
 	EventID string `json:"event_id" api:"required" format:"uuid"`
@@ -19591,7 +19513,7 @@ func (r *TeamMemberSignedOutWebhookEvent) UnmarshalJSON(data []byte) error {
 // `phone_number`, `team_member`) identify what changed; on update events `change`
 // describes the transition. Created and deleted events carry only the object that
 // was created or deleted. Fields are absent when they don't apply; `null` appears
-// only inside `change` and as Production's environment `id`.
+// only inside `change`.
 type TeamMemberSignedOutWebhookEventData struct {
 	// Who made the change. `team_member` carries the member's id, name and email;
 	// other types carry no identity. `system` is a change made by Linq, matching
@@ -19620,9 +19542,9 @@ type TeamMemberSignedOutWebhookEventData struct {
 	Change TeamMemberSignedOutWebhookEventDataChange `json:"change"`
 	// The contact card that changed.
 	ContactCard TeamMemberSignedOutWebhookEventDataContactCard `json:"contact_card"`
-	// An environment. Production is
-	// `{"id": null, "name": "Production", "type": "production"}`; every other
-	// environment has an `id` and type `environment`.
+	// An environment, identified by name. Production is
+	// `{"name": "Production", "type": "environment"}`; a named environment you created
+	// (e.g. "Staging") looks the same shape, just with its own name.
 	Environment TeamMemberSignedOutWebhookEventDataEnvironment `json:"environment"`
 	// Lines moved to Production when an environment was deleted.
 	LinesMovedToProduction int64 `json:"lines_moved_to_production"`
@@ -19800,20 +19722,17 @@ func (r *TeamMemberSignedOutWebhookEventDataContactCard) UnmarshalJSON(data []by
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An environment. Production is
-// `{"id": null, "name": "Production", "type": "production"}`; every other
-// environment has an `id` and type `environment`.
+// An environment, identified by name. Production is
+// `{"name": "Production", "type": "environment"}`; a named environment you created
+// (e.g. "Staging") looks the same shape, just with its own name.
 type TeamMemberSignedOutWebhookEventDataEnvironment struct {
-	// Null for Production.
-	ID string `json:"id" api:"required"`
-	// Any of "production", "environment".
+	Name string `json:"name" api:"required"`
+	// Any of "environment".
 	Type string `json:"type" api:"required"`
-	Name string `json:"name"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		Type        respjson.Field
 		Name        respjson.Field
+		Type        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -21257,13 +21176,11 @@ func (r *UnwrapWebhookEventUnionDataContactCard) UnmarshalJSON(data []byte) erro
 // For type safety it is recommended to directly use a variant of the
 // [UnwrapWebhookEventUnion].
 type UnwrapWebhookEventUnionDataEnvironment struct {
-	ID   string `json:"id"`
-	Type string `json:"type"`
 	Name string `json:"name"`
+	Type string `json:"type"`
 	JSON struct {
-		ID   respjson.Field
-		Type respjson.Field
 		Name respjson.Field
+		Type respjson.Field
 		raw  string
 	} `json:"-"`
 }
