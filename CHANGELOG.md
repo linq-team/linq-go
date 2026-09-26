@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.66.0](https://github.com/linq-team/linq-go/compare/v0.65.0...v0.66.0) (2026-09-26)
+
+
+### Features
+
+* add expires_at field to api token webhook events ([a9309d8](https://github.com/linq-team/linq-go/commit/a9309d83e0de36b7268813a9d8cf3a7f7658eb48))
+
 ## [0.65.0](https://github.com/linq-team/linq-go/compare/v0.64.1...v0.65.0) (2026-09-26)
 
 
