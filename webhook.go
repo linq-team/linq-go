@@ -7888,9 +7888,8 @@ func (r *ZeroDayRetentionUpdatedWebhookEventDataActor) UnmarshalJSON(data []byte
 // The API token that changed.
 type ZeroDayRetentionUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -8394,9 +8393,8 @@ func (r *PhoneNumberForwardingUpdatedWebhookEventDataActor) UnmarshalJSON(data [
 // The API token that changed.
 type PhoneNumberForwardingUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -8906,9 +8904,8 @@ func (r *EnvironmentLineMovedWebhookEventDataActor) UnmarshalJSON(data []byte) e
 // The API token that changed.
 type EnvironmentLineMovedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -9410,9 +9407,8 @@ func (r *ContactCardCreatedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type ContactCardCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -9914,9 +9910,8 @@ func (r *ContactCardUpdatedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type ContactCardUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -10418,9 +10413,8 @@ func (r *ContactCardDeletedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type ContactCardDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -10922,9 +10916,8 @@ func (r *APITokenCreatedWebhookEventDataActor) UnmarshalJSON(data []byte) error 
 // The API token that changed.
 type APITokenCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -11426,9 +11419,8 @@ func (r *APITokenRenamedWebhookEventDataActor) UnmarshalJSON(data []byte) error 
 // The API token that changed.
 type APITokenRenamedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -11930,9 +11922,8 @@ func (r *APITokenExpiryScheduledWebhookEventDataActor) UnmarshalJSON(data []byte
 // The API token that changed.
 type APITokenExpiryScheduledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -12436,9 +12427,8 @@ func (r *APITokenExpiredWebhookEventDataActor) UnmarshalJSON(data []byte) error 
 // The API token that changed.
 type APITokenExpiredWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -12940,9 +12930,8 @@ func (r *APITokenActivatedWebhookEventDataActor) UnmarshalJSON(data []byte) erro
 // The API token that changed.
 type APITokenActivatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -13444,9 +13433,8 @@ func (r *APITokenDeletedWebhookEventDataActor) UnmarshalJSON(data []byte) error 
 // The API token that changed.
 type APITokenDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -13948,9 +13936,8 @@ func (r *EnvironmentCreatedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type EnvironmentCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -14452,9 +14439,8 @@ func (r *EnvironmentRenamedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type EnvironmentRenamedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -14956,9 +14942,8 @@ func (r *EnvironmentDeletedWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type EnvironmentDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -15460,9 +15445,8 @@ func (r *WebhookSubscriptionCreatedWebhookEventDataActor) UnmarshalJSON(data []b
 // The API token that changed.
 type WebhookSubscriptionCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -15968,9 +15952,8 @@ func (r *WebhookSubscriptionDeletedWebhookEventDataActor) UnmarshalJSON(data []b
 // The API token that changed.
 type WebhookSubscriptionDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -16476,9 +16459,8 @@ func (r *WebhookSubscriptionTargetURLChangedWebhookEventDataActor) UnmarshalJSON
 // The API token that changed.
 type WebhookSubscriptionTargetURLChangedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -16998,9 +16980,8 @@ func (r *WebhookSubscriptionEnabledWebhookEventDataActor) UnmarshalJSON(data []b
 // The API token that changed.
 type WebhookSubscriptionEnabledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -17506,9 +17487,8 @@ func (r *WebhookSubscriptionDisabledWebhookEventDataActor) UnmarshalJSON(data []
 // The API token that changed.
 type WebhookSubscriptionDisabledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -18018,9 +17998,8 @@ func (r *WebhookSubscriptionEventsUpdatedWebhookEventDataActor) UnmarshalJSON(da
 // The API token that changed.
 type WebhookSubscriptionEventsUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -18538,9 +18517,8 @@ func (r *WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataActor) UnmarshalJ
 // The API token that changed.
 type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -19062,9 +19040,8 @@ func (r *WebhookSubscriptionRoutingHeadersSetWebhookEventDataActor) UnmarshalJSO
 // The API token that changed.
 type WebhookSubscriptionRoutingHeadersSetWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -19586,9 +19563,8 @@ func (r *WebhookSubscriptionRoutingHeadersClearedWebhookEventDataActor) Unmarsha
 // The API token that changed.
 type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -20108,9 +20084,8 @@ func (r *TeamMemberAddedWebhookEventDataActor) UnmarshalJSON(data []byte) error 
 // The API token that changed.
 type TeamMemberAddedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -20612,9 +20587,8 @@ func (r *TeamMemberSignedInWebhookEventDataActor) UnmarshalJSON(data []byte) err
 // The API token that changed.
 type TeamMemberSignedInWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
@@ -21116,9 +21090,8 @@ func (r *TeamMemberSignedOutWebhookEventDataActor) UnmarshalJSON(data []byte) er
 // The API token that changed.
 type TeamMemberSignedOutWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
-	// When the token expires. On `api_token.created`, `api_token.expired` and
-	// `api_token.deleted`; absent if it never expires.
-	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
+	// When the token expires; null if it never does.
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
 	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
