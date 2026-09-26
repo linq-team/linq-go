@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.64.0](https://github.com/linq-team/linq-go/compare/v0.63.2...v0.64.0) (2026-09-26)
+
+
+### Features
+
+* add webhook events for account changes ([76df70a](https://github.com/linq-team/linq-go/commit/76df70a40b025197c0a9b2f4b2c29baa1e775434))
+
 ## [0.63.2](https://github.com/linq-team/linq-go/compare/v0.63.1...v0.63.2) (2026-09-26)
 
 
