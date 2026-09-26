@@ -7890,16 +7890,16 @@ type ZeroDayRetentionUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8395,16 +8395,16 @@ type PhoneNumberForwardingUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -8906,16 +8906,16 @@ type EnvironmentLineMovedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9409,16 +9409,16 @@ type ContactCardCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -9912,16 +9912,16 @@ type ContactCardUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10415,16 +10415,16 @@ type ContactCardDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -10918,16 +10918,16 @@ type APITokenCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -11421,16 +11421,16 @@ type APITokenRenamedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -11924,16 +11924,16 @@ type APITokenExpiryScheduledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -12429,16 +12429,16 @@ type APITokenExpiredWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -12932,16 +12932,16 @@ type APITokenActivatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13435,16 +13435,16 @@ type APITokenDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -13938,16 +13938,16 @@ type EnvironmentCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14441,16 +14441,16 @@ type EnvironmentRenamedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -14944,16 +14944,16 @@ type EnvironmentDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -15447,16 +15447,16 @@ type WebhookSubscriptionCreatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -15954,16 +15954,16 @@ type WebhookSubscriptionDeletedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -16461,16 +16461,16 @@ type WebhookSubscriptionTargetURLChangedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -16982,16 +16982,16 @@ type WebhookSubscriptionEnabledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -17489,16 +17489,16 @@ type WebhookSubscriptionDisabledWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18000,16 +18000,16 @@ type WebhookSubscriptionEventsUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -18519,16 +18519,16 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19042,16 +19042,16 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -19565,16 +19565,16 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -20086,16 +20086,16 @@ type TeamMemberAddedWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -20589,16 +20589,16 @@ type TeamMemberSignedInWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -21092,16 +21092,16 @@ type TeamMemberSignedOutWebhookEventDataAPIToken struct {
 	ID string `json:"id" api:"required"`
 	// When the token expires; null if it never does.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// The token's visible prefix.
+	TokenPrefix string `json:"token_prefix" api:"required"`
 	// Absent when the token has no name.
 	Name string `json:"name"`
-	// The token's visible prefix. On `api_token.created` and `api_token.deleted`.
-	TokenPrefix string `json:"token_prefix"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -22586,13 +22586,13 @@ func (r *UnwrapWebhookEventUnionDataActor) UnmarshalJSON(data []byte) error {
 type UnwrapWebhookEventUnionDataAPIToken struct {
 	ID          string    `json:"id"`
 	ExpiresAt   time.Time `json:"expires_at"`
-	Name        string    `json:"name"`
 	TokenPrefix string    `json:"token_prefix"`
+	Name        string    `json:"name"`
 	JSON        struct {
 		ID          respjson.Field
 		ExpiresAt   respjson.Field
-		Name        respjson.Field
 		TokenPrefix respjson.Field
+		Name        respjson.Field
 		raw         string
 	} `json:"-"`
 }
