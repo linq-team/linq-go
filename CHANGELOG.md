@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.67.1](https://github.com/linq-team/linq-go/compare/v0.67.0...v0.67.1) (2026-10-01)
+
+
+### Bug Fixes
+
+* clarify imessage app card update delivery requirements ([3923718](https://github.com/linq-team/linq-go/commit/39237180aaeb269902143455fb2ae19bf393406b))
+
 ## [0.67.0](https://github.com/linq-team/linq-go/compare/v0.66.0...v0.67.0) (2026-09-26)
 
 
