@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.69.0](https://github.com/linq-team/linq-go/compare/v0.68.0...v0.69.0) (2026-10-08)
+
+
+### Features
+
+* add line_type field to handle and phone number resources ([f65f1ec](https://github.com/linq-team/linq-go/commit/f65f1ecd841ae44b7c726dade938a5a2cd4cb249))
+
 ## [0.68.0](https://github.com/linq-team/linq-go/compare/v0.67.1...v0.68.0) (2026-10-08)
 
 
