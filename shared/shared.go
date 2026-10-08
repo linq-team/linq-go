@@ -34,6 +34,14 @@ type ChatHandle struct {
 	IsMe bool `json:"is_me" api:"nullable"`
 	// When they left (if applicable)
 	LeftAt time.Time `json:"left_at" api:"nullable" format:"date-time"`
+	// The kind of line: `iMessage` for an iMessage-capable line, `RCS` for an RCS-only
+	// line, which sends RCS and SMS but never iMessage. Same values as the `type`
+	// parameter on `GET /v3/available_number`. A property of the line itself, so
+	// unlike `service` it does not change with the conversation: an iMessage-capable
+	// line can still carry an RCS or SMS conversation.
+	//
+	// Any of "iMessage", "RCS".
+	LineType ChatHandleLineType `json:"line_type"`
 	// Participant status
 	//
 	// Any of "active", "left", "removed".
@@ -46,6 +54,7 @@ type ChatHandle struct {
 		Service     respjson.Field
 		IsMe        respjson.Field
 		LeftAt      respjson.Field
+		LineType    respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
@@ -57,6 +66,18 @@ func (r ChatHandle) RawJSON() string { return r.JSON.raw }
 func (r *ChatHandle) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// The kind of line: `iMessage` for an iMessage-capable line, `RCS` for an RCS-only
+// line, which sends RCS and SMS but never iMessage. Same values as the `type`
+// parameter on `GET /v3/available_number`. A property of the line itself, so
+// unlike `service` it does not change with the conversation: an iMessage-capable
+// line can still carry an RCS or SMS conversation.
+type ChatHandleLineType string
+
+const (
+	ChatHandleLineTypeIMessage ChatHandleLineType = "iMessage"
+	ChatHandleLineTypeRCS      ChatHandleLineType = "RCS"
+)
 
 // Participant status
 type ChatHandleStatus string

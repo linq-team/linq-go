@@ -22406,6 +22406,8 @@ type UnwrapWebhookEventUnionDataSenderHandle struct {
 	// This field is from variant [shared.ChatHandle].
 	LeftAt time.Time `json:"left_at"`
 	// This field is from variant [shared.ChatHandle].
+	LineType shared.ChatHandleLineType `json:"line_type"`
+	// This field is from variant [shared.ChatHandle].
 	Status shared.ChatHandleStatus `json:"status"`
 	JSON   struct {
 		OfString respjson.Field
@@ -22415,6 +22417,7 @@ type UnwrapWebhookEventUnionDataSenderHandle struct {
 		Service  respjson.Field
 		IsMe     respjson.Field
 		LeftAt   respjson.Field
+		LineType respjson.Field
 		Status   respjson.Field
 		raw      string
 	} `json:"-"`

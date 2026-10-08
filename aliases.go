@@ -19,6 +19,21 @@ type Error = apierror.Error
 // This is an alias to an internal type.
 type ChatHandle = shared.ChatHandle
 
+// The kind of line: `iMessage` for an iMessage-capable line, `RCS` for an RCS-only
+// line, which sends RCS and SMS but never iMessage. Same values as the `type`
+// parameter on `GET /v3/available_number`. A property of the line itself, so
+// unlike `service` it does not change with the conversation: an iMessage-capable
+// line can still carry an RCS or SMS conversation.
+//
+// This is an alias to an internal type.
+type ChatHandleLineType = shared.ChatHandleLineType
+
+// Equals "iMessage"
+const ChatHandleLineTypeIMessage = shared.ChatHandleLineTypeIMessage
+
+// Equals "RCS"
+const ChatHandleLineTypeRCS = shared.ChatHandleLineTypeRCS
+
 // Participant status
 //
 // This is an alias to an internal type.
