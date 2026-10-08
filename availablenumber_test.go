@@ -29,6 +29,7 @@ func TestAvailableNumberGetWithOptionalParams(t *testing.T) {
 	_, err := client.AvailableNumber.Get(context.TODO(), linqgo.AvailableNumberGetParams{
 		ExcludeFrom: []string{"string"},
 		To:          []string{"string"},
+		Type:        linqgo.AvailableNumberGetParamsTypeRCS,
 	})
 	if err != nil {
 		var apierr *linqgo.Error

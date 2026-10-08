@@ -69,6 +69,9 @@ func NewAvailableNumberService(opts ...option.RequestOption) (r AvailableNumberS
 // primary `TEL` and the partner's other available lines as backups. Share it with
 // recipients so they can save the line as a contact. Lines you pass in
 // `exclude_from` are left out of the vCard too.
+//
+// Pass `type` to pick only from one kind of line — for example `RCS` to get one of
+// your Android (RCS-only) lines. Omit it to choose from all of them.
 func (r *AvailableNumberService) Get(ctx context.Context, query AvailableNumberGetParams, opts ...option.RequestOption) (res *AvailableNumberGetResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/available_number"
@@ -114,6 +117,18 @@ type AvailableNumberGetParams struct {
 	// an existing chat with these recipients makes the choice sticky. Repeat the
 	// parameter for multiple recipients.
 	To []string `query:"to,omitzero" json:"-"`
+	// Only return a line of this kind. Case-insensitive.
+	//
+	// - `RCS`: Android lines, which send RCS (and SMS) only.
+	// - `iMessage`: iMessage lines.
+	//
+	// Applies to the returned `phone_number`, to the sticky choice when `to` is given
+	// (an existing chat on another kind of line is not returned), and to the vCard's
+	// backup numbers. Omit it to choose from all your lines. Returns 503 if you have
+	// no available line of this kind.
+	//
+	// Any of "RCS", "iMessage".
+	Type AvailableNumberGetParamsType `query:"type,omitzero" json:"-"`
 	paramObj
 }
 
@@ -125,3 +140,19 @@ func (r AvailableNumberGetParams) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Only return a line of this kind. Case-insensitive.
+//
+// - `RCS`: Android lines, which send RCS (and SMS) only.
+// - `iMessage`: iMessage lines.
+//
+// Applies to the returned `phone_number`, to the sticky choice when `to` is given
+// (an existing chat on another kind of line is not returned), and to the vCard's
+// backup numbers. Omit it to choose from all your lines. Returns 503 if you have
+// no available line of this kind.
+type AvailableNumberGetParamsType string
+
+const (
+	AvailableNumberGetParamsTypeRCS      AvailableNumberGetParamsType = "RCS"
+	AvailableNumberGetParamsTypeIMessage AvailableNumberGetParamsType = "iMessage"
+)
