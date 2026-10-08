@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.68.0](https://github.com/linq-team/linq-go/compare/v0.67.1...v0.68.0) (2026-10-08)
+
+
+### Features
+
+* add type parameter to phone number resolution endpoint ([c9d8fa8](https://github.com/linq-team/linq-go/commit/c9d8fa835d720bd1afcd3c70aab34f103487de69))
+
 ## [0.67.1](https://github.com/linq-team/linq-go/compare/v0.67.0...v0.67.1) (2026-10-01)
 
 
