@@ -655,6 +655,8 @@ func (r *ChatService) SendVoicememo(ctx context.Context, chatID string, body Cha
 // [Linq dashboard](https://dashboard.linqapp.com/contact-cards). If the sending
 // line has no active contact card, the request is rejected with `404` (error code
 // `2012`, "Contact card not found").
+//
+// Rate limited per chat: at most 1 share per chat every 5 minutes.
 func (r *ChatService) ShareContactCard(ctx context.Context, chatID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
