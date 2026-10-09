@@ -59,6 +59,10 @@ func NewContactCardService(opts ...option.RequestOption) (r ContactCardService) 
 // **Note:** once a card is active, this endpoint returns `409` (`2014`) so an
 // existing card is never overwritten by accident. Use `PATCH /v3/contact_card` to
 // change it.
+//
+// Rate limited per phone number: `POST` and `PATCH` share a budget of 3 calls
+// every 10 minutes. Further calls return `429`, with `Retry-After` carrying the
+// wait.
 func (r *ContactCardService) New(ctx context.Context, body ContactCardNewParams, opts ...option.RequestOption) (res *SetContactCard, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/contact_card"
@@ -87,6 +91,10 @@ func (r *ContactCardService) Get(ctx context.Context, query ContactCardGetParams
 // If the upstream write is rate-limited, the response is `503` (`4004`) instead.
 // The update did not reach the line, so the card is left not active — wait before
 // retrying, because repeated attempts extend the rate limit.
+//
+// Rate limited per phone number: `POST` and `PATCH` share a budget of 3 calls
+// every 10 minutes. Further calls return `429`, with `Retry-After` carrying the
+// wait.
 func (r *ContactCardService) Update(ctx context.Context, params ContactCardUpdateParams, opts ...option.RequestOption) (res *SetContactCard, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/contact_card"
