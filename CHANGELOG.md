@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.70.0](https://github.com/linq-team/linq-go/compare/v0.69.0...v0.70.0) (2026-10-09)
+
+
+### Features
+
+* add rate limit information and 429 responses to chat sharing and contact card endpoints ([4a7b498](https://github.com/linq-team/linq-go/commit/4a7b498ae7ce4c6d59fbbc3a0121c7d7df70be6a))
+
 ## [0.69.0](https://github.com/linq-team/linq-go/compare/v0.68.0...v0.69.0) (2026-10-08)
 
 
