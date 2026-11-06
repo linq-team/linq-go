@@ -33,6 +33,21 @@ import (
 // (no `from` number was ever chosen, so there's no specific number to blame with a
 // `403`).
 //
+// **Published vs unpublished.** A _published_ number is available for your account
+// to use. Only published numbers appear in `GET /v3/phone_numbers`.
+//
+// Unpublished numbers allow `GET` requests. `POST`, `PUT`, `PATCH`, and `DELETE`
+// requests that change a chat return `403` with error code `2033`
+// (`Phone number is unpublished`).
+//
+// A number's existing data is preserved when its status changes to unpublished.
+// Unpublished status alone does not block reads, blocked-handle management, or
+// deletion of your data. Existing authorization, retention, and endpoint rules
+// still apply.
+//
+// Webhook events are suppressed for affected numbers when their publication status
+// is known to be unpublished.
+//
 // AvailableNumberService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //

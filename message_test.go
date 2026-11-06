@@ -78,6 +78,7 @@ func TestMessageNewWithOptionalParams(t *testing.T) {
 			Text: "Hi, it's Acme Support reaching you from a new number.",
 		},
 		ExcludeFrom:    []string{"+12052535597"},
+		ForceNotify:    linqgo.Bool(false),
 		OverrideOptout: linqgo.Bool(false),
 		IdempotencyKey: linqgo.String("send-abc123xyz"),
 	})

@@ -75,6 +75,7 @@ func TestChatNewWithOptionalParams(t *testing.T) {
 			},
 		},
 		To:             []string{"+12052532136"},
+		ForceNotify:    linqgo.Bool(false),
 		OverrideOptout: linqgo.Bool(false),
 	})
 	if err != nil {
@@ -231,6 +232,7 @@ func TestChatSendVoicememoWithOptionalParams(t *testing.T) {
 		"f19ee7b8-8533-4c5c-83ec-4ef8d6d1ddbd",
 		linqgo.ChatSendVoicememoParams{
 			AttachmentID:   linqgo.String("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
+			ForceNotify:    linqgo.Bool(false),
 			OverrideOptout: linqgo.Bool(false),
 			VoiceMemoURL:   linqgo.String("https://example.com/voice-memo.m4a"),
 		},

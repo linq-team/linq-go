@@ -106,6 +106,7 @@ func TestChatMessageSendWithOptionalParams(t *testing.T) {
 					PartIndex: linqgo.Int(0),
 				},
 			},
+			ForceNotify:    linqgo.Bool(false),
 			OverrideOptout: linqgo.Bool(false),
 		},
 	)

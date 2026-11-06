@@ -36,6 +36,21 @@ import (
 // (no `from` number was ever chosen, so there's no specific number to blame with a
 // `403`).
 //
+// **Published vs unpublished.** A _published_ number is available for your account
+// to use. Only published numbers appear in `GET /v3/phone_numbers`.
+//
+// Unpublished numbers allow `GET` requests. `POST`, `PUT`, `PATCH`, and `DELETE`
+// requests that change a chat return `403` with error code `2033`
+// (`Phone number is unpublished`).
+//
+// A number's existing data is preserved when its status changes to unpublished.
+// Unpublished status alone does not block reads, blocked-handle management, or
+// deletion of your data. Existing authorization, retention, and endpoint rules
+// still apply.
+//
+// Webhook events are suppressed for affected numbers when their publication status
+// is known to be unpublished.
+//
 // PhoneNumberService contains methods and other services that help with
 // interacting with the linq-api-v3 API.
 //
@@ -513,6 +528,13 @@ func (r *PhoneNumberListResponse) UnmarshalJSON(data []byte) error {
 type PhoneNumberListResponsePhoneNumber struct {
 	// Unique identifier for the phone number
 	ID string `json:"id" api:"required" format:"uuid"`
+	// Operational status of the line (distinct from `reputation`).
+	//
+	// - `ACTIVE` — The line is not flagged and can be used normally.
+	// - `FLAGGED` — The line has been flagged and may have limited functionality.
+	//
+	// Any of "ACTIVE", "FLAGGED".
+	LineStatus string `json:"line_status" api:"required"`
 	// Phone number in E.164 format
 	PhoneNumber string `json:"phone_number" api:"required"`
 	// **[BETA]** Current reputation for a phone line. Always present — lines start at
@@ -540,6 +562,7 @@ type PhoneNumberListResponsePhoneNumber struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID               respjson.Field
+		LineStatus       respjson.Field
 		PhoneNumber      respjson.Field
 		Reputation       respjson.Field
 		ForwardingNumber respjson.Field

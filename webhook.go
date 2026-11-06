@@ -103,6 +103,20 @@ type MessageEventV2 struct {
 	Service shared.ServiceType `json:"service" api:"required"`
 	// When the message was delivered. Null if not yet delivered.
 	DeliveredAt time.Time `json:"delivered_at" api:"nullable" format:"date-time"`
+	// When the sending device was first seen for this sender (the message time for a
+	// newly seen device). Absent for SMS/RCS and for outbound messages.
+	DeviceFirstSeenAt time.Time `json:"device_first_seen_at" api:"nullable" format:"date-time"`
+	// An opaque identifier for the sending device. Pair it with `device_status` to
+	// tell a sender's devices apart, including after a new device has become `known`.
+	// Absent for SMS/RCS and for outbound messages.
+	DeviceID string `json:"device_id" api:"nullable"`
+	// The device a sender used, relative to devices we've seen from them before.
+	// `first_contact` = their first device (first message we've seen from this
+	// sender); `known` = a device we've seen before; `new` = a device we have NOT seen
+	// for a sender who already had one (the account/SIM-takeover signal).
+	//
+	// Any of "first_contact", "known", "new".
+	DeviceStatus MessageEventV2DeviceStatus `json:"device_status" api:"nullable"`
 	// iMessage effect applied to a message (screen or bubble animation)
 	Effect SchemasMessageEffect `json:"effect" api:"nullable"`
 	// Idempotency key for deduplication of outbound messages.
@@ -110,6 +124,8 @@ type MessageEventV2 struct {
 	// Preferred messaging service type. Includes "auto" for default fallback behavior.
 	//
 	// Any of "iMessage", "SMS", "RCS", "auto".
+	//
+	// Deprecated: deprecated
 	PreferredService MessageEventV2PreferredService `json:"preferred_service" api:"nullable"`
 	// When the message was read. Null if not yet read.
 	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
@@ -131,23 +147,26 @@ type MessageEventV2 struct {
 	ZeroRetention bool `json:"zero_retention"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID               respjson.Field
-		Chat             respjson.Field
-		Direction        respjson.Field
-		Parts            respjson.Field
-		SenderHandle     respjson.Field
-		Service          respjson.Field
-		DeliveredAt      respjson.Field
-		Effect           respjson.Field
-		IdempotencyKey   respjson.Field
-		PreferredService respjson.Field
-		ReadAt           respjson.Field
-		ReconciledAt     respjson.Field
-		ReplyTo          respjson.Field
-		SentAt           respjson.Field
-		ZeroRetention    respjson.Field
-		ExtraFields      map[string]respjson.Field
-		raw              string
+		ID                respjson.Field
+		Chat              respjson.Field
+		Direction         respjson.Field
+		Parts             respjson.Field
+		SenderHandle      respjson.Field
+		Service           respjson.Field
+		DeliveredAt       respjson.Field
+		DeviceFirstSeenAt respjson.Field
+		DeviceID          respjson.Field
+		DeviceStatus      respjson.Field
+		Effect            respjson.Field
+		IdempotencyKey    respjson.Field
+		PreferredService  respjson.Field
+		ReadAt            respjson.Field
+		ReconciledAt      respjson.Field
+		ReplyTo           respjson.Field
+		SentAt            respjson.Field
+		ZeroRetention     respjson.Field
+		ExtraFields       map[string]respjson.Field
+		raw               string
 	} `json:"-"`
 }
 
@@ -534,6 +553,18 @@ func (r *MessageEventV2PartAppClip) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The device a sender used, relative to devices we've seen from them before.
+// `first_contact` = their first device (first message we've seen from this
+// sender); `known` = a device we've seen before; `new` = a device we have NOT seen
+// for a sender who already had one (the account/SIM-takeover signal).
+type MessageEventV2DeviceStatus string
+
+const (
+	MessageEventV2DeviceStatusFirstContact MessageEventV2DeviceStatus = "first_contact"
+	MessageEventV2DeviceStatusKnown        MessageEventV2DeviceStatus = "known"
+	MessageEventV2DeviceStatusNew          MessageEventV2DeviceStatus = "new"
+)
+
 // Preferred messaging service type. Includes "auto" for default fallback behavior.
 type MessageEventV2PreferredService string
 
@@ -594,7 +625,9 @@ type ReactionEventBase struct {
 	PartIndex int64 `json:"part_index"`
 	// When the reaction was added or removed
 	ReactedAt time.Time `json:"reacted_at" format:"date-time"`
-	// Identifier for this reaction. Pass it to
+	// Identifier for this reaction, matching `id` on the message's `reactions`.
+	// Changing a tapback keeps the same id, and `reaction.removed` carries the id of
+	// the reaction it removed. Pass it to
 	// `PATCH /v3/messages/{messageId}/reactions/{reactionId}` to move a sticker.
 	// Stickers stack, so this is what distinguishes one sticker from another on the
 	// same message.
@@ -878,8 +911,7 @@ type MessageSentWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -969,8 +1001,7 @@ type MessageReceivedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1060,8 +1091,7 @@ type MessageReadWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1151,8 +1181,7 @@ type MessageDeliveredWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1229,8 +1258,7 @@ type MessageFailedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1302,6 +1330,8 @@ type MessageFailedWebhookEventData struct {
 	// Preferred messaging service type. Includes "auto" for default fallback behavior.
 	//
 	// Any of "iMessage", "SMS", "RCS", "auto".
+	//
+	// Deprecated: deprecated
 	PreferredService string `json:"preferred_service" api:"nullable"`
 	// Human-readable description of the failure
 	Reason string `json:"reason"`
@@ -1361,8 +1391,7 @@ type MessageEditedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1597,8 +1626,7 @@ type ReactionAddedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1670,8 +1698,7 @@ type ReactionRemovedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1744,8 +1771,7 @@ type PollReceivedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -1948,8 +1974,7 @@ type PollSentWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -2157,8 +2182,7 @@ type PollDeliveredWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -2366,8 +2390,7 @@ type PollReadWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -2573,8 +2596,7 @@ type PollUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -2755,8 +2777,7 @@ type PollFailedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -2977,8 +2998,7 @@ type PollVoteAddedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3107,8 +3127,7 @@ type PollVoteRemovedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3239,8 +3258,7 @@ type PollReactionAddedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3312,8 +3330,7 @@ type ParticipantAddedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3415,8 +3432,7 @@ type ParticipantRemovedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3519,8 +3535,7 @@ type ChatCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3708,8 +3723,7 @@ type ChatGroupNameUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3811,8 +3825,7 @@ type ChatGroupIconUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -3916,8 +3929,7 @@ type ChatGroupNameUpdateFailedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4021,8 +4033,7 @@ type ChatGroupIconUpdateFailedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4124,8 +4135,7 @@ type ChatTypingIndicatorStartedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4218,8 +4228,7 @@ type ChatTypingIndicatorStoppedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4312,8 +4321,7 @@ type ChatBackgroundUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4473,8 +4481,7 @@ type ChatBackgroundUpdateFailedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4582,8 +4589,7 @@ type ContactCardReceivedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4693,8 +4699,7 @@ type PhoneNumberStatusUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4816,14 +4821,8 @@ const (
 	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.status_updated"
 	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberAssigned                      PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.assigned"
 	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberReleased                      PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.released"
+	PhoneNumberStatusUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               PhoneNumberStatusUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeContactCardReceived                      PhoneNumberStatusUpdatedWebhookEventEventType = "contact_card.received"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallInitiated                            PhoneNumberStatusUpdatedWebhookEventEventType = "call.initiated"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallRinging                              PhoneNumberStatusUpdatedWebhookEventEventType = "call.ringing"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallAnswered                             PhoneNumberStatusUpdatedWebhookEventEventType = "call.answered"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallEnded                                PhoneNumberStatusUpdatedWebhookEventEventType = "call.ended"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallFailed                               PhoneNumberStatusUpdatedWebhookEventEventType = "call.failed"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallDeclined                             PhoneNumberStatusUpdatedWebhookEventEventType = "call.declined"
-	PhoneNumberStatusUpdatedWebhookEventEventTypeCallNoAnswer                             PhoneNumberStatusUpdatedWebhookEventEventType = "call.no_answer"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStarted                   PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.started"
 	PhoneNumberStatusUpdatedWebhookEventEventTypeLocationSharingStopped                   PhoneNumberStatusUpdatedWebhookEventEventType = "location.sharing.stopped"
 	PhoneNumberStatusUpdatedWebhookEventEventTypePaymentSucceeded                         PhoneNumberStatusUpdatedWebhookEventEventType = "payment.succeeded"
@@ -4884,8 +4883,7 @@ type PhoneNumberAssignedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -4987,14 +4985,8 @@ const (
 	PhoneNumberAssignedWebhookEventEventTypePhoneNumberStatusUpdated                 PhoneNumberAssignedWebhookEventEventType = "phone_number.status_updated"
 	PhoneNumberAssignedWebhookEventEventTypePhoneNumberAssigned                      PhoneNumberAssignedWebhookEventEventType = "phone_number.assigned"
 	PhoneNumberAssignedWebhookEventEventTypePhoneNumberReleased                      PhoneNumberAssignedWebhookEventEventType = "phone_number.released"
+	PhoneNumberAssignedWebhookEventEventTypePhoneNumberLineTypeUpdated               PhoneNumberAssignedWebhookEventEventType = "phone_number.line_type_updated"
 	PhoneNumberAssignedWebhookEventEventTypeContactCardReceived                      PhoneNumberAssignedWebhookEventEventType = "contact_card.received"
-	PhoneNumberAssignedWebhookEventEventTypeCallInitiated                            PhoneNumberAssignedWebhookEventEventType = "call.initiated"
-	PhoneNumberAssignedWebhookEventEventTypeCallRinging                              PhoneNumberAssignedWebhookEventEventType = "call.ringing"
-	PhoneNumberAssignedWebhookEventEventTypeCallAnswered                             PhoneNumberAssignedWebhookEventEventType = "call.answered"
-	PhoneNumberAssignedWebhookEventEventTypeCallEnded                                PhoneNumberAssignedWebhookEventEventType = "call.ended"
-	PhoneNumberAssignedWebhookEventEventTypeCallFailed                               PhoneNumberAssignedWebhookEventEventType = "call.failed"
-	PhoneNumberAssignedWebhookEventEventTypeCallDeclined                             PhoneNumberAssignedWebhookEventEventType = "call.declined"
-	PhoneNumberAssignedWebhookEventEventTypeCallNoAnswer                             PhoneNumberAssignedWebhookEventEventType = "call.no_answer"
 	PhoneNumberAssignedWebhookEventEventTypeLocationSharingStarted                   PhoneNumberAssignedWebhookEventEventType = "location.sharing.started"
 	PhoneNumberAssignedWebhookEventEventTypeLocationSharingStopped                   PhoneNumberAssignedWebhookEventEventType = "location.sharing.stopped"
 	PhoneNumberAssignedWebhookEventEventTypePaymentSucceeded                         PhoneNumberAssignedWebhookEventEventType = "payment.succeeded"
@@ -5055,8 +5047,7 @@ type PhoneNumberReleasedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked", "zero_day_retention.updated",
@@ -5158,14 +5149,8 @@ const (
 	PhoneNumberReleasedWebhookEventEventTypePhoneNumberStatusUpdated                 PhoneNumberReleasedWebhookEventEventType = "phone_number.status_updated"
 	PhoneNumberReleasedWebhookEventEventTypePhoneNumberAssigned                      PhoneNumberReleasedWebhookEventEventType = "phone_number.assigned"
 	PhoneNumberReleasedWebhookEventEventTypePhoneNumberReleased                      PhoneNumberReleasedWebhookEventEventType = "phone_number.released"
+	PhoneNumberReleasedWebhookEventEventTypePhoneNumberLineTypeUpdated               PhoneNumberReleasedWebhookEventEventType = "phone_number.line_type_updated"
 	PhoneNumberReleasedWebhookEventEventTypeContactCardReceived                      PhoneNumberReleasedWebhookEventEventType = "contact_card.received"
-	PhoneNumberReleasedWebhookEventEventTypeCallInitiated                            PhoneNumberReleasedWebhookEventEventType = "call.initiated"
-	PhoneNumberReleasedWebhookEventEventTypeCallRinging                              PhoneNumberReleasedWebhookEventEventType = "call.ringing"
-	PhoneNumberReleasedWebhookEventEventTypeCallAnswered                             PhoneNumberReleasedWebhookEventEventType = "call.answered"
-	PhoneNumberReleasedWebhookEventEventTypeCallEnded                                PhoneNumberReleasedWebhookEventEventType = "call.ended"
-	PhoneNumberReleasedWebhookEventEventTypeCallFailed                               PhoneNumberReleasedWebhookEventEventType = "call.failed"
-	PhoneNumberReleasedWebhookEventEventTypeCallDeclined                             PhoneNumberReleasedWebhookEventEventType = "call.declined"
-	PhoneNumberReleasedWebhookEventEventTypeCallNoAnswer                             PhoneNumberReleasedWebhookEventEventType = "call.no_answer"
 	PhoneNumberReleasedWebhookEventEventTypeLocationSharingStarted                   PhoneNumberReleasedWebhookEventEventType = "location.sharing.started"
 	PhoneNumberReleasedWebhookEventEventTypeLocationSharingStopped                   PhoneNumberReleasedWebhookEventEventType = "location.sharing.stopped"
 	PhoneNumberReleasedWebhookEventEventTypePaymentSucceeded                         PhoneNumberReleasedWebhookEventEventType = "payment.succeeded"
@@ -5204,6 +5189,180 @@ const (
 	PhoneNumberReleasedWebhookEventEventTypeTeamMemberSignedOut                      PhoneNumberReleasedWebhookEventEventType = "team_member.signed_out"
 )
 
+// Complete webhook payload for phone_number.line_type_updated events
+type PhoneNumberLineTypeUpdatedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Payload for phone_number.line_type_updated webhook events
+	Data PhoneNumberLineTypeUpdatedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// The type of event
+	//
+	// Any of "message.sent", "message.received", "message.read", "message.delivered",
+	// "message.failed", "message.edited", "reaction.added", "reaction.removed",
+	// "poll.received", "poll.failed", "poll.sent", "poll.delivered", "poll.read",
+	// "poll.updated", "poll.vote.added", "poll.vote.removed", "poll.reaction.added",
+	// "participant.added", "participant.removed", "chat.created",
+	// "chat.group_name_updated", "chat.group_icon_updated",
+	// "chat.group_name_update_failed", "chat.group_icon_update_failed",
+	// "chat.background_updated", "chat.background_update_failed",
+	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
+	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType PhoneNumberLineTypeUpdatedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberLineTypeUpdatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberLineTypeUpdatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Payload for phone_number.line_type_updated webhook events
+type PhoneNumberLineTypeUpdatedWebhookEventData struct {
+	// When the line type changed
+	ChangedAt time.Time `json:"changed_at" api:"required" format:"date-time"`
+	// The line type after the change
+	//
+	// Any of "iMessage", "RCS".
+	NewLineType string `json:"new_line_type" api:"required"`
+	// Phone number in E.164 format
+	PhoneNumber string `json:"phone_number" api:"required"`
+	// The line type before the change
+	//
+	// Any of "iMessage", "RCS".
+	PreviousLineType string `json:"previous_line_type" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ChangedAt        respjson.Field
+		NewLineType      respjson.Field
+		PhoneNumber      respjson.Field
+		PreviousLineType respjson.Field
+		ExtraFields      map[string]respjson.Field
+		raw              string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PhoneNumberLineTypeUpdatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *PhoneNumberLineTypeUpdatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The type of event
+type PhoneNumberLineTypeUpdatedWebhookEventEventType string
+
+const (
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageSent                              PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.sent"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageReceived                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.received"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageRead                              PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.read"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageDelivered                         PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.delivered"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageFailed                            PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.failed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeMessageEdited                            PhoneNumberLineTypeUpdatedWebhookEventEventType = "message.edited"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeReactionAdded                            PhoneNumberLineTypeUpdatedWebhookEventEventType = "reaction.added"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeReactionRemoved                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "reaction.removed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollReceived                             PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.received"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollFailed                               PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.failed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollSent                                 PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.sent"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollDelivered                            PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.delivered"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollRead                                 PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.read"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollUpdated                              PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollVoteAdded                            PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.vote.added"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollVoteRemoved                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.vote.removed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePollReactionAdded                        PhoneNumberLineTypeUpdatedWebhookEventEventType = "poll.reaction.added"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeParticipantAdded                         PhoneNumberLineTypeUpdatedWebhookEventEventType = "participant.added"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeParticipantRemoved                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "participant.removed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatCreated                              PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatGroupNameUpdated                     PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.group_name_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatGroupIconUpdated                     PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.group_icon_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatGroupNameUpdateFailed                PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.group_name_update_failed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatGroupIconUpdateFailed                PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.group_icon_update_failed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatBackgroundUpdated                    PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.background_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatBackgroundUpdateFailed               PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.background_update_failed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatTypingIndicatorStarted               PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.typing_indicator.started"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeChatTypingIndicatorStopped               PhoneNumberLineTypeUpdatedWebhookEventEventType = "chat.typing_indicator.stopped"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 PhoneNumberLineTypeUpdatedWebhookEventEventType = "phone_number.status_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePhoneNumberAssigned                      PhoneNumberLineTypeUpdatedWebhookEventEventType = "phone_number.assigned"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePhoneNumberReleased                      PhoneNumberLineTypeUpdatedWebhookEventEventType = "phone_number.released"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               PhoneNumberLineTypeUpdatedWebhookEventEventType = "phone_number.line_type_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeContactCardReceived                      PhoneNumberLineTypeUpdatedWebhookEventEventType = "contact_card.received"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeLocationSharingStarted                   PhoneNumberLineTypeUpdatedWebhookEventEventType = "location.sharing.started"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeLocationSharingStopped                   PhoneNumberLineTypeUpdatedWebhookEventEventType = "location.sharing.stopped"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePaymentSucceeded                         PhoneNumberLineTypeUpdatedWebhookEventEventType = "payment.succeeded"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePaymentCanceled                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "payment.canceled"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePaymentExpired                           PhoneNumberLineTypeUpdatedWebhookEventEventType = "payment.expired"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePaymentDeclined                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "payment.declined"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePaymentAuthorized                        PhoneNumberLineTypeUpdatedWebhookEventEventType = "payment.authorized"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeConnectionCreated                        PhoneNumberLineTypeUpdatedWebhookEventEventType = "connection.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeConnectionRevoked                        PhoneNumberLineTypeUpdatedWebhookEventEventType = "connection.revoked"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeZeroDayRetentionUpdated                  PhoneNumberLineTypeUpdatedWebhookEventEventType = "zero_day_retention.updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypePhoneNumberForwardingUpdated             PhoneNumberLineTypeUpdatedWebhookEventEventType = "phone_number.forwarding_updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeEnvironmentLineMoved                     PhoneNumberLineTypeUpdatedWebhookEventEventType = "environment.line_moved"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeContactCardCreated                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "contact_card.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeContactCardUpdated                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "contact_card.updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeContactCardDeleted                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "contact_card.deleted"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenCreated                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenRenamed                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.renamed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenExpiryScheduled                  PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.expiry_scheduled"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenExpired                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.expired"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenActivated                        PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.activated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeAPITokenDeleted                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "api_token.deleted"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeEnvironmentCreated                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "environment.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeEnvironmentRenamed                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "environment.renamed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeEnvironmentDeleted                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "environment.deleted"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionCreated               PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.created"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionDeleted               PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.deleted"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.target_url_changed"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionEnabled               PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.enabled"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionDisabled              PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.disabled"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionEventsUpdated         PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.events.updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared PhoneNumberLineTypeUpdatedWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeTeamMemberAdded                          PhoneNumberLineTypeUpdatedWebhookEventEventType = "team_member.added"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeTeamMemberSignedIn                       PhoneNumberLineTypeUpdatedWebhookEventEventType = "team_member.signed_in"
+	PhoneNumberLineTypeUpdatedWebhookEventEventTypeTeamMemberSignedOut                      PhoneNumberLineTypeUpdatedWebhookEventEventType = "team_member.signed_out"
+)
+
 type ConnectionCreatedWebhookEvent struct {
 	// API version for the webhook payload format
 	APIVersion string `json:"api_version" api:"required"`
@@ -5225,8 +5384,7 @@ type ConnectionCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -5465,14 +5623,8 @@ const (
 	ConnectionCreatedWebhookEventEventTypePhoneNumberStatusUpdated                 ConnectionCreatedWebhookEventEventType = "phone_number.status_updated"
 	ConnectionCreatedWebhookEventEventTypePhoneNumberAssigned                      ConnectionCreatedWebhookEventEventType = "phone_number.assigned"
 	ConnectionCreatedWebhookEventEventTypePhoneNumberReleased                      ConnectionCreatedWebhookEventEventType = "phone_number.released"
+	ConnectionCreatedWebhookEventEventTypePhoneNumberLineTypeUpdated               ConnectionCreatedWebhookEventEventType = "phone_number.line_type_updated"
 	ConnectionCreatedWebhookEventEventTypeContactCardReceived                      ConnectionCreatedWebhookEventEventType = "contact_card.received"
-	ConnectionCreatedWebhookEventEventTypeCallInitiated                            ConnectionCreatedWebhookEventEventType = "call.initiated"
-	ConnectionCreatedWebhookEventEventTypeCallRinging                              ConnectionCreatedWebhookEventEventType = "call.ringing"
-	ConnectionCreatedWebhookEventEventTypeCallAnswered                             ConnectionCreatedWebhookEventEventType = "call.answered"
-	ConnectionCreatedWebhookEventEventTypeCallEnded                                ConnectionCreatedWebhookEventEventType = "call.ended"
-	ConnectionCreatedWebhookEventEventTypeCallFailed                               ConnectionCreatedWebhookEventEventType = "call.failed"
-	ConnectionCreatedWebhookEventEventTypeCallDeclined                             ConnectionCreatedWebhookEventEventType = "call.declined"
-	ConnectionCreatedWebhookEventEventTypeCallNoAnswer                             ConnectionCreatedWebhookEventEventType = "call.no_answer"
 	ConnectionCreatedWebhookEventEventTypeLocationSharingStarted                   ConnectionCreatedWebhookEventEventType = "location.sharing.started"
 	ConnectionCreatedWebhookEventEventTypeLocationSharingStopped                   ConnectionCreatedWebhookEventEventType = "location.sharing.stopped"
 	ConnectionCreatedWebhookEventEventTypePaymentDeclined                          ConnectionCreatedWebhookEventEventType = "payment.declined"
@@ -5529,8 +5681,7 @@ type ConnectionRevokedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -5769,14 +5920,8 @@ const (
 	ConnectionRevokedWebhookEventEventTypePhoneNumberStatusUpdated                 ConnectionRevokedWebhookEventEventType = "phone_number.status_updated"
 	ConnectionRevokedWebhookEventEventTypePhoneNumberAssigned                      ConnectionRevokedWebhookEventEventType = "phone_number.assigned"
 	ConnectionRevokedWebhookEventEventTypePhoneNumberReleased                      ConnectionRevokedWebhookEventEventType = "phone_number.released"
+	ConnectionRevokedWebhookEventEventTypePhoneNumberLineTypeUpdated               ConnectionRevokedWebhookEventEventType = "phone_number.line_type_updated"
 	ConnectionRevokedWebhookEventEventTypeContactCardReceived                      ConnectionRevokedWebhookEventEventType = "contact_card.received"
-	ConnectionRevokedWebhookEventEventTypeCallInitiated                            ConnectionRevokedWebhookEventEventType = "call.initiated"
-	ConnectionRevokedWebhookEventEventTypeCallRinging                              ConnectionRevokedWebhookEventEventType = "call.ringing"
-	ConnectionRevokedWebhookEventEventTypeCallAnswered                             ConnectionRevokedWebhookEventEventType = "call.answered"
-	ConnectionRevokedWebhookEventEventTypeCallEnded                                ConnectionRevokedWebhookEventEventType = "call.ended"
-	ConnectionRevokedWebhookEventEventTypeCallFailed                               ConnectionRevokedWebhookEventEventType = "call.failed"
-	ConnectionRevokedWebhookEventEventTypeCallDeclined                             ConnectionRevokedWebhookEventEventType = "call.declined"
-	ConnectionRevokedWebhookEventEventTypeCallNoAnswer                             ConnectionRevokedWebhookEventEventType = "call.no_answer"
 	ConnectionRevokedWebhookEventEventTypeLocationSharingStarted                   ConnectionRevokedWebhookEventEventType = "location.sharing.started"
 	ConnectionRevokedWebhookEventEventTypeLocationSharingStopped                   ConnectionRevokedWebhookEventEventType = "location.sharing.stopped"
 	ConnectionRevokedWebhookEventEventTypePaymentDeclined                          ConnectionRevokedWebhookEventEventType = "payment.declined"
@@ -5830,20 +5975,19 @@ type LocationSharingStartedWebhookEvent struct {
 	// "chat.group_icon_update_failed", "chat.background_updated",
 	// "chat.background_update_failed", "chat.typing_indicator.started",
 	// "chat.typing_indicator.stopped", "phone_number.status_updated",
-	// "phone_number.assigned", "phone_number.released", "contact_card.received",
-	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
-	// "call.declined", "call.no_answer", "location.sharing.stopped",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked",
-	// "zero_day_retention.updated", "phone_number.forwarding_updated",
-	// "environment.line_moved", "contact_card.created", "contact_card.updated",
-	// "contact_card.deleted", "api_token.created", "api_token.renamed",
-	// "api_token.expiry_scheduled", "api_token.expired", "api_token.activated",
-	// "api_token.deleted", "environment.created", "environment.renamed",
-	// "environment.deleted", "webhook_subscription.created",
-	// "webhook_subscription.deleted", "webhook_subscription.target_url_changed",
-	// "webhook_subscription.enabled", "webhook_subscription.disabled",
-	// "webhook_subscription.events.updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.stopped", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
 	// "webhook_subscription.phone_numbers.updated",
 	// "webhook_subscription.routing_headers_set",
 	// "webhook_subscription.routing_headers_cleared", "team_member.added",
@@ -5947,14 +6091,8 @@ const (
 	LocationSharingStartedWebhookEventEventTypePhoneNumberStatusUpdated                 LocationSharingStartedWebhookEventEventType = "phone_number.status_updated"
 	LocationSharingStartedWebhookEventEventTypePhoneNumberAssigned                      LocationSharingStartedWebhookEventEventType = "phone_number.assigned"
 	LocationSharingStartedWebhookEventEventTypePhoneNumberReleased                      LocationSharingStartedWebhookEventEventType = "phone_number.released"
+	LocationSharingStartedWebhookEventEventTypePhoneNumberLineTypeUpdated               LocationSharingStartedWebhookEventEventType = "phone_number.line_type_updated"
 	LocationSharingStartedWebhookEventEventTypeContactCardReceived                      LocationSharingStartedWebhookEventEventType = "contact_card.received"
-	LocationSharingStartedWebhookEventEventTypeCallInitiated                            LocationSharingStartedWebhookEventEventType = "call.initiated"
-	LocationSharingStartedWebhookEventEventTypeCallRinging                              LocationSharingStartedWebhookEventEventType = "call.ringing"
-	LocationSharingStartedWebhookEventEventTypeCallAnswered                             LocationSharingStartedWebhookEventEventType = "call.answered"
-	LocationSharingStartedWebhookEventEventTypeCallEnded                                LocationSharingStartedWebhookEventEventType = "call.ended"
-	LocationSharingStartedWebhookEventEventTypeCallFailed                               LocationSharingStartedWebhookEventEventType = "call.failed"
-	LocationSharingStartedWebhookEventEventTypeCallDeclined                             LocationSharingStartedWebhookEventEventType = "call.declined"
-	LocationSharingStartedWebhookEventEventTypeCallNoAnswer                             LocationSharingStartedWebhookEventEventType = "call.no_answer"
 	LocationSharingStartedWebhookEventEventTypeLocationSharingStopped                   LocationSharingStartedWebhookEventEventType = "location.sharing.stopped"
 	LocationSharingStartedWebhookEventEventTypePaymentSucceeded                         LocationSharingStartedWebhookEventEventType = "payment.succeeded"
 	LocationSharingStartedWebhookEventEventTypePaymentCanceled                          LocationSharingStartedWebhookEventEventType = "payment.canceled"
@@ -6010,20 +6148,19 @@ type LocationSharingStoppedWebhookEvent struct {
 	// "chat.group_icon_update_failed", "chat.background_updated",
 	// "chat.background_update_failed", "chat.typing_indicator.started",
 	// "chat.typing_indicator.stopped", "phone_number.status_updated",
-	// "phone_number.assigned", "phone_number.released", "contact_card.received",
-	// "call.initiated", "call.ringing", "call.answered", "call.ended", "call.failed",
-	// "call.declined", "call.no_answer", "location.sharing.started",
-	// "payment.succeeded", "payment.canceled", "payment.expired", "payment.declined",
-	// "payment.authorized", "connection.created", "connection.revoked",
-	// "zero_day_retention.updated", "phone_number.forwarding_updated",
-	// "environment.line_moved", "contact_card.created", "contact_card.updated",
-	// "contact_card.deleted", "api_token.created", "api_token.renamed",
-	// "api_token.expiry_scheduled", "api_token.expired", "api_token.activated",
-	// "api_token.deleted", "environment.created", "environment.renamed",
-	// "environment.deleted", "webhook_subscription.created",
-	// "webhook_subscription.deleted", "webhook_subscription.target_url_changed",
-	// "webhook_subscription.enabled", "webhook_subscription.disabled",
-	// "webhook_subscription.events.updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "payment.succeeded", "payment.canceled",
+	// "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
 	// "webhook_subscription.phone_numbers.updated",
 	// "webhook_subscription.routing_headers_set",
 	// "webhook_subscription.routing_headers_cleared", "team_member.added",
@@ -6126,14 +6263,8 @@ const (
 	LocationSharingStoppedWebhookEventEventTypePhoneNumberStatusUpdated                 LocationSharingStoppedWebhookEventEventType = "phone_number.status_updated"
 	LocationSharingStoppedWebhookEventEventTypePhoneNumberAssigned                      LocationSharingStoppedWebhookEventEventType = "phone_number.assigned"
 	LocationSharingStoppedWebhookEventEventTypePhoneNumberReleased                      LocationSharingStoppedWebhookEventEventType = "phone_number.released"
+	LocationSharingStoppedWebhookEventEventTypePhoneNumberLineTypeUpdated               LocationSharingStoppedWebhookEventEventType = "phone_number.line_type_updated"
 	LocationSharingStoppedWebhookEventEventTypeContactCardReceived                      LocationSharingStoppedWebhookEventEventType = "contact_card.received"
-	LocationSharingStoppedWebhookEventEventTypeCallInitiated                            LocationSharingStoppedWebhookEventEventType = "call.initiated"
-	LocationSharingStoppedWebhookEventEventTypeCallRinging                              LocationSharingStoppedWebhookEventEventType = "call.ringing"
-	LocationSharingStoppedWebhookEventEventTypeCallAnswered                             LocationSharingStoppedWebhookEventEventType = "call.answered"
-	LocationSharingStoppedWebhookEventEventTypeCallEnded                                LocationSharingStoppedWebhookEventEventType = "call.ended"
-	LocationSharingStoppedWebhookEventEventTypeCallFailed                               LocationSharingStoppedWebhookEventEventType = "call.failed"
-	LocationSharingStoppedWebhookEventEventTypeCallDeclined                             LocationSharingStoppedWebhookEventEventType = "call.declined"
-	LocationSharingStoppedWebhookEventEventTypeCallNoAnswer                             LocationSharingStoppedWebhookEventEventType = "call.no_answer"
 	LocationSharingStoppedWebhookEventEventTypeLocationSharingStarted                   LocationSharingStoppedWebhookEventEventType = "location.sharing.started"
 	LocationSharingStoppedWebhookEventEventTypePaymentSucceeded                         LocationSharingStoppedWebhookEventEventType = "payment.succeeded"
 	LocationSharingStoppedWebhookEventEventTypePaymentCanceled                          LocationSharingStoppedWebhookEventEventType = "payment.canceled"
@@ -6192,8 +6323,7 @@ type PaymentAuthorizedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -6432,14 +6562,8 @@ const (
 	PaymentAuthorizedWebhookEventEventTypePhoneNumberStatusUpdated                 PaymentAuthorizedWebhookEventEventType = "phone_number.status_updated"
 	PaymentAuthorizedWebhookEventEventTypePhoneNumberAssigned                      PaymentAuthorizedWebhookEventEventType = "phone_number.assigned"
 	PaymentAuthorizedWebhookEventEventTypePhoneNumberReleased                      PaymentAuthorizedWebhookEventEventType = "phone_number.released"
+	PaymentAuthorizedWebhookEventEventTypePhoneNumberLineTypeUpdated               PaymentAuthorizedWebhookEventEventType = "phone_number.line_type_updated"
 	PaymentAuthorizedWebhookEventEventTypeContactCardReceived                      PaymentAuthorizedWebhookEventEventType = "contact_card.received"
-	PaymentAuthorizedWebhookEventEventTypeCallInitiated                            PaymentAuthorizedWebhookEventEventType = "call.initiated"
-	PaymentAuthorizedWebhookEventEventTypeCallRinging                              PaymentAuthorizedWebhookEventEventType = "call.ringing"
-	PaymentAuthorizedWebhookEventEventTypeCallAnswered                             PaymentAuthorizedWebhookEventEventType = "call.answered"
-	PaymentAuthorizedWebhookEventEventTypeCallEnded                                PaymentAuthorizedWebhookEventEventType = "call.ended"
-	PaymentAuthorizedWebhookEventEventTypeCallFailed                               PaymentAuthorizedWebhookEventEventType = "call.failed"
-	PaymentAuthorizedWebhookEventEventTypeCallDeclined                             PaymentAuthorizedWebhookEventEventType = "call.declined"
-	PaymentAuthorizedWebhookEventEventTypeCallNoAnswer                             PaymentAuthorizedWebhookEventEventType = "call.no_answer"
 	PaymentAuthorizedWebhookEventEventTypeLocationSharingStarted                   PaymentAuthorizedWebhookEventEventType = "location.sharing.started"
 	PaymentAuthorizedWebhookEventEventTypeLocationSharingStopped                   PaymentAuthorizedWebhookEventEventType = "location.sharing.stopped"
 	PaymentAuthorizedWebhookEventEventTypePaymentDeclined                          PaymentAuthorizedWebhookEventEventType = "payment.declined"
@@ -6496,8 +6620,7 @@ type PaymentCanceledWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -6736,14 +6859,8 @@ const (
 	PaymentCanceledWebhookEventEventTypePhoneNumberStatusUpdated                 PaymentCanceledWebhookEventEventType = "phone_number.status_updated"
 	PaymentCanceledWebhookEventEventTypePhoneNumberAssigned                      PaymentCanceledWebhookEventEventType = "phone_number.assigned"
 	PaymentCanceledWebhookEventEventTypePhoneNumberReleased                      PaymentCanceledWebhookEventEventType = "phone_number.released"
+	PaymentCanceledWebhookEventEventTypePhoneNumberLineTypeUpdated               PaymentCanceledWebhookEventEventType = "phone_number.line_type_updated"
 	PaymentCanceledWebhookEventEventTypeContactCardReceived                      PaymentCanceledWebhookEventEventType = "contact_card.received"
-	PaymentCanceledWebhookEventEventTypeCallInitiated                            PaymentCanceledWebhookEventEventType = "call.initiated"
-	PaymentCanceledWebhookEventEventTypeCallRinging                              PaymentCanceledWebhookEventEventType = "call.ringing"
-	PaymentCanceledWebhookEventEventTypeCallAnswered                             PaymentCanceledWebhookEventEventType = "call.answered"
-	PaymentCanceledWebhookEventEventTypeCallEnded                                PaymentCanceledWebhookEventEventType = "call.ended"
-	PaymentCanceledWebhookEventEventTypeCallFailed                               PaymentCanceledWebhookEventEventType = "call.failed"
-	PaymentCanceledWebhookEventEventTypeCallDeclined                             PaymentCanceledWebhookEventEventType = "call.declined"
-	PaymentCanceledWebhookEventEventTypeCallNoAnswer                             PaymentCanceledWebhookEventEventType = "call.no_answer"
 	PaymentCanceledWebhookEventEventTypeLocationSharingStarted                   PaymentCanceledWebhookEventEventType = "location.sharing.started"
 	PaymentCanceledWebhookEventEventTypeLocationSharingStopped                   PaymentCanceledWebhookEventEventType = "location.sharing.stopped"
 	PaymentCanceledWebhookEventEventTypePaymentDeclined                          PaymentCanceledWebhookEventEventType = "payment.declined"
@@ -6800,8 +6917,7 @@ type PaymentDeclinedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -7040,14 +7156,8 @@ const (
 	PaymentDeclinedWebhookEventEventTypePhoneNumberStatusUpdated                 PaymentDeclinedWebhookEventEventType = "phone_number.status_updated"
 	PaymentDeclinedWebhookEventEventTypePhoneNumberAssigned                      PaymentDeclinedWebhookEventEventType = "phone_number.assigned"
 	PaymentDeclinedWebhookEventEventTypePhoneNumberReleased                      PaymentDeclinedWebhookEventEventType = "phone_number.released"
+	PaymentDeclinedWebhookEventEventTypePhoneNumberLineTypeUpdated               PaymentDeclinedWebhookEventEventType = "phone_number.line_type_updated"
 	PaymentDeclinedWebhookEventEventTypeContactCardReceived                      PaymentDeclinedWebhookEventEventType = "contact_card.received"
-	PaymentDeclinedWebhookEventEventTypeCallInitiated                            PaymentDeclinedWebhookEventEventType = "call.initiated"
-	PaymentDeclinedWebhookEventEventTypeCallRinging                              PaymentDeclinedWebhookEventEventType = "call.ringing"
-	PaymentDeclinedWebhookEventEventTypeCallAnswered                             PaymentDeclinedWebhookEventEventType = "call.answered"
-	PaymentDeclinedWebhookEventEventTypeCallEnded                                PaymentDeclinedWebhookEventEventType = "call.ended"
-	PaymentDeclinedWebhookEventEventTypeCallFailed                               PaymentDeclinedWebhookEventEventType = "call.failed"
-	PaymentDeclinedWebhookEventEventTypeCallDeclined                             PaymentDeclinedWebhookEventEventType = "call.declined"
-	PaymentDeclinedWebhookEventEventTypeCallNoAnswer                             PaymentDeclinedWebhookEventEventType = "call.no_answer"
 	PaymentDeclinedWebhookEventEventTypeLocationSharingStarted                   PaymentDeclinedWebhookEventEventType = "location.sharing.started"
 	PaymentDeclinedWebhookEventEventTypeLocationSharingStopped                   PaymentDeclinedWebhookEventEventType = "location.sharing.stopped"
 	PaymentDeclinedWebhookEventEventTypePaymentDeclined                          PaymentDeclinedWebhookEventEventType = "payment.declined"
@@ -7104,8 +7214,7 @@ type PaymentExpiredWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -7344,14 +7453,8 @@ const (
 	PaymentExpiredWebhookEventEventTypePhoneNumberStatusUpdated                 PaymentExpiredWebhookEventEventType = "phone_number.status_updated"
 	PaymentExpiredWebhookEventEventTypePhoneNumberAssigned                      PaymentExpiredWebhookEventEventType = "phone_number.assigned"
 	PaymentExpiredWebhookEventEventTypePhoneNumberReleased                      PaymentExpiredWebhookEventEventType = "phone_number.released"
+	PaymentExpiredWebhookEventEventTypePhoneNumberLineTypeUpdated               PaymentExpiredWebhookEventEventType = "phone_number.line_type_updated"
 	PaymentExpiredWebhookEventEventTypeContactCardReceived                      PaymentExpiredWebhookEventEventType = "contact_card.received"
-	PaymentExpiredWebhookEventEventTypeCallInitiated                            PaymentExpiredWebhookEventEventType = "call.initiated"
-	PaymentExpiredWebhookEventEventTypeCallRinging                              PaymentExpiredWebhookEventEventType = "call.ringing"
-	PaymentExpiredWebhookEventEventTypeCallAnswered                             PaymentExpiredWebhookEventEventType = "call.answered"
-	PaymentExpiredWebhookEventEventTypeCallEnded                                PaymentExpiredWebhookEventEventType = "call.ended"
-	PaymentExpiredWebhookEventEventTypeCallFailed                               PaymentExpiredWebhookEventEventType = "call.failed"
-	PaymentExpiredWebhookEventEventTypeCallDeclined                             PaymentExpiredWebhookEventEventType = "call.declined"
-	PaymentExpiredWebhookEventEventTypeCallNoAnswer                             PaymentExpiredWebhookEventEventType = "call.no_answer"
 	PaymentExpiredWebhookEventEventTypeLocationSharingStarted                   PaymentExpiredWebhookEventEventType = "location.sharing.started"
 	PaymentExpiredWebhookEventEventTypeLocationSharingStopped                   PaymentExpiredWebhookEventEventType = "location.sharing.stopped"
 	PaymentExpiredWebhookEventEventTypePaymentDeclined                          PaymentExpiredWebhookEventEventType = "payment.declined"
@@ -7408,8 +7511,7 @@ type PaymentSucceededWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.declined",
 	// "payment.authorized", "connection.created", "connection.revoked",
 	// "zero_day_retention.updated", "phone_number.forwarding_updated",
@@ -7648,14 +7750,8 @@ const (
 	PaymentSucceededWebhookEventEventTypePhoneNumberStatusUpdated                 PaymentSucceededWebhookEventEventType = "phone_number.status_updated"
 	PaymentSucceededWebhookEventEventTypePhoneNumberAssigned                      PaymentSucceededWebhookEventEventType = "phone_number.assigned"
 	PaymentSucceededWebhookEventEventTypePhoneNumberReleased                      PaymentSucceededWebhookEventEventType = "phone_number.released"
+	PaymentSucceededWebhookEventEventTypePhoneNumberLineTypeUpdated               PaymentSucceededWebhookEventEventType = "phone_number.line_type_updated"
 	PaymentSucceededWebhookEventEventTypeContactCardReceived                      PaymentSucceededWebhookEventEventType = "contact_card.received"
-	PaymentSucceededWebhookEventEventTypeCallInitiated                            PaymentSucceededWebhookEventEventType = "call.initiated"
-	PaymentSucceededWebhookEventEventTypeCallRinging                              PaymentSucceededWebhookEventEventType = "call.ringing"
-	PaymentSucceededWebhookEventEventTypeCallAnswered                             PaymentSucceededWebhookEventEventType = "call.answered"
-	PaymentSucceededWebhookEventEventTypeCallEnded                                PaymentSucceededWebhookEventEventType = "call.ended"
-	PaymentSucceededWebhookEventEventTypeCallFailed                               PaymentSucceededWebhookEventEventType = "call.failed"
-	PaymentSucceededWebhookEventEventTypeCallDeclined                             PaymentSucceededWebhookEventEventType = "call.declined"
-	PaymentSucceededWebhookEventEventTypeCallNoAnswer                             PaymentSucceededWebhookEventEventType = "call.no_answer"
 	PaymentSucceededWebhookEventEventTypeLocationSharingStarted                   PaymentSucceededWebhookEventEventType = "location.sharing.started"
 	PaymentSucceededWebhookEventEventTypeLocationSharingStopped                   PaymentSucceededWebhookEventEventType = "location.sharing.stopped"
 	PaymentSucceededWebhookEventEventTypePaymentDeclined                          PaymentSucceededWebhookEventEventType = "payment.declined"
@@ -7738,8 +7834,7 @@ type ZeroDayRetentionUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -8177,14 +8272,8 @@ const (
 	ZeroDayRetentionUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 ZeroDayRetentionUpdatedWebhookEventEventType = "phone_number.status_updated"
 	ZeroDayRetentionUpdatedWebhookEventEventTypePhoneNumberAssigned                      ZeroDayRetentionUpdatedWebhookEventEventType = "phone_number.assigned"
 	ZeroDayRetentionUpdatedWebhookEventEventTypePhoneNumberReleased                      ZeroDayRetentionUpdatedWebhookEventEventType = "phone_number.released"
+	ZeroDayRetentionUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               ZeroDayRetentionUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	ZeroDayRetentionUpdatedWebhookEventEventTypeContactCardReceived                      ZeroDayRetentionUpdatedWebhookEventEventType = "contact_card.received"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallInitiated                            ZeroDayRetentionUpdatedWebhookEventEventType = "call.initiated"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallRinging                              ZeroDayRetentionUpdatedWebhookEventEventType = "call.ringing"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallAnswered                             ZeroDayRetentionUpdatedWebhookEventEventType = "call.answered"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallEnded                                ZeroDayRetentionUpdatedWebhookEventEventType = "call.ended"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallFailed                               ZeroDayRetentionUpdatedWebhookEventEventType = "call.failed"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallDeclined                             ZeroDayRetentionUpdatedWebhookEventEventType = "call.declined"
-	ZeroDayRetentionUpdatedWebhookEventEventTypeCallNoAnswer                             ZeroDayRetentionUpdatedWebhookEventEventType = "call.no_answer"
 	ZeroDayRetentionUpdatedWebhookEventEventTypeLocationSharingStarted                   ZeroDayRetentionUpdatedWebhookEventEventType = "location.sharing.started"
 	ZeroDayRetentionUpdatedWebhookEventEventTypeLocationSharingStopped                   ZeroDayRetentionUpdatedWebhookEventEventType = "location.sharing.stopped"
 	ZeroDayRetentionUpdatedWebhookEventEventTypePaymentSucceeded                         ZeroDayRetentionUpdatedWebhookEventEventType = "payment.succeeded"
@@ -8243,8 +8332,7 @@ type PhoneNumberForwardingUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -8688,14 +8776,8 @@ const (
 	PhoneNumberForwardingUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 PhoneNumberForwardingUpdatedWebhookEventEventType = "phone_number.status_updated"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypePhoneNumberAssigned                      PhoneNumberForwardingUpdatedWebhookEventEventType = "phone_number.assigned"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypePhoneNumberReleased                      PhoneNumberForwardingUpdatedWebhookEventEventType = "phone_number.released"
+	PhoneNumberForwardingUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               PhoneNumberForwardingUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypeContactCardReceived                      PhoneNumberForwardingUpdatedWebhookEventEventType = "contact_card.received"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallInitiated                            PhoneNumberForwardingUpdatedWebhookEventEventType = "call.initiated"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallRinging                              PhoneNumberForwardingUpdatedWebhookEventEventType = "call.ringing"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallAnswered                             PhoneNumberForwardingUpdatedWebhookEventEventType = "call.answered"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallEnded                                PhoneNumberForwardingUpdatedWebhookEventEventType = "call.ended"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallFailed                               PhoneNumberForwardingUpdatedWebhookEventEventType = "call.failed"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallDeclined                             PhoneNumberForwardingUpdatedWebhookEventEventType = "call.declined"
-	PhoneNumberForwardingUpdatedWebhookEventEventTypeCallNoAnswer                             PhoneNumberForwardingUpdatedWebhookEventEventType = "call.no_answer"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypeLocationSharingStarted                   PhoneNumberForwardingUpdatedWebhookEventEventType = "location.sharing.started"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypeLocationSharingStopped                   PhoneNumberForwardingUpdatedWebhookEventEventType = "location.sharing.stopped"
 	PhoneNumberForwardingUpdatedWebhookEventEventTypePaymentSucceeded                         PhoneNumberForwardingUpdatedWebhookEventEventType = "payment.succeeded"
@@ -8754,8 +8836,7 @@ type EnvironmentLineMovedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -9191,14 +9272,8 @@ const (
 	EnvironmentLineMovedWebhookEventEventTypePhoneNumberStatusUpdated                 EnvironmentLineMovedWebhookEventEventType = "phone_number.status_updated"
 	EnvironmentLineMovedWebhookEventEventTypePhoneNumberAssigned                      EnvironmentLineMovedWebhookEventEventType = "phone_number.assigned"
 	EnvironmentLineMovedWebhookEventEventTypePhoneNumberReleased                      EnvironmentLineMovedWebhookEventEventType = "phone_number.released"
+	EnvironmentLineMovedWebhookEventEventTypePhoneNumberLineTypeUpdated               EnvironmentLineMovedWebhookEventEventType = "phone_number.line_type_updated"
 	EnvironmentLineMovedWebhookEventEventTypeContactCardReceived                      EnvironmentLineMovedWebhookEventEventType = "contact_card.received"
-	EnvironmentLineMovedWebhookEventEventTypeCallInitiated                            EnvironmentLineMovedWebhookEventEventType = "call.initiated"
-	EnvironmentLineMovedWebhookEventEventTypeCallRinging                              EnvironmentLineMovedWebhookEventEventType = "call.ringing"
-	EnvironmentLineMovedWebhookEventEventTypeCallAnswered                             EnvironmentLineMovedWebhookEventEventType = "call.answered"
-	EnvironmentLineMovedWebhookEventEventTypeCallEnded                                EnvironmentLineMovedWebhookEventEventType = "call.ended"
-	EnvironmentLineMovedWebhookEventEventTypeCallFailed                               EnvironmentLineMovedWebhookEventEventType = "call.failed"
-	EnvironmentLineMovedWebhookEventEventTypeCallDeclined                             EnvironmentLineMovedWebhookEventEventType = "call.declined"
-	EnvironmentLineMovedWebhookEventEventTypeCallNoAnswer                             EnvironmentLineMovedWebhookEventEventType = "call.no_answer"
 	EnvironmentLineMovedWebhookEventEventTypeLocationSharingStarted                   EnvironmentLineMovedWebhookEventEventType = "location.sharing.started"
 	EnvironmentLineMovedWebhookEventEventTypeLocationSharingStopped                   EnvironmentLineMovedWebhookEventEventType = "location.sharing.stopped"
 	EnvironmentLineMovedWebhookEventEventTypePaymentSucceeded                         EnvironmentLineMovedWebhookEventEventType = "payment.succeeded"
@@ -9257,8 +9332,7 @@ type ContactCardCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -9694,14 +9768,8 @@ const (
 	ContactCardCreatedWebhookEventEventTypePhoneNumberStatusUpdated                 ContactCardCreatedWebhookEventEventType = "phone_number.status_updated"
 	ContactCardCreatedWebhookEventEventTypePhoneNumberAssigned                      ContactCardCreatedWebhookEventEventType = "phone_number.assigned"
 	ContactCardCreatedWebhookEventEventTypePhoneNumberReleased                      ContactCardCreatedWebhookEventEventType = "phone_number.released"
+	ContactCardCreatedWebhookEventEventTypePhoneNumberLineTypeUpdated               ContactCardCreatedWebhookEventEventType = "phone_number.line_type_updated"
 	ContactCardCreatedWebhookEventEventTypeContactCardReceived                      ContactCardCreatedWebhookEventEventType = "contact_card.received"
-	ContactCardCreatedWebhookEventEventTypeCallInitiated                            ContactCardCreatedWebhookEventEventType = "call.initiated"
-	ContactCardCreatedWebhookEventEventTypeCallRinging                              ContactCardCreatedWebhookEventEventType = "call.ringing"
-	ContactCardCreatedWebhookEventEventTypeCallAnswered                             ContactCardCreatedWebhookEventEventType = "call.answered"
-	ContactCardCreatedWebhookEventEventTypeCallEnded                                ContactCardCreatedWebhookEventEventType = "call.ended"
-	ContactCardCreatedWebhookEventEventTypeCallFailed                               ContactCardCreatedWebhookEventEventType = "call.failed"
-	ContactCardCreatedWebhookEventEventTypeCallDeclined                             ContactCardCreatedWebhookEventEventType = "call.declined"
-	ContactCardCreatedWebhookEventEventTypeCallNoAnswer                             ContactCardCreatedWebhookEventEventType = "call.no_answer"
 	ContactCardCreatedWebhookEventEventTypeLocationSharingStarted                   ContactCardCreatedWebhookEventEventType = "location.sharing.started"
 	ContactCardCreatedWebhookEventEventTypeLocationSharingStopped                   ContactCardCreatedWebhookEventEventType = "location.sharing.stopped"
 	ContactCardCreatedWebhookEventEventTypePaymentSucceeded                         ContactCardCreatedWebhookEventEventType = "payment.succeeded"
@@ -9760,8 +9828,7 @@ type ContactCardUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -10197,14 +10264,8 @@ const (
 	ContactCardUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 ContactCardUpdatedWebhookEventEventType = "phone_number.status_updated"
 	ContactCardUpdatedWebhookEventEventTypePhoneNumberAssigned                      ContactCardUpdatedWebhookEventEventType = "phone_number.assigned"
 	ContactCardUpdatedWebhookEventEventTypePhoneNumberReleased                      ContactCardUpdatedWebhookEventEventType = "phone_number.released"
+	ContactCardUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               ContactCardUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	ContactCardUpdatedWebhookEventEventTypeContactCardReceived                      ContactCardUpdatedWebhookEventEventType = "contact_card.received"
-	ContactCardUpdatedWebhookEventEventTypeCallInitiated                            ContactCardUpdatedWebhookEventEventType = "call.initiated"
-	ContactCardUpdatedWebhookEventEventTypeCallRinging                              ContactCardUpdatedWebhookEventEventType = "call.ringing"
-	ContactCardUpdatedWebhookEventEventTypeCallAnswered                             ContactCardUpdatedWebhookEventEventType = "call.answered"
-	ContactCardUpdatedWebhookEventEventTypeCallEnded                                ContactCardUpdatedWebhookEventEventType = "call.ended"
-	ContactCardUpdatedWebhookEventEventTypeCallFailed                               ContactCardUpdatedWebhookEventEventType = "call.failed"
-	ContactCardUpdatedWebhookEventEventTypeCallDeclined                             ContactCardUpdatedWebhookEventEventType = "call.declined"
-	ContactCardUpdatedWebhookEventEventTypeCallNoAnswer                             ContactCardUpdatedWebhookEventEventType = "call.no_answer"
 	ContactCardUpdatedWebhookEventEventTypeLocationSharingStarted                   ContactCardUpdatedWebhookEventEventType = "location.sharing.started"
 	ContactCardUpdatedWebhookEventEventTypeLocationSharingStopped                   ContactCardUpdatedWebhookEventEventType = "location.sharing.stopped"
 	ContactCardUpdatedWebhookEventEventTypePaymentSucceeded                         ContactCardUpdatedWebhookEventEventType = "payment.succeeded"
@@ -10263,8 +10324,7 @@ type ContactCardDeletedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -10700,14 +10760,8 @@ const (
 	ContactCardDeletedWebhookEventEventTypePhoneNumberStatusUpdated                 ContactCardDeletedWebhookEventEventType = "phone_number.status_updated"
 	ContactCardDeletedWebhookEventEventTypePhoneNumberAssigned                      ContactCardDeletedWebhookEventEventType = "phone_number.assigned"
 	ContactCardDeletedWebhookEventEventTypePhoneNumberReleased                      ContactCardDeletedWebhookEventEventType = "phone_number.released"
+	ContactCardDeletedWebhookEventEventTypePhoneNumberLineTypeUpdated               ContactCardDeletedWebhookEventEventType = "phone_number.line_type_updated"
 	ContactCardDeletedWebhookEventEventTypeContactCardReceived                      ContactCardDeletedWebhookEventEventType = "contact_card.received"
-	ContactCardDeletedWebhookEventEventTypeCallInitiated                            ContactCardDeletedWebhookEventEventType = "call.initiated"
-	ContactCardDeletedWebhookEventEventTypeCallRinging                              ContactCardDeletedWebhookEventEventType = "call.ringing"
-	ContactCardDeletedWebhookEventEventTypeCallAnswered                             ContactCardDeletedWebhookEventEventType = "call.answered"
-	ContactCardDeletedWebhookEventEventTypeCallEnded                                ContactCardDeletedWebhookEventEventType = "call.ended"
-	ContactCardDeletedWebhookEventEventTypeCallFailed                               ContactCardDeletedWebhookEventEventType = "call.failed"
-	ContactCardDeletedWebhookEventEventTypeCallDeclined                             ContactCardDeletedWebhookEventEventType = "call.declined"
-	ContactCardDeletedWebhookEventEventTypeCallNoAnswer                             ContactCardDeletedWebhookEventEventType = "call.no_answer"
 	ContactCardDeletedWebhookEventEventTypeLocationSharingStarted                   ContactCardDeletedWebhookEventEventType = "location.sharing.started"
 	ContactCardDeletedWebhookEventEventTypeLocationSharingStopped                   ContactCardDeletedWebhookEventEventType = "location.sharing.stopped"
 	ContactCardDeletedWebhookEventEventTypePaymentSucceeded                         ContactCardDeletedWebhookEventEventType = "payment.succeeded"
@@ -10766,8 +10820,7 @@ type APITokenCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -11203,14 +11256,8 @@ const (
 	APITokenCreatedWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenCreatedWebhookEventEventType = "phone_number.status_updated"
 	APITokenCreatedWebhookEventEventTypePhoneNumberAssigned                      APITokenCreatedWebhookEventEventType = "phone_number.assigned"
 	APITokenCreatedWebhookEventEventTypePhoneNumberReleased                      APITokenCreatedWebhookEventEventType = "phone_number.released"
+	APITokenCreatedWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenCreatedWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenCreatedWebhookEventEventTypeContactCardReceived                      APITokenCreatedWebhookEventEventType = "contact_card.received"
-	APITokenCreatedWebhookEventEventTypeCallInitiated                            APITokenCreatedWebhookEventEventType = "call.initiated"
-	APITokenCreatedWebhookEventEventTypeCallRinging                              APITokenCreatedWebhookEventEventType = "call.ringing"
-	APITokenCreatedWebhookEventEventTypeCallAnswered                             APITokenCreatedWebhookEventEventType = "call.answered"
-	APITokenCreatedWebhookEventEventTypeCallEnded                                APITokenCreatedWebhookEventEventType = "call.ended"
-	APITokenCreatedWebhookEventEventTypeCallFailed                               APITokenCreatedWebhookEventEventType = "call.failed"
-	APITokenCreatedWebhookEventEventTypeCallDeclined                             APITokenCreatedWebhookEventEventType = "call.declined"
-	APITokenCreatedWebhookEventEventTypeCallNoAnswer                             APITokenCreatedWebhookEventEventType = "call.no_answer"
 	APITokenCreatedWebhookEventEventTypeLocationSharingStarted                   APITokenCreatedWebhookEventEventType = "location.sharing.started"
 	APITokenCreatedWebhookEventEventTypeLocationSharingStopped                   APITokenCreatedWebhookEventEventType = "location.sharing.stopped"
 	APITokenCreatedWebhookEventEventTypePaymentSucceeded                         APITokenCreatedWebhookEventEventType = "payment.succeeded"
@@ -11269,8 +11316,7 @@ type APITokenRenamedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -11706,14 +11752,8 @@ const (
 	APITokenRenamedWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenRenamedWebhookEventEventType = "phone_number.status_updated"
 	APITokenRenamedWebhookEventEventTypePhoneNumberAssigned                      APITokenRenamedWebhookEventEventType = "phone_number.assigned"
 	APITokenRenamedWebhookEventEventTypePhoneNumberReleased                      APITokenRenamedWebhookEventEventType = "phone_number.released"
+	APITokenRenamedWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenRenamedWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenRenamedWebhookEventEventTypeContactCardReceived                      APITokenRenamedWebhookEventEventType = "contact_card.received"
-	APITokenRenamedWebhookEventEventTypeCallInitiated                            APITokenRenamedWebhookEventEventType = "call.initiated"
-	APITokenRenamedWebhookEventEventTypeCallRinging                              APITokenRenamedWebhookEventEventType = "call.ringing"
-	APITokenRenamedWebhookEventEventTypeCallAnswered                             APITokenRenamedWebhookEventEventType = "call.answered"
-	APITokenRenamedWebhookEventEventTypeCallEnded                                APITokenRenamedWebhookEventEventType = "call.ended"
-	APITokenRenamedWebhookEventEventTypeCallFailed                               APITokenRenamedWebhookEventEventType = "call.failed"
-	APITokenRenamedWebhookEventEventTypeCallDeclined                             APITokenRenamedWebhookEventEventType = "call.declined"
-	APITokenRenamedWebhookEventEventTypeCallNoAnswer                             APITokenRenamedWebhookEventEventType = "call.no_answer"
 	APITokenRenamedWebhookEventEventTypeLocationSharingStarted                   APITokenRenamedWebhookEventEventType = "location.sharing.started"
 	APITokenRenamedWebhookEventEventTypeLocationSharingStopped                   APITokenRenamedWebhookEventEventType = "location.sharing.stopped"
 	APITokenRenamedWebhookEventEventTypePaymentSucceeded                         APITokenRenamedWebhookEventEventType = "payment.succeeded"
@@ -11772,8 +11812,7 @@ type APITokenExpiryScheduledWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -12211,14 +12250,8 @@ const (
 	APITokenExpiryScheduledWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenExpiryScheduledWebhookEventEventType = "phone_number.status_updated"
 	APITokenExpiryScheduledWebhookEventEventTypePhoneNumberAssigned                      APITokenExpiryScheduledWebhookEventEventType = "phone_number.assigned"
 	APITokenExpiryScheduledWebhookEventEventTypePhoneNumberReleased                      APITokenExpiryScheduledWebhookEventEventType = "phone_number.released"
+	APITokenExpiryScheduledWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenExpiryScheduledWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenExpiryScheduledWebhookEventEventTypeContactCardReceived                      APITokenExpiryScheduledWebhookEventEventType = "contact_card.received"
-	APITokenExpiryScheduledWebhookEventEventTypeCallInitiated                            APITokenExpiryScheduledWebhookEventEventType = "call.initiated"
-	APITokenExpiryScheduledWebhookEventEventTypeCallRinging                              APITokenExpiryScheduledWebhookEventEventType = "call.ringing"
-	APITokenExpiryScheduledWebhookEventEventTypeCallAnswered                             APITokenExpiryScheduledWebhookEventEventType = "call.answered"
-	APITokenExpiryScheduledWebhookEventEventTypeCallEnded                                APITokenExpiryScheduledWebhookEventEventType = "call.ended"
-	APITokenExpiryScheduledWebhookEventEventTypeCallFailed                               APITokenExpiryScheduledWebhookEventEventType = "call.failed"
-	APITokenExpiryScheduledWebhookEventEventTypeCallDeclined                             APITokenExpiryScheduledWebhookEventEventType = "call.declined"
-	APITokenExpiryScheduledWebhookEventEventTypeCallNoAnswer                             APITokenExpiryScheduledWebhookEventEventType = "call.no_answer"
 	APITokenExpiryScheduledWebhookEventEventTypeLocationSharingStarted                   APITokenExpiryScheduledWebhookEventEventType = "location.sharing.started"
 	APITokenExpiryScheduledWebhookEventEventTypeLocationSharingStopped                   APITokenExpiryScheduledWebhookEventEventType = "location.sharing.stopped"
 	APITokenExpiryScheduledWebhookEventEventTypePaymentSucceeded                         APITokenExpiryScheduledWebhookEventEventType = "payment.succeeded"
@@ -12277,8 +12310,7 @@ type APITokenExpiredWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -12714,14 +12746,8 @@ const (
 	APITokenExpiredWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenExpiredWebhookEventEventType = "phone_number.status_updated"
 	APITokenExpiredWebhookEventEventTypePhoneNumberAssigned                      APITokenExpiredWebhookEventEventType = "phone_number.assigned"
 	APITokenExpiredWebhookEventEventTypePhoneNumberReleased                      APITokenExpiredWebhookEventEventType = "phone_number.released"
+	APITokenExpiredWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenExpiredWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenExpiredWebhookEventEventTypeContactCardReceived                      APITokenExpiredWebhookEventEventType = "contact_card.received"
-	APITokenExpiredWebhookEventEventTypeCallInitiated                            APITokenExpiredWebhookEventEventType = "call.initiated"
-	APITokenExpiredWebhookEventEventTypeCallRinging                              APITokenExpiredWebhookEventEventType = "call.ringing"
-	APITokenExpiredWebhookEventEventTypeCallAnswered                             APITokenExpiredWebhookEventEventType = "call.answered"
-	APITokenExpiredWebhookEventEventTypeCallEnded                                APITokenExpiredWebhookEventEventType = "call.ended"
-	APITokenExpiredWebhookEventEventTypeCallFailed                               APITokenExpiredWebhookEventEventType = "call.failed"
-	APITokenExpiredWebhookEventEventTypeCallDeclined                             APITokenExpiredWebhookEventEventType = "call.declined"
-	APITokenExpiredWebhookEventEventTypeCallNoAnswer                             APITokenExpiredWebhookEventEventType = "call.no_answer"
 	APITokenExpiredWebhookEventEventTypeLocationSharingStarted                   APITokenExpiredWebhookEventEventType = "location.sharing.started"
 	APITokenExpiredWebhookEventEventTypeLocationSharingStopped                   APITokenExpiredWebhookEventEventType = "location.sharing.stopped"
 	APITokenExpiredWebhookEventEventTypePaymentSucceeded                         APITokenExpiredWebhookEventEventType = "payment.succeeded"
@@ -12780,8 +12806,7 @@ type APITokenActivatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -13217,14 +13242,8 @@ const (
 	APITokenActivatedWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenActivatedWebhookEventEventType = "phone_number.status_updated"
 	APITokenActivatedWebhookEventEventTypePhoneNumberAssigned                      APITokenActivatedWebhookEventEventType = "phone_number.assigned"
 	APITokenActivatedWebhookEventEventTypePhoneNumberReleased                      APITokenActivatedWebhookEventEventType = "phone_number.released"
+	APITokenActivatedWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenActivatedWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenActivatedWebhookEventEventTypeContactCardReceived                      APITokenActivatedWebhookEventEventType = "contact_card.received"
-	APITokenActivatedWebhookEventEventTypeCallInitiated                            APITokenActivatedWebhookEventEventType = "call.initiated"
-	APITokenActivatedWebhookEventEventTypeCallRinging                              APITokenActivatedWebhookEventEventType = "call.ringing"
-	APITokenActivatedWebhookEventEventTypeCallAnswered                             APITokenActivatedWebhookEventEventType = "call.answered"
-	APITokenActivatedWebhookEventEventTypeCallEnded                                APITokenActivatedWebhookEventEventType = "call.ended"
-	APITokenActivatedWebhookEventEventTypeCallFailed                               APITokenActivatedWebhookEventEventType = "call.failed"
-	APITokenActivatedWebhookEventEventTypeCallDeclined                             APITokenActivatedWebhookEventEventType = "call.declined"
-	APITokenActivatedWebhookEventEventTypeCallNoAnswer                             APITokenActivatedWebhookEventEventType = "call.no_answer"
 	APITokenActivatedWebhookEventEventTypeLocationSharingStarted                   APITokenActivatedWebhookEventEventType = "location.sharing.started"
 	APITokenActivatedWebhookEventEventTypeLocationSharingStopped                   APITokenActivatedWebhookEventEventType = "location.sharing.stopped"
 	APITokenActivatedWebhookEventEventTypePaymentSucceeded                         APITokenActivatedWebhookEventEventType = "payment.succeeded"
@@ -13283,8 +13302,7 @@ type APITokenDeletedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -13720,14 +13738,8 @@ const (
 	APITokenDeletedWebhookEventEventTypePhoneNumberStatusUpdated                 APITokenDeletedWebhookEventEventType = "phone_number.status_updated"
 	APITokenDeletedWebhookEventEventTypePhoneNumberAssigned                      APITokenDeletedWebhookEventEventType = "phone_number.assigned"
 	APITokenDeletedWebhookEventEventTypePhoneNumberReleased                      APITokenDeletedWebhookEventEventType = "phone_number.released"
+	APITokenDeletedWebhookEventEventTypePhoneNumberLineTypeUpdated               APITokenDeletedWebhookEventEventType = "phone_number.line_type_updated"
 	APITokenDeletedWebhookEventEventTypeContactCardReceived                      APITokenDeletedWebhookEventEventType = "contact_card.received"
-	APITokenDeletedWebhookEventEventTypeCallInitiated                            APITokenDeletedWebhookEventEventType = "call.initiated"
-	APITokenDeletedWebhookEventEventTypeCallRinging                              APITokenDeletedWebhookEventEventType = "call.ringing"
-	APITokenDeletedWebhookEventEventTypeCallAnswered                             APITokenDeletedWebhookEventEventType = "call.answered"
-	APITokenDeletedWebhookEventEventTypeCallEnded                                APITokenDeletedWebhookEventEventType = "call.ended"
-	APITokenDeletedWebhookEventEventTypeCallFailed                               APITokenDeletedWebhookEventEventType = "call.failed"
-	APITokenDeletedWebhookEventEventTypeCallDeclined                             APITokenDeletedWebhookEventEventType = "call.declined"
-	APITokenDeletedWebhookEventEventTypeCallNoAnswer                             APITokenDeletedWebhookEventEventType = "call.no_answer"
 	APITokenDeletedWebhookEventEventTypeLocationSharingStarted                   APITokenDeletedWebhookEventEventType = "location.sharing.started"
 	APITokenDeletedWebhookEventEventTypeLocationSharingStopped                   APITokenDeletedWebhookEventEventType = "location.sharing.stopped"
 	APITokenDeletedWebhookEventEventTypePaymentSucceeded                         APITokenDeletedWebhookEventEventType = "payment.succeeded"
@@ -13786,8 +13798,7 @@ type EnvironmentCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -14223,14 +14234,8 @@ const (
 	EnvironmentCreatedWebhookEventEventTypePhoneNumberStatusUpdated                 EnvironmentCreatedWebhookEventEventType = "phone_number.status_updated"
 	EnvironmentCreatedWebhookEventEventTypePhoneNumberAssigned                      EnvironmentCreatedWebhookEventEventType = "phone_number.assigned"
 	EnvironmentCreatedWebhookEventEventTypePhoneNumberReleased                      EnvironmentCreatedWebhookEventEventType = "phone_number.released"
+	EnvironmentCreatedWebhookEventEventTypePhoneNumberLineTypeUpdated               EnvironmentCreatedWebhookEventEventType = "phone_number.line_type_updated"
 	EnvironmentCreatedWebhookEventEventTypeContactCardReceived                      EnvironmentCreatedWebhookEventEventType = "contact_card.received"
-	EnvironmentCreatedWebhookEventEventTypeCallInitiated                            EnvironmentCreatedWebhookEventEventType = "call.initiated"
-	EnvironmentCreatedWebhookEventEventTypeCallRinging                              EnvironmentCreatedWebhookEventEventType = "call.ringing"
-	EnvironmentCreatedWebhookEventEventTypeCallAnswered                             EnvironmentCreatedWebhookEventEventType = "call.answered"
-	EnvironmentCreatedWebhookEventEventTypeCallEnded                                EnvironmentCreatedWebhookEventEventType = "call.ended"
-	EnvironmentCreatedWebhookEventEventTypeCallFailed                               EnvironmentCreatedWebhookEventEventType = "call.failed"
-	EnvironmentCreatedWebhookEventEventTypeCallDeclined                             EnvironmentCreatedWebhookEventEventType = "call.declined"
-	EnvironmentCreatedWebhookEventEventTypeCallNoAnswer                             EnvironmentCreatedWebhookEventEventType = "call.no_answer"
 	EnvironmentCreatedWebhookEventEventTypeLocationSharingStarted                   EnvironmentCreatedWebhookEventEventType = "location.sharing.started"
 	EnvironmentCreatedWebhookEventEventTypeLocationSharingStopped                   EnvironmentCreatedWebhookEventEventType = "location.sharing.stopped"
 	EnvironmentCreatedWebhookEventEventTypePaymentSucceeded                         EnvironmentCreatedWebhookEventEventType = "payment.succeeded"
@@ -14289,8 +14294,7 @@ type EnvironmentRenamedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -14726,14 +14730,8 @@ const (
 	EnvironmentRenamedWebhookEventEventTypePhoneNumberStatusUpdated                 EnvironmentRenamedWebhookEventEventType = "phone_number.status_updated"
 	EnvironmentRenamedWebhookEventEventTypePhoneNumberAssigned                      EnvironmentRenamedWebhookEventEventType = "phone_number.assigned"
 	EnvironmentRenamedWebhookEventEventTypePhoneNumberReleased                      EnvironmentRenamedWebhookEventEventType = "phone_number.released"
+	EnvironmentRenamedWebhookEventEventTypePhoneNumberLineTypeUpdated               EnvironmentRenamedWebhookEventEventType = "phone_number.line_type_updated"
 	EnvironmentRenamedWebhookEventEventTypeContactCardReceived                      EnvironmentRenamedWebhookEventEventType = "contact_card.received"
-	EnvironmentRenamedWebhookEventEventTypeCallInitiated                            EnvironmentRenamedWebhookEventEventType = "call.initiated"
-	EnvironmentRenamedWebhookEventEventTypeCallRinging                              EnvironmentRenamedWebhookEventEventType = "call.ringing"
-	EnvironmentRenamedWebhookEventEventTypeCallAnswered                             EnvironmentRenamedWebhookEventEventType = "call.answered"
-	EnvironmentRenamedWebhookEventEventTypeCallEnded                                EnvironmentRenamedWebhookEventEventType = "call.ended"
-	EnvironmentRenamedWebhookEventEventTypeCallFailed                               EnvironmentRenamedWebhookEventEventType = "call.failed"
-	EnvironmentRenamedWebhookEventEventTypeCallDeclined                             EnvironmentRenamedWebhookEventEventType = "call.declined"
-	EnvironmentRenamedWebhookEventEventTypeCallNoAnswer                             EnvironmentRenamedWebhookEventEventType = "call.no_answer"
 	EnvironmentRenamedWebhookEventEventTypeLocationSharingStarted                   EnvironmentRenamedWebhookEventEventType = "location.sharing.started"
 	EnvironmentRenamedWebhookEventEventTypeLocationSharingStopped                   EnvironmentRenamedWebhookEventEventType = "location.sharing.stopped"
 	EnvironmentRenamedWebhookEventEventTypePaymentSucceeded                         EnvironmentRenamedWebhookEventEventType = "payment.succeeded"
@@ -14792,8 +14790,7 @@ type EnvironmentDeletedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -15229,14 +15226,8 @@ const (
 	EnvironmentDeletedWebhookEventEventTypePhoneNumberStatusUpdated                 EnvironmentDeletedWebhookEventEventType = "phone_number.status_updated"
 	EnvironmentDeletedWebhookEventEventTypePhoneNumberAssigned                      EnvironmentDeletedWebhookEventEventType = "phone_number.assigned"
 	EnvironmentDeletedWebhookEventEventTypePhoneNumberReleased                      EnvironmentDeletedWebhookEventEventType = "phone_number.released"
+	EnvironmentDeletedWebhookEventEventTypePhoneNumberLineTypeUpdated               EnvironmentDeletedWebhookEventEventType = "phone_number.line_type_updated"
 	EnvironmentDeletedWebhookEventEventTypeContactCardReceived                      EnvironmentDeletedWebhookEventEventType = "contact_card.received"
-	EnvironmentDeletedWebhookEventEventTypeCallInitiated                            EnvironmentDeletedWebhookEventEventType = "call.initiated"
-	EnvironmentDeletedWebhookEventEventTypeCallRinging                              EnvironmentDeletedWebhookEventEventType = "call.ringing"
-	EnvironmentDeletedWebhookEventEventTypeCallAnswered                             EnvironmentDeletedWebhookEventEventType = "call.answered"
-	EnvironmentDeletedWebhookEventEventTypeCallEnded                                EnvironmentDeletedWebhookEventEventType = "call.ended"
-	EnvironmentDeletedWebhookEventEventTypeCallFailed                               EnvironmentDeletedWebhookEventEventType = "call.failed"
-	EnvironmentDeletedWebhookEventEventTypeCallDeclined                             EnvironmentDeletedWebhookEventEventType = "call.declined"
-	EnvironmentDeletedWebhookEventEventTypeCallNoAnswer                             EnvironmentDeletedWebhookEventEventType = "call.no_answer"
 	EnvironmentDeletedWebhookEventEventTypeLocationSharingStarted                   EnvironmentDeletedWebhookEventEventType = "location.sharing.started"
 	EnvironmentDeletedWebhookEventEventTypeLocationSharingStopped                   EnvironmentDeletedWebhookEventEventType = "location.sharing.stopped"
 	EnvironmentDeletedWebhookEventEventTypePaymentSucceeded                         EnvironmentDeletedWebhookEventEventType = "payment.succeeded"
@@ -15295,8 +15286,7 @@ type WebhookSubscriptionCreatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -15736,14 +15726,8 @@ const (
 	WebhookSubscriptionCreatedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionCreatedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionCreatedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionCreatedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionCreatedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionCreatedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionCreatedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionCreatedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionCreatedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionCreatedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionCreatedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallRinging                              WebhookSubscriptionCreatedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionCreatedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallEnded                                WebhookSubscriptionCreatedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallFailed                               WebhookSubscriptionCreatedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionCreatedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionCreatedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionCreatedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionCreatedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionCreatedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionCreatedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionCreatedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionCreatedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionCreatedWebhookEventEventType = "payment.succeeded"
@@ -15802,8 +15786,7 @@ type WebhookSubscriptionDeletedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -16243,14 +16226,8 @@ const (
 	WebhookSubscriptionDeletedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionDeletedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionDeletedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionDeletedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionDeletedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionDeletedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionDeletedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionDeletedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionDeletedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionDeletedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionDeletedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallRinging                              WebhookSubscriptionDeletedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionDeletedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallEnded                                WebhookSubscriptionDeletedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallFailed                               WebhookSubscriptionDeletedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionDeletedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionDeletedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionDeletedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionDeletedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionDeletedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionDeletedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionDeletedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionDeletedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionDeletedWebhookEventEventType = "payment.succeeded"
@@ -16309,8 +16286,7 @@ type WebhookSubscriptionTargetURLChangedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -16764,14 +16740,8 @@ const (
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionTargetURLChangedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionTargetURLChangedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionTargetURLChangedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionTargetURLChangedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionTargetURLChangedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionTargetURLChangedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallRinging                              WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallEnded                                WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallFailed                               WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionTargetURLChangedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionTargetURLChangedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionTargetURLChangedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionTargetURLChangedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionTargetURLChangedWebhookEventEventType = "payment.succeeded"
@@ -16830,8 +16800,7 @@ type WebhookSubscriptionEnabledWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -17271,14 +17240,8 @@ const (
 	WebhookSubscriptionEnabledWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionEnabledWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionEnabledWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionEnabledWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionEnabledWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionEnabledWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionEnabledWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionEnabledWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionEnabledWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionEnabledWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallInitiated                            WebhookSubscriptionEnabledWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallRinging                              WebhookSubscriptionEnabledWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallAnswered                             WebhookSubscriptionEnabledWebhookEventEventType = "call.answered"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallEnded                                WebhookSubscriptionEnabledWebhookEventEventType = "call.ended"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallFailed                               WebhookSubscriptionEnabledWebhookEventEventType = "call.failed"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallDeclined                             WebhookSubscriptionEnabledWebhookEventEventType = "call.declined"
-	WebhookSubscriptionEnabledWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionEnabledWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionEnabledWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionEnabledWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionEnabledWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionEnabledWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionEnabledWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionEnabledWebhookEventEventType = "payment.succeeded"
@@ -17337,8 +17300,7 @@ type WebhookSubscriptionDisabledWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -17782,14 +17744,8 @@ const (
 	WebhookSubscriptionDisabledWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionDisabledWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionDisabledWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionDisabledWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionDisabledWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionDisabledWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionDisabledWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionDisabledWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionDisabledWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionDisabledWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallInitiated                            WebhookSubscriptionDisabledWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallRinging                              WebhookSubscriptionDisabledWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallAnswered                             WebhookSubscriptionDisabledWebhookEventEventType = "call.answered"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallEnded                                WebhookSubscriptionDisabledWebhookEventEventType = "call.ended"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallFailed                               WebhookSubscriptionDisabledWebhookEventEventType = "call.failed"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallDeclined                             WebhookSubscriptionDisabledWebhookEventEventType = "call.declined"
-	WebhookSubscriptionDisabledWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionDisabledWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionDisabledWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionDisabledWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionDisabledWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionDisabledWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionDisabledWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionDisabledWebhookEventEventType = "payment.succeeded"
@@ -17848,8 +17804,7 @@ type WebhookSubscriptionEventsUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -18299,14 +18254,8 @@ const (
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionEventsUpdatedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionEventsUpdatedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionEventsUpdatedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionEventsUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionEventsUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionEventsUpdatedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallRinging                              WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallEnded                                WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallFailed                               WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionEventsUpdatedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionEventsUpdatedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionEventsUpdatedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionEventsUpdatedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionEventsUpdatedWebhookEventEventType = "payment.succeeded"
@@ -18365,8 +18314,7 @@ type WebhookSubscriptionPhoneNumbersUpdatedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -18822,14 +18770,8 @@ const (
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallRinging                              WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallEnded                                WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallFailed                               WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionPhoneNumbersUpdatedWebhookEventEventType = "payment.succeeded"
@@ -18888,8 +18830,7 @@ type WebhookSubscriptionRoutingHeadersSetWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -19345,14 +19286,8 @@ const (
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallInitiated                            WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallRinging                              WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallAnswered                             WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.answered"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallEnded                                WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.ended"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallFailed                               WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.failed"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallDeclined                             WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.declined"
-	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionRoutingHeadersSetWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionRoutingHeadersSetWebhookEventEventType = "payment.succeeded"
@@ -19411,8 +19346,7 @@ type WebhookSubscriptionRoutingHeadersClearedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -19868,14 +19802,8 @@ const (
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypePhoneNumberStatusUpdated                 WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "phone_number.status_updated"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypePhoneNumberAssigned                      WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "phone_number.assigned"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypePhoneNumberReleased                      WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "phone_number.released"
+	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypePhoneNumberLineTypeUpdated               WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "phone_number.line_type_updated"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeContactCardReceived                      WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "contact_card.received"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallInitiated                            WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.initiated"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallRinging                              WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.ringing"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallAnswered                             WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.answered"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallEnded                                WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.ended"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallFailed                               WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.failed"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallDeclined                             WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.declined"
-	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeCallNoAnswer                             WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "call.no_answer"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeLocationSharingStarted                   WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "location.sharing.started"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypeLocationSharingStopped                   WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "location.sharing.stopped"
 	WebhookSubscriptionRoutingHeadersClearedWebhookEventEventTypePaymentSucceeded                         WebhookSubscriptionRoutingHeadersClearedWebhookEventEventType = "payment.succeeded"
@@ -19934,8 +19862,7 @@ type TeamMemberAddedWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -20371,14 +20298,8 @@ const (
 	TeamMemberAddedWebhookEventEventTypePhoneNumberStatusUpdated                 TeamMemberAddedWebhookEventEventType = "phone_number.status_updated"
 	TeamMemberAddedWebhookEventEventTypePhoneNumberAssigned                      TeamMemberAddedWebhookEventEventType = "phone_number.assigned"
 	TeamMemberAddedWebhookEventEventTypePhoneNumberReleased                      TeamMemberAddedWebhookEventEventType = "phone_number.released"
+	TeamMemberAddedWebhookEventEventTypePhoneNumberLineTypeUpdated               TeamMemberAddedWebhookEventEventType = "phone_number.line_type_updated"
 	TeamMemberAddedWebhookEventEventTypeContactCardReceived                      TeamMemberAddedWebhookEventEventType = "contact_card.received"
-	TeamMemberAddedWebhookEventEventTypeCallInitiated                            TeamMemberAddedWebhookEventEventType = "call.initiated"
-	TeamMemberAddedWebhookEventEventTypeCallRinging                              TeamMemberAddedWebhookEventEventType = "call.ringing"
-	TeamMemberAddedWebhookEventEventTypeCallAnswered                             TeamMemberAddedWebhookEventEventType = "call.answered"
-	TeamMemberAddedWebhookEventEventTypeCallEnded                                TeamMemberAddedWebhookEventEventType = "call.ended"
-	TeamMemberAddedWebhookEventEventTypeCallFailed                               TeamMemberAddedWebhookEventEventType = "call.failed"
-	TeamMemberAddedWebhookEventEventTypeCallDeclined                             TeamMemberAddedWebhookEventEventType = "call.declined"
-	TeamMemberAddedWebhookEventEventTypeCallNoAnswer                             TeamMemberAddedWebhookEventEventType = "call.no_answer"
 	TeamMemberAddedWebhookEventEventTypeLocationSharingStarted                   TeamMemberAddedWebhookEventEventType = "location.sharing.started"
 	TeamMemberAddedWebhookEventEventTypeLocationSharingStopped                   TeamMemberAddedWebhookEventEventType = "location.sharing.stopped"
 	TeamMemberAddedWebhookEventEventTypePaymentSucceeded                         TeamMemberAddedWebhookEventEventType = "payment.succeeded"
@@ -20437,8 +20358,7 @@ type TeamMemberSignedInWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -20874,14 +20794,8 @@ const (
 	TeamMemberSignedInWebhookEventEventTypePhoneNumberStatusUpdated                 TeamMemberSignedInWebhookEventEventType = "phone_number.status_updated"
 	TeamMemberSignedInWebhookEventEventTypePhoneNumberAssigned                      TeamMemberSignedInWebhookEventEventType = "phone_number.assigned"
 	TeamMemberSignedInWebhookEventEventTypePhoneNumberReleased                      TeamMemberSignedInWebhookEventEventType = "phone_number.released"
+	TeamMemberSignedInWebhookEventEventTypePhoneNumberLineTypeUpdated               TeamMemberSignedInWebhookEventEventType = "phone_number.line_type_updated"
 	TeamMemberSignedInWebhookEventEventTypeContactCardReceived                      TeamMemberSignedInWebhookEventEventType = "contact_card.received"
-	TeamMemberSignedInWebhookEventEventTypeCallInitiated                            TeamMemberSignedInWebhookEventEventType = "call.initiated"
-	TeamMemberSignedInWebhookEventEventTypeCallRinging                              TeamMemberSignedInWebhookEventEventType = "call.ringing"
-	TeamMemberSignedInWebhookEventEventTypeCallAnswered                             TeamMemberSignedInWebhookEventEventType = "call.answered"
-	TeamMemberSignedInWebhookEventEventTypeCallEnded                                TeamMemberSignedInWebhookEventEventType = "call.ended"
-	TeamMemberSignedInWebhookEventEventTypeCallFailed                               TeamMemberSignedInWebhookEventEventType = "call.failed"
-	TeamMemberSignedInWebhookEventEventTypeCallDeclined                             TeamMemberSignedInWebhookEventEventType = "call.declined"
-	TeamMemberSignedInWebhookEventEventTypeCallNoAnswer                             TeamMemberSignedInWebhookEventEventType = "call.no_answer"
 	TeamMemberSignedInWebhookEventEventTypeLocationSharingStarted                   TeamMemberSignedInWebhookEventEventType = "location.sharing.started"
 	TeamMemberSignedInWebhookEventEventTypeLocationSharingStopped                   TeamMemberSignedInWebhookEventEventType = "location.sharing.stopped"
 	TeamMemberSignedInWebhookEventEventTypePaymentSucceeded                         TeamMemberSignedInWebhookEventEventType = "payment.succeeded"
@@ -20940,8 +20854,7 @@ type TeamMemberSignedOutWebhookEvent struct {
 	// "chat.background_updated", "chat.background_update_failed",
 	// "chat.typing_indicator.started", "chat.typing_indicator.stopped",
 	// "phone_number.status_updated", "phone_number.assigned", "phone_number.released",
-	// "contact_card.received", "call.initiated", "call.ringing", "call.answered",
-	// "call.ended", "call.failed", "call.declined", "call.no_answer",
+	// "phone_number.line_type_updated", "contact_card.received",
 	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
 	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
 	// "connection.created", "connection.revoked".
@@ -21377,14 +21290,8 @@ const (
 	TeamMemberSignedOutWebhookEventEventTypePhoneNumberStatusUpdated                 TeamMemberSignedOutWebhookEventEventType = "phone_number.status_updated"
 	TeamMemberSignedOutWebhookEventEventTypePhoneNumberAssigned                      TeamMemberSignedOutWebhookEventEventType = "phone_number.assigned"
 	TeamMemberSignedOutWebhookEventEventTypePhoneNumberReleased                      TeamMemberSignedOutWebhookEventEventType = "phone_number.released"
+	TeamMemberSignedOutWebhookEventEventTypePhoneNumberLineTypeUpdated               TeamMemberSignedOutWebhookEventEventType = "phone_number.line_type_updated"
 	TeamMemberSignedOutWebhookEventEventTypeContactCardReceived                      TeamMemberSignedOutWebhookEventEventType = "contact_card.received"
-	TeamMemberSignedOutWebhookEventEventTypeCallInitiated                            TeamMemberSignedOutWebhookEventEventType = "call.initiated"
-	TeamMemberSignedOutWebhookEventEventTypeCallRinging                              TeamMemberSignedOutWebhookEventEventType = "call.ringing"
-	TeamMemberSignedOutWebhookEventEventTypeCallAnswered                             TeamMemberSignedOutWebhookEventEventType = "call.answered"
-	TeamMemberSignedOutWebhookEventEventTypeCallEnded                                TeamMemberSignedOutWebhookEventEventType = "call.ended"
-	TeamMemberSignedOutWebhookEventEventTypeCallFailed                               TeamMemberSignedOutWebhookEventEventType = "call.failed"
-	TeamMemberSignedOutWebhookEventEventTypeCallDeclined                             TeamMemberSignedOutWebhookEventEventType = "call.declined"
-	TeamMemberSignedOutWebhookEventEventTypeCallNoAnswer                             TeamMemberSignedOutWebhookEventEventType = "call.no_answer"
 	TeamMemberSignedOutWebhookEventEventTypeLocationSharingStarted                   TeamMemberSignedOutWebhookEventEventType = "location.sharing.started"
 	TeamMemberSignedOutWebhookEventEventTypeLocationSharingStopped                   TeamMemberSignedOutWebhookEventEventType = "location.sharing.stopped"
 	TeamMemberSignedOutWebhookEventEventTypePaymentSucceeded                         TeamMemberSignedOutWebhookEventEventType = "payment.succeeded"
@@ -21394,6 +21301,1294 @@ const (
 	TeamMemberSignedOutWebhookEventEventTypePaymentAuthorized                        TeamMemberSignedOutWebhookEventEventType = "payment.authorized"
 	TeamMemberSignedOutWebhookEventEventTypeConnectionCreated                        TeamMemberSignedOutWebhookEventEventType = "connection.created"
 	TeamMemberSignedOutWebhookEventEventTypeConnectionRevoked                        TeamMemberSignedOutWebhookEventEventType = "connection.revoked"
+)
+
+type CallVoiceInitiatedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                          `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceInitiatedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceInitiatedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceInitiatedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceInitiatedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceInitiatedWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceInitiatedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceInitiatedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceInitiatedWebhookEventEventType string
+
+const (
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceInitiated                       CallVoiceInitiatedWebhookEventEventType = "call_voice.initiated"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceRinging                         CallVoiceInitiatedWebhookEventEventType = "call_voice.ringing"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceAnswered                        CallVoiceInitiatedWebhookEventEventType = "call_voice.answered"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceEnded                           CallVoiceInitiatedWebhookEventEventType = "call_voice.ended"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceFailed                          CallVoiceInitiatedWebhookEventEventType = "call_voice.failed"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceDeclined                        CallVoiceInitiatedWebhookEventEventType = "call_voice.declined"
+	CallVoiceInitiatedWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceInitiatedWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceInitiatedWebhookEventEventTypeMessageSent                              CallVoiceInitiatedWebhookEventEventType = "message.sent"
+	CallVoiceInitiatedWebhookEventEventTypeMessageReceived                          CallVoiceInitiatedWebhookEventEventType = "message.received"
+	CallVoiceInitiatedWebhookEventEventTypeMessageRead                              CallVoiceInitiatedWebhookEventEventType = "message.read"
+	CallVoiceInitiatedWebhookEventEventTypeMessageDelivered                         CallVoiceInitiatedWebhookEventEventType = "message.delivered"
+	CallVoiceInitiatedWebhookEventEventTypeMessageFailed                            CallVoiceInitiatedWebhookEventEventType = "message.failed"
+	CallVoiceInitiatedWebhookEventEventTypeMessageEdited                            CallVoiceInitiatedWebhookEventEventType = "message.edited"
+	CallVoiceInitiatedWebhookEventEventTypeReactionAdded                            CallVoiceInitiatedWebhookEventEventType = "reaction.added"
+	CallVoiceInitiatedWebhookEventEventTypeReactionRemoved                          CallVoiceInitiatedWebhookEventEventType = "reaction.removed"
+	CallVoiceInitiatedWebhookEventEventTypePollReceived                             CallVoiceInitiatedWebhookEventEventType = "poll.received"
+	CallVoiceInitiatedWebhookEventEventTypePollFailed                               CallVoiceInitiatedWebhookEventEventType = "poll.failed"
+	CallVoiceInitiatedWebhookEventEventTypePollSent                                 CallVoiceInitiatedWebhookEventEventType = "poll.sent"
+	CallVoiceInitiatedWebhookEventEventTypePollDelivered                            CallVoiceInitiatedWebhookEventEventType = "poll.delivered"
+	CallVoiceInitiatedWebhookEventEventTypePollRead                                 CallVoiceInitiatedWebhookEventEventType = "poll.read"
+	CallVoiceInitiatedWebhookEventEventTypePollUpdated                              CallVoiceInitiatedWebhookEventEventType = "poll.updated"
+	CallVoiceInitiatedWebhookEventEventTypePollVoteAdded                            CallVoiceInitiatedWebhookEventEventType = "poll.vote.added"
+	CallVoiceInitiatedWebhookEventEventTypePollVoteRemoved                          CallVoiceInitiatedWebhookEventEventType = "poll.vote.removed"
+	CallVoiceInitiatedWebhookEventEventTypePollReactionAdded                        CallVoiceInitiatedWebhookEventEventType = "poll.reaction.added"
+	CallVoiceInitiatedWebhookEventEventTypeParticipantAdded                         CallVoiceInitiatedWebhookEventEventType = "participant.added"
+	CallVoiceInitiatedWebhookEventEventTypeParticipantRemoved                       CallVoiceInitiatedWebhookEventEventType = "participant.removed"
+	CallVoiceInitiatedWebhookEventEventTypeChatCreated                              CallVoiceInitiatedWebhookEventEventType = "chat.created"
+	CallVoiceInitiatedWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceInitiatedWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceInitiatedWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceInitiatedWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceInitiatedWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceInitiatedWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceInitiatedWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceInitiatedWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceInitiatedWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceInitiatedWebhookEventEventType = "chat.background_updated"
+	CallVoiceInitiatedWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceInitiatedWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceInitiatedWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceInitiatedWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceInitiatedWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceInitiatedWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceInitiatedWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceInitiatedWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceInitiatedWebhookEventEventTypePhoneNumberAssigned                      CallVoiceInitiatedWebhookEventEventType = "phone_number.assigned"
+	CallVoiceInitiatedWebhookEventEventTypePhoneNumberReleased                      CallVoiceInitiatedWebhookEventEventType = "phone_number.released"
+	CallVoiceInitiatedWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceInitiatedWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceInitiatedWebhookEventEventTypeContactCardReceived                      CallVoiceInitiatedWebhookEventEventType = "contact_card.received"
+	CallVoiceInitiatedWebhookEventEventTypeLocationSharingStarted                   CallVoiceInitiatedWebhookEventEventType = "location.sharing.started"
+	CallVoiceInitiatedWebhookEventEventTypeLocationSharingStopped                   CallVoiceInitiatedWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceInitiatedWebhookEventEventTypePaymentSucceeded                         CallVoiceInitiatedWebhookEventEventType = "payment.succeeded"
+	CallVoiceInitiatedWebhookEventEventTypePaymentCanceled                          CallVoiceInitiatedWebhookEventEventType = "payment.canceled"
+	CallVoiceInitiatedWebhookEventEventTypePaymentExpired                           CallVoiceInitiatedWebhookEventEventType = "payment.expired"
+	CallVoiceInitiatedWebhookEventEventTypePaymentDeclined                          CallVoiceInitiatedWebhookEventEventType = "payment.declined"
+	CallVoiceInitiatedWebhookEventEventTypePaymentAuthorized                        CallVoiceInitiatedWebhookEventEventType = "payment.authorized"
+	CallVoiceInitiatedWebhookEventEventTypeConnectionCreated                        CallVoiceInitiatedWebhookEventEventType = "connection.created"
+	CallVoiceInitiatedWebhookEventEventTypeConnectionRevoked                        CallVoiceInitiatedWebhookEventEventType = "connection.revoked"
+	CallVoiceInitiatedWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceInitiatedWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceInitiatedWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceInitiatedWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceInitiatedWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceInitiatedWebhookEventEventType = "environment.line_moved"
+	CallVoiceInitiatedWebhookEventEventTypeContactCardCreated                       CallVoiceInitiatedWebhookEventEventType = "contact_card.created"
+	CallVoiceInitiatedWebhookEventEventTypeContactCardUpdated                       CallVoiceInitiatedWebhookEventEventType = "contact_card.updated"
+	CallVoiceInitiatedWebhookEventEventTypeContactCardDeleted                       CallVoiceInitiatedWebhookEventEventType = "contact_card.deleted"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenCreated                          CallVoiceInitiatedWebhookEventEventType = "api_token.created"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenRenamed                          CallVoiceInitiatedWebhookEventEventType = "api_token.renamed"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceInitiatedWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenExpired                          CallVoiceInitiatedWebhookEventEventType = "api_token.expired"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenActivated                        CallVoiceInitiatedWebhookEventEventType = "api_token.activated"
+	CallVoiceInitiatedWebhookEventEventTypeAPITokenDeleted                          CallVoiceInitiatedWebhookEventEventType = "api_token.deleted"
+	CallVoiceInitiatedWebhookEventEventTypeEnvironmentCreated                       CallVoiceInitiatedWebhookEventEventType = "environment.created"
+	CallVoiceInitiatedWebhookEventEventTypeEnvironmentRenamed                       CallVoiceInitiatedWebhookEventEventType = "environment.renamed"
+	CallVoiceInitiatedWebhookEventEventTypeEnvironmentDeleted                       CallVoiceInitiatedWebhookEventEventType = "environment.deleted"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceInitiatedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceInitiatedWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceInitiatedWebhookEventEventTypeTeamMemberAdded                          CallVoiceInitiatedWebhookEventEventType = "team_member.added"
+	CallVoiceInitiatedWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceInitiatedWebhookEventEventType = "team_member.signed_in"
+	CallVoiceInitiatedWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceInitiatedWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceRingingWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                        `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceRingingWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceRingingWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceRingingWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceRingingWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceRingingWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceRingingWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceRingingWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceRingingWebhookEventEventType string
+
+const (
+	CallVoiceRingingWebhookEventEventTypeCallVoiceInitiated                       CallVoiceRingingWebhookEventEventType = "call_voice.initiated"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceRinging                         CallVoiceRingingWebhookEventEventType = "call_voice.ringing"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceAnswered                        CallVoiceRingingWebhookEventEventType = "call_voice.answered"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceEnded                           CallVoiceRingingWebhookEventEventType = "call_voice.ended"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceFailed                          CallVoiceRingingWebhookEventEventType = "call_voice.failed"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceDeclined                        CallVoiceRingingWebhookEventEventType = "call_voice.declined"
+	CallVoiceRingingWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceRingingWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceRingingWebhookEventEventTypeMessageSent                              CallVoiceRingingWebhookEventEventType = "message.sent"
+	CallVoiceRingingWebhookEventEventTypeMessageReceived                          CallVoiceRingingWebhookEventEventType = "message.received"
+	CallVoiceRingingWebhookEventEventTypeMessageRead                              CallVoiceRingingWebhookEventEventType = "message.read"
+	CallVoiceRingingWebhookEventEventTypeMessageDelivered                         CallVoiceRingingWebhookEventEventType = "message.delivered"
+	CallVoiceRingingWebhookEventEventTypeMessageFailed                            CallVoiceRingingWebhookEventEventType = "message.failed"
+	CallVoiceRingingWebhookEventEventTypeMessageEdited                            CallVoiceRingingWebhookEventEventType = "message.edited"
+	CallVoiceRingingWebhookEventEventTypeReactionAdded                            CallVoiceRingingWebhookEventEventType = "reaction.added"
+	CallVoiceRingingWebhookEventEventTypeReactionRemoved                          CallVoiceRingingWebhookEventEventType = "reaction.removed"
+	CallVoiceRingingWebhookEventEventTypePollReceived                             CallVoiceRingingWebhookEventEventType = "poll.received"
+	CallVoiceRingingWebhookEventEventTypePollFailed                               CallVoiceRingingWebhookEventEventType = "poll.failed"
+	CallVoiceRingingWebhookEventEventTypePollSent                                 CallVoiceRingingWebhookEventEventType = "poll.sent"
+	CallVoiceRingingWebhookEventEventTypePollDelivered                            CallVoiceRingingWebhookEventEventType = "poll.delivered"
+	CallVoiceRingingWebhookEventEventTypePollRead                                 CallVoiceRingingWebhookEventEventType = "poll.read"
+	CallVoiceRingingWebhookEventEventTypePollUpdated                              CallVoiceRingingWebhookEventEventType = "poll.updated"
+	CallVoiceRingingWebhookEventEventTypePollVoteAdded                            CallVoiceRingingWebhookEventEventType = "poll.vote.added"
+	CallVoiceRingingWebhookEventEventTypePollVoteRemoved                          CallVoiceRingingWebhookEventEventType = "poll.vote.removed"
+	CallVoiceRingingWebhookEventEventTypePollReactionAdded                        CallVoiceRingingWebhookEventEventType = "poll.reaction.added"
+	CallVoiceRingingWebhookEventEventTypeParticipantAdded                         CallVoiceRingingWebhookEventEventType = "participant.added"
+	CallVoiceRingingWebhookEventEventTypeParticipantRemoved                       CallVoiceRingingWebhookEventEventType = "participant.removed"
+	CallVoiceRingingWebhookEventEventTypeChatCreated                              CallVoiceRingingWebhookEventEventType = "chat.created"
+	CallVoiceRingingWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceRingingWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceRingingWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceRingingWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceRingingWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceRingingWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceRingingWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceRingingWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceRingingWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceRingingWebhookEventEventType = "chat.background_updated"
+	CallVoiceRingingWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceRingingWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceRingingWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceRingingWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceRingingWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceRingingWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceRingingWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceRingingWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceRingingWebhookEventEventTypePhoneNumberAssigned                      CallVoiceRingingWebhookEventEventType = "phone_number.assigned"
+	CallVoiceRingingWebhookEventEventTypePhoneNumberReleased                      CallVoiceRingingWebhookEventEventType = "phone_number.released"
+	CallVoiceRingingWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceRingingWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceRingingWebhookEventEventTypeContactCardReceived                      CallVoiceRingingWebhookEventEventType = "contact_card.received"
+	CallVoiceRingingWebhookEventEventTypeLocationSharingStarted                   CallVoiceRingingWebhookEventEventType = "location.sharing.started"
+	CallVoiceRingingWebhookEventEventTypeLocationSharingStopped                   CallVoiceRingingWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceRingingWebhookEventEventTypePaymentSucceeded                         CallVoiceRingingWebhookEventEventType = "payment.succeeded"
+	CallVoiceRingingWebhookEventEventTypePaymentCanceled                          CallVoiceRingingWebhookEventEventType = "payment.canceled"
+	CallVoiceRingingWebhookEventEventTypePaymentExpired                           CallVoiceRingingWebhookEventEventType = "payment.expired"
+	CallVoiceRingingWebhookEventEventTypePaymentDeclined                          CallVoiceRingingWebhookEventEventType = "payment.declined"
+	CallVoiceRingingWebhookEventEventTypePaymentAuthorized                        CallVoiceRingingWebhookEventEventType = "payment.authorized"
+	CallVoiceRingingWebhookEventEventTypeConnectionCreated                        CallVoiceRingingWebhookEventEventType = "connection.created"
+	CallVoiceRingingWebhookEventEventTypeConnectionRevoked                        CallVoiceRingingWebhookEventEventType = "connection.revoked"
+	CallVoiceRingingWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceRingingWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceRingingWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceRingingWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceRingingWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceRingingWebhookEventEventType = "environment.line_moved"
+	CallVoiceRingingWebhookEventEventTypeContactCardCreated                       CallVoiceRingingWebhookEventEventType = "contact_card.created"
+	CallVoiceRingingWebhookEventEventTypeContactCardUpdated                       CallVoiceRingingWebhookEventEventType = "contact_card.updated"
+	CallVoiceRingingWebhookEventEventTypeContactCardDeleted                       CallVoiceRingingWebhookEventEventType = "contact_card.deleted"
+	CallVoiceRingingWebhookEventEventTypeAPITokenCreated                          CallVoiceRingingWebhookEventEventType = "api_token.created"
+	CallVoiceRingingWebhookEventEventTypeAPITokenRenamed                          CallVoiceRingingWebhookEventEventType = "api_token.renamed"
+	CallVoiceRingingWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceRingingWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceRingingWebhookEventEventTypeAPITokenExpired                          CallVoiceRingingWebhookEventEventType = "api_token.expired"
+	CallVoiceRingingWebhookEventEventTypeAPITokenActivated                        CallVoiceRingingWebhookEventEventType = "api_token.activated"
+	CallVoiceRingingWebhookEventEventTypeAPITokenDeleted                          CallVoiceRingingWebhookEventEventType = "api_token.deleted"
+	CallVoiceRingingWebhookEventEventTypeEnvironmentCreated                       CallVoiceRingingWebhookEventEventType = "environment.created"
+	CallVoiceRingingWebhookEventEventTypeEnvironmentRenamed                       CallVoiceRingingWebhookEventEventType = "environment.renamed"
+	CallVoiceRingingWebhookEventEventTypeEnvironmentDeleted                       CallVoiceRingingWebhookEventEventType = "environment.deleted"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceRingingWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceRingingWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceRingingWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceRingingWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceRingingWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceRingingWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceRingingWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceRingingWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceRingingWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceRingingWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceRingingWebhookEventEventTypeTeamMemberAdded                          CallVoiceRingingWebhookEventEventType = "team_member.added"
+	CallVoiceRingingWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceRingingWebhookEventEventType = "team_member.signed_in"
+	CallVoiceRingingWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceRingingWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceAnsweredWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceAnsweredWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceAnsweredWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceAnsweredWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceAnsweredWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceAnsweredWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceAnsweredWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceAnsweredWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceAnsweredWebhookEventEventType string
+
+const (
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceInitiated                       CallVoiceAnsweredWebhookEventEventType = "call_voice.initiated"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceRinging                         CallVoiceAnsweredWebhookEventEventType = "call_voice.ringing"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceAnswered                        CallVoiceAnsweredWebhookEventEventType = "call_voice.answered"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceEnded                           CallVoiceAnsweredWebhookEventEventType = "call_voice.ended"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceFailed                          CallVoiceAnsweredWebhookEventEventType = "call_voice.failed"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceDeclined                        CallVoiceAnsweredWebhookEventEventType = "call_voice.declined"
+	CallVoiceAnsweredWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceAnsweredWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceAnsweredWebhookEventEventTypeMessageSent                              CallVoiceAnsweredWebhookEventEventType = "message.sent"
+	CallVoiceAnsweredWebhookEventEventTypeMessageReceived                          CallVoiceAnsweredWebhookEventEventType = "message.received"
+	CallVoiceAnsweredWebhookEventEventTypeMessageRead                              CallVoiceAnsweredWebhookEventEventType = "message.read"
+	CallVoiceAnsweredWebhookEventEventTypeMessageDelivered                         CallVoiceAnsweredWebhookEventEventType = "message.delivered"
+	CallVoiceAnsweredWebhookEventEventTypeMessageFailed                            CallVoiceAnsweredWebhookEventEventType = "message.failed"
+	CallVoiceAnsweredWebhookEventEventTypeMessageEdited                            CallVoiceAnsweredWebhookEventEventType = "message.edited"
+	CallVoiceAnsweredWebhookEventEventTypeReactionAdded                            CallVoiceAnsweredWebhookEventEventType = "reaction.added"
+	CallVoiceAnsweredWebhookEventEventTypeReactionRemoved                          CallVoiceAnsweredWebhookEventEventType = "reaction.removed"
+	CallVoiceAnsweredWebhookEventEventTypePollReceived                             CallVoiceAnsweredWebhookEventEventType = "poll.received"
+	CallVoiceAnsweredWebhookEventEventTypePollFailed                               CallVoiceAnsweredWebhookEventEventType = "poll.failed"
+	CallVoiceAnsweredWebhookEventEventTypePollSent                                 CallVoiceAnsweredWebhookEventEventType = "poll.sent"
+	CallVoiceAnsweredWebhookEventEventTypePollDelivered                            CallVoiceAnsweredWebhookEventEventType = "poll.delivered"
+	CallVoiceAnsweredWebhookEventEventTypePollRead                                 CallVoiceAnsweredWebhookEventEventType = "poll.read"
+	CallVoiceAnsweredWebhookEventEventTypePollUpdated                              CallVoiceAnsweredWebhookEventEventType = "poll.updated"
+	CallVoiceAnsweredWebhookEventEventTypePollVoteAdded                            CallVoiceAnsweredWebhookEventEventType = "poll.vote.added"
+	CallVoiceAnsweredWebhookEventEventTypePollVoteRemoved                          CallVoiceAnsweredWebhookEventEventType = "poll.vote.removed"
+	CallVoiceAnsweredWebhookEventEventTypePollReactionAdded                        CallVoiceAnsweredWebhookEventEventType = "poll.reaction.added"
+	CallVoiceAnsweredWebhookEventEventTypeParticipantAdded                         CallVoiceAnsweredWebhookEventEventType = "participant.added"
+	CallVoiceAnsweredWebhookEventEventTypeParticipantRemoved                       CallVoiceAnsweredWebhookEventEventType = "participant.removed"
+	CallVoiceAnsweredWebhookEventEventTypeChatCreated                              CallVoiceAnsweredWebhookEventEventType = "chat.created"
+	CallVoiceAnsweredWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceAnsweredWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceAnsweredWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceAnsweredWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceAnsweredWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceAnsweredWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceAnsweredWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceAnsweredWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceAnsweredWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceAnsweredWebhookEventEventType = "chat.background_updated"
+	CallVoiceAnsweredWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceAnsweredWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceAnsweredWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceAnsweredWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceAnsweredWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceAnsweredWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceAnsweredWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceAnsweredWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceAnsweredWebhookEventEventTypePhoneNumberAssigned                      CallVoiceAnsweredWebhookEventEventType = "phone_number.assigned"
+	CallVoiceAnsweredWebhookEventEventTypePhoneNumberReleased                      CallVoiceAnsweredWebhookEventEventType = "phone_number.released"
+	CallVoiceAnsweredWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceAnsweredWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceAnsweredWebhookEventEventTypeContactCardReceived                      CallVoiceAnsweredWebhookEventEventType = "contact_card.received"
+	CallVoiceAnsweredWebhookEventEventTypeLocationSharingStarted                   CallVoiceAnsweredWebhookEventEventType = "location.sharing.started"
+	CallVoiceAnsweredWebhookEventEventTypeLocationSharingStopped                   CallVoiceAnsweredWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceAnsweredWebhookEventEventTypePaymentSucceeded                         CallVoiceAnsweredWebhookEventEventType = "payment.succeeded"
+	CallVoiceAnsweredWebhookEventEventTypePaymentCanceled                          CallVoiceAnsweredWebhookEventEventType = "payment.canceled"
+	CallVoiceAnsweredWebhookEventEventTypePaymentExpired                           CallVoiceAnsweredWebhookEventEventType = "payment.expired"
+	CallVoiceAnsweredWebhookEventEventTypePaymentDeclined                          CallVoiceAnsweredWebhookEventEventType = "payment.declined"
+	CallVoiceAnsweredWebhookEventEventTypePaymentAuthorized                        CallVoiceAnsweredWebhookEventEventType = "payment.authorized"
+	CallVoiceAnsweredWebhookEventEventTypeConnectionCreated                        CallVoiceAnsweredWebhookEventEventType = "connection.created"
+	CallVoiceAnsweredWebhookEventEventTypeConnectionRevoked                        CallVoiceAnsweredWebhookEventEventType = "connection.revoked"
+	CallVoiceAnsweredWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceAnsweredWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceAnsweredWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceAnsweredWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceAnsweredWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceAnsweredWebhookEventEventType = "environment.line_moved"
+	CallVoiceAnsweredWebhookEventEventTypeContactCardCreated                       CallVoiceAnsweredWebhookEventEventType = "contact_card.created"
+	CallVoiceAnsweredWebhookEventEventTypeContactCardUpdated                       CallVoiceAnsweredWebhookEventEventType = "contact_card.updated"
+	CallVoiceAnsweredWebhookEventEventTypeContactCardDeleted                       CallVoiceAnsweredWebhookEventEventType = "contact_card.deleted"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenCreated                          CallVoiceAnsweredWebhookEventEventType = "api_token.created"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenRenamed                          CallVoiceAnsweredWebhookEventEventType = "api_token.renamed"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceAnsweredWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenExpired                          CallVoiceAnsweredWebhookEventEventType = "api_token.expired"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenActivated                        CallVoiceAnsweredWebhookEventEventType = "api_token.activated"
+	CallVoiceAnsweredWebhookEventEventTypeAPITokenDeleted                          CallVoiceAnsweredWebhookEventEventType = "api_token.deleted"
+	CallVoiceAnsweredWebhookEventEventTypeEnvironmentCreated                       CallVoiceAnsweredWebhookEventEventType = "environment.created"
+	CallVoiceAnsweredWebhookEventEventTypeEnvironmentRenamed                       CallVoiceAnsweredWebhookEventEventType = "environment.renamed"
+	CallVoiceAnsweredWebhookEventEventTypeEnvironmentDeleted                       CallVoiceAnsweredWebhookEventEventType = "environment.deleted"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceAnsweredWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceAnsweredWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceAnsweredWebhookEventEventTypeTeamMemberAdded                          CallVoiceAnsweredWebhookEventEventType = "team_member.added"
+	CallVoiceAnsweredWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceAnsweredWebhookEventEventType = "team_member.signed_in"
+	CallVoiceAnsweredWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceAnsweredWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceEndedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                      `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceEndedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceEndedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceEndedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceEndedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceEndedWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceEndedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceEndedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceEndedWebhookEventEventType string
+
+const (
+	CallVoiceEndedWebhookEventEventTypeCallVoiceInitiated                       CallVoiceEndedWebhookEventEventType = "call_voice.initiated"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceRinging                         CallVoiceEndedWebhookEventEventType = "call_voice.ringing"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceAnswered                        CallVoiceEndedWebhookEventEventType = "call_voice.answered"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceEnded                           CallVoiceEndedWebhookEventEventType = "call_voice.ended"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceFailed                          CallVoiceEndedWebhookEventEventType = "call_voice.failed"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceDeclined                        CallVoiceEndedWebhookEventEventType = "call_voice.declined"
+	CallVoiceEndedWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceEndedWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceEndedWebhookEventEventTypeMessageSent                              CallVoiceEndedWebhookEventEventType = "message.sent"
+	CallVoiceEndedWebhookEventEventTypeMessageReceived                          CallVoiceEndedWebhookEventEventType = "message.received"
+	CallVoiceEndedWebhookEventEventTypeMessageRead                              CallVoiceEndedWebhookEventEventType = "message.read"
+	CallVoiceEndedWebhookEventEventTypeMessageDelivered                         CallVoiceEndedWebhookEventEventType = "message.delivered"
+	CallVoiceEndedWebhookEventEventTypeMessageFailed                            CallVoiceEndedWebhookEventEventType = "message.failed"
+	CallVoiceEndedWebhookEventEventTypeMessageEdited                            CallVoiceEndedWebhookEventEventType = "message.edited"
+	CallVoiceEndedWebhookEventEventTypeReactionAdded                            CallVoiceEndedWebhookEventEventType = "reaction.added"
+	CallVoiceEndedWebhookEventEventTypeReactionRemoved                          CallVoiceEndedWebhookEventEventType = "reaction.removed"
+	CallVoiceEndedWebhookEventEventTypePollReceived                             CallVoiceEndedWebhookEventEventType = "poll.received"
+	CallVoiceEndedWebhookEventEventTypePollFailed                               CallVoiceEndedWebhookEventEventType = "poll.failed"
+	CallVoiceEndedWebhookEventEventTypePollSent                                 CallVoiceEndedWebhookEventEventType = "poll.sent"
+	CallVoiceEndedWebhookEventEventTypePollDelivered                            CallVoiceEndedWebhookEventEventType = "poll.delivered"
+	CallVoiceEndedWebhookEventEventTypePollRead                                 CallVoiceEndedWebhookEventEventType = "poll.read"
+	CallVoiceEndedWebhookEventEventTypePollUpdated                              CallVoiceEndedWebhookEventEventType = "poll.updated"
+	CallVoiceEndedWebhookEventEventTypePollVoteAdded                            CallVoiceEndedWebhookEventEventType = "poll.vote.added"
+	CallVoiceEndedWebhookEventEventTypePollVoteRemoved                          CallVoiceEndedWebhookEventEventType = "poll.vote.removed"
+	CallVoiceEndedWebhookEventEventTypePollReactionAdded                        CallVoiceEndedWebhookEventEventType = "poll.reaction.added"
+	CallVoiceEndedWebhookEventEventTypeParticipantAdded                         CallVoiceEndedWebhookEventEventType = "participant.added"
+	CallVoiceEndedWebhookEventEventTypeParticipantRemoved                       CallVoiceEndedWebhookEventEventType = "participant.removed"
+	CallVoiceEndedWebhookEventEventTypeChatCreated                              CallVoiceEndedWebhookEventEventType = "chat.created"
+	CallVoiceEndedWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceEndedWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceEndedWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceEndedWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceEndedWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceEndedWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceEndedWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceEndedWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceEndedWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceEndedWebhookEventEventType = "chat.background_updated"
+	CallVoiceEndedWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceEndedWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceEndedWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceEndedWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceEndedWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceEndedWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceEndedWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceEndedWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceEndedWebhookEventEventTypePhoneNumberAssigned                      CallVoiceEndedWebhookEventEventType = "phone_number.assigned"
+	CallVoiceEndedWebhookEventEventTypePhoneNumberReleased                      CallVoiceEndedWebhookEventEventType = "phone_number.released"
+	CallVoiceEndedWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceEndedWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceEndedWebhookEventEventTypeContactCardReceived                      CallVoiceEndedWebhookEventEventType = "contact_card.received"
+	CallVoiceEndedWebhookEventEventTypeLocationSharingStarted                   CallVoiceEndedWebhookEventEventType = "location.sharing.started"
+	CallVoiceEndedWebhookEventEventTypeLocationSharingStopped                   CallVoiceEndedWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceEndedWebhookEventEventTypePaymentSucceeded                         CallVoiceEndedWebhookEventEventType = "payment.succeeded"
+	CallVoiceEndedWebhookEventEventTypePaymentCanceled                          CallVoiceEndedWebhookEventEventType = "payment.canceled"
+	CallVoiceEndedWebhookEventEventTypePaymentExpired                           CallVoiceEndedWebhookEventEventType = "payment.expired"
+	CallVoiceEndedWebhookEventEventTypePaymentDeclined                          CallVoiceEndedWebhookEventEventType = "payment.declined"
+	CallVoiceEndedWebhookEventEventTypePaymentAuthorized                        CallVoiceEndedWebhookEventEventType = "payment.authorized"
+	CallVoiceEndedWebhookEventEventTypeConnectionCreated                        CallVoiceEndedWebhookEventEventType = "connection.created"
+	CallVoiceEndedWebhookEventEventTypeConnectionRevoked                        CallVoiceEndedWebhookEventEventType = "connection.revoked"
+	CallVoiceEndedWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceEndedWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceEndedWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceEndedWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceEndedWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceEndedWebhookEventEventType = "environment.line_moved"
+	CallVoiceEndedWebhookEventEventTypeContactCardCreated                       CallVoiceEndedWebhookEventEventType = "contact_card.created"
+	CallVoiceEndedWebhookEventEventTypeContactCardUpdated                       CallVoiceEndedWebhookEventEventType = "contact_card.updated"
+	CallVoiceEndedWebhookEventEventTypeContactCardDeleted                       CallVoiceEndedWebhookEventEventType = "contact_card.deleted"
+	CallVoiceEndedWebhookEventEventTypeAPITokenCreated                          CallVoiceEndedWebhookEventEventType = "api_token.created"
+	CallVoiceEndedWebhookEventEventTypeAPITokenRenamed                          CallVoiceEndedWebhookEventEventType = "api_token.renamed"
+	CallVoiceEndedWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceEndedWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceEndedWebhookEventEventTypeAPITokenExpired                          CallVoiceEndedWebhookEventEventType = "api_token.expired"
+	CallVoiceEndedWebhookEventEventTypeAPITokenActivated                        CallVoiceEndedWebhookEventEventType = "api_token.activated"
+	CallVoiceEndedWebhookEventEventTypeAPITokenDeleted                          CallVoiceEndedWebhookEventEventType = "api_token.deleted"
+	CallVoiceEndedWebhookEventEventTypeEnvironmentCreated                       CallVoiceEndedWebhookEventEventType = "environment.created"
+	CallVoiceEndedWebhookEventEventTypeEnvironmentRenamed                       CallVoiceEndedWebhookEventEventType = "environment.renamed"
+	CallVoiceEndedWebhookEventEventTypeEnvironmentDeleted                       CallVoiceEndedWebhookEventEventType = "environment.deleted"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceEndedWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceEndedWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceEndedWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceEndedWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceEndedWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceEndedWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceEndedWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceEndedWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceEndedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceEndedWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceEndedWebhookEventEventTypeTeamMemberAdded                          CallVoiceEndedWebhookEventEventType = "team_member.added"
+	CallVoiceEndedWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceEndedWebhookEventEventType = "team_member.signed_in"
+	CallVoiceEndedWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceEndedWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceFailedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                       `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceFailedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceFailedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceFailedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceFailedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceFailedWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceFailedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceFailedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceFailedWebhookEventEventType string
+
+const (
+	CallVoiceFailedWebhookEventEventTypeCallVoiceInitiated                       CallVoiceFailedWebhookEventEventType = "call_voice.initiated"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceRinging                         CallVoiceFailedWebhookEventEventType = "call_voice.ringing"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceAnswered                        CallVoiceFailedWebhookEventEventType = "call_voice.answered"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceEnded                           CallVoiceFailedWebhookEventEventType = "call_voice.ended"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceFailed                          CallVoiceFailedWebhookEventEventType = "call_voice.failed"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceDeclined                        CallVoiceFailedWebhookEventEventType = "call_voice.declined"
+	CallVoiceFailedWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceFailedWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceFailedWebhookEventEventTypeMessageSent                              CallVoiceFailedWebhookEventEventType = "message.sent"
+	CallVoiceFailedWebhookEventEventTypeMessageReceived                          CallVoiceFailedWebhookEventEventType = "message.received"
+	CallVoiceFailedWebhookEventEventTypeMessageRead                              CallVoiceFailedWebhookEventEventType = "message.read"
+	CallVoiceFailedWebhookEventEventTypeMessageDelivered                         CallVoiceFailedWebhookEventEventType = "message.delivered"
+	CallVoiceFailedWebhookEventEventTypeMessageFailed                            CallVoiceFailedWebhookEventEventType = "message.failed"
+	CallVoiceFailedWebhookEventEventTypeMessageEdited                            CallVoiceFailedWebhookEventEventType = "message.edited"
+	CallVoiceFailedWebhookEventEventTypeReactionAdded                            CallVoiceFailedWebhookEventEventType = "reaction.added"
+	CallVoiceFailedWebhookEventEventTypeReactionRemoved                          CallVoiceFailedWebhookEventEventType = "reaction.removed"
+	CallVoiceFailedWebhookEventEventTypePollReceived                             CallVoiceFailedWebhookEventEventType = "poll.received"
+	CallVoiceFailedWebhookEventEventTypePollFailed                               CallVoiceFailedWebhookEventEventType = "poll.failed"
+	CallVoiceFailedWebhookEventEventTypePollSent                                 CallVoiceFailedWebhookEventEventType = "poll.sent"
+	CallVoiceFailedWebhookEventEventTypePollDelivered                            CallVoiceFailedWebhookEventEventType = "poll.delivered"
+	CallVoiceFailedWebhookEventEventTypePollRead                                 CallVoiceFailedWebhookEventEventType = "poll.read"
+	CallVoiceFailedWebhookEventEventTypePollUpdated                              CallVoiceFailedWebhookEventEventType = "poll.updated"
+	CallVoiceFailedWebhookEventEventTypePollVoteAdded                            CallVoiceFailedWebhookEventEventType = "poll.vote.added"
+	CallVoiceFailedWebhookEventEventTypePollVoteRemoved                          CallVoiceFailedWebhookEventEventType = "poll.vote.removed"
+	CallVoiceFailedWebhookEventEventTypePollReactionAdded                        CallVoiceFailedWebhookEventEventType = "poll.reaction.added"
+	CallVoiceFailedWebhookEventEventTypeParticipantAdded                         CallVoiceFailedWebhookEventEventType = "participant.added"
+	CallVoiceFailedWebhookEventEventTypeParticipantRemoved                       CallVoiceFailedWebhookEventEventType = "participant.removed"
+	CallVoiceFailedWebhookEventEventTypeChatCreated                              CallVoiceFailedWebhookEventEventType = "chat.created"
+	CallVoiceFailedWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceFailedWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceFailedWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceFailedWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceFailedWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceFailedWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceFailedWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceFailedWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceFailedWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceFailedWebhookEventEventType = "chat.background_updated"
+	CallVoiceFailedWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceFailedWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceFailedWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceFailedWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceFailedWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceFailedWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceFailedWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceFailedWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceFailedWebhookEventEventTypePhoneNumberAssigned                      CallVoiceFailedWebhookEventEventType = "phone_number.assigned"
+	CallVoiceFailedWebhookEventEventTypePhoneNumberReleased                      CallVoiceFailedWebhookEventEventType = "phone_number.released"
+	CallVoiceFailedWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceFailedWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceFailedWebhookEventEventTypeContactCardReceived                      CallVoiceFailedWebhookEventEventType = "contact_card.received"
+	CallVoiceFailedWebhookEventEventTypeLocationSharingStarted                   CallVoiceFailedWebhookEventEventType = "location.sharing.started"
+	CallVoiceFailedWebhookEventEventTypeLocationSharingStopped                   CallVoiceFailedWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceFailedWebhookEventEventTypePaymentSucceeded                         CallVoiceFailedWebhookEventEventType = "payment.succeeded"
+	CallVoiceFailedWebhookEventEventTypePaymentCanceled                          CallVoiceFailedWebhookEventEventType = "payment.canceled"
+	CallVoiceFailedWebhookEventEventTypePaymentExpired                           CallVoiceFailedWebhookEventEventType = "payment.expired"
+	CallVoiceFailedWebhookEventEventTypePaymentDeclined                          CallVoiceFailedWebhookEventEventType = "payment.declined"
+	CallVoiceFailedWebhookEventEventTypePaymentAuthorized                        CallVoiceFailedWebhookEventEventType = "payment.authorized"
+	CallVoiceFailedWebhookEventEventTypeConnectionCreated                        CallVoiceFailedWebhookEventEventType = "connection.created"
+	CallVoiceFailedWebhookEventEventTypeConnectionRevoked                        CallVoiceFailedWebhookEventEventType = "connection.revoked"
+	CallVoiceFailedWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceFailedWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceFailedWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceFailedWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceFailedWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceFailedWebhookEventEventType = "environment.line_moved"
+	CallVoiceFailedWebhookEventEventTypeContactCardCreated                       CallVoiceFailedWebhookEventEventType = "contact_card.created"
+	CallVoiceFailedWebhookEventEventTypeContactCardUpdated                       CallVoiceFailedWebhookEventEventType = "contact_card.updated"
+	CallVoiceFailedWebhookEventEventTypeContactCardDeleted                       CallVoiceFailedWebhookEventEventType = "contact_card.deleted"
+	CallVoiceFailedWebhookEventEventTypeAPITokenCreated                          CallVoiceFailedWebhookEventEventType = "api_token.created"
+	CallVoiceFailedWebhookEventEventTypeAPITokenRenamed                          CallVoiceFailedWebhookEventEventType = "api_token.renamed"
+	CallVoiceFailedWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceFailedWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceFailedWebhookEventEventTypeAPITokenExpired                          CallVoiceFailedWebhookEventEventType = "api_token.expired"
+	CallVoiceFailedWebhookEventEventTypeAPITokenActivated                        CallVoiceFailedWebhookEventEventType = "api_token.activated"
+	CallVoiceFailedWebhookEventEventTypeAPITokenDeleted                          CallVoiceFailedWebhookEventEventType = "api_token.deleted"
+	CallVoiceFailedWebhookEventEventTypeEnvironmentCreated                       CallVoiceFailedWebhookEventEventType = "environment.created"
+	CallVoiceFailedWebhookEventEventTypeEnvironmentRenamed                       CallVoiceFailedWebhookEventEventType = "environment.renamed"
+	CallVoiceFailedWebhookEventEventTypeEnvironmentDeleted                       CallVoiceFailedWebhookEventEventType = "environment.deleted"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceFailedWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceFailedWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceFailedWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceFailedWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceFailedWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceFailedWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceFailedWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceFailedWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceFailedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceFailedWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceFailedWebhookEventEventTypeTeamMemberAdded                          CallVoiceFailedWebhookEventEventType = "team_member.added"
+	CallVoiceFailedWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceFailedWebhookEventEventType = "team_member.signed_in"
+	CallVoiceFailedWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceFailedWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceDeclinedWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceDeclinedWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceDeclinedWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceDeclinedWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceDeclinedWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceDeclinedWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceDeclinedWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceDeclinedWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceDeclinedWebhookEventEventType string
+
+const (
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceInitiated                       CallVoiceDeclinedWebhookEventEventType = "call_voice.initiated"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceRinging                         CallVoiceDeclinedWebhookEventEventType = "call_voice.ringing"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceAnswered                        CallVoiceDeclinedWebhookEventEventType = "call_voice.answered"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceEnded                           CallVoiceDeclinedWebhookEventEventType = "call_voice.ended"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceFailed                          CallVoiceDeclinedWebhookEventEventType = "call_voice.failed"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceDeclined                        CallVoiceDeclinedWebhookEventEventType = "call_voice.declined"
+	CallVoiceDeclinedWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceDeclinedWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceDeclinedWebhookEventEventTypeMessageSent                              CallVoiceDeclinedWebhookEventEventType = "message.sent"
+	CallVoiceDeclinedWebhookEventEventTypeMessageReceived                          CallVoiceDeclinedWebhookEventEventType = "message.received"
+	CallVoiceDeclinedWebhookEventEventTypeMessageRead                              CallVoiceDeclinedWebhookEventEventType = "message.read"
+	CallVoiceDeclinedWebhookEventEventTypeMessageDelivered                         CallVoiceDeclinedWebhookEventEventType = "message.delivered"
+	CallVoiceDeclinedWebhookEventEventTypeMessageFailed                            CallVoiceDeclinedWebhookEventEventType = "message.failed"
+	CallVoiceDeclinedWebhookEventEventTypeMessageEdited                            CallVoiceDeclinedWebhookEventEventType = "message.edited"
+	CallVoiceDeclinedWebhookEventEventTypeReactionAdded                            CallVoiceDeclinedWebhookEventEventType = "reaction.added"
+	CallVoiceDeclinedWebhookEventEventTypeReactionRemoved                          CallVoiceDeclinedWebhookEventEventType = "reaction.removed"
+	CallVoiceDeclinedWebhookEventEventTypePollReceived                             CallVoiceDeclinedWebhookEventEventType = "poll.received"
+	CallVoiceDeclinedWebhookEventEventTypePollFailed                               CallVoiceDeclinedWebhookEventEventType = "poll.failed"
+	CallVoiceDeclinedWebhookEventEventTypePollSent                                 CallVoiceDeclinedWebhookEventEventType = "poll.sent"
+	CallVoiceDeclinedWebhookEventEventTypePollDelivered                            CallVoiceDeclinedWebhookEventEventType = "poll.delivered"
+	CallVoiceDeclinedWebhookEventEventTypePollRead                                 CallVoiceDeclinedWebhookEventEventType = "poll.read"
+	CallVoiceDeclinedWebhookEventEventTypePollUpdated                              CallVoiceDeclinedWebhookEventEventType = "poll.updated"
+	CallVoiceDeclinedWebhookEventEventTypePollVoteAdded                            CallVoiceDeclinedWebhookEventEventType = "poll.vote.added"
+	CallVoiceDeclinedWebhookEventEventTypePollVoteRemoved                          CallVoiceDeclinedWebhookEventEventType = "poll.vote.removed"
+	CallVoiceDeclinedWebhookEventEventTypePollReactionAdded                        CallVoiceDeclinedWebhookEventEventType = "poll.reaction.added"
+	CallVoiceDeclinedWebhookEventEventTypeParticipantAdded                         CallVoiceDeclinedWebhookEventEventType = "participant.added"
+	CallVoiceDeclinedWebhookEventEventTypeParticipantRemoved                       CallVoiceDeclinedWebhookEventEventType = "participant.removed"
+	CallVoiceDeclinedWebhookEventEventTypeChatCreated                              CallVoiceDeclinedWebhookEventEventType = "chat.created"
+	CallVoiceDeclinedWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceDeclinedWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceDeclinedWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceDeclinedWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceDeclinedWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceDeclinedWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceDeclinedWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceDeclinedWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceDeclinedWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceDeclinedWebhookEventEventType = "chat.background_updated"
+	CallVoiceDeclinedWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceDeclinedWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceDeclinedWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceDeclinedWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceDeclinedWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceDeclinedWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceDeclinedWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceDeclinedWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceDeclinedWebhookEventEventTypePhoneNumberAssigned                      CallVoiceDeclinedWebhookEventEventType = "phone_number.assigned"
+	CallVoiceDeclinedWebhookEventEventTypePhoneNumberReleased                      CallVoiceDeclinedWebhookEventEventType = "phone_number.released"
+	CallVoiceDeclinedWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceDeclinedWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceDeclinedWebhookEventEventTypeContactCardReceived                      CallVoiceDeclinedWebhookEventEventType = "contact_card.received"
+	CallVoiceDeclinedWebhookEventEventTypeLocationSharingStarted                   CallVoiceDeclinedWebhookEventEventType = "location.sharing.started"
+	CallVoiceDeclinedWebhookEventEventTypeLocationSharingStopped                   CallVoiceDeclinedWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceDeclinedWebhookEventEventTypePaymentSucceeded                         CallVoiceDeclinedWebhookEventEventType = "payment.succeeded"
+	CallVoiceDeclinedWebhookEventEventTypePaymentCanceled                          CallVoiceDeclinedWebhookEventEventType = "payment.canceled"
+	CallVoiceDeclinedWebhookEventEventTypePaymentExpired                           CallVoiceDeclinedWebhookEventEventType = "payment.expired"
+	CallVoiceDeclinedWebhookEventEventTypePaymentDeclined                          CallVoiceDeclinedWebhookEventEventType = "payment.declined"
+	CallVoiceDeclinedWebhookEventEventTypePaymentAuthorized                        CallVoiceDeclinedWebhookEventEventType = "payment.authorized"
+	CallVoiceDeclinedWebhookEventEventTypeConnectionCreated                        CallVoiceDeclinedWebhookEventEventType = "connection.created"
+	CallVoiceDeclinedWebhookEventEventTypeConnectionRevoked                        CallVoiceDeclinedWebhookEventEventType = "connection.revoked"
+	CallVoiceDeclinedWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceDeclinedWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceDeclinedWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceDeclinedWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceDeclinedWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceDeclinedWebhookEventEventType = "environment.line_moved"
+	CallVoiceDeclinedWebhookEventEventTypeContactCardCreated                       CallVoiceDeclinedWebhookEventEventType = "contact_card.created"
+	CallVoiceDeclinedWebhookEventEventTypeContactCardUpdated                       CallVoiceDeclinedWebhookEventEventType = "contact_card.updated"
+	CallVoiceDeclinedWebhookEventEventTypeContactCardDeleted                       CallVoiceDeclinedWebhookEventEventType = "contact_card.deleted"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenCreated                          CallVoiceDeclinedWebhookEventEventType = "api_token.created"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenRenamed                          CallVoiceDeclinedWebhookEventEventType = "api_token.renamed"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceDeclinedWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenExpired                          CallVoiceDeclinedWebhookEventEventType = "api_token.expired"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenActivated                        CallVoiceDeclinedWebhookEventEventType = "api_token.activated"
+	CallVoiceDeclinedWebhookEventEventTypeAPITokenDeleted                          CallVoiceDeclinedWebhookEventEventType = "api_token.deleted"
+	CallVoiceDeclinedWebhookEventEventTypeEnvironmentCreated                       CallVoiceDeclinedWebhookEventEventType = "environment.created"
+	CallVoiceDeclinedWebhookEventEventTypeEnvironmentRenamed                       CallVoiceDeclinedWebhookEventEventType = "environment.renamed"
+	CallVoiceDeclinedWebhookEventEventTypeEnvironmentDeleted                       CallVoiceDeclinedWebhookEventEventType = "environment.deleted"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceDeclinedWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceDeclinedWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceDeclinedWebhookEventEventTypeTeamMemberAdded                          CallVoiceDeclinedWebhookEventEventType = "team_member.added"
+	CallVoiceDeclinedWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceDeclinedWebhookEventEventType = "team_member.signed_in"
+	CallVoiceDeclinedWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceDeclinedWebhookEventEventType = "team_member.signed_out"
+)
+
+type CallVoiceNoAnswerWebhookEvent struct {
+	// API version for the webhook payload format
+	APIVersion string `json:"api_version" api:"required"`
+	// When the event was created
+	CreatedAt time.Time                         `json:"created_at" api:"required" format:"date-time"`
+	Data      CallVoiceNoAnswerWebhookEventData `json:"data" api:"required"`
+	// Unique identifier for this event (for deduplication)
+	EventID string `json:"event_id" api:"required" format:"uuid"`
+	// Any of "call_voice.initiated", "call_voice.ringing", "call_voice.answered",
+	// "call_voice.ended", "call_voice.failed", "call_voice.declined",
+	// "call_voice.no_answer", "message.sent", "message.received", "message.read",
+	// "message.delivered", "message.failed", "message.edited", "reaction.added",
+	// "reaction.removed", "poll.received", "poll.failed", "poll.sent",
+	// "poll.delivered", "poll.read", "poll.updated", "poll.vote.added",
+	// "poll.vote.removed", "poll.reaction.added", "participant.added",
+	// "participant.removed", "chat.created", "chat.group_name_updated",
+	// "chat.group_icon_updated", "chat.group_name_update_failed",
+	// "chat.group_icon_update_failed", "chat.background_updated",
+	// "chat.background_update_failed", "chat.typing_indicator.started",
+	// "chat.typing_indicator.stopped", "phone_number.status_updated",
+	// "phone_number.assigned", "phone_number.released",
+	// "phone_number.line_type_updated", "contact_card.received",
+	// "location.sharing.started", "location.sharing.stopped", "payment.succeeded",
+	// "payment.canceled", "payment.expired", "payment.declined", "payment.authorized",
+	// "connection.created", "connection.revoked", "zero_day_retention.updated",
+	// "phone_number.forwarding_updated", "environment.line_moved",
+	// "contact_card.created", "contact_card.updated", "contact_card.deleted",
+	// "api_token.created", "api_token.renamed", "api_token.expiry_scheduled",
+	// "api_token.expired", "api_token.activated", "api_token.deleted",
+	// "environment.created", "environment.renamed", "environment.deleted",
+	// "webhook_subscription.created", "webhook_subscription.deleted",
+	// "webhook_subscription.target_url_changed", "webhook_subscription.enabled",
+	// "webhook_subscription.disabled", "webhook_subscription.events.updated",
+	// "webhook_subscription.phone_numbers.updated",
+	// "webhook_subscription.routing_headers_set",
+	// "webhook_subscription.routing_headers_cleared", "team_member.added",
+	// "team_member.signed_in", "team_member.signed_out".
+	EventType CallVoiceNoAnswerWebhookEventEventType `json:"event_type" api:"required"`
+	// Partner identifier. Present on all webhooks for cross-referencing.
+	PartnerID string `json:"partner_id" api:"required"`
+	// Trace ID for debugging and correlation across systems.
+	TraceID string `json:"trace_id" api:"required"`
+	// Date-based webhook payload version. Determined by the `?version=` query
+	// parameter in your webhook subscription URL. If no version parameter is
+	// specified, defaults based on subscription creation date.
+	WebhookVersion string `json:"webhook_version" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		APIVersion     respjson.Field
+		CreatedAt      respjson.Field
+		Data           respjson.Field
+		EventID        respjson.Field
+		EventType      respjson.Field
+		PartnerID      respjson.Field
+		TraceID        respjson.Field
+		WebhookVersion respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceNoAnswerWebhookEvent) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceNoAnswerWebhookEvent) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceNoAnswerWebhookEventData struct {
+	// Carrier voice call ID
+	ID string `json:"id" api:"required" format:"uuid"`
+	// Any of "inbound".
+	Direction string `json:"direction" api:"required"`
+	// External caller, E.164
+	From string `json:"from" api:"required"`
+	// Terminal call outcome. Null on progress events (initiated/ringing/answered); set
+	// once the call ends.
+	//
+	// Any of "completed", "busy", "no_answer", "failed", "canceled".
+	Status string `json:"status" api:"required"`
+	// Your line that was called, E.164
+	To        string    `json:"to" api:"required"`
+	EndedAt   time.Time `json:"ended_at" api:"nullable" format:"date-time"`
+	StartedAt time.Time `json:"started_at" api:"nullable" format:"date-time"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Direction   respjson.Field
+		From        respjson.Field
+		Status      respjson.Field
+		To          respjson.Field
+		EndedAt     respjson.Field
+		StartedAt   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r CallVoiceNoAnswerWebhookEventData) RawJSON() string { return r.JSON.raw }
+func (r *CallVoiceNoAnswerWebhookEventData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type CallVoiceNoAnswerWebhookEventEventType string
+
+const (
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceInitiated                       CallVoiceNoAnswerWebhookEventEventType = "call_voice.initiated"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceRinging                         CallVoiceNoAnswerWebhookEventEventType = "call_voice.ringing"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceAnswered                        CallVoiceNoAnswerWebhookEventEventType = "call_voice.answered"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceEnded                           CallVoiceNoAnswerWebhookEventEventType = "call_voice.ended"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceFailed                          CallVoiceNoAnswerWebhookEventEventType = "call_voice.failed"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceDeclined                        CallVoiceNoAnswerWebhookEventEventType = "call_voice.declined"
+	CallVoiceNoAnswerWebhookEventEventTypeCallVoiceNoAnswer                        CallVoiceNoAnswerWebhookEventEventType = "call_voice.no_answer"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageSent                              CallVoiceNoAnswerWebhookEventEventType = "message.sent"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageReceived                          CallVoiceNoAnswerWebhookEventEventType = "message.received"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageRead                              CallVoiceNoAnswerWebhookEventEventType = "message.read"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageDelivered                         CallVoiceNoAnswerWebhookEventEventType = "message.delivered"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageFailed                            CallVoiceNoAnswerWebhookEventEventType = "message.failed"
+	CallVoiceNoAnswerWebhookEventEventTypeMessageEdited                            CallVoiceNoAnswerWebhookEventEventType = "message.edited"
+	CallVoiceNoAnswerWebhookEventEventTypeReactionAdded                            CallVoiceNoAnswerWebhookEventEventType = "reaction.added"
+	CallVoiceNoAnswerWebhookEventEventTypeReactionRemoved                          CallVoiceNoAnswerWebhookEventEventType = "reaction.removed"
+	CallVoiceNoAnswerWebhookEventEventTypePollReceived                             CallVoiceNoAnswerWebhookEventEventType = "poll.received"
+	CallVoiceNoAnswerWebhookEventEventTypePollFailed                               CallVoiceNoAnswerWebhookEventEventType = "poll.failed"
+	CallVoiceNoAnswerWebhookEventEventTypePollSent                                 CallVoiceNoAnswerWebhookEventEventType = "poll.sent"
+	CallVoiceNoAnswerWebhookEventEventTypePollDelivered                            CallVoiceNoAnswerWebhookEventEventType = "poll.delivered"
+	CallVoiceNoAnswerWebhookEventEventTypePollRead                                 CallVoiceNoAnswerWebhookEventEventType = "poll.read"
+	CallVoiceNoAnswerWebhookEventEventTypePollUpdated                              CallVoiceNoAnswerWebhookEventEventType = "poll.updated"
+	CallVoiceNoAnswerWebhookEventEventTypePollVoteAdded                            CallVoiceNoAnswerWebhookEventEventType = "poll.vote.added"
+	CallVoiceNoAnswerWebhookEventEventTypePollVoteRemoved                          CallVoiceNoAnswerWebhookEventEventType = "poll.vote.removed"
+	CallVoiceNoAnswerWebhookEventEventTypePollReactionAdded                        CallVoiceNoAnswerWebhookEventEventType = "poll.reaction.added"
+	CallVoiceNoAnswerWebhookEventEventTypeParticipantAdded                         CallVoiceNoAnswerWebhookEventEventType = "participant.added"
+	CallVoiceNoAnswerWebhookEventEventTypeParticipantRemoved                       CallVoiceNoAnswerWebhookEventEventType = "participant.removed"
+	CallVoiceNoAnswerWebhookEventEventTypeChatCreated                              CallVoiceNoAnswerWebhookEventEventType = "chat.created"
+	CallVoiceNoAnswerWebhookEventEventTypeChatGroupNameUpdated                     CallVoiceNoAnswerWebhookEventEventType = "chat.group_name_updated"
+	CallVoiceNoAnswerWebhookEventEventTypeChatGroupIconUpdated                     CallVoiceNoAnswerWebhookEventEventType = "chat.group_icon_updated"
+	CallVoiceNoAnswerWebhookEventEventTypeChatGroupNameUpdateFailed                CallVoiceNoAnswerWebhookEventEventType = "chat.group_name_update_failed"
+	CallVoiceNoAnswerWebhookEventEventTypeChatGroupIconUpdateFailed                CallVoiceNoAnswerWebhookEventEventType = "chat.group_icon_update_failed"
+	CallVoiceNoAnswerWebhookEventEventTypeChatBackgroundUpdated                    CallVoiceNoAnswerWebhookEventEventType = "chat.background_updated"
+	CallVoiceNoAnswerWebhookEventEventTypeChatBackgroundUpdateFailed               CallVoiceNoAnswerWebhookEventEventType = "chat.background_update_failed"
+	CallVoiceNoAnswerWebhookEventEventTypeChatTypingIndicatorStarted               CallVoiceNoAnswerWebhookEventEventType = "chat.typing_indicator.started"
+	CallVoiceNoAnswerWebhookEventEventTypeChatTypingIndicatorStopped               CallVoiceNoAnswerWebhookEventEventType = "chat.typing_indicator.stopped"
+	CallVoiceNoAnswerWebhookEventEventTypePhoneNumberStatusUpdated                 CallVoiceNoAnswerWebhookEventEventType = "phone_number.status_updated"
+	CallVoiceNoAnswerWebhookEventEventTypePhoneNumberAssigned                      CallVoiceNoAnswerWebhookEventEventType = "phone_number.assigned"
+	CallVoiceNoAnswerWebhookEventEventTypePhoneNumberReleased                      CallVoiceNoAnswerWebhookEventEventType = "phone_number.released"
+	CallVoiceNoAnswerWebhookEventEventTypePhoneNumberLineTypeUpdated               CallVoiceNoAnswerWebhookEventEventType = "phone_number.line_type_updated"
+	CallVoiceNoAnswerWebhookEventEventTypeContactCardReceived                      CallVoiceNoAnswerWebhookEventEventType = "contact_card.received"
+	CallVoiceNoAnswerWebhookEventEventTypeLocationSharingStarted                   CallVoiceNoAnswerWebhookEventEventType = "location.sharing.started"
+	CallVoiceNoAnswerWebhookEventEventTypeLocationSharingStopped                   CallVoiceNoAnswerWebhookEventEventType = "location.sharing.stopped"
+	CallVoiceNoAnswerWebhookEventEventTypePaymentSucceeded                         CallVoiceNoAnswerWebhookEventEventType = "payment.succeeded"
+	CallVoiceNoAnswerWebhookEventEventTypePaymentCanceled                          CallVoiceNoAnswerWebhookEventEventType = "payment.canceled"
+	CallVoiceNoAnswerWebhookEventEventTypePaymentExpired                           CallVoiceNoAnswerWebhookEventEventType = "payment.expired"
+	CallVoiceNoAnswerWebhookEventEventTypePaymentDeclined                          CallVoiceNoAnswerWebhookEventEventType = "payment.declined"
+	CallVoiceNoAnswerWebhookEventEventTypePaymentAuthorized                        CallVoiceNoAnswerWebhookEventEventType = "payment.authorized"
+	CallVoiceNoAnswerWebhookEventEventTypeConnectionCreated                        CallVoiceNoAnswerWebhookEventEventType = "connection.created"
+	CallVoiceNoAnswerWebhookEventEventTypeConnectionRevoked                        CallVoiceNoAnswerWebhookEventEventType = "connection.revoked"
+	CallVoiceNoAnswerWebhookEventEventTypeZeroDayRetentionUpdated                  CallVoiceNoAnswerWebhookEventEventType = "zero_day_retention.updated"
+	CallVoiceNoAnswerWebhookEventEventTypePhoneNumberForwardingUpdated             CallVoiceNoAnswerWebhookEventEventType = "phone_number.forwarding_updated"
+	CallVoiceNoAnswerWebhookEventEventTypeEnvironmentLineMoved                     CallVoiceNoAnswerWebhookEventEventType = "environment.line_moved"
+	CallVoiceNoAnswerWebhookEventEventTypeContactCardCreated                       CallVoiceNoAnswerWebhookEventEventType = "contact_card.created"
+	CallVoiceNoAnswerWebhookEventEventTypeContactCardUpdated                       CallVoiceNoAnswerWebhookEventEventType = "contact_card.updated"
+	CallVoiceNoAnswerWebhookEventEventTypeContactCardDeleted                       CallVoiceNoAnswerWebhookEventEventType = "contact_card.deleted"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenCreated                          CallVoiceNoAnswerWebhookEventEventType = "api_token.created"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenRenamed                          CallVoiceNoAnswerWebhookEventEventType = "api_token.renamed"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenExpiryScheduled                  CallVoiceNoAnswerWebhookEventEventType = "api_token.expiry_scheduled"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenExpired                          CallVoiceNoAnswerWebhookEventEventType = "api_token.expired"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenActivated                        CallVoiceNoAnswerWebhookEventEventType = "api_token.activated"
+	CallVoiceNoAnswerWebhookEventEventTypeAPITokenDeleted                          CallVoiceNoAnswerWebhookEventEventType = "api_token.deleted"
+	CallVoiceNoAnswerWebhookEventEventTypeEnvironmentCreated                       CallVoiceNoAnswerWebhookEventEventType = "environment.created"
+	CallVoiceNoAnswerWebhookEventEventTypeEnvironmentRenamed                       CallVoiceNoAnswerWebhookEventEventType = "environment.renamed"
+	CallVoiceNoAnswerWebhookEventEventTypeEnvironmentDeleted                       CallVoiceNoAnswerWebhookEventEventType = "environment.deleted"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionCreated               CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.created"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionDeleted               CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.deleted"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionTargetURLChanged      CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.target_url_changed"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionEnabled               CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.enabled"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionDisabled              CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.disabled"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionEventsUpdated         CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.events.updated"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionPhoneNumbersUpdated   CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.phone_numbers.updated"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionRoutingHeadersSet     CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.routing_headers_set"
+	CallVoiceNoAnswerWebhookEventEventTypeWebhookSubscriptionRoutingHeadersCleared CallVoiceNoAnswerWebhookEventEventType = "webhook_subscription.routing_headers_cleared"
+	CallVoiceNoAnswerWebhookEventEventTypeTeamMemberAdded                          CallVoiceNoAnswerWebhookEventEventType = "team_member.added"
+	CallVoiceNoAnswerWebhookEventEventTypeTeamMemberSignedIn                       CallVoiceNoAnswerWebhookEventEventType = "team_member.signed_in"
+	CallVoiceNoAnswerWebhookEventEventTypeTeamMemberSignedOut                      CallVoiceNoAnswerWebhookEventEventType = "team_member.signed_out"
 )
 
 // UnwrapWebhookEventUnion contains all possible properties and values from
@@ -21413,12 +22608,12 @@ const (
 // [ChatTypingIndicatorStoppedWebhookEvent], [ChatBackgroundUpdatedWebhookEvent],
 // [ChatBackgroundUpdateFailedWebhookEvent], [ContactCardReceivedWebhookEvent],
 // [PhoneNumberStatusUpdatedWebhookEvent], [PhoneNumberAssignedWebhookEvent],
-// [PhoneNumberReleasedWebhookEvent], [ConnectionCreatedWebhookEvent],
-// [ConnectionRevokedWebhookEvent], [LocationSharingStartedWebhookEvent],
-// [LocationSharingStoppedWebhookEvent], [PaymentAuthorizedWebhookEvent],
-// [PaymentCanceledWebhookEvent], [PaymentDeclinedWebhookEvent],
-// [PaymentExpiredWebhookEvent], [PaymentSucceededWebhookEvent],
-// [ZeroDayRetentionUpdatedWebhookEvent],
+// [PhoneNumberReleasedWebhookEvent], [PhoneNumberLineTypeUpdatedWebhookEvent],
+// [ConnectionCreatedWebhookEvent], [ConnectionRevokedWebhookEvent],
+// [LocationSharingStartedWebhookEvent], [LocationSharingStoppedWebhookEvent],
+// [PaymentAuthorizedWebhookEvent], [PaymentCanceledWebhookEvent],
+// [PaymentDeclinedWebhookEvent], [PaymentExpiredWebhookEvent],
+// [PaymentSucceededWebhookEvent], [ZeroDayRetentionUpdatedWebhookEvent],
 // [PhoneNumberForwardingUpdatedWebhookEvent], [EnvironmentLineMovedWebhookEvent],
 // [ContactCardCreatedWebhookEvent], [ContactCardUpdatedWebhookEvent],
 // [ContactCardDeletedWebhookEvent], [APITokenCreatedWebhookEvent],
@@ -21436,7 +22631,10 @@ const (
 // [WebhookSubscriptionRoutingHeadersSetWebhookEvent],
 // [WebhookSubscriptionRoutingHeadersClearedWebhookEvent],
 // [TeamMemberAddedWebhookEvent], [TeamMemberSignedInWebhookEvent],
-// [TeamMemberSignedOutWebhookEvent].
+// [TeamMemberSignedOutWebhookEvent], [CallVoiceInitiatedWebhookEvent],
+// [CallVoiceRingingWebhookEvent], [CallVoiceAnsweredWebhookEvent],
+// [CallVoiceEndedWebhookEvent], [CallVoiceFailedWebhookEvent],
+// [CallVoiceDeclinedWebhookEvent], [CallVoiceNoAnswerWebhookEvent].
 //
 // Use the [UnwrapWebhookEventUnion.AsAny] method to switch on the variant.
 //
@@ -21462,6 +22660,7 @@ type UnwrapWebhookEventUnion struct {
 	// [ContactCardReceivedWebhookEventData],
 	// [PhoneNumberStatusUpdatedWebhookEventData],
 	// [PhoneNumberAssignedWebhookEventData], [PhoneNumberReleasedWebhookEventData],
+	// [PhoneNumberLineTypeUpdatedWebhookEventData],
 	// [ConnectionCreatedWebhookEventData], [ConnectionRevokedWebhookEventData],
 	// [LocationSharingStartedWebhookEventData],
 	// [LocationSharingStoppedWebhookEventData], [PaymentAuthorizedWebhookEventData],
@@ -21486,14 +22685,17 @@ type UnwrapWebhookEventUnion struct {
 	// [WebhookSubscriptionRoutingHeadersSetWebhookEventData],
 	// [WebhookSubscriptionRoutingHeadersClearedWebhookEventData],
 	// [TeamMemberAddedWebhookEventData], [TeamMemberSignedInWebhookEventData],
-	// [TeamMemberSignedOutWebhookEventData]
+	// [TeamMemberSignedOutWebhookEventData], [CallVoiceInitiatedWebhookEventData],
+	// [CallVoiceRingingWebhookEventData], [CallVoiceAnsweredWebhookEventData],
+	// [CallVoiceEndedWebhookEventData], [CallVoiceFailedWebhookEventData],
+	// [CallVoiceDeclinedWebhookEventData], [CallVoiceNoAnswerWebhookEventData]
 	Data    UnwrapWebhookEventUnionData `json:"data"`
 	EventID string                      `json:"event_id"`
 	// Any of nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
 	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil,
-	// nil, nil, nil, nil, nil, nil.
+	// nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil.
 	EventType      string `json:"event_type"`
 	PartnerID      string `json:"partner_id"`
 	TraceID        string `json:"trace_id"`
@@ -21667,6 +22869,11 @@ func (u UnwrapWebhookEventUnion) AsPhoneNumberAssignedWebhookEvent() (v PhoneNum
 }
 
 func (u UnwrapWebhookEventUnion) AsPhoneNumberReleasedWebhookEvent() (v PhoneNumberReleasedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsPhoneNumberLineTypeUpdatedWebhookEvent() (v PhoneNumberLineTypeUpdatedWebhookEvent) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -21851,6 +23058,41 @@ func (u UnwrapWebhookEventUnion) AsTeamMemberSignedOutWebhookEvent() (v TeamMemb
 	return
 }
 
+func (u UnwrapWebhookEventUnion) AsCallVoiceInitiatedWebhookEvent() (v CallVoiceInitiatedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceRingingWebhookEvent() (v CallVoiceRingingWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceAnsweredWebhookEvent() (v CallVoiceAnsweredWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceEndedWebhookEvent() (v CallVoiceEndedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceFailedWebhookEvent() (v CallVoiceFailedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceDeclinedWebhookEvent() (v CallVoiceDeclinedWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u UnwrapWebhookEventUnion) AsCallVoiceNoAnswerWebhookEvent() (v CallVoiceNoAnswerWebhookEvent) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
 // Returns the unmodified JSON received from the API
 func (u UnwrapWebhookEventUnion) RawJSON() string { return u.JSON.raw }
 
@@ -21882,6 +23124,12 @@ type UnwrapWebhookEventUnionData struct {
 	Service      string                                  `json:"service"`
 	DeliveredAt  time.Time                               `json:"delivered_at"`
 	// This field is from variant [MessageEventV2].
+	DeviceFirstSeenAt time.Time `json:"device_first_seen_at"`
+	// This field is from variant [MessageEventV2].
+	DeviceID string `json:"device_id"`
+	// This field is from variant [MessageEventV2].
+	DeviceStatus MessageEventV2DeviceStatus `json:"device_status"`
+	// This field is from variant [MessageEventV2].
 	Effect SchemasMessageEffect `json:"effect"`
 	// This field is from variant [MessageEventV2].
 	IdempotencyKey   string    `json:"idempotency_key"`
@@ -21912,8 +23160,7 @@ type UnwrapWebhookEventUnionData struct {
 	ReactionType shared.ReactionType `json:"reaction_type"`
 	// This field is from variant [ReactionEventBase].
 	CustomEmoji string `json:"custom_emoji"`
-	// This field is from variant [ReactionEventBase].
-	From string `json:"from"`
+	From        string `json:"from"`
 	// This field is from variant [ReactionEventBase].
 	FromHandle shared.ChatHandle `json:"from_handle"`
 	// This field is from variant [ReactionEventBase].
@@ -21979,12 +23226,16 @@ type UnwrapWebhookEventUnionData struct {
 	PreviousReputation string `json:"previous_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
-	Amount         int64  `json:"amount"`
-	CheckoutURL    string `json:"checkout_url"`
-	Currency       string `json:"currency"`
-	Object         string `json:"object"`
-	Status         string `json:"status"`
-	Description    string `json:"description"`
+	// This field is from variant [PhoneNumberLineTypeUpdatedWebhookEventData].
+	NewLineType string `json:"new_line_type"`
+	// This field is from variant [PhoneNumberLineTypeUpdatedWebhookEventData].
+	PreviousLineType string `json:"previous_line_type"`
+	Amount           int64  `json:"amount"`
+	CheckoutURL      string `json:"checkout_url"`
+	Currency         string `json:"currency"`
+	Object           string `json:"object"`
+	Status           string `json:"status"`
+	Description      string `json:"description"`
 	// This field is a union of [ConnectionCreatedWebhookEventDataDiscount],
 	// [ConnectionRevokedWebhookEventDataDiscount],
 	// [PaymentAuthorizedWebhookEventDataDiscount],
@@ -22021,8 +23272,7 @@ type UnwrapWebhookEventUnionData struct {
 	EndsAt     time.Time `json:"ends_at"`
 	SharedBy   string    `json:"shared_by"`
 	SharedWith string    `json:"shared_with"`
-	// This field is from variant [LocationSharingStoppedWebhookEventData].
-	EndedAt time.Time `json:"ended_at"`
+	EndedAt    time.Time `json:"ended_at"`
 	// This field is a union of [ZeroDayRetentionUpdatedWebhookEventDataActor],
 	// [PhoneNumberForwardingUpdatedWebhookEventDataActor],
 	// [EnvironmentLineMovedWebhookEventDataActor],
@@ -22225,6 +23475,8 @@ type UnwrapWebhookEventUnionData struct {
 	// [TeamMemberSignedInWebhookEventDataWebhookSubscription],
 	// [TeamMemberSignedOutWebhookEventDataWebhookSubscription]
 	WebhookSubscription UnwrapWebhookEventUnionDataWebhookSubscription `json:"webhook_subscription"`
+	To                  string                                         `json:"to"`
+	StartedAt           time.Time                                      `json:"started_at"`
 	JSON                struct {
 		ID                     respjson.Field
 		Chat                   respjson.Field
@@ -22233,6 +23485,9 @@ type UnwrapWebhookEventUnionData struct {
 		SenderHandle           respjson.Field
 		Service                respjson.Field
 		DeliveredAt            respjson.Field
+		DeviceFirstSeenAt      respjson.Field
+		DeviceID               respjson.Field
+		DeviceStatus           respjson.Field
 		Effect                 respjson.Field
 		IdempotencyKey         respjson.Field
 		PreferredService       respjson.Field
@@ -22289,6 +23544,8 @@ type UnwrapWebhookEventUnionData struct {
 		PhoneNumber            respjson.Field
 		PreviousReputation     respjson.Field
 		PreviousStatus         respjson.Field
+		NewLineType            respjson.Field
+		PreviousLineType       respjson.Field
 		Amount                 respjson.Field
 		CheckoutURL            respjson.Field
 		Currency               respjson.Field
@@ -22324,6 +23581,8 @@ type UnwrapWebhookEventUnionData struct {
 		TeamMember             respjson.Field
 		TokensRevoked          respjson.Field
 		WebhookSubscription    respjson.Field
+		To                     respjson.Field
+		StartedAt              respjson.Field
 		raw                    string
 	} `json:"-"`
 }
