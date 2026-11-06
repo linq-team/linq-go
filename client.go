@@ -736,13 +736,8 @@ type Client struct {
 	Experiences ExperienceService
 	// ## SIP configuration
 	//
-	// Add these IP ranges to your SIP endpoint's allowlist:
-	//
-	// ```
-	// 54.172.60.0/30
-	// 54.244.51.0/30
-	// 168.86.128.0/18
-	// ```
+	// Your Linq representative provides the signaling and media IP ranges and ports to
+	// allow through your firewall during onboarding.
 	//
 	// Set `primary_uri` to your endpoint as scheme + host — `sips:` for TLS or `sip:`
 	// for UDP, with no user part (we add it). Each call arrives at your endpoint as:
@@ -752,7 +747,7 @@ type Client struct {
 	// ```
 	//
 	// so you can route on the dialed number. The caller's number is in the `From`
-	// header in E.164. Media (RTP) uses UDP ports 10000–60000.
+	// header in E.164.
 	SipProfiles SipProfileService
 	// Read the carrier (BYOC) voice calls received on your phone numbers. Each record
 	// is the durable form of the `call_voice.*` webhooks for that call and shares the
