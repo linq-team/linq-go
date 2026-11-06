@@ -83,16 +83,17 @@ const MediaPartResponseTypeMedia = shared.MediaPartResponseTypeMedia
 // This is an alias to an internal type.
 type Reaction = shared.Reaction
 
-// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
-// reactions.
+// The image when type is "sticker", or when type is "custom" and the tapback is an
+// image. Null otherwise.
 //
 // This is an alias to an internal type.
 type ReactionSticker = shared.ReactionSticker
 
 // Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-// emphasize, question. Custom emoji reactions have type "custom" with the actual
-// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
-// sticker attachment details in the sticker field.
+// emphasize, question. Custom tapbacks have type "custom": an emoji tapback
+// carries the emoji in the custom_emoji field, and an image tapback carries the
+// image in the sticker field. Sticker reactions have type "sticker" with sticker
+// attachment details in the sticker field.
 //
 // This is an alias to an internal type.
 type ReactionType = shared.ReactionType

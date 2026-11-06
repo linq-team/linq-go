@@ -601,16 +601,18 @@ type ReactionEventBase struct {
 	// someone else (false)
 	IsFromMe bool `json:"is_from_me" api:"required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
-	// sticker attachment details in the sticker field.
+	// emphasize, question. Custom tapbacks have type "custom": an emoji tapback
+	// carries the emoji in the custom_emoji field, and an image tapback carries the
+	// image in the sticker field. Sticker reactions have type "sticker" with sticker
+	// attachment details in the sticker field.
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
 	ReactionType shared.ReactionType `json:"reaction_type" api:"required"`
 	// Chat identifier (UUID)
 	ChatID string `json:"chat_id"`
-	// The actual emoji when reaction_type is "custom". Null for standard tapbacks.
+	// The actual emoji when reaction_type is "custom" and the tapback is an emoji.
+	// Null otherwise.
 	CustomEmoji string `json:"custom_emoji" api:"nullable"`
 	// DEPRECATED: Use from_handle instead. Phone number or email address of the person
 	// who added/removed the reaction.
@@ -638,8 +640,8 @@ type ReactionEventBase struct {
 	//
 	// Any of "iMessage", "SMS", "RCS".
 	Service shared.ServiceType `json:"service"`
-	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
-	// reactions.
+	// The image when reaction_type is "sticker", or when reaction_type is "custom" and
+	// the tapback is an image. Null otherwise.
 	Sticker ReactionEventBaseSticker `json:"sticker" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -666,8 +668,8 @@ func (r *ReactionEventBase) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
-// reactions.
+// The image when reaction_type is "sticker", or when reaction_type is "custom" and
+// the tapback is an image. Null otherwise.
 type ReactionEventBaseSticker struct {
 	// Filename of the sticker
 	FileName string `json:"file_name"`
