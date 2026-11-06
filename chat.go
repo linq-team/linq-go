@@ -1011,6 +1011,8 @@ type MessageContentParam struct {
 	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
+	//
+	// Deprecated: deprecated
 	PreferredService shared.ServiceType `json:"preferred_service,omitzero"`
 	// Reply to another message to create a threaded conversation
 	ReplyTo ReplyToParam `json:"reply_to,omitzero"`
@@ -1649,6 +1651,11 @@ type ChatNewParams struct {
 	// Array of recipient handles (phone numbers in E.164 format or email addresses).
 	// For individual chats, provide one recipient. For group chats, provide multiple.
 	To []string `json:"to,omitzero" api:"required"`
+	// iMessage only. If the recipient has Do Not Disturb or another Focus on and the
+	// message is delivered silently, alert them anyway (iMessage's "Notify Anyway").
+	// Best effort: ignored for SMS and RCS, and a no-op when the recipient was already
+	// notified.
+	ForceNotify param.Opt[bool] `json:"force_notify,omitzero"`
 	// Send even though the recipient asked you to stop (`403`, error code `2024`).
 	// Applies to this request only: the opt-out stays in place, so the next send
 	// without this flag is rejected again. Every override is recorded against your API
@@ -1714,6 +1721,10 @@ type ChatSendVoicememoParams struct {
 	//
 	// Either `voice_memo_url` or `attachment_id` must be provided, but not both.
 	AttachmentID param.Opt[string] `json:"attachment_id,omitzero" format:"uuid"`
+	// iMessage only. If the recipient has Do Not Disturb or another Focus on and the
+	// voice memo is delivered silently, alert them anyway (iMessage's "Notify
+	// Anyway"). Best effort: a no-op when the recipient was already notified.
+	ForceNotify param.Opt[bool] `json:"force_notify,omitzero"`
 	// Send even though the recipient asked you to stop (`403`, error code `2024`).
 	// Applies to this request only: the opt-out stays in place, so the next send
 	// without this flag is rejected again. Every override is recorded against your API

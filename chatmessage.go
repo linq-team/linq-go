@@ -307,6 +307,8 @@ type SentMessage struct {
 	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
+	//
+	// Deprecated: deprecated
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// Indicates this message is a threaded reply to another message
 	ReplyTo ReplyTo `json:"reply_to" api:"nullable"`
@@ -665,6 +667,11 @@ type ChatMessageSendParams struct {
 	// `MSMessage` cannot coexist with text), so copy and a card are two sends, not
 	// one.
 	Message MessageContentParam `json:"message,omitzero" api:"required"`
+	// iMessage only. If the recipient has Do Not Disturb or another Focus on and the
+	// message is delivered silently, alert them anyway (iMessage's "Notify Anyway").
+	// Best effort: ignored for SMS and RCS, and a no-op when the recipient was already
+	// notified.
+	ForceNotify param.Opt[bool] `json:"force_notify,omitzero"`
 	// Send even though the recipient asked you to stop (`403`, error code `2024`).
 	// Applies to this request only: the opt-out stays in place, so the next send
 	// without this flag is rejected again. Every override is recorded against your API

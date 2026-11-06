@@ -395,6 +395,21 @@ type Client struct {
 	// ineligible ones; if none of your assigned numbers are eligible, you get `409`
 	// (no `from` number was ever chosen, so there's no specific number to blame with a
 	// `403`).
+	//
+	// **Published vs unpublished.** A _published_ number is available for your account
+	// to use. Only published numbers appear in `GET /v3/phone_numbers`.
+	//
+	// Unpublished numbers allow `GET` requests. `POST`, `PUT`, `PATCH`, and `DELETE`
+	// requests that change a chat return `403` with error code `2033`
+	// (`Phone number is unpublished`).
+	//
+	// A number's existing data is preserved when its status changes to unpublished.
+	// Unpublished status alone does not block reads, blocked-handle management, or
+	// deletion of your data. Existing authorization, retention, and endpoint rules
+	// still apply.
+	//
+	// Webhook events are suppressed for affected numbers when their publication status
+	// is known to be unpublished.
 	Phonenumbers PhonenumberService
 	// Phone Numbers represent the phone numbers assigned to your partner account.
 	//
@@ -413,6 +428,21 @@ type Client struct {
 	// ineligible ones; if none of your assigned numbers are eligible, you get `409`
 	// (no `from` number was ever chosen, so there's no specific number to blame with a
 	// `403`).
+	//
+	// **Published vs unpublished.** A _published_ number is available for your account
+	// to use. Only published numbers appear in `GET /v3/phone_numbers`.
+	//
+	// Unpublished numbers allow `GET` requests. `POST`, `PUT`, `PATCH`, and `DELETE`
+	// requests that change a chat return `403` with error code `2033`
+	// (`Phone number is unpublished`).
+	//
+	// A number's existing data is preserved when its status changes to unpublished.
+	// Unpublished status alone does not block reads, blocked-handle management, or
+	// deletion of your data. Existing authorization, retention, and endpoint rules
+	// still apply.
+	//
+	// Webhook events are suppressed for affected numbers when their publication status
+	// is known to be unpublished.
 	PhoneNumbers PhoneNumberService
 	// Phone Numbers represent the phone numbers assigned to your partner account.
 	//
@@ -431,6 +461,21 @@ type Client struct {
 	// ineligible ones; if none of your assigned numbers are eligible, you get `409`
 	// (no `from` number was ever chosen, so there's no specific number to blame with a
 	// `403`).
+	//
+	// **Published vs unpublished.** A _published_ number is available for your account
+	// to use. Only published numbers appear in `GET /v3/phone_numbers`.
+	//
+	// Unpublished numbers allow `GET` requests. `POST`, `PUT`, `PATCH`, and `DELETE`
+	// requests that change a chat return `403` with error code `2033`
+	// (`Phone number is unpublished`).
+	//
+	// A number's existing data is preserved when its status changes to unpublished.
+	// Unpublished status alone does not block reads, blocked-handle management, or
+	// deletion of your data. Existing authorization, retention, and endpoint rules
+	// still apply.
+	//
+	// Webhook events are suppressed for affected numbers when their publication status
+	// is known to be unpublished.
 	AvailableNumber AvailableNumberService
 	// Request a payment from a recipient over iMessage. You create a payment request,
 	// send its `checkout_url` to the recipient, and they pay with Apple Pay or card.
@@ -689,6 +734,31 @@ type Client struct {
 	// built from the same copy; SMS and RCS recipients cannot receive one at all
 	// (error codes 2018 and 4005).
 	Experiences ExperienceService
+	// ## SIP configuration
+	//
+	// Add these IP ranges to your SIP endpoint's allowlist:
+	//
+	// ```
+	// 54.172.60.0/30
+	// 54.244.51.0/30
+	// 168.86.128.0/18
+	// ```
+	//
+	// Set `primary_uri` to your endpoint as scheme + host — `sips:` for TLS or `sip:`
+	// for UDP, with no user part (we add it). Each call arrives at your endpoint as:
+	//
+	// ```
+	// sip:<called-number>@<your-host>
+	// ```
+	//
+	// so you can route on the dialed number. The caller's number is in the `From`
+	// header in E.164. Media (RTP) uses UDP ports 10000–60000.
+	SipProfiles SipProfileService
+	// Read the carrier (BYOC) voice calls received on your phone numbers. Each record
+	// is the durable form of the `call_voice.*` webhooks for that call and shares the
+	// same `id`, so you can look a call up by the id a webhook delivered. See SIP
+	// Profiles for routing inbound calls to your endpoint.
+	CallVoice CallVoiceService
 	// Webhook Subscriptions allow you to receive real-time notifications when events
 	// occur on your account.
 	//
@@ -1037,6 +1107,8 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 	r.LinkPayments = NewLinkPaymentService(opts...)
 	r.BlockedHandles = NewBlockedHandleService(opts...)
 	r.Experiences = NewExperienceService(opts...)
+	r.SipProfiles = NewSipProfileService(opts...)
+	r.CallVoice = NewCallVoiceService(opts...)
 	r.WebhookEvents = NewWebhookEventService(opts...)
 	r.WebhookSubscriptions = NewWebhookSubscriptionService(opts...)
 	r.Webhooks = NewWebhookService(opts...)

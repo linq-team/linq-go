@@ -213,8 +213,10 @@ type Reaction struct {
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
 	Type ReactionType `json:"type" api:"required"`
-	// Identifier for this reaction. Pass it to
-	// `PATCH /v3/messages/{messageId}/reactions/{reactionId}` to move a sticker.
+	// Identifier for this reaction, the same value as `reaction_id` on the
+	// `reaction.added` and `reaction.removed` webhooks. Changing a tapback keeps the
+	// same id. Pass it to `PATCH /v3/messages/{messageId}/reactions/{reactionId}` to
+	// move a sticker.
 	//
 	// Stickers placed before this API shipped can be read but not moved: the
 	// device-side reference needed to reposition them was never recorded, so `PATCH`

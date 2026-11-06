@@ -315,11 +315,10 @@ func NewMessageService(opts ...option.RequestOption) (r MessageService) {
 //   - Voice memos are **not** supported here. To send an iMessage voice-memo bubble,
 //     use `POST /v3/chats/{chatId}/voicememo` with a known chat id.
 //
-// ## Service preference, effects, decorations, inline stickers
+// ## Effects, decorations, inline stickers
 //
-// Set `message.preferred_service` (`iMessage` | `RCS` | `SMS`), `message.effect`,
-// and per-part `text_decorations` and `inline_stickers` exactly as on the other
-// send endpoints.
+// Set `message.effect` and per-part `text_decorations` and `inline_stickers`
+// exactly as on the other send endpoints.
 //
 // Always responds `202 Accepted` — chat creation is incidental to the send.
 func (r *MessageService) New(ctx context.Context, params MessageNewParams, opts ...option.RequestOption) (res *MessageNewResponse, err error) {
@@ -401,6 +400,9 @@ func (r *MessageService) Delete(ctx context.Context, messageID string, opts ...o
 // `placement`, and can be changed afterwards with
 // `PATCH /v3/messages/{messageId}/reactions/{reactionId}`. An animated image peels
 // as an animated sticker, in whatever shape the file already has.
+//
+// **Polls** take stickers only. Any tapback on a poll message — standard or
+// `custom` — is rejected with a 400.
 func (r *MessageService) AddReaction(ctx context.Context, messageID string, body MessageAddReactionParams, opts ...option.RequestOption) (res *MessageAddReactionResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if messageID == "" {
@@ -554,6 +556,8 @@ type Message struct {
 	// can downgrade an individual message.
 	//
 	// Any of "iMessage", "SMS", "RCS".
+	//
+	// Deprecated: deprecated
 	PreferredService shared.ServiceType `json:"preferred_service" api:"nullable"`
 	// When the message was read
 	ReadAt time.Time `json:"read_at" api:"nullable" format:"date-time"`
@@ -1153,6 +1157,11 @@ type MessageNewParams struct {
 	// direct chat; multiple handles a group chat. Order-independent — the set
 	// identifies the chat.
 	To []string `json:"to,omitzero" api:"required"`
+	// iMessage only. If the recipient has Do Not Disturb or another Focus on and the
+	// message is delivered silently, alert them anyway (iMessage's "Notify Anyway").
+	// Best effort: ignored for SMS and RCS, and a no-op when the recipient was already
+	// notified.
+	ForceNotify param.Opt[bool] `json:"force_notify,omitzero"`
 	// Send even though the recipient asked you to stop (`403`, error code `2024`).
 	// Applies to this request only: the opt-out stays in place, so the next send
 	// without this flag is rejected again. Every override is recorded against your API

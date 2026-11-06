@@ -288,6 +288,35 @@ Methods:
 - <code title="get /v3/experiences/{experience}">client.Experiences.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, experience <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceGetResponse">ExperienceGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="get /v3/experiences">client.Experiences.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ExperienceListResponse">ExperienceListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# SipProfiles
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfile">SipProfile</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileListResponse">SipProfileListResponse</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileAssignResponse">SipProfileAssignResponse</a>
+
+Methods:
+
+- <code title="post /v3/sip-profiles">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileNewParams">SipProfileNewParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfile">SipProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/sip-profiles/{sipProfileId}">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, sipProfileID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfile">SipProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="put /v3/sip-profiles/{sipProfileId}">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, sipProfileID <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileUpdateParams">SipProfileUpdateParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfile">SipProfile</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/sip-profiles">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileListResponse">SipProfileListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="delete /v3/sip-profiles/{sipProfileId}">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, sipProfileID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
+- <code title="put /v3/phone-numbers/{phoneNumber}/sip-profile">client.SipProfiles.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileService.Assign">Assign</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, body <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileAssignParams">SipProfileAssignParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#SipProfileAssignResponse">SipProfileAssignResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+# CallVoice
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceRecord">CallVoiceRecord</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceListResponse">CallVoiceListResponse</a>
+
+Methods:
+
+- <code title="get /v3/call-voice/{callVoiceId}">client.CallVoice.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, callVoiceID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceRecord">CallVoiceRecord</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /v3/phone-numbers/{phoneNumber}/call-voice">client.CallVoice.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, phoneNumber <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceListParams">CallVoiceListParams</a>) (\*<a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceListResponse">CallVoiceListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # WebhookEvents
 
 Params Types:
@@ -360,6 +389,7 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberStatusUpdatedWebhookEvent">PhoneNumberStatusUpdatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberAssignedWebhookEvent">PhoneNumberAssignedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberReleasedWebhookEvent">PhoneNumberReleasedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#PhoneNumberLineTypeUpdatedWebhookEvent">PhoneNumberLineTypeUpdatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ConnectionCreatedWebhookEvent">ConnectionCreatedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#ConnectionRevokedWebhookEvent">ConnectionRevokedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#LocationSharingStartedWebhookEvent">LocationSharingStartedWebhookEvent</a>
@@ -396,6 +426,13 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberAddedWebhookEvent">TeamMemberAddedWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberSignedInWebhookEvent">TeamMemberSignedInWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#TeamMemberSignedOutWebhookEvent">TeamMemberSignedOutWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceInitiatedWebhookEvent">CallVoiceInitiatedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceRingingWebhookEvent">CallVoiceRingingWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceAnsweredWebhookEvent">CallVoiceAnsweredWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceEndedWebhookEvent">CallVoiceEndedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceFailedWebhookEvent">CallVoiceFailedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceDeclinedWebhookEvent">CallVoiceDeclinedWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#CallVoiceNoAnswerWebhookEvent">CallVoiceNoAnswerWebhookEvent</a>
 - <a href="https://pkg.go.dev/github.com/linq-team/linq-go">linqgo</a>.<a href="https://pkg.go.dev/github.com/linq-team/linq-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
 
 # Capability

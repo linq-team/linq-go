@@ -243,7 +243,7 @@ type PollEnvelope struct {
 	MessageID string `json:"message_id" api:"required" format:"uuid"`
 	// Poll content — options and the aggregate voter count.
 	Poll Poll `json:"poll" api:"required"`
-	// Tapbacks/stickers on the whole poll (message part 0).
+	// Stickers on the whole poll (message part 0). Polls take stickers only.
 	Reactions []shared.Reaction `json:"reactions" api:"required"`
 	UpdatedAt time.Time         `json:"updated_at" api:"required" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
