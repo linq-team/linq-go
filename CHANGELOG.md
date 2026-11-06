@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.0](https://github.com/linq-team/linq-go/compare/v0.71.0...v0.72.0) (2026-11-06)
+
+
+### Features
+
+* support image tapbacks and improve reaction documentation ([277f0f9](https://github.com/linq-team/linq-go/commit/277f0f98dc5d71f675d99c01f011ab7db69f75aa))
+
 ## [0.71.0](https://github.com/linq-team/linq-go/compare/v0.70.0...v0.71.0) (2026-11-06)
 
 
