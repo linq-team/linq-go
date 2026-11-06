@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.71.0](https://github.com/linq-team/linq-go/compare/v0.70.0...v0.71.0) (2026-11-06)
+
+
+### Features
+
+* add force_notify option for imessage voice memos ([ec581d6](https://github.com/linq-team/linq-go/commit/ec581d687ad55a2c2ef05a7863b56b3018cd9fc4))
+
 ## [0.70.0](https://github.com/linq-team/linq-go/compare/v0.69.0...v0.70.0) (2026-10-09)
 
 
