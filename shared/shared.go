@@ -206,9 +206,10 @@ type Reaction struct {
 	// Whether this reaction is from the current user
 	IsMe bool `json:"is_me" api:"required"`
 	// Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-	// emphasize, question. Custom emoji reactions have type "custom" with the actual
-	// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
-	// sticker attachment details in the sticker field.
+	// emphasize, question. Custom tapbacks have type "custom": an emoji tapback
+	// carries the emoji in the custom_emoji field, and an image tapback carries the
+	// image in the sticker field. Sticker reactions have type "sticker" with sticker
+	// attachment details in the sticker field.
 	//
 	// Any of "love", "like", "dislike", "laugh", "emphasize", "question", "custom",
 	// "sticker".
@@ -222,10 +223,10 @@ type Reaction struct {
 	// device-side reference needed to reposition them was never recorded, so `PATCH`
 	// returns 404 for those.
 	ID string `json:"id" format:"uuid"`
-	// Custom emoji if type is "custom", null otherwise
+	// Custom emoji if type is "custom" and the tapback is an emoji, null otherwise
 	CustomEmoji string `json:"custom_emoji" api:"nullable"`
-	// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
-	// reactions.
+	// The image when type is "sticker", or when type is "custom" and the tapback is an
+	// image. Null otherwise.
 	Sticker ReactionSticker `json:"sticker" api:"nullable"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -246,8 +247,8 @@ func (r *Reaction) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Sticker attachment details when reaction_type is "sticker". Null for non-sticker
-// reactions.
+// The image when type is "sticker", or when type is "custom" and the tapback is an
+// image. Null otherwise.
 type ReactionSticker struct {
 	// Filename of the sticker
 	FileName string `json:"file_name"`
@@ -278,9 +279,10 @@ func (r *ReactionSticker) UnmarshalJSON(data []byte) error {
 }
 
 // Type of reaction. Standard iMessage tapbacks are love, like, dislike, laugh,
-// emphasize, question. Custom emoji reactions have type "custom" with the actual
-// emoji in the custom_emoji field. Sticker reactions have type "sticker" with
-// sticker attachment details in the sticker field.
+// emphasize, question. Custom tapbacks have type "custom": an emoji tapback
+// carries the emoji in the custom_emoji field, and an image tapback carries the
+// image in the sticker field. Sticker reactions have type "sticker" with sticker
+// attachment details in the sticker field.
 type ReactionType string
 
 const (
