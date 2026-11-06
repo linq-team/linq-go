@@ -37,7 +37,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/linq-team/linq-go@v0.71.0'
+go get -u 'github.com/linq-team/linq-go@v0.72.0'
 ```
 
 <!-- x-release-please-end -->
