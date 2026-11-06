@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.1](https://github.com/linq-team/linq-go/compare/v0.72.0...v0.72.1) (2026-11-06)
+
+
+### Documentation
+
+* update sip configuration guidance in api documentation ([3e4b6d1](https://github.com/linq-team/linq-go/commit/3e4b6d1bc87b1241931b54d5ac39706a4a3b7e8f))
+
 ## [0.72.0](https://github.com/linq-team/linq-go/compare/v0.71.0...v0.72.0) (2026-11-06)
 
 
