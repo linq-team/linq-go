@@ -193,8 +193,8 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 			Placement: linqgo.MessageAddReactionParamsPlacement{
 				Rotation: linqgo.Float(15),
 				Scale:    linqgo.Float(1.25),
-				X:        linqgo.Float(-0.25),
-				Y:        linqgo.Float(0.4),
+				X:        linqgo.Float(0.9),
+				Y:        linqgo.Float(-0.3),
 			},
 			URL: linqgo.String("https://cdn.linqapp.com/attachments/example/sticker.png"),
 		},
@@ -313,8 +313,8 @@ func TestMessageUpdateStickerPlacementWithOptionalParams(t *testing.T) {
 			Placement: linqgo.MessageUpdateStickerPlacementParamsPlacement{
 				Rotation: linqgo.Float(15),
 				Scale:    linqgo.Float(0.75),
-				X:        linqgo.Float(0.6),
-				Y:        linqgo.Float(0.5),
+				X:        linqgo.Float(0.9),
+				Y:        linqgo.Float(0.9),
 			},
 		},
 	)
