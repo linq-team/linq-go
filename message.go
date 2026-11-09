@@ -1297,8 +1297,24 @@ type MessageAddReactionParams struct {
 	// Optional position, size and rotation of a sticker on the target bubble. Only
 	// valid when type is "sticker".
 	//
-	// Every field is independent and optional — omit the object entirely, or any field
-	// within it, to keep the default (centred, default size, unrotated).
+	// `x` and `y` set where the sticker's centre lands, as a fraction of the target
+	// bubble's width and height:
+	//
+	// | Position            | `x` | `y` |
+	// | ------------------- | --- | --- |
+	// | Top-left corner     | 0   | 0   |
+	// | Top-right corner    | 1   | 0   |
+	// | Centre              | 0.5 | 0.5 |
+	// | Bottom-left corner  | 0   | 1   |
+	// | Bottom-right corner | 1   | 1   |
+	//
+	// Every field is independent and optional. Omit `x` and `y` and the sticker lands
+	// on the top-left corner.
+	//
+	// Position and size are relative to the target bubble, so a sticker keeps its
+	// place on the bubble on every device. Its size follows the bubble's width: the
+	// same sticker is drawn smaller on a bubble that a recipient's screen renders
+	// narrower than the sender's.
 	Placement MessageAddReactionParamsPlacement `json:"placement,omitzero"`
 	paramObj
 }
@@ -1322,8 +1338,24 @@ const (
 // Optional position, size and rotation of a sticker on the target bubble. Only
 // valid when type is "sticker".
 //
-// Every field is independent and optional — omit the object entirely, or any field
-// within it, to keep the default (centred, default size, unrotated).
+// `x` and `y` set where the sticker's centre lands, as a fraction of the target
+// bubble's width and height:
+//
+// | Position            | `x` | `y` |
+// | ------------------- | --- | --- |
+// | Top-left corner     | 0   | 0   |
+// | Top-right corner    | 1   | 0   |
+// | Centre              | 0.5 | 0.5 |
+// | Bottom-left corner  | 0   | 1   |
+// | Bottom-right corner | 1   | 1   |
+//
+// Every field is independent and optional. Omit `x` and `y` and the sticker lands
+// on the top-left corner.
+//
+// Position and size are relative to the target bubble, so a sticker keeps its
+// place on the bubble on every device. Its size follows the bubble's width: the
+// same sticker is drawn smaller on a bubble that a recipient's screen renders
+// narrower than the sender's.
 type MessageAddReactionParamsPlacement struct {
 	// Clockwise rotation in degrees.
 	Rotation param.Opt[float64] `json:"rotation,omitzero"`
@@ -1334,11 +1366,17 @@ type MessageAddReactionParamsPlacement struct {
 	//
 	// Scale is linear, so 2.5 is a little over six times the area.
 	Scale param.Opt[float64] `json:"scale,omitzero"`
-	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
-	// is centred.
+	// Where the sticker's centre sits horizontally, as a fraction of the target
+	// bubble's width: 0 is its left edge, 0.5 its centre and 1 its right edge. Values
+	// outside -1–1 are clamped.
+	//
+	// Avoid negative values: a sticker left of a received bubble makes the recipient's
+	// device shift the whole message to fit it.
 	X param.Opt[float64] `json:"x,omitzero"`
-	// Vertical position on the target bubble, from -1 (top) to 1 (bottom). 0 is
-	// centred.
+	// Where the sticker's centre sits vertically, as a fraction of the target bubble's
+	// height: 0 is its top edge, 0.5 its centre and 1 its bottom edge. Negative values
+	// place it above the bubble; `-0.3` sits just above the top edge. Values outside
+	// -1–1 are clamped.
 	Y param.Opt[float64] `json:"y,omitzero"`
 	paramObj
 }
@@ -1542,8 +1580,24 @@ type MessageUpdateStickerPlacementParams struct {
 	// Optional position, size and rotation of a sticker on the target bubble. Only
 	// valid when type is "sticker".
 	//
-	// Every field is independent and optional — omit the object entirely, or any field
-	// within it, to keep the default (centred, default size, unrotated).
+	// `x` and `y` set where the sticker's centre lands, as a fraction of the target
+	// bubble's width and height:
+	//
+	// | Position            | `x` | `y` |
+	// | ------------------- | --- | --- |
+	// | Top-left corner     | 0   | 0   |
+	// | Top-right corner    | 1   | 0   |
+	// | Centre              | 0.5 | 0.5 |
+	// | Bottom-left corner  | 0   | 1   |
+	// | Bottom-right corner | 1   | 1   |
+	//
+	// Every field is independent and optional. Omit `x` and `y` and the sticker lands
+	// on the top-left corner.
+	//
+	// Position and size are relative to the target bubble, so a sticker keeps its
+	// place on the bubble on every device. Its size follows the bubble's width: the
+	// same sticker is drawn smaller on a bubble that a recipient's screen renders
+	// narrower than the sender's.
 	Placement MessageUpdateStickerPlacementParamsPlacement `json:"placement,omitzero" api:"required"`
 	paramObj
 }
@@ -1559,8 +1613,24 @@ func (r *MessageUpdateStickerPlacementParams) UnmarshalJSON(data []byte) error {
 // Optional position, size and rotation of a sticker on the target bubble. Only
 // valid when type is "sticker".
 //
-// Every field is independent and optional — omit the object entirely, or any field
-// within it, to keep the default (centred, default size, unrotated).
+// `x` and `y` set where the sticker's centre lands, as a fraction of the target
+// bubble's width and height:
+//
+// | Position            | `x` | `y` |
+// | ------------------- | --- | --- |
+// | Top-left corner     | 0   | 0   |
+// | Top-right corner    | 1   | 0   |
+// | Centre              | 0.5 | 0.5 |
+// | Bottom-left corner  | 0   | 1   |
+// | Bottom-right corner | 1   | 1   |
+//
+// Every field is independent and optional. Omit `x` and `y` and the sticker lands
+// on the top-left corner.
+//
+// Position and size are relative to the target bubble, so a sticker keeps its
+// place on the bubble on every device. Its size follows the bubble's width: the
+// same sticker is drawn smaller on a bubble that a recipient's screen renders
+// narrower than the sender's.
 type MessageUpdateStickerPlacementParamsPlacement struct {
 	// Clockwise rotation in degrees.
 	Rotation param.Opt[float64] `json:"rotation,omitzero"`
@@ -1571,11 +1641,17 @@ type MessageUpdateStickerPlacementParamsPlacement struct {
 	//
 	// Scale is linear, so 2.5 is a little over six times the area.
 	Scale param.Opt[float64] `json:"scale,omitzero"`
-	// Horizontal position on the target bubble, from -1 (far left) to 1 (far right). 0
-	// is centred.
+	// Where the sticker's centre sits horizontally, as a fraction of the target
+	// bubble's width: 0 is its left edge, 0.5 its centre and 1 its right edge. Values
+	// outside -1–1 are clamped.
+	//
+	// Avoid negative values: a sticker left of a received bubble makes the recipient's
+	// device shift the whole message to fit it.
 	X param.Opt[float64] `json:"x,omitzero"`
-	// Vertical position on the target bubble, from -1 (top) to 1 (bottom). 0 is
-	// centred.
+	// Where the sticker's centre sits vertically, as a fraction of the target bubble's
+	// height: 0 is its top edge, 0.5 its centre and 1 its bottom edge. Negative values
+	// place it above the bubble; `-0.3` sits just above the top edge. Values outside
+	// -1–1 are clamped.
 	Y param.Opt[float64] `json:"y,omitzero"`
 	paramObj
 }
