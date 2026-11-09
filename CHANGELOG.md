@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.2](https://github.com/linq-team/linq-go/compare/v0.72.1...v0.72.2) (2026-11-09)
+
+
+### Documentation
+
+* clarify sticker placement coordinate system and behavior ([6b3c0d3](https://github.com/linq-team/linq-go/commit/6b3c0d36c4c7e59337840703d2af2d49ec890a2b))
+
 ## [0.72.1](https://github.com/linq-team/linq-go/compare/v0.72.0...v0.72.1) (2026-11-06)
 
 
