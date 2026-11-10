@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.3](https://github.com/linq-team/linq-go/compare/v0.72.2...v0.72.3) (2026-11-10)
+
+
+### Bug Fixes
+
+* clarify message.failed webhook event ordering and delivery possibilities ([a464848](https://github.com/linq-team/linq-go/commit/a46484821eb04c46dd1541449b5b565290937569))
+
 ## [0.72.2](https://github.com/linq-team/linq-go/compare/v0.72.1...v0.72.2) (2026-11-09)
 
 
