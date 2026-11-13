@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.72.4](https://github.com/linq-team/linq-go/compare/v0.72.3...v0.72.4) (2026-11-13)
+
+
+### Bug Fixes
+
+* clarify messaging for flagged line delivery problems ([0126ddd](https://github.com/linq-team/linq-go/commit/0126ddde41754f017aa5848f3c32f68c3ee5dff8))
+
 ## [0.72.3](https://github.com/linq-team/linq-go/compare/v0.72.2...v0.72.3) (2026-11-10)
 
 
