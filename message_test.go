@@ -191,6 +191,7 @@ func TestMessageAddReactionWithOptionalParams(t *testing.T) {
 			Emoji:        linqgo.String("🎉"),
 			PartIndex:    linqgo.Int(1),
 			Placement: linqgo.MessageAddReactionParamsPlacement{
+				Anchor:   "bottom_right",
 				Rotation: linqgo.Float(15),
 				Scale:    linqgo.Float(1.25),
 				X:        linqgo.Float(0.9),
@@ -311,6 +312,7 @@ func TestMessageUpdateStickerPlacementWithOptionalParams(t *testing.T) {
 		linqgo.MessageUpdateStickerPlacementParams{
 			MessageID: "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e",
 			Placement: linqgo.MessageUpdateStickerPlacementParamsPlacement{
+				Anchor:   "bottom_right",
 				Rotation: linqgo.Float(15),
 				Scale:    linqgo.Float(0.75),
 				X:        linqgo.Float(0.9),
