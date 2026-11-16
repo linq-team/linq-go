@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.73.0](https://github.com/linq-team/linq-go/compare/v0.72.4...v0.73.0) (2026-11-16)
+
+
+### Features
+
+* add anchor parameter for sticker placement alignment ([0149daf](https://github.com/linq-team/linq-go/commit/0149daf2dca163d113561684cbc38b981dfb8013))
+
 ## [0.72.4](https://github.com/linq-team/linq-go/compare/v0.72.3...v0.72.4) (2026-11-13)
 
 
