@@ -39,6 +39,9 @@ func NewCapabilityService(opts ...option.RequestOption) (r CapabilityService) {
 
 // Check whether a recipient address (phone number or email) is reachable via
 // iMessage.
+//
+// Without `from`, the check runs from one of your phone numbers in the same
+// environment as the API token making the request.
 func (r *CapabilityService) CheckIMessage(ctx context.Context, body CapabilityCheckIMessageParams, opts ...option.RequestOption) (res *HandleCheckResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v3/capability/check_imessage"
