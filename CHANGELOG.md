@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.73.1](https://github.com/linq-team/linq-go/compare/v0.73.0...v0.73.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* clarify sms exclusion for send failure webhook event 4006 ([a338be9](https://github.com/linq-team/linq-go/commit/a338be9202ec0adce106cc674f01d55fa77dd059))
+
 ## [0.73.0](https://github.com/linq-team/linq-go/compare/v0.72.4...v0.73.0) (2026-11-16)
 
 
