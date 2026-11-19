@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.75.1](https://github.com/linq-team/linq-go/compare/v0.75.0...v0.75.1) (2026-11-19)
+
+
+### Bug Fixes
+
+* improve clarity in reputation driver descriptions ([ab81355](https://github.com/linq-team/linq-go/commit/ab81355c4339c532779ec2a0cb61207f4300a8f5))
+
 ## [0.75.0](https://github.com/linq-team/linq-go/compare/v0.74.0...v0.75.0) (2026-11-19)
 
 
