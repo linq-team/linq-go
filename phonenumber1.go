@@ -276,7 +276,7 @@ type ReputationDriver struct {
 	// Any of "low_engagement", "overall_conversation_health", "volume_spike",
 	// "new_conversation_rate", "opt_out_handling", "flagged", "other".
 	Key ReputationDriverKey `json:"key"`
-	// Display name for `key`, ready to show as-is (for example "Delivery Limited").
+	// Display name for `key`, ready to show as-is (for example "Delivery problem").
 	Label string `json:"label"`
 	// A specific observed figure when available; otherwise a short qualitative note.
 	Metric string `json:"metric"`
