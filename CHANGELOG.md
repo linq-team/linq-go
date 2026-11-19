@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.75.0](https://github.com/linq-team/linq-go/compare/v0.74.0...v0.75.0) (2026-11-19)
+
+
+### Features
+
+* add label field to reputation driver details ([cc00676](https://github.com/linq-team/linq-go/commit/cc00676b9610ef61c12138482928e756c5b01abb))
+
 ## [0.74.0](https://github.com/linq-team/linq-go/compare/v0.73.1...v0.74.0) (2026-11-18)
 
 
