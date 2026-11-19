@@ -397,6 +397,10 @@ type ReputationReport struct {
 	// are the `ReputationDriverKey` vocabulary — see that schema for what each means
 	// and what to do about it.
 	PrimaryDriver string `json:"primary_driver"`
+	// **Legacy.** Use `state`. Derived from `state`: `HEALTHY` and `WATCH` report
+	// `HEALTHY`, `NEEDS_ATTENTION` reports `AT_RISK`, and `DELIVERY_LIMITED` reports
+	// `CRITICAL`. It stays available for a long notice period before removal.
+	//
 	// Current reputation of this phone line.
 	//
 	//   - `HEALTHY` — The line is in good standing. Send normally.
@@ -435,6 +439,10 @@ func (r *ReputationReport) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// **Legacy.** Use `state`. Derived from `state`: `HEALTHY` and `WATCH` report
+// `HEALTHY`, `NEEDS_ATTENTION` reports `AT_RISK`, and `DELIVERY_LIMITED` reports
+// `CRITICAL`. It stays available for a long notice period before removal.
+//
 // Current reputation of this phone line.
 //
 //   - `HEALTHY` — The line is in good standing. Send normally.
@@ -598,6 +606,25 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 type PhoneNumberListResponsePhoneNumberReputation struct {
 	// Deep-link to the relevant section of the Phone Reputation guide for this status.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
+	// What is behind `state`, in a stable order. Empty when nothing is. Same
+	// vocabulary as the reputation report's drivers.
+	ReasonCodes []ReputationDriverKey `json:"reason_codes" api:"required"`
+	// Current state of this phone line.
+	//
+	//   - `HEALTHY` — This line is in good standing.
+	//   - `WATCH` — A recent change in activity that usually settles on its own.
+	//   - `NEEDS_ATTENTION` — A sustained pattern that needs a change in how this line
+	//     is used.
+	//   - `DELIVERY_LIMITED` — Outbound messages from this line are not being delivered.
+	//
+	// Defaults to `HEALTHY` for lines that have not yet been scored.
+	//
+	// Any of "HEALTHY", "WATCH", "NEEDS_ATTENTION", "DELIVERY_LIMITED".
+	State string `json:"state" api:"required"`
+	// **Legacy.** Use `state`. Derived from `state`: `HEALTHY` and `WATCH` report
+	// `HEALTHY`, `NEEDS_ATTENTION` reports `AT_RISK`, and `DELIVERY_LIMITED` reports
+	// `CRITICAL`. It stays available for a long notice period before removal.
+	//
 	// Current reputation of this phone line.
 	//
 	//   - `HEALTHY` — The line is in good standing. Send normally.
@@ -616,6 +643,8 @@ type PhoneNumberListResponsePhoneNumberReputation struct {
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DocURL      respjson.Field
+		ReasonCodes respjson.Field
+		State       respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
