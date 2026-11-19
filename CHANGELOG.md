@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.77.0](https://github.com/linq-team/linq-go/compare/v0.76.1...v0.77.0) (2026-11-19)
+
+
+### Features
+
+* add text_decorations support to mention parts ([f3596bf](https://github.com/linq-team/linq-go/commit/f3596bf3a20f0836b5ead42ec17e439b6e32082c))
+
 ## [0.76.1](https://github.com/linq-team/linq-go/compare/v0.76.0...v0.76.1) (2026-11-19)
 
 
