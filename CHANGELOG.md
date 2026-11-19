@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.76.0](https://github.com/linq-team/linq-go/compare/v0.75.1...v0.76.0) (2026-11-19)
+
+
+### Features
+
+* add phone reputation state with reason codes ([599360c](https://github.com/linq-team/linq-go/commit/599360cfa5d11fa87c11a4a3df6a678e070cd031))
+
 ## [0.75.1](https://github.com/linq-team/linq-go/compare/v0.75.0...v0.75.1) (2026-11-19)
 
 
