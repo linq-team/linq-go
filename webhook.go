@@ -4771,6 +4771,16 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 	//
 	// Any of "ACTIVE", "FLAGGED".
 	PreviousStatus string `json:"previous_status" api:"required"`
+	// The new line state
+	//
+	// Any of "HEALTHY", "WATCH", "NEEDS_ATTENTION", "DELIVERY_LIMITED".
+	NewState string `json:"new_state"`
+	// The previous line state
+	//
+	// Any of "HEALTHY", "WATCH", "NEEDS_ATTENTION", "DELIVERY_LIMITED".
+	PreviousState string `json:"previous_state"`
+	// What is behind `new_state`, in a stable order. Empty when nothing is.
+	ReasonCodes []ReputationDriverKey `json:"reason_codes"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ChangedAt          respjson.Field
@@ -4779,6 +4789,9 @@ type PhoneNumberStatusUpdatedWebhookEventData struct {
 		PhoneNumber        respjson.Field
 		PreviousReputation respjson.Field
 		PreviousStatus     respjson.Field
+		NewState           respjson.Field
+		PreviousState      respjson.Field
+		ReasonCodes        respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -23230,6 +23243,12 @@ type UnwrapWebhookEventUnionData struct {
 	PreviousReputation string `json:"previous_reputation"`
 	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
 	PreviousStatus string `json:"previous_status"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	NewState string `json:"new_state"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	PreviousState string `json:"previous_state"`
+	// This field is from variant [PhoneNumberStatusUpdatedWebhookEventData].
+	ReasonCodes []ReputationDriverKey `json:"reason_codes"`
 	// This field is from variant [PhoneNumberLineTypeUpdatedWebhookEventData].
 	NewLineType string `json:"new_line_type"`
 	// This field is from variant [PhoneNumberLineTypeUpdatedWebhookEventData].
@@ -23548,6 +23567,9 @@ type UnwrapWebhookEventUnionData struct {
 		PhoneNumber            respjson.Field
 		PreviousReputation     respjson.Field
 		PreviousStatus         respjson.Field
+		NewState               respjson.Field
+		PreviousState          respjson.Field
+		ReasonCodes            respjson.Field
 		NewLineType            respjson.Field
 		PreviousLineType       respjson.Field
 		Amount                 respjson.Field
