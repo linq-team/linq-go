@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.76.1](https://github.com/linq-team/linq-go/compare/v0.76.0...v0.76.1) (2026-11-19)
+
+
+### Bug Fixes
+
+* update reputation driver label example text ([49a645e](https://github.com/linq-team/linq-go/commit/49a645eb611578b17ab3aa0161a7917ae16290c0))
+
 ## [0.76.0](https://github.com/linq-team/linq-go/compare/v0.75.1...v0.76.0) (2026-11-19)
 
 
