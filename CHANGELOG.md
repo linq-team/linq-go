@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.77.2](https://github.com/linq-team/linq-go/compare/v0.77.1...v0.77.2) (2026-11-20)
+
+
+### Bug Fixes
+
+* clarify new conversation rate warning behavior ([2fd9e47](https://github.com/linq-team/linq-go/commit/2fd9e47f886081edcf396ea05316702ae32f1799))
+
 ## [0.77.1](https://github.com/linq-team/linq-go/compare/v0.77.0...v0.77.1) (2026-11-19)
 
 
