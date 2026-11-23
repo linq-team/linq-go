@@ -606,7 +606,7 @@ func (r *PhoneNumberListResponsePhoneNumber) UnmarshalJSON(data []byte) error {
 // [Phone Reputation guide](/channel/imessage/guides/phone-numbers/phone-reputation)
 // for what each status means and how to react.
 type PhoneNumberListResponsePhoneNumberReputation struct {
-	// Deep-link to the relevant section of the Phone Reputation guide for this status.
+	// Deep-link to the section of the Phone Reputation guide for this line's `state`.
 	DocURL string `json:"doc_url" api:"required" format:"uri"`
 	// What is behind `state`, in a stable order. Empty when nothing is. Same
 	// vocabulary as the reputation report's drivers.
