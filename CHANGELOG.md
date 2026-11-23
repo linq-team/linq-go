@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.77.3](https://github.com/linq-team/linq-go/compare/v0.77.2...v0.77.3) (2026-11-23)
+
+
+### Bug Fixes
+
+* update phone reputation documentation links and descriptions ([73244fd](https://github.com/linq-team/linq-go/commit/73244fd54e941ed9a0e3cb72212033b019b49170))
+
 ## [0.77.2](https://github.com/linq-team/linq-go/compare/v0.77.1...v0.77.2) (2026-11-20)
 
 
