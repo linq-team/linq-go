@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.77.4](https://github.com/linq-team/linq-go/compare/v0.77.3...v0.77.4) (2026-11-24)
+
+
+### Chores
+
+* update release automation for safer pr merging ([636ff65](https://github.com/linq-team/linq-go/commit/636ff651793d0b35231af929dea247e95830083a))
+
 ## [0.77.3](https://github.com/linq-team/linq-go/compare/v0.77.2...v0.77.3) (2026-11-23)
 
 
