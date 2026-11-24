@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.77.5](https://github.com/linq-team/linq-go/compare/v0.77.4...v0.77.5) (2026-11-24)
+
+
+### Chores
+
+* regenerate with updated release automation workflow ([61bd71d](https://github.com/linq-team/linq-go/commit/61bd71dfde76974c9217a3b864cca61f81b449cb))
+
 ## [0.77.4](https://github.com/linq-team/linq-go/compare/v0.77.3...v0.77.4) (2026-11-24)
 
 
