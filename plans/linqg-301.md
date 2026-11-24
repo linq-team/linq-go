@@ -27,8 +27,10 @@ epic:
 
 Stainless generated `ci.yml` and `scripts/*`; keep the scripts as the single
 source of truth and add a thin root `Makefile` (`lint`, `format`, `test`
-targets calling `./scripts/<name>`). Tests skip without a mock server, so
-`make test` runs the unit tests that need none.
+targets calling `./scripts/<name>`). The 81 mock-server tests are skipped by a
+hard-coded `t.Skip("Mock server tests are disabled")` (and would fail via
+`testutil.CheckTestServer` without `SKIP_MOCK_TESTS=true` if unskipped), so
+`make test` covers the unit tests only.
 
 In `ci.yml`: the lint job calls `make lint`, then `make format` and
 `git diff --exit-code`; add a `test` job calling `make test`; add `ci` with
